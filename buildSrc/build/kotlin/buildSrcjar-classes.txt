@@ -1,0 +1,1 @@
+D:\Android\BuiltinSoft\mobil-office-app-android\buildSrc\build\classes\kotlin\main\Libs.class;D:\Android\BuiltinSoft\mobil-office-app-android\buildSrc\build\classes\kotlin\main\Version.class
