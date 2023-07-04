@@ -2,6 +2,10 @@ package com.app.mobiloffice.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+
+val BlueGrey = Color(0xFF203657)
+val LightGrey = Color(0xFFF3F7FA)
+
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
