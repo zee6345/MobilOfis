@@ -110,17 +110,37 @@ fun LoginScreen() {
 
                 }
                 Tab(selected = selected == 1, onClick = { setSelected(1) }) {
-                    Text(text = "Google")
+                    Box(contentAlignment = Alignment.Center) {
+                        androidx.compose.animation.AnimatedVisibility(visible = selected == 1) {
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .clip(
+                                    shape = RoundedCornerShape(10.dp),
+                                )
+                                .background(
+                                    color = Color(0xFF203657),
+                                ))
+                        }
+                        Text(modifier = Modifier.padding(12.dp), text = "Google", color = if(selected == 1) Color.White else Color.Black)
+                    }
                 }
                 Tab(selected = selected == 2, onClick = { setSelected(2) }) {
-                    Text(text = "Easy Signature")
+                    Box(contentAlignment = Alignment.Center) {
+                        androidx.compose.animation.AnimatedVisibility(visible = selected == 2) {
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .clip(
+                                    shape = RoundedCornerShape(10.dp),
+                                )
+                                .background(
+                                    color = Color(0xFF203657),
+                                ))
+                        }
+                        Text(modifier = Modifier.padding(12.dp), text = "Easy Signature", color = if(selected == 2) Color.White else Color.Black)
+                    }
                 }
             }
-//            AuthTab(
-//                items = listOf("Login", "Google", "Easy Signature"),
-//                selectedItemIndex = selected,
-//                onClick = setSelected,
-//            )
+
             TextField(
                 value = "",
                 onValueChange = { /* Handle value change */ },
