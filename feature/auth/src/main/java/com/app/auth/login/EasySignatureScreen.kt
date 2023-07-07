@@ -3,14 +3,14 @@ package com.app.auth.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -64,7 +64,8 @@ fun EasySignatureScreen() {
             ) {
 
                 Column(
-                    modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Row(
                         modifier = Modifier
@@ -77,20 +78,17 @@ fun EasySignatureScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        androidx.compose.material3.Icon(
+                        Image(
                             painter = painterResource(id = R.drawable.print_design),
                             modifier = Modifier
-                                .height(28.dp)
-                                .width(34.dp)
-                                .align(Alignment.CenterVertically),
+                                .padding(start = 12.dp)
+                                .height(80.dp).width(100.dp),
                             contentDescription = ""
                         )
-                        androidx.compose.material3.Icon(
+                        Image(
                             painter = painterResource(id = R.drawable.question_icon),
-                            modifier = Modifier
-                                .height(28.dp)
-                                .width(34.dp)
-                                .align(Alignment.CenterVertically),
+                            modifier = Modifier.size(50.dp)
+                                .align(Alignment.CenterVertically).padding(end = 12.dp),
                             contentDescription = ""
                         )
                     }
@@ -99,13 +97,13 @@ fun EasySignatureScreen() {
                             .dashedBorder(
                                 3.dp, Color(0xFFE7EEFC)
                             )
-                            .padding(22.dp),
+                            .padding(horizontal = 12.dp , vertical = 22.dp),
                         text = "Please accept the query sent to your phone. Compare the checking code of the survey to the same code as the following code.",
                         style = TextStyle(fontSize = 16.sp)
                     )
                     Text(
                         modifier = Modifier
-                            .padding(top = 22.dp, bottom = 5.dp)
+                            .padding(top = 32.dp, bottom = 5.dp)
                             .fillMaxWidth(),
                         text = "Check code",
                         style = TextStyle(
@@ -120,13 +118,7 @@ fun EasySignatureScreen() {
                         text = "7960",
                         style = TextStyle(fontSize = 32.sp, textAlign = TextAlign.Center)
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.registration),
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .size(120.dp),
-                        contentDescription = ""
-                    )
+
                 }
             }
 
