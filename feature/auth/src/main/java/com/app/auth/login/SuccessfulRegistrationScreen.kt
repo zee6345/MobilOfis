@@ -21,7 +21,7 @@ import com.app.auth.R
 
 @Composable
 fun SuccessfulRegistrationScreen() {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -43,11 +43,11 @@ fun SuccessfulRegistrationScreen() {
                         horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
                     ) {
 
-                        androidx.compose.material3.Icon(
-                            painter = painterResource(id = R.drawable.clear),
+                        Image(
+                            painter = painterResource(id = R.drawable.success_icon),
                             modifier = Modifier
                                 .align(Alignment.Top)
-                                .padding(top = 6.dp),
+                                .padding(top = 6.dp).size(30.dp),
                             contentDescription = ""
                         )
                         Column() {
@@ -77,8 +77,10 @@ fun SuccessfulRegistrationScreen() {
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             Image(
-                painter = painterResource(id = R.drawable.clear),
-                contentDescription = "",
+                painter = painterResource(id = R.drawable.registration),
+                modifier = Modifier
+                    .padding(top = 6.dp).size(220.dp),
+                contentDescription = ""
             )
             Button(
                 onClick = { /* Button click action */ },
