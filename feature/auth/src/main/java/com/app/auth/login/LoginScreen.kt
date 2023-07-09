@@ -203,7 +203,6 @@ fun LoginScreen() {
                 Text("Login", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
         }
-
     }
 }
 
