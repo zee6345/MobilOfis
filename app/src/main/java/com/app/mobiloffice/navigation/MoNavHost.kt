@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.navigation.loginScreen
+import com.app.auth.pin.navigation.pinScreen
 import com.app.mobiloffice.ui.MoState
 
 
@@ -24,7 +25,8 @@ fun MoNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        loginScreen()
+       loginScreen(navController)
+        pinScreen()
     }
 }
 

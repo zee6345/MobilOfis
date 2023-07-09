@@ -1,6 +1,5 @@
 package com.app.auth.login
 
-import CustomKeyboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,12 +22,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.auth.login.components.bottomSheet.ForgetPasswordBottomSheetScreen
+import androidx.navigation.NavController
 import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
+import com.app.auth.pin.navigation.pinNavigationRoute
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     val (selected, setSelected) = remember {
         mutableStateOf(0)
     }
@@ -198,7 +198,7 @@ fun LoginScreen() {
                 )
             }
             androidx.compose.material.Button(
-                onClick = { /* Button click action */ },
+                onClick = { navController.navigate(pinNavigationRoute) },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
 
                 modifier = Modifier
@@ -244,5 +244,5 @@ fun InformationBottomSheet() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+
 }

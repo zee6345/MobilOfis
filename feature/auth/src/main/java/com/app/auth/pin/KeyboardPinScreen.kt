@@ -1,3 +1,5 @@
+package com.app.auth.pin
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -108,7 +110,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CustomKeyboard() {
+fun com.app.auth.pin.CustomKeyboard() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -122,39 +124,39 @@ fun CustomKeyboard() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("1")
-                KeyButton("2")
-                KeyButton("3")
+                com.app.auth.pin.KeyButton("1")
+                com.app.auth.pin.KeyButton("2")
+                com.app.auth.pin.KeyButton("3")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("4")
-                KeyButton("5")
-                KeyButton("6")
+                com.app.auth.pin.KeyButton("4")
+                com.app.auth.pin.KeyButton("5")
+                com.app.auth.pin.KeyButton("6")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("7")
-                KeyButton("8")
-                KeyButton("9")
+                com.app.auth.pin.KeyButton("7")
+                com.app.auth.pin.KeyButton("8")
+                com.app.auth.pin.KeyButton("9")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("0")
-                KeyButton("<")
+                com.app.auth.pin.KeyButton("0")
+                com.app.auth.pin.KeyButton("<")
             }
         }
     }
 }
 
 @Composable
-fun KeyButton(text: String) {
+fun com.app.auth.pin.KeyButton(text: String) {
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -179,8 +181,8 @@ fun KeyButton(text: String) {
 
 @Preview
 @Composable
-fun PreviewCustomKeyboard() {
-    CustomKeyboard()
+fun com.app.auth.pin.PreviewCustomKeyboard() {
+    com.app.auth.pin.CustomKeyboard()
 }
 
  */
