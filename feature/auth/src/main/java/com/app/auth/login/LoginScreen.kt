@@ -1,14 +1,13 @@
 package com.app.auth.login
 
+import CustomKeyboard
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,12 +15,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.auth.login.components.bottomSheet.ForgetPasswordBottomSheetScreen
+import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
 
 
 @Composable
@@ -162,6 +165,7 @@ fun LoginScreen() {
                     unfocusedLabelColor = Color(0xFF859DB5),
                     focusedLabelColor = Color(0xFF223142)
                 ),
+//                trailingIcon = EndIconDrawable(painter = painterResource(R.drawable.app_logo)),
             )
             Row(
                 modifier = Modifier
@@ -183,14 +187,15 @@ fun LoginScreen() {
                         text = "01:00",
                         color = Color(0xFF223142)
                     )
+
                 }
 
-                Text(
+                ClickableText(
                     modifier = Modifier.padding(5.dp),
-                    text = "Forgot your password?",
-                    color = Color(0xFF203657),
-
-                    )
+                    text = AnnotatedString(text = "Forgot your password?"),
+//                    color = Color(0xFF203657),
+                    onClick = { }
+                )
             }
             androidx.compose.material.Button(
                 onClick = { /* Button click action */ },
@@ -202,8 +207,37 @@ fun LoginScreen() {
             ) {
                 Text("Login", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
+//            ForgetPasswordBottomSheetScreen()
+            InformationBottomSheet()
+
         }
     }
+
+}
+
+@Composable
+fun EndIconDrawable(painter: Painter) {
+    Box(
+        modifier = Modifier
+            .height(20.dp)
+            .fillMaxWidth()
+    ) {
+        // Adjust the position and size of the drawable as needed
+        androidx.compose.material.Icon(
+            painter = painter,
+            contentDescription = null, // Set appropriate content description
+            tint = Color.Gray,
+            modifier = Modifier
+                .align(alignment = androidx.compose.ui.Alignment.CenterEnd)
+                .padding(end = 8.dp)
+        )
+    }
+}
+
+
+@Composable
+fun InformationBottomSheet() {
+    InformationBottomSheetScreen()
 }
 
 
