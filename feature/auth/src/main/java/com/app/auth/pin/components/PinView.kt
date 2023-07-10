@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 fun PinTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpCount: Int = 5,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -69,13 +69,13 @@ private fun CharPinView(
     }
     Box(
         modifier = Modifier
-            .size(25.dp)
+            .size(30.dp)
             .padding(3.dp)
             .background(
                 color = if (isFocused) Color.White else Color.White, shape = CircleShape
             )
             .border(
-                width = 5.dp,
+                width = 6.dp,
                 color = if (isFocused) Color(0xFF223142) else Color.White,
                 shape = CircleShape
             ), contentAlignment = Alignment.Center

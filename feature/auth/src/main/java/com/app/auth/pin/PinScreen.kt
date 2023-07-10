@@ -13,11 +13,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.pin.components.CustomKeyboard
 import com.app.auth.pin.components.PinView
 
 @Composable
-fun PinScreen() {
+fun PinScreen(navController: NavController) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -46,11 +48,23 @@ fun PinScreen() {
             modifier = Modifier
                 .weight(0.8f)
                 .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(22.dp)
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             PinView()
-            CustomKeyboard()
+            CustomKeyboard(navController)
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Card(modifier = Modifier.wrapContentSize(), shape = RoundedCornerShape(14.dp)) {
+                Text(
+                    text = "No",
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 18.dp),
+                    color = Color(0xFF203657)
+                )
+            }
+
 
         }
 
@@ -59,9 +73,9 @@ fun PinScreen() {
 }
 
 
-
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun pinScreenPreview() {
-    PinScreen()
+    val navController = rememberNavController()
+    PinScreen(navController)
 }

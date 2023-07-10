@@ -1,4 +1,4 @@
-package com.app.auth.login.home.adjustments
+package com.app.auth.home.adjustments
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

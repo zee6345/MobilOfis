@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
-import com.app.auth.pin.navigation.pinNavigationRoute
+import com.app.auth.login.navigation.otpNavigationRoute
 
 
 @Composable
@@ -60,8 +60,7 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
-            TabRow(
-                selectedTabIndex = selected,
+            TabRow(selectedTabIndex = selected,
                 indicator = {},
                 divider = {},
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -190,15 +189,13 @@ fun LoginScreen(navController: NavController) {
 
                 }
 
-                ClickableText(
-                    modifier = Modifier.padding(5.dp),
+                ClickableText(modifier = Modifier.padding(5.dp),
                     text = AnnotatedString(text = "Forgot your password?"),
 //                    color = Color(0xFF203657),
-                    onClick = { }
-                )
+                    onClick = { })
             }
             androidx.compose.material.Button(
-                onClick = { navController.navigate(pinNavigationRoute) },
+                onClick = { navController.navigate(otpNavigationRoute) },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
 
                 modifier = Modifier

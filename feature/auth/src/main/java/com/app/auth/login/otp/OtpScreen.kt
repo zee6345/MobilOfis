@@ -2,6 +2,7 @@ package com.app.auth.login
 
 import CustomKeyboardOtp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -21,9 +22,12 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.app.auth.login.navigation.pinNavigationRoute
 
 @Composable
-fun OtpScreen() {
+fun OtpScreen(navController: NavController) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -99,38 +103,37 @@ fun OtpScreen() {
                     .padding(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-
                 Button(
                     onClick = { },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFFE7EEFC), // Change the background color here
+                        contentColor = Color(0xFF203657) // Change the text color here if needed
+                    ),
                     modifier = Modifier
-                        .weight(1f)
                         .padding(8.dp)
-                        .background(Color(0xFFE7F0F9), RoundedCornerShape(10.dp))
+                        .weight(1f)
                 ) {
                     Text(
-                        "Close", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
-                            color = Color(0xFF203657),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            shadow = null
+                        "Close", modifier = Modifier.padding(vertical = 8.dp), style = TextStyle(
+                            fontSize = 17.sp, shadow = null
                         )
                     )
                 }
+
                 Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    onClick = { navController.navigate(pinNavigationRoute) },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF203657), contentColor = Color.White
+                    ),
                     modifier = Modifier
-                        .weight(1f)
                         .padding(8.dp)
-                        .background(Color(0xFF203657), RoundedCornerShape(10.dp))
+                        .weight(1f)
                 ) {
                     Text(
-                        "Next", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            shadow = null
+                        "Next", modifier = Modifier.padding(vertical = 8.dp), style = TextStyle(
+                            color = Color.White, fontSize = 17.sp, shadow = null
                         )
                     )
                 }
@@ -146,5 +149,6 @@ fun OtpScreen() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun OtpScreenPreview() {
-    OtpScreen()
+    val navController = rememberNavController()
+    OtpScreen(navController)
 }

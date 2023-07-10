@@ -1,6 +1,7 @@
 package com.app.auth.pin.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
@@ -12,13 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.app.auth.R
+import com.app.auth.login.navigation.resetPinNavigationRoute
 
 @Composable
-fun CustomKeyboard() {
+fun CustomKeyboard(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -31,37 +33,37 @@ fun CustomKeyboard() {
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("1")
-                KeyButton("2")
-                KeyButton("3")
+                KeyButton("1", navController = navController)
+                KeyButton("2", navController = navController)
+                KeyButton("3", navController = navController)
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("4")
-                KeyButton("5")
-                KeyButton("6")
+                KeyButton("4", navController = navController)
+                KeyButton("5", navController = navController)
+                KeyButton("6", navController = navController)
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("7")
-                KeyButton("8")
-                KeyButton("9")
+                KeyButton("7", navController = navController)
+                KeyButton("8", navController = navController)
+                KeyButton("9", navController = navController)
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("", R.drawable.finger_print, )
-                KeyButton("0")
-                KeyButton("", R.drawable.clear)
+                KeyButton("", R.drawable.finger_print, navController)
+                KeyButton("0", navController = navController)
+                KeyButton("", R.drawable.clear, navController)
             }
         }
     }
 }
 
 @Composable
-fun KeyButton(text: String, imageRes: Int? = null,imageSize: Dp = 52.dp) {
+fun KeyButton(text: String, imageRes: Int? = null, navController: NavController) {
     Box(modifier = Modifier
         .padding(8.dp)
         .size(64.dp)
@@ -78,8 +80,13 @@ fun KeyButton(text: String, imageRes: Int? = null,imageSize: Dp = 52.dp) {
             ) {
                 if (imageRes != null) {
                     val imagePainter = painterResource(imageRes)
-                    Image(
-                        painter = imagePainter, contentDescription = null, modifier = Modifier.size(imageSize)
+                    Image(painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clickable {
+                                navController.navigate(resetPinNavigationRoute)
+                            }
 
                     )
                 } else {
@@ -92,7 +99,7 @@ fun KeyButton(text: String, imageRes: Int? = null,imageSize: Dp = 52.dp) {
 @Preview
 @Composable
 fun PreviewCustomKeyboard() {
-    CustomKeyboard()
+//    CustomKeyboard(navController)
 }
 
 
