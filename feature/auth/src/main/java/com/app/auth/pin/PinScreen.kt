@@ -13,10 +13,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.auth.pin.components.CustomKeyboard
+import com.app.auth.pin.components.PinView
 
 @Composable
 fun PinScreen() {
-
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(

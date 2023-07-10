@@ -1,4 +1,4 @@
-package com.app.auth.pin
+package com.app.auth.pin.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -110,7 +110,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun com.app.auth.pin.CustomKeyboard() {
+fun com.app.auth.pin.components.CustomKeyboard() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -124,39 +124,39 @@ fun com.app.auth.pin.CustomKeyboard() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                com.app.auth.pin.KeyButton("1")
-                com.app.auth.pin.KeyButton("2")
-                com.app.auth.pin.KeyButton("3")
+                com.app.auth.pin.components.KeyButton("1")
+                com.app.auth.pin.components.KeyButton("2")
+                com.app.auth.pin.components.KeyButton("3")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                com.app.auth.pin.KeyButton("4")
-                com.app.auth.pin.KeyButton("5")
-                com.app.auth.pin.KeyButton("6")
+                com.app.auth.pin.components.KeyButton("4")
+                com.app.auth.pin.components.KeyButton("5")
+                com.app.auth.pin.components.KeyButton("6")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                com.app.auth.pin.KeyButton("7")
-                com.app.auth.pin.KeyButton("8")
-                com.app.auth.pin.KeyButton("9")
+                com.app.auth.pin.components.KeyButton("7")
+                com.app.auth.pin.components.KeyButton("8")
+                com.app.auth.pin.components.KeyButton("9")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                com.app.auth.pin.KeyButton("0")
-                com.app.auth.pin.KeyButton("<")
+                com.app.auth.pin.components.KeyButton("0")
+                com.app.auth.pin.components.KeyButton("<")
             }
         }
     }
 }
 
 @Composable
-fun com.app.auth.pin.KeyButton(text: String) {
+fun com.app.auth.pin.components.KeyButton(text: String) {
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -181,8 +181,8 @@ fun com.app.auth.pin.KeyButton(text: String) {
 
 @Preview
 @Composable
-fun com.app.auth.pin.PreviewCustomKeyboard() {
-    com.app.auth.pin.CustomKeyboard()
+fun com.app.auth.pin.components.PreviewCustomKeyboard() {
+    com.app.auth.pin.components.CustomKeyboard()
 }
 
  */

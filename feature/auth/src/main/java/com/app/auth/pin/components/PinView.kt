@@ -1,4 +1,4 @@
-package com.app.auth.pin
+package com.app.auth.pin.components
 
 
 import androidx.compose.foundation.background
