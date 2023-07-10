@@ -49,13 +49,12 @@ fun PinScreen(navController: NavController) {
                 .weight(0.8f)
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(22.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             PinView()
-            CustomKeyboard(navController)
-            Spacer(modifier = Modifier.height(40.dp))
-
+            CustomKeyboard(navController, "PinScreen")
+            Spacer(modifier = Modifier.height(20.dp))
             Card(modifier = Modifier.wrapContentSize(), shape = RoundedCornerShape(14.dp)) {
                 Text(
                     text = "No",

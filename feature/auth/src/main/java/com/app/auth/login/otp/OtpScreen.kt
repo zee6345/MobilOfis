@@ -115,7 +115,7 @@ fun OtpScreen(navController: NavController) {
                         .weight(1f)
                 ) {
                     Text(
-                        "Close", modifier = Modifier.padding(vertical = 8.dp), style = TextStyle(
+                        "Close", modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
                             fontSize = 17.sp, shadow = null
                         )
                     )
@@ -132,7 +132,7 @@ fun OtpScreen(navController: NavController) {
                         .weight(1f)
                 ) {
                     Text(
-                        "Next", modifier = Modifier.padding(vertical = 8.dp), style = TextStyle(
+                        "Next", modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
                             color = Color.White, fontSize = 17.sp, shadow = null
                         )
                     )

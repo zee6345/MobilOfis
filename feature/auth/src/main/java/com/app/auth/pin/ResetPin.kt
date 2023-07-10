@@ -2,7 +2,6 @@ package com.app.auth.pin
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -55,7 +54,7 @@ fun ResetPin(navController: NavController) {
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             PinView()
-            CustomKeyboard(navController)
+            CustomKeyboard(navController,"ResetPin")
 
         }
 
