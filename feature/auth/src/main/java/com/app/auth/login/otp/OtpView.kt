@@ -69,9 +69,10 @@ private fun CharView(
         modifier = Modifier
             .width(40.dp)
             .border(
-                width = 4.dp, color =Color.White, shape = RoundedCornerShape(8.dp)
+                width = 1.dp, color = Color(0xFFE7EEFC), shape = RoundedCornerShape(8.dp)
             )
-            .padding(2.dp).background(color = Color.White),
+            .padding(2.dp)
+            .background(color = Color.White),
         text = char,
         style = MaterialTheme.typography.h4,
         color = if (isFocused) {
@@ -106,4 +107,5 @@ fun OtpView() {
 @Composable
 fun OtpPreview() {
     OtpView()
+//    Abc()
 }

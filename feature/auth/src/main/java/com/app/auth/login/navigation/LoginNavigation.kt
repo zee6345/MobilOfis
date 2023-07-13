@@ -5,8 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.auth.login.LoginScreen
 import com.app.auth.login.OtpScreen
-import com.app.auth.pin.PinScreen
-import com.app.auth.pin.ResetPin
 
 const val loginNavigationRoute = "login"
 const val otpNavigationRoute="otp"

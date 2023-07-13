@@ -16,11 +16,15 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.app.auth.R
+import com.app.auth.pin.navigation.welcomePinScreen
 
 @Composable
-fun SuccessfulRegistrationScreen() {
-    Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
+fun SuccessfulRegistrationScreen(navController: NavController) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(color = Color.White)) {
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -46,7 +50,8 @@ fun SuccessfulRegistrationScreen() {
                             painter = painterResource(id = R.drawable.success_icon),
                             modifier = Modifier
                                 .align(Alignment.Top)
-                                .padding(top = 6.dp).size(30.dp),
+                                .padding(top = 6.dp)
+                                .size(30.dp),
                             contentDescription = ""
                         )
                         Column() {
@@ -78,15 +83,17 @@ fun SuccessfulRegistrationScreen() {
             Image(
                 painter = painterResource(id = R.drawable.registration),
                 modifier = Modifier
-                    .padding(top = 6.dp).size(220.dp),
+                    .padding(top = 6.dp)
+                    .size(220.dp),
                 contentDescription = ""
             )
             Button(
-                onClick = { /* Button click action */ },
+                onClick = { navController.navigate(welcomePinScreen) },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
 
                 modifier = Modifier
-                    .fillMaxWidth().padding(bottom = 22.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 22.dp)
                     .background(Color(0xFF203657), RoundedCornerShape(8.dp))
             ) {
                 Text("Continue", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
@@ -102,5 +109,5 @@ fun SuccessfulRegistrationScreen() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun RegistrationScreenPreview() {
-    SuccessfulRegistrationScreen()
+//    SuccessfulRegistrationScreen(navController)
 }

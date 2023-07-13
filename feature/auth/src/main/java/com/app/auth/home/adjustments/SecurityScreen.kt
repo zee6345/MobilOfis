@@ -1,6 +1,7 @@
 package com.app.auth.home.adjustments
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -17,11 +18,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.app.auth.R
+import com.app.auth.home.adjustments.navigation.changePassScreen
 import com.app.auth.login.home.Switch
 
 @Composable
-fun SecurityScreen() {
+fun SecurityScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -64,7 +67,7 @@ fun SecurityScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
+                    .padding(top = 10.dp).clickable{navController.navigate(changePassScreen)},
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -141,5 +144,5 @@ fun SecurityScreen() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun SecurityScreenPreview() {
-    SecurityScreen()
+//    SecurityScreen(navController)
 }

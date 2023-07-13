@@ -1,6 +1,5 @@
 package com.app.auth.home.adjustments
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,11 +18,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.app.auth.R
-import com.google.android.material.color.utilities.MaterialDynamicColors.background
 
 @Composable
-fun ForgetPasswordScreen() {
+fun ForgetPasswordScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -153,5 +152,5 @@ fun TextFieldWithEndDrawable(hint: String) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun ChangePasswordScreenPreview() {
-    ForgetPasswordScreen()
+//    ForgetPasswordScreen(navController)
 }

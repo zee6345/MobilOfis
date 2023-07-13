@@ -2,6 +2,8 @@ package com.app.auth.login.components.bottomSheet
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,6 +43,7 @@ fun InformationBottomSheetScreen() {
 
     InformationAndContentModalBottomSheet(showInformationBottomSheet)
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -183,8 +186,136 @@ fun Modifier.dashedBorder(strokeWidth: Dp, color: Color) = composed(factory = {
 })
 
 
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@Composable
+fun InformationBottomSheet(){
+    BottomSheetScaffold(
+    sheetShape = RoundedCornerShape(20.dp),//Rounded corners
+    sheetPeekHeight = 80.dp,//Initial height of sheet[Collapsed]{maybe too much 4 u}
+    sheetContent = {
+        MyBottomSheet()//Create a sheet Composable
+    }
+    ){}
+}
+@Composable
+fun MyBottomSheet() {
+    Column(Modifier.fillMaxWidth()) {
+        Text(
+            text = "information And Content",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            fontWeight = FontWeight.Bold
+        )
+        Row(
+            modifier = Modifier
+                .padding(top = 32.dp, start = 18.dp)
+                .dashedBorder(
+                    3.dp, Color(0xFFE7EEFC)
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+        ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.location),
+                modifier = Modifier
+                    .height(28.dp)
+                    .width(34.dp)
+                    .align(CenterVertically),
+                contentDescription = ""
+            )
+            Text(text = "Branches and ATMs", modifier = Modifier.padding(vertical = 12.dp))
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(start = 18.dp)
+                .dashedBorder(
+                    3.dp, Color(0xFFE7EEFC)
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
+        ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.tariffs_icon),
+                modifier = Modifier
+                    .height(28.dp)
+                    .width(34.dp)
+                    .align(CenterVertically),
+                contentDescription = ""
+            )
+            Text(text = "Tariffs", modifier = Modifier.padding(vertical = 12.dp))
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(start = 18.dp)
+                .dashedBorder(
+                    3.dp, Color(0xFFE7EEFC)
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
+        ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.whatsapp_icon),
+                modifier = Modifier
+                    .height(28.dp)
+                    .width(34.dp)
+                    .align(CenterVertically),
+                contentDescription = ""
+            )
+            Text(text = "WhatsApp support", modifier = Modifier.padding(vertical = 12.dp))
+        }
+        Row(
+            modifier = Modifier
+                .padding(start = 18.dp)
+                .dashedBorder(
+                    3.dp, Color(0xFFE7EEFC)
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
+        ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.call_icon),
+                modifier = Modifier
+                    .height(28.dp)
+                    .width(34.dp)
+                    .align(CenterVertically)
+                    .fillMaxWidth(),
+
+                contentDescription = ""
+            )
+            Text(text = "Call Center", modifier = Modifier.padding(vertical = 12.dp))
+        }
+        Row(
+            modifier = Modifier.padding(start = 18.dp),
+
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
+        ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.language),
+                modifier = Modifier
+                    .height(28.dp)
+                    .width(34.dp)
+                    .align(CenterVertically)
+                    .fillMaxWidth(),
+                contentDescription = ""
+            )
+            Text(text = "Application Language", modifier = Modifier.padding(vertical = 12.dp))
+        }
+    }
+}
+
+
+
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun preview() {
-    InformationBottomSheetScreen()
+    InformationBottomSheet()
+//    InformationBottomSheetScreen()
 }

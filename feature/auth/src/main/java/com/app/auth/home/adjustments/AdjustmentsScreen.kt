@@ -3,6 +3,7 @@ package com.app.auth.login.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -18,12 +19,17 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.home.adjustments.navigation.securityScreen
 
 @Composable
-fun AdjustmentsScreen() {
+fun AdjustmentsScreen(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
             modifier = Modifier
@@ -60,239 +66,243 @@ fun AdjustmentsScreen() {
                 .weight(0.9f)
                 .padding(horizontal = 12.dp),
         ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        val (selected, setSelected) = remember {
-                            mutableStateOf(true)
-                        }
-                        Text(
-                            text = "Language of the application",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        ThreeBoxComponent()
-
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Company to display during login",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.next_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(CenterVertically)
-                                .padding(end = 12.dp),
-                        )
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "User's profile",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.next_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(CenterVertically)
-                                .padding(end = 12.dp),
-                        )
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Security",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.next_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(CenterVertically)
-                                .padding(end = 12.dp),
-                        )
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Receive push notifications",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Switch()
-
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Night mode",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Switch()
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "About the bank",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.next_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(CenterVertically)
-                                .padding(end = 12.dp),
-                        )
-                    }
-
-
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Contact information",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.next_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(CenterVertically)
-                                .padding(end = 12.dp),
-                        )
-                    }
-
-                }
-
-            }
-
-
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Card(shape = RoundedCornerShape(12.dp)) {
-                Row() {
-                    Text(
-                        text = "Safe Exit",
-                        style = TextStyle(color = Color(0xFFFF4E57), fontSize = 14.sp),
-                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.exit_icon),
-                        contentDescription = "",
+                    Card(
                         modifier = Modifier
-                            .size(35.dp)
-                            .align(CenterVertically)
-                            .padding(end = 12.dp),
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            val (selected, setSelected) = remember {
+                                mutableStateOf(true)
+                            }
+                            Text(
+                                text = "Language of the application",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                            )
+                            ThreeBoxComponent()
+
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Company to display during login",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.next_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 12.dp),
+                            )
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "User's profile",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.next_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 12.dp),
+                            )
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp), shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Security",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.next_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 12.dp)
+                                    .clickable {},
+                            )
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Receive push notifications",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                            )
+                            Switch()
+
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Night mode",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
+                            )
+                            Switch()
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "About the bank",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.next_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 12.dp),
+                            )
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Contact information",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.next_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 12.dp),
+                            )
+                        }
+
+                    }
+
+                }
+                Column(
+                    modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Card(shape = RoundedCornerShape(12.dp)) {
+                        Row() {
+                            Text(
+                                text = "Safe Exit",
+                                style = TextStyle(color = Color(0xFFFF4E57), fontSize = 16.sp),
+                                modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.exit_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 12.dp),
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Application version: 00001",
+                        style = TextStyle(color = Color.Black, fontSize = 12.sp),
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
             }
-            Text(
-                text = "Application version: 00001",
-                style = TextStyle(color = Color.Black, fontSize = 12.sp),
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-            )
+
+
         }
+
 
     }
 
@@ -373,6 +383,6 @@ fun ThreeBoxComponent() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun AdjustmentsScreenPreview() {
-    AdjustmentsScreen()
-//    Demo_SwitchComponent()
+    val navController = rememberNavController()
+    AdjustmentsScreen(navController)
 }

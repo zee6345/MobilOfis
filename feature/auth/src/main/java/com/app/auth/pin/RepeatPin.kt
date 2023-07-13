@@ -20,7 +20,7 @@ import com.app.auth.pin.components.CustomKeyboard
 import com.app.auth.pin.components.PinView
 
 @Composable
-fun ResetPin(navController: NavController) {
+fun RepeatPin(navController: NavController) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -54,7 +54,7 @@ fun ResetPin(navController: NavController) {
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             PinView()
-            CustomKeyboard(navController,"ResetPin")
+            CustomKeyboard(navController, "ResetPin")
 
         }
 
@@ -65,7 +65,7 @@ fun ResetPin(navController: NavController) {
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
-fun ResetPinScreenPreview() {
+fun RepeatPinScreenPreview() {
     val navController = rememberNavController()
-    ResetPin(navController)
+    RepeatPin(navController)
 }

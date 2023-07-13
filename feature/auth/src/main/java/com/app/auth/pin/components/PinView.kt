@@ -75,8 +75,8 @@ private fun CharPinView(
                 color = if (isFocused) Color.White else Color.White, shape = CircleShape
             )
             .border(
-                width = 6.dp,
-                color = if (isFocused) Color(0xFF223142) else Color.White,
+                width = if (isFocused)6.dp else 1.dp,
+                color = if (isFocused) Color(0xFF223142) else Color(0xFFE7EEFC),
                 shape = CircleShape
             ), contentAlignment = Alignment.Center
     ) {

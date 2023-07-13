@@ -23,7 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
+import androidx.navigation.compose.rememberNavController
+import com.app.auth.login.components.bottomSheet.InformationBottomSheet
+//import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
 import com.app.auth.login.navigation.otpNavigationRoute
 
 
@@ -55,7 +57,7 @@ fun LoginScreen(navController: NavController) {
         }
         Column(
             modifier = Modifier
-                .weight(0.8f)
+                .weight(0.7f)
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -205,41 +207,20 @@ fun LoginScreen(navController: NavController) {
                 Text("Login", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
 //            ForgetPasswordBottomSheetScreen()
-            InformationBottomSheet()
 
         }
+        Column(
+            modifier = Modifier.weight(0.1f)
+        ) {
+            InformationBottomSheet()
+        }
+
     }
 
 }
-
-@Composable
-fun EndIconDrawable(painter: Painter) {
-    Box(
-        modifier = Modifier
-            .height(20.dp)
-            .fillMaxWidth()
-    ) {
-        // Adjust the position and size of the drawable as needed
-        androidx.compose.material.Icon(
-            painter = painter,
-            contentDescription = null, // Set appropriate content description
-            tint = Color.Gray,
-            modifier = Modifier
-                .align(alignment = androidx.compose.ui.Alignment.CenterEnd)
-                .padding(end = 8.dp)
-        )
-    }
-}
-
-
-@Composable
-fun InformationBottomSheet() {
-    InformationBottomSheetScreen()
-}
-
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun LoginScreenPreview() {
-
+    LoginScreen(rememberNavController())
 }
