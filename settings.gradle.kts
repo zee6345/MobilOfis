@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Mobil Office"
-include ':app'
-include ':feature:auth'
-include ':core:designsystem'
+include(":app")
+include(":feature:auth")
+include(":core:designsystem")

@@ -1,8 +1,4 @@
 
-
-
-
-
 object Version {
     const val core = "1.8.0"
 }
