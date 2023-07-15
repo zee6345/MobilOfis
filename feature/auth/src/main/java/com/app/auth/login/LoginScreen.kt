@@ -4,21 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.auth.login.components.bottomSheet.BottomSheetMain
 import com.app.auth.login.navigation.otpNavigationRoute
 
 
@@ -35,6 +33,14 @@ import com.app.auth.login.navigation.otpNavigationRoute
 fun LoginScreen(navController: NavController) {
     val (selected, setSelected) = remember {
         mutableStateOf(0)
+    }
+
+    val usernameState = remember {
+        mutableStateOf("")
+    }
+
+    val paswdState = remember {
+        mutableStateOf("")
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -64,7 +70,8 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
-            TabRow(selectedTabIndex = selected,
+            TabRow(
+                selectedTabIndex = selected,
                 indicator = {},
                 divider = {},
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -139,12 +146,15 @@ fun LoginScreen(navController: NavController) {
                 }
             }
 //
+
             OutlinedTextField(
-                value = "",
+                value = usernameState.value,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { /* Handle value change */ },
+                onValueChange = {
+                    /* Handle value change */
+                    usernameState.value = it
+                },
                 label = { Text(text = "Username", fontSize = 14.sp) },
-                visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color.White,
                     focusedBorderColor = Color(0xFF223142),
@@ -154,10 +164,13 @@ fun LoginScreen(navController: NavController) {
                 ),
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = { /* Handle value change */ },
-                label = { Text(text = "Password", fontSize = 14.sp) },
+                value = paswdState.value,
+                onValueChange = { /* Handle value change */
+                    paswdState.value = it
+                },
                 visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                label = { Text(text = "Password", fontSize = 14.sp) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
@@ -199,12 +212,15 @@ fun LoginScreen(navController: NavController) {
                     onClick = { })
             }
             androidx.compose.material.Button(
-                onClick = { navController.navigate(otpNavigationRoute) },
+                onClick = {
+                    navController.navigate(otpNavigationRoute)
+                },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
 
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF203657), RoundedCornerShape(8.dp))
+
             ) {
                 Text("Login", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
@@ -214,7 +230,7 @@ fun LoginScreen(navController: NavController) {
         Column(
             modifier = Modifier.weight(0.1f)
         ) {
-          //  BottomSheetMain()
+            //  BottomSheetMain()
         }
 
     }

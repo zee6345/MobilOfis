@@ -12,6 +12,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -86,10 +89,17 @@ private fun CharView(
 
 @Composable
 fun OtpView() {
+    val focusRequester = remember { FocusRequester() }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent)
+            .focusRequester(focusRequester)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    focusRequester.requestFocus()
+                }
+            }
             .padding(20.dp),
         color = Color.Transparent
     ) {

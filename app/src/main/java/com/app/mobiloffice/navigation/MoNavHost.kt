@@ -1,5 +1,3 @@
-
-
 package com.app.mobiloffice.navigation
 
 import androidx.compose.runtime.Composable
@@ -9,16 +7,15 @@ import com.app.auth.home.adjustments.navigation.adjustmentScreen
 import com.app.auth.home.adjustments.navigation.changePasswordScreen
 import com.app.auth.home.adjustments.navigation.homeScreen
 import com.app.auth.home.adjustments.navigation.securitySCreen
-import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.navigation.loginScreen
 import com.app.auth.login.navigation.otpScreen
 import com.app.auth.pin.navigation.pinScreen
 import com.app.auth.pin.navigation.resetScreen
 import com.app.auth.pin.navigation.successfulRegistrationScreen
 import com.app.auth.pin.navigation.welcomePin
-
+import com.app.auth.splash.navigation.splashNavigationRoute
+import com.app.auth.splash.navigation.splashScreen
 import com.app.mobiloffice.ui.MoState
-
 
 
 @Composable
@@ -26,7 +23,7 @@ fun MoNavHost(
     appState: MoState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
-    startDestination: String = loginNavigationRoute,
+    startDestination: String = splashNavigationRoute,
 ) {
     val navController = appState.navController
     NavHost(
@@ -34,8 +31,9 @@ fun MoNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-       loginScreen(navController)
-        otpScreen(navController )
+        splashScreen(navController)
+        loginScreen(navController)
+        otpScreen(navController)
         pinScreen(navController)
         resetScreen(navController)
         successfulRegistrationScreen(navController)
