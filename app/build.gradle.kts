@@ -3,7 +3,8 @@ plugins {
     id ("org.jetbrains.kotlin.android")
 //    id ("kotlin-kapt")
     id ("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp")
+    id ("com.google.devtools.ksp")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -92,5 +93,5 @@ dependencies {
 
     //Hilt
     implementation (Hilt.android)
-    ksp (Hilt.compiler)
+    kapt (Hilt.compiler)
 }
