@@ -15,6 +15,7 @@ object Others {
     private const val firebasecrashlytics = "18.2.9"
     private const val firebaseanalytics = "20.1.2"
     private const val firebasemessaging = "23.0.2"
+    private const val sdpVersion =":1.1.0"
 
 //    private const val exoversion = "2.14.0"
 private const val exoversion = "2.18.2"
@@ -66,6 +67,8 @@ private const val exoversion = "2.18.2"
     const val paypal = "com.paypal.checkout:android-sdk:$paypalVersion"
     //Google Maps
     const val googleMaps = "com.google.android.gms:play-services-maps:$googleMapVersion"
+
+    const val sdp_compose = "com.github.Kaaveh:sdp-compose$sdpVersion"
 
 
 }

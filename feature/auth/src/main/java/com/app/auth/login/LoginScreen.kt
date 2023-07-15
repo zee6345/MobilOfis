@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.auth.login.components.bottomSheet.InformationBottomSheet
-//import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
+import com.app.auth.login.components.bottomSheet.BottomSheetMain
 import com.app.auth.login.navigation.otpNavigationRoute
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginScreen(navController: NavController) {
     val (selected, setSelected) = remember {
@@ -212,7 +214,7 @@ fun LoginScreen(navController: NavController) {
         Column(
             modifier = Modifier.weight(0.1f)
         ) {
-            InformationBottomSheet()
+          //  BottomSheetMain()
         }
 
     }
