@@ -1,10 +1,12 @@
 package com.app.auth.splash.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.splash.SplashScreen
+import kotlinx.coroutines.delay
 
 
 const val splashNavigationRoute = "splash"
@@ -17,10 +19,14 @@ fun NavGraphBuilder.splashScreen(
     ) {
         SplashScreen(navController = navController)
 
-        navController.navigate(route = loginNavigationRoute) {
-            popUpTo(splashNavigationRoute) { inclusive = true }
-        }
 
+        LaunchedEffect(Unit) {
+            delay(5000) // 5000 milliseconds = 5 seconds delay
+
+            navController.navigate(route = loginNavigationRoute) {
+                popUpTo(splashNavigationRoute) { inclusive = true }
+            }
+        }
     }
 
 }

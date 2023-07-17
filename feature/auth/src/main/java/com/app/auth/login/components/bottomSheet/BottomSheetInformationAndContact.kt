@@ -2,7 +2,11 @@ package com.app.auth.login.components.bottomSheet
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,30 +32,33 @@ import com.app.auth.R
 fun InformationBottomSheetScreen() {
     val showInformationBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-//        Button(onClick = {
-//            showInformationBottomSheet.value = !showInformationBottomSheet.value
-//        }) {
-//            Text(text = "Show ModalBottomSheet")
-//        }
-    }
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//
+////        Button(onClick = {
+////            showInformationBottomSheet.value = !showInformationBottomSheet.value
+////        }) {
+////            Text(text = "Show ModalBottomSheet")
+////        }
+//    }
 
 //    InformationAndContentModalBottomSheet(showInformationBottomSheet)
     InformationAndContentModalBottomSheet()
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun InformationAndContentModalBottomSheet() {
 //    if (showModalBottomSheet.value)
 //    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val sheetState = rememberModalBottomSheetState(false)
+
     ModalBottomSheet(
+        sheetState = sheetState,
         onDismissRequest = {  },
     ) {
         Column(Modifier.fillMaxWidth()) {

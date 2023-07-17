@@ -40,6 +40,7 @@ fun OtpTextField(
 
     BasicTextField(modifier = modifier,
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
+        singleLine = true,
         onValueChange = {
             if (it.text.length <= otpCount) {
                 onOtpTextChange.invoke(it.text, it.text.length == otpCount)
@@ -64,7 +65,7 @@ private fun CharView(
 ) {
     val isFocused = text.length == index
     val char = when {
-        index == text.length -> "0"
+        index == text.length -> ""
         index > text.length -> ""
         else -> text[index].toString()
     }

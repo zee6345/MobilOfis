@@ -2,9 +2,22 @@ package com.app.auth.pin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,9 +36,11 @@ import com.app.auth.pin.navigation.welcomePinScreen
 
 @Composable
 fun SuccessfulRegistrationScreen(navController: NavController) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color.White)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -78,9 +93,11 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
             modifier = Modifier
                 .weight(0.8f)
                 .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
+
             Image(
                 painter = painterResource(id = R.drawable.registration),
                 modifier = Modifier
@@ -88,14 +105,20 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                     .size(220.dp),
                 contentDescription = ""
             )
+
+
             Button(
                 onClick = { navController.navigate(welcomePinScreen) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 22.dp)
-                    .background(Color(0xFF203657), RoundedCornerShape(8.dp))
+                    .background(Color(0xFF203657), RoundedCornerShape(8.dp)),
+
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF203657),
+                    contentColor = Color.White
+                )
+
             ) {
                 Text("Continue", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
