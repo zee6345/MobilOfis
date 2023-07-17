@@ -65,28 +65,21 @@ fun PinTextField(
 private fun CharPinView(
     index: Int, text: String
 ) {
-    val isFocused = text.length == index
+
     val char = when {
         index == text.length -> ""
         index > text.length -> ""
-//        else -> text[index].toString()
         else -> ""
     }
 
-//    val char = when {
-//        index < text.length -> text[index].toString()
-//        else -> ""
-//    }
-
-    val borderStrokeWidth = if (index == text.length) 6.dp else 1.dp
-    val borderColor = if (index == text.length) Color(0xFF223142) else Color(0xFFE7EEFC)
+    val borderStrokeWidth = if (index <= text.length - 1) 6.dp else 1.dp
+    val borderColor = if (index <= text.length - 1) Color(0xFF223142) else Color(0xFFE7EEFC)
 
     Box(
         modifier = Modifier
             .size(30.dp)
             .padding(3.dp)
             .background(
-//                color = if (isFocused) Color.White else Color.White, shape = CircleShape
                 color = Color.White,
                 shape = CircleShape
             )

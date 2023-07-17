@@ -2,6 +2,7 @@ package com.app.auth.login
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,10 +12,11 @@ import androidx.compose.material.*
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,76 +66,10 @@ fun LoginScreen(navController: NavController) {
         mutableStateOf("")
     }
 
-    val showDialog = remember{
-        mutableStateOf(
-            false
-        )
-    }
-
-
-     bottomSheetState = rememberBottomSheetScaffoldState()
-     coroutineScope = rememberCoroutineScope()
-//    LazyColumn {
-//        item {
-//            BottomSheetScaffold(
-//                scaffoldState = bottomSheetState!!,
-//                sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
-//                sheetContent = {
-//                    Column(Modifier.fillMaxWidth()) {
-//                        Spacer(modifier = Modifier.padding(top = 10.sdp))
-//
-//                        Row(
-//                            verticalAlignment = Alignment.CenterVertically,
-//                            horizontalArrangement = Arrangement.Center,
-//                            modifier = Modifier.fillMaxWidth()
-//                        ) {
-//                            Box(
-//                                modifier = Modifier
-//                                    .width(80.sdp)
-//                                    .height(4.sdp)
-//                                    .background(
-//                                        color = Color(0xFFEDEEFB),
-//                                        shape = RoundedCornerShape(size = 10.sdp)
-//                                    )
-//                                    .align(Alignment.CenterVertically)
-//                            )
-//                            Spacer(modifier = Modifier.padding(top = 10.sdp))
-//                            androidx.compose.material3.Text(
-//                                text = "If you have forgotten your username and/or password, call 144 or visit a bank branch (with an identity document)",
-//                                textAlign = TextAlign.Center,
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(top = 10.sdp),
-//                                fontWeight = FontWeight.Normal,
-//                                fontSize = 12.ssp
-//                            )
-//
-//                            Button(onClick = {
-//                                coroutineScope!!.launch {
-//                                    bottomSheetState!!.bottomSheetState.collapse()
-//                                }
-//                            }, modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(start = 20.sdp, end = 20.sdp, bottom = 20.sdp)
-//                                .height(40.sdp)
-//                                .background(
-//                                    colorResource(id = R.color.background_card_blue),
-//                                    RoundedCornerShape(10.sdp)
-//                                ),
-//                                colors = ButtonDefaults.buttonColors(contentColor = Color.White)
-//
-//                            ) {
-//                                Text(text = "Close it")
-//                            }
-//                        }
-//                    }
-//                }) {}
-//        }
-//        item {
-            BottomSheetScaffold(sheetPeekHeight = 60.sdp,
-                sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
-                sheetContent = {
-                    Column(Modifier.fillMaxWidth()) {
+    BottomSheetScaffold(sheetPeekHeight = 50.sdp,
+        sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        sheetContent = {
+            Column(Modifier.fillMaxWidth()) {
 
                         Spacer(modifier = Modifier.padding(top = 10.sdp))
 
@@ -164,23 +100,55 @@ fun LoginScreen(navController: NavController) {
                             fontWeight = FontWeight.Bold,
                         )
 
-                        BottomSheetItems(
-                            R.drawable.location, "Branches and ATMs"
+                BottomSheetItems(
+                    R.drawable.ic_location, "Branches and ATMs"
+                )
+                BottomSheetItems(
+                    R.drawable.ic_tariff, "Tariffs"
+                )
+                BottomSheetItems(
+                    R.drawable.ic_whatsapp_support, "WhatsApp support"
+                )
+                BottomSheetItems(
+                    R.drawable.ic_call_support, "Call Center"
+                )
+//                BottomSheetItems(
+//                    R.drawable.language, "Application Language"
+//                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 10.sdp, start = 18.sdp, bottom = 10.sdp)
+                        .dashedBorder(
+                            3.sdp, Color(0xFFE7EEFC)
                         )
-                        BottomSheetItems(
-                            R.drawable.tariffs_icon, "Tariffs"
-                        )
-                        BottomSheetItems(
-                            R.drawable.whatsapp_icon, "WhatsApp support"
-                        )
-                        BottomSheetItems(
-                            R.drawable.call_icon, "Call Center"
-                        )
-                        BottomSheetItems(
-                            R.drawable.language, "Application Language"
-                        )
-                    }
-                }) {
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    androidx.compose.material3.Icon(
+                        painter = painterResource(id = R.drawable.ic_language),
+                        modifier = Modifier
+                            .height(32.dp)
+                            .width(32.dp)
+                            .align(Alignment.CenterVertically),
+                        contentDescription = ""
+                    )
+                    androidx.compose.material3.Text(
+                        text = "Application Language",
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+
+
+                    LanguageOptions()
+
+                }
+
+            }
+
+
+        }) {
 
                 Column(modifier = Modifier.fillMaxSize()) {
                     Surface(
@@ -419,7 +387,7 @@ fun LoginScreen(navController: NavController) {
 private fun BottomSheetItems(iconRes: Int, title: String) {
     Row(
         modifier = Modifier
-            .padding(top = 10.sdp, start = 18.sdp)
+            .padding(top = 10.sdp, start = 16.sdp)
             .dashedBorder(
                 3.sdp, Color(0xFFE7EEFC)
             )
@@ -430,12 +398,55 @@ private fun BottomSheetItems(iconRes: Int, title: String) {
         androidx.compose.material3.Icon(
             painter = painterResource(id = iconRes),
             modifier = Modifier
-                .height(28.dp)
-                .width(34.dp)
+                .height(32.dp)
+                .width(32.dp)
                 .align(Alignment.CenterVertically),
             contentDescription = ""
         )
         androidx.compose.material3.Text(text = title, modifier = Modifier.padding(vertical = 12.dp))
+
+    }
+}
+
+
+@Composable
+fun LanguageOptions() {
+    val languageOptions = listOf("AZ", "EN", "RU")
+    var selectedLanguage by remember { mutableStateOf(languageOptions[0]) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        languageOptions.forEach { language ->
+            val isSelected = language == selectedLanguage
+
+            Box(
+                Modifier
+                    .width(36.sdp)
+                    .height(25.sdp)
+                    .background(
+                        color = if (isSelected) Color(0xFF203657) else Color(0xFFE7EEFC),
+                        shape = RoundedCornerShape(size = 6.sdp)
+                    )
+                    .clickable { selectedLanguage = language }
+                    .align(Alignment.CenterVertically)
+
+            ) {
+                Text(
+                    language,
+                    color = if (isSelected) Color.White else Color(0xFF203657),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 4.sdp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(2.sdp))
+
+        }
     }
 }
 
