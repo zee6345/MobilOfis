@@ -1,8 +1,15 @@
 package com.app.auth.pin.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -19,13 +26,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.adjustments.navigation.homeScreen
-import com.app.auth.login.components.bottomSheet.ForgetPasswordBottomSheetScreen
-import com.app.auth.login.navigation.resetPinNavigationRoute
-import com.app.auth.pin.navigation.successfulRegistration
 
 @Composable
-fun CustomKeyboard(navController: NavController, screen: String) {
+fun CustomKeyboard(navController: NavController, screen: String, onKeyPressed: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -38,30 +41,93 @@ fun CustomKeyboard(navController: NavController, screen: String) {
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("1", navController = navController, screen = screen)
-                KeyButton("2", navController = navController, screen = screen)
-                KeyButton("3", navController = navController, screen = screen)
+                KeyButton(
+                    "1",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "2",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "3",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("4", navController = navController, screen = screen)
-                KeyButton("5", navController = navController, screen = screen)
-                KeyButton("6", navController = navController, screen = screen)
+                KeyButton(
+                    "4",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "5",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "6",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("7", navController = navController, screen = screen)
-                KeyButton("8", navController = navController, screen = screen)
-                KeyButton("9", navController = navController, screen = screen)
+                KeyButton(
+                    "7",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "8",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "9",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton("", R.drawable.finger_print, navController, "fingerPrint", screen)
-                KeyButton("0", navController = navController, screen = screen)
-                KeyButton("", R.drawable.clear, navController, screen = screen)
+                KeyButton(
+                    "",
+                    R.drawable.finger_print,
+                    navController,
+                    "fingerPrint",
+                    screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "0",
+                    navController = navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
+                KeyButton(
+                    "del",
+                    R.drawable.clear,
+                    navController,
+                    screen = screen,
+                    onKeyPressed = onKeyPressed
+                )
             }
         }
     }
@@ -73,7 +139,8 @@ fun KeyButton(
     imageRes: Int? = null,
     navController: NavController,
     button: String? = null,
-    screen: String
+    screen: String,
+    onKeyPressed: (String) -> Unit
 ) {
     Box(modifier = Modifier
         .padding(8.dp)
@@ -82,7 +149,9 @@ fun KeyButton(
         contentAlignment = Alignment.Center,
         content = {
             Button(
-                onClick = { },
+                onClick = {
+                    onKeyPressed(text)
+                },
                 modifier = Modifier.fillMaxSize(),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
@@ -97,15 +166,16 @@ fun KeyButton(
                         modifier = Modifier
                             .size(64.dp)
                             .padding(5.dp)
-                            .clickable {
-                                if (button == "fingerPrint" && screen == "PinScreen") {
-                                    navController.navigate(resetPinNavigationRoute)
-                                }
-                                if(screen=="ResetPin") navController.navigate(successfulRegistration)
-                                if (button == "fingerPrint" && screen == "Welcome") {
-                                    navController.navigate(homeScreen)
-                                }
-                            },
+//                            .clickable {
+//                                if (button == "fingerPrint" && screen == "PinScreen") {
+////                                    navController.navigate(resetPinNavigationRoute)
+//                                }
+//                                if(screen=="ResetPin") navController.navigate(successfulRegistration)
+//                                if (button == "fingerPrint" && screen == "Welcome") {
+////                                    navController.navigate(homeScreen)
+//                                }
+//                            }
+                        ,
                         contentScale = ContentScale.Fit
                     )
                 } else {
@@ -120,7 +190,9 @@ fun KeyButton(
 @Composable
 fun PreviewCustomKeyboard() {
     val navController = rememberNavController()
-    CustomKeyboard(navController, "ResetPin")
+    CustomKeyboard(navController, "ResetPin") {
+
+    }
 }
 
 

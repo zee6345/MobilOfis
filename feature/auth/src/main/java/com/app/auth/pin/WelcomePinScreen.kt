@@ -9,6 +9,10 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +27,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.home.adjustments.navigation.homeScreen
 import com.app.auth.pin.components.CustomKeyboard
-import com.app.auth.pin.components.PinView
+import com.app.auth.pin.navigation.successfulRegistration
+
 
 @Composable
 fun WelcomePinScreen(navController: NavController) {
@@ -64,8 +70,16 @@ fun WelcomePinScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
-                PinView()
-                CustomKeyboard(navController, "Welcome")
+
+                var enteredPin by remember { mutableStateOf("") }
+                PinInputView(navController, length = 5) { pin ->
+                    enteredPin = pin
+
+                    if (pin.length == 5) {
+                        navController.navigate(homeScreen)
+                    }
+                }
+
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -18,9 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.auth.R
-//import com.app.auth.login.components.bottomSheet.Abc
-import com.app.auth.login.components.bottomSheet.InformationAndContentModalBottomSheet
-//import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
+
 import com.app.auth.login.components.bottomSheet.dashedBorder
 
 @Composable

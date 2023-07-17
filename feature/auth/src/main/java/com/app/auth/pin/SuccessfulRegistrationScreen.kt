@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.pin.navigation.welcomePinScreen
 
@@ -109,5 +110,6 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun RegistrationScreenPreview() {
-//    SuccessfulRegistrationScreen(navController)
+
+    SuccessfulRegistrationScreen(rememberNavController())
 }

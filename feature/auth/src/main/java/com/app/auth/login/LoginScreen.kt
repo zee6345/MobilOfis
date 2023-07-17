@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
@@ -25,10 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+
+import com.app.auth.login.components.bottomSheet.InformationBottomSheetScreen
 import com.app.auth.login.navigation.otpNavigationRoute
 
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun LoginScreen(navController: NavController) {
     val (selected, setSelected) = remember {
@@ -224,20 +227,23 @@ fun LoginScreen(navController: NavController) {
             ) {
                 Text("Login", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
+            
 //            ForgetPasswordBottomSheetScreen()
 
         }
         Column(
             modifier = Modifier.weight(0.1f)
         ) {
-            //  BottomSheetMain()
+
+//            InformationBottomSheetScreen()
+
         }
 
     }
 
 }
 
-@Preview(device = Devices.PIXEL_4)
+@Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(rememberNavController())
