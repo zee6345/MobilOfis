@@ -54,7 +54,7 @@ fun LoginScreen(navController: NavController) {
         mutableStateOf("")
     }
 
-    BottomSheetScaffold(sheetPeekHeight = 60.sdp,
+    BottomSheetScaffold(sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetContent = {
             Column(Modifier.fillMaxWidth()) {
@@ -88,16 +88,16 @@ fun LoginScreen(navController: NavController) {
                 )
 
                 BottomSheetItems(
-                    R.drawable.location, "Branches and ATMs"
+                    R.drawable.ic_location, "Branches and ATMs"
                 )
                 BottomSheetItems(
-                    R.drawable.tariffs_icon, "Tariffs"
+                    R.drawable.ic_tariff, "Tariffs"
                 )
                 BottomSheetItems(
-                    R.drawable.whatsapp_icon, "WhatsApp support"
+                    R.drawable.ic_whatsapp_support, "WhatsApp support"
                 )
                 BottomSheetItems(
-                    R.drawable.call_icon, "Call Center"
+                    R.drawable.ic_call_support, "Call Center"
                 )
 //                BottomSheetItems(
 //                    R.drawable.language, "Application Language"
@@ -105,19 +105,20 @@ fun LoginScreen(navController: NavController) {
 
                 Row(
                     modifier = Modifier
-                        .padding(top = 10.sdp, start = 18.sdp)
+                        .padding(top = 10.sdp, start = 18.sdp, bottom = 10.sdp)
                         .dashedBorder(
                             3.sdp, Color(0xFFE7EEFC)
                         )
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     androidx.compose.material3.Icon(
-                        painter = painterResource(id = R.drawable.language),
+                        painter = painterResource(id = R.drawable.ic_language),
                         modifier = Modifier
-                            .height(28.dp)
-                            .width(34.dp)
+                            .height(32.dp)
+                            .width(32.dp)
                             .align(Alignment.CenterVertically),
                         contentDescription = ""
                     )
@@ -129,10 +130,11 @@ fun LoginScreen(navController: NavController) {
 
                     LanguageOptions()
 
-
                 }
 
             }
+
+
         }) {
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -352,7 +354,7 @@ fun LoginScreen(navController: NavController) {
 private fun BottomSheetItems(iconRes: Int, title: String) {
     Row(
         modifier = Modifier
-            .padding(top = 10.sdp, start = 18.sdp)
+            .padding(top = 10.sdp, start = 16.sdp)
             .dashedBorder(
                 3.sdp, Color(0xFFE7EEFC)
             )
@@ -363,8 +365,8 @@ private fun BottomSheetItems(iconRes: Int, title: String) {
         androidx.compose.material3.Icon(
             painter = painterResource(id = iconRes),
             modifier = Modifier
-                .height(28.dp)
-                .width(34.dp)
+                .height(32.dp)
+                .width(32.dp)
                 .align(Alignment.CenterVertically),
             contentDescription = ""
         )
@@ -394,12 +396,18 @@ fun LanguageOptions() {
                         color = if (isSelected) Color(0xFF203657) else Color(0xFFE7EEFC),
                         shape = RoundedCornerShape(size = 6.sdp)
                     )
-                    .padding(start = 10.sdp, top = 3.sdp, end = 10.sdp, bottom = 3.sdp)
                     .clickable { selectedLanguage = language }
+                    .align(Alignment.CenterVertically)
+
             ) {
                 Text(
                     language,
-                    color = if (isSelected) Color.White else Color(0xFF203657)
+                    color = if (isSelected) Color.White else Color(0xFF203657),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 4.sdp)
                 )
             }
 

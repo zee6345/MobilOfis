@@ -21,11 +21,13 @@ import androidx.compose.ui.unit.sp
 
 class MenuCard {
 }
+
 data class CardMenu(
     val title: String,
     val color: Color,
-    val number:Int
-   )
+    val number: Int
+)
+
 @Composable
 fun CardMenuContent() {
     val menu = remember { DataProvider.menuList }
@@ -36,6 +38,7 @@ fun CardMenuContent() {
         })
     }
 }
+
 @Composable
 fun ItemMenu(menu: CardMenu) {
 
