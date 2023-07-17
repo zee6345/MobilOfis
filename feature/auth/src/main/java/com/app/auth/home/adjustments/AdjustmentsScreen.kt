@@ -31,7 +31,8 @@ fun AdjustmentsScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState(),
+                enabled = true)
             .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
