@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.pinNavigationRoute
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -115,11 +116,8 @@ fun OtpScreen(navController: NavController) {
                             color = Color(0xFFE7F0F9),
                         )
                 ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
-                        text = "01:00",
-                        color = Color(0xFF223142)
-                    )
+
+                   TimerTextView()
 
                 }
 

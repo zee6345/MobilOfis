@@ -1,6 +1,7 @@
 package com.app.auth.login
 
 
+import android.os.CountDownTimer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,8 +33,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.components.bottomSheet.dashedBorder
+import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
 import ir.kaaveh.sdpcompose.sdp
+import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -272,11 +276,8 @@ fun LoginScreen(navController: NavController) {
                                     color = Color(0xFFE7F0F9),
                                 )
                         ) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
-                                text = "01:00",
-                                color = Color(0xFF223142)
-                            )
+
+                            TimerTextView()
 
                         }
 
