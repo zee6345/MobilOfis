@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,6 +67,11 @@ fun LoginScreen(navController: NavController) {
         mutableStateOf("")
     }
 
+    val showDialog = remember{
+        mutableStateOf(
+            false
+        )
+    }
     BottomSheetScaffold(sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetContent = {
