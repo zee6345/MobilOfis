@@ -1,8 +1,8 @@
 package com.app.auth.login
 
 
-import android.os.CountDownTimer
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -11,9 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +37,6 @@ import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
 import ir.kaaveh.sdpcompose.sdp
-import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -99,9 +99,39 @@ fun LoginScreen(navController: NavController) {
                 BottomSheetItems(
                     R.drawable.call_icon, "Call Center"
                 )
-                BottomSheetItems(
-                    R.drawable.language, "Application Language"
-                )
+//                BottomSheetItems(
+//                    R.drawable.language, "Application Language"
+//                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 10.sdp, start = 18.sdp)
+                        .dashedBorder(
+                            3.sdp, Color(0xFFE7EEFC)
+                        )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                ) {
+
+                    androidx.compose.material3.Icon(
+                        painter = painterResource(id = R.drawable.language),
+                        modifier = Modifier
+                            .height(28.dp)
+                            .width(34.dp)
+                            .align(Alignment.CenterVertically),
+                        contentDescription = ""
+                    )
+                    androidx.compose.material3.Text(
+                        text = "Application Language",
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+
+
+                    LanguageOptions()
+
+
+                }
+
             }
         }) {
 
@@ -339,6 +369,43 @@ private fun BottomSheetItems(iconRes: Int, title: String) {
             contentDescription = ""
         )
         androidx.compose.material3.Text(text = title, modifier = Modifier.padding(vertical = 12.dp))
+
+    }
+}
+
+
+@Composable
+fun LanguageOptions() {
+    val languageOptions = listOf("AZ", "EN", "RU")
+    var selectedLanguage by remember { mutableStateOf(languageOptions[0]) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        languageOptions.forEach { language ->
+            val isSelected = language == selectedLanguage
+
+            Box(
+                Modifier
+                    .width(36.sdp)
+                    .height(25.sdp)
+                    .background(
+                        color = if (isSelected) Color(0xFF203657) else Color(0xFFE7EEFC),
+                        shape = RoundedCornerShape(size = 6.sdp)
+                    )
+                    .padding(start = 10.sdp, top = 3.sdp, end = 10.sdp, bottom = 3.sdp)
+                    .clickable { selectedLanguage = language }
+            ) {
+                Text(
+                    language,
+                    color = if (isSelected) Color.White else Color(0xFF203657)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(2.sdp))
+
+        }
     }
 }
 

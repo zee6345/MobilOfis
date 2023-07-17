@@ -76,6 +76,7 @@ fun PinScreen(navController: NavController) {
                 )
             }
         }
+
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -84,7 +85,6 @@ fun PinScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Spacer(modifier = Modifier.height(20.dp))
-
 
             var enteredPin by remember { mutableStateOf("") }
             PinInputView(navController, length = 5) { pin ->
@@ -96,6 +96,7 @@ fun PinScreen(navController: NavController) {
             }
 
             Spacer(modifier = Modifier.height(20.dp))
+
             Card(modifier = Modifier.wrapContentSize(), shape = RoundedCornerShape(14.dp)) {
                 Text(
                     text = "No",
