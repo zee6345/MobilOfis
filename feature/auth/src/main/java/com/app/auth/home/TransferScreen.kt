@@ -1,6 +1,7 @@
 package com.app.auth.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -23,6 +24,7 @@ fun TransferScreen() {
 
     Column(
         modifier = Modifier.fillMaxSize()
+            .background(Color.White)
     ) {
         Surface(
             modifier = Modifier
