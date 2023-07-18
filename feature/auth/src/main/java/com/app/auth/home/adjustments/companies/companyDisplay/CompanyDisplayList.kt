@@ -28,14 +28,14 @@ import com.app.auth.home.menu.DataProvider
 
 @Composable
 fun CompanyDisplayList() {
-    val companydisplayList = remember { DataProvider.companyList }
-    LazyColumn(
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
-    ) {
-        items(items = companydisplayList, itemContent = {
-            CompanyDisplayListItem(list = it)
-        })
-    }
+//    val companydisplayList = remember { DataProvider.companyList }
+//    LazyColumn(
+//        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
+//    ) {
+//        items(items = companydisplayList, itemContent = {
+//            CompanyDisplayListItem(list = it)
+//        })
+//    }
 }
 
 @Composable

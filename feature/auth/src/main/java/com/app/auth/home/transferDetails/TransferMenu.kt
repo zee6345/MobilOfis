@@ -1,4 +1,4 @@
-package com.app.auth.home.menu
+package com.app.auth.home.transferDetails
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,25 +19,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-data class CardMenu(
+
+data class MainCardTransfer(
     val title: String,
     val color: Color,
     val number: Int
 )
 
 @Composable
-fun CardMenuContent() {
-    val menu = remember { DataProvider.menuList }
+fun TransferTopMenu() {
+    val menu = remember { DataClassTransfer.topMenuList}
     LazyRow(
     ) {
         items(items = menu, itemContent = {
-            ItemMenu(menu = it)
+            TransferMenuItemView(menu = it)
         })
     }
 }
-
 @Composable
-fun ItemMenu(menu: CardMenu) {
+fun TransferMenuItemView(menu: MainCardTransfer) {
 
     Card(
         modifier = Modifier
@@ -66,10 +66,8 @@ fun ItemMenu(menu: CardMenu) {
 }
 
 
-
-
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun MenuPreview() {
-    CardMenuContent()
+    TransferTopMenu()
 }

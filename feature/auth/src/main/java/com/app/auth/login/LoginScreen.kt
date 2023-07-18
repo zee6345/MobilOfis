@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,9 +55,10 @@ import kotlinx.coroutines.launch
 var bottomSheetState: BottomSheetScaffoldState ?=null
 var coroutineScope: CoroutineScope ?=null
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
+    coroutineScope = rememberCoroutineScope()
     val (selected, setSelected) = remember {
         mutableStateOf(0)
     }
@@ -68,6 +72,11 @@ fun LoginScreen(navController: NavController) {
     }
 
     val showDialog = remember{
+        mutableStateOf(
+            false
+        )
+    }
+    val showDialog2 = remember{
         mutableStateOf(
             false
         )
@@ -118,9 +127,7 @@ fun LoginScreen(navController: NavController) {
                 BottomSheetItems(
                     R.drawable.ic_call_support, "Call Center"
                 )
-//                BottomSheetItems(
-//                    R.drawable.language, "Application Language"
-//                )
+
 
                 Row(
                     modifier = Modifier
@@ -150,9 +157,7 @@ fun LoginScreen(navController: NavController) {
                     LanguageOptions()
 
                 }
-
             }
-
 
         }) {
 
@@ -338,9 +343,6 @@ fun LoginScreen(navController: NavController) {
                                 ClickableText(modifier = Modifier.padding(5.dp),
                                     text = AnnotatedString(text = "Forgot your password?"),
                                     onClick = {
-                                        coroutineScope!!.launch {
-                                            bottomSheetState!!.bottomSheetState.expand()
-                                        }
                                     })
                             }
 
@@ -385,6 +387,8 @@ fun LoginScreen(navController: NavController) {
             onClose = { showDialog.value = false}
         )
     }
+
+
 
 }
 

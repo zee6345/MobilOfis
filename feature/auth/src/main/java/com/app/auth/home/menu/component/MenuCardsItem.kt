@@ -35,14 +35,14 @@ data class CardsListData(
 
 @Composable
 fun CardsListView() {
-    val cardList = remember { DataProvider.cardList }
-    LazyColumn(
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
-    ) {
-        items(items = cardList, itemContent = {
-            CardsListItem(list = it)
-        })
-    }
+//    val cardList = remember { DataProvider.cardList }
+//    LazyColumn(
+//        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
+//    ) {
+//        items(items = cardList, itemContent = {
+//            CardsListItem(list = it)
+//        })
+//    }
 }
 
 

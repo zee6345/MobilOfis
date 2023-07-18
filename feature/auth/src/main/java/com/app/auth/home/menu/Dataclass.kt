@@ -95,7 +95,7 @@ object DataProvider {
         ),
 
 
-    )
+        )
 
 
     val menuList = listOf(

@@ -32,14 +32,14 @@ data class CompanyListName(
 
 @Composable
 fun CompanyList() {
-    val companyList = remember { DataProvider.companyList }
-    LazyColumn(
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
-    ) {
-        items(items = companyList, itemContent = {
-            CompanyListItem(list = it)
-        })
-    }
+//    val companyList = remember { DataProvider.companyList }
+//    LazyColumn(
+//        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
+//    ) {
+//        items(items = companyList, itemContent = {
+//            CompanyListItem(list = it)
+//        })
+//    }
 }
 
 @Composable
