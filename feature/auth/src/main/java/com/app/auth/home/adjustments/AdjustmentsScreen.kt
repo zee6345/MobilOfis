@@ -3,11 +3,28 @@ package com.app.auth.login.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Card
+import androidx.compose.material.Surface
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -22,7 +39,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.adjustments.navigation.securityScreen
+import com.app.auth.home.navigation.displayDuringLogin
+import com.app.auth.home.navigation.securityScreen
 
 @Composable
 fun AdjustmentsScreen(navController: NavController) {
@@ -46,8 +64,9 @@ fun AdjustmentsScreen(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.back_icon),
                     modifier = Modifier
-                        .size(28.dp)
-                        .align(CenterVertically),
+                        .size(32.dp)
+                        .align(CenterVertically)
+                       ,
                     contentDescription = ""
                 )
                 Text(
@@ -66,7 +85,10 @@ fun AdjustmentsScreen(navController: NavController) {
                 .weight(0.9f)
                 .padding(horizontal = 12.dp),
         ) {
-            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -92,12 +114,14 @@ fun AdjustmentsScreen(navController: NavController) {
 
                         }
 
-
                     }
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),
+                            .padding(top = 10.dp)
+                            .clickable {
+                                navController.navigate(displayDuringLogin)
+                            },
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Row(
@@ -152,10 +176,15 @@ fun AdjustmentsScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp), shape = RoundedCornerShape(12.dp)
+
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate(securityScreen)
+                                },
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
                                 text = "Security",
@@ -169,7 +198,9 @@ fun AdjustmentsScreen(navController: NavController) {
                                     .size(35.dp)
                                     .align(CenterVertically)
                                     .padding(end = 12.dp)
-                                    .clickable {},
+                                    .clickable {
+
+                                    },
                             )
                         }
 
@@ -272,7 +303,8 @@ fun AdjustmentsScreen(navController: NavController) {
 
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Card(shape = RoundedCornerShape(12.dp)) {
                         Row() {

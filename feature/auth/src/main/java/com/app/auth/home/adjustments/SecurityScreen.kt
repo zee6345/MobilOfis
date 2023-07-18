@@ -19,8 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.adjustments.navigation.changePassScreen
+import com.app.auth.home.navigation.changePassScreen
 import com.app.auth.login.home.Switch
 
 @Composable
@@ -43,8 +44,12 @@ fun SecurityScreen(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.back_icon),
                     modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.CenterVertically),
+                        .size(32.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            navController.popBackStack()
+                        }
+                    ,
                     contentDescription = ""
                 )
                 Text(
@@ -67,7 +72,8 @@ fun SecurityScreen(navController: NavController) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp).clickable{navController.navigate(changePassScreen)},
+                    .padding(top = 10.dp)
+                    .clickable { navController.navigate(changePassScreen) },
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -144,5 +150,5 @@ fun SecurityScreen(navController: NavController) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun SecurityScreenPreview() {
-//    SecurityScreen(navController)
+    SecurityScreen(rememberNavController())
 }

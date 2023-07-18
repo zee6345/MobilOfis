@@ -83,7 +83,7 @@ fun ForgetPasswordModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) 
 }
 
 
-@Preview(device = Devices.PIXEL_4)
+@Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun previewpassword() {
     ForgetPasswordBottomSheetScreen()

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.adjustments.navigation.homeScreenRoute
+import com.app.auth.home.navigation.homeScreenRoute
 
 
 @Composable

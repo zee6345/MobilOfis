@@ -9,15 +9,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.TransferScreen
-import com.app.auth.login.MenuScreen
-import com.app.auth.login.home.AdjustmentsScreen
+import com.app.auth.home.navigation.NavigationGraph
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -76,24 +71,6 @@ fun BottomNavigation(navController: NavController) {
     }
 }
 
-@Composable
-fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = BottomNavItem.Menu.screen_route) {
-        composable(BottomNavItem.Menu.screen_route) {
-            MenuScreen()
-        }
-        composable(BottomNavItem.Transfers.screen_route) {
-            TransferScreen()
-        }
-        composable(BottomNavItem.Adjustments.screen_route) {
-            AdjustmentsScreen(navController)
-        }
-
-    }
-}
-
-
-
 
 sealed class BottomNavItem(var title: String, var icon: Int, var screen_route: String) {
 
@@ -106,5 +83,5 @@ sealed class BottomNavItem(var title: String, var icon: Int, var screen_route: S
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun BottomNavigationBarPreview() {
-//    MainScreenView(navController)
+    MainScreenView(rememberNavController())
 }

@@ -39,12 +39,19 @@ fun FingerPrintConfirBottomSheetScreen() {
         )
     }
 
-    FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet)
+    FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, {
+
+    }, {
+
+    })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FingerPrintModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
+fun FingerPrintModalBottomSheet(
+    showModalBottomSheet: MutableState<Boolean>, onClickThen: () -> Unit,
+    onClickYes: () -> Unit
+) {
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = false },
     ) {
@@ -70,7 +77,9 @@ fun FingerPrintModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 androidx.compose.material.Button(
-                    onClick = { },
+                    onClick = {
+                        onClickThen()
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .weight(1f)
@@ -84,7 +93,9 @@ fun FingerPrintModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     )
                 }
                 androidx.compose.material.Button(
-                    onClick = { },
+                    onClick = {
+                        onClickYes()
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .weight(1f)
@@ -104,7 +115,7 @@ fun FingerPrintModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 }
 
 
-@Preview(device = Devices.PIXEL_4)
+@Preview(device = Devices.PIXEL_4, showBackground = true, showSystemUi = true)
 @Composable
 fun previewfingerPrint() {
     FingerPrintConfirBottomSheetScreen()

@@ -23,7 +23,8 @@ fun MoApp(
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)) {
+                .padding(padding)
+        ) {
             MoNavHost(appState = appState, onShowSnackbar = { message, action ->
                 snackbarHostState.showSnackbar(
                     message = message,

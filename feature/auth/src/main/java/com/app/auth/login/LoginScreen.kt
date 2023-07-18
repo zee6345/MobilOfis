@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
@@ -42,17 +44,10 @@ import ir.kaaveh.sdpcompose.sdp
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-    val (selected, setSelected) = remember {
-        mutableStateOf(0)
-    }
-
-    val usernameState = remember {
-        mutableStateOf("")
-    }
-
-    val paswdState = remember {
-        mutableStateOf("")
-    }
+    val (selected, setSelected) = remember { mutableStateOf(0) }
+    val usernameState = remember { mutableStateOf("") }
+    val paswdState = remember { mutableStateOf("") }
+    val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
 
     BottomSheetScaffold(sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
@@ -315,7 +310,9 @@ fun LoginScreen(navController: NavController) {
 
                         ClickableText(modifier = Modifier.padding(5.dp),
                             text = AnnotatedString(text = "Forgot your password?"),
-                            onClick = { })
+                            onClick = {
+                                showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
+                            })
                     }
 
                 } else {
@@ -346,6 +343,7 @@ fun LoginScreen(navController: NavController) {
 
     }
 
+    ForgetPasswordModalBottomSheet(showForgetPassBottomSheetSheet)
 
 }
 

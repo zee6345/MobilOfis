@@ -2,6 +2,7 @@ package com.app.auth.data
 
 import androidx.compose.ui.graphics.Color
 import com.app.auth.R
+import com.app.auth.home.adjustments.companies.CompanyListName
 import com.app.auth.home.menu.CardMenu
 import com.app.auth.home.menu.component.AccountListData
 
@@ -175,5 +176,15 @@ object DataProvider {
             number = 1
         ),
 
+        )
+
+
+    val companyList =
+        listOf(
+            CompanyListName(
+            name = "International Real Estate and Valuation Agency LLC",
+        ),
+            CompanyListName(name = "Value Services MMC"),
+            CompanyListName(name = "Səba MMC"),
         )
 }
