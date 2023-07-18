@@ -22,26 +22,19 @@ data class TabItem(
     val title: String, val screen: @Composable () -> Unit
 )
 
-
-@Composable
-fun TabScreen(
-    content: String
-) {
-        AccountList()
-}
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabLayoutMenu() {
+
     val tabs = listOf(
-        TabItem(title = "Account", screen = { TabScreen(content = "Account Page") }),
-        TabItem(title = "Cards", screen = { TabScreen(content = "Cards") }),
-        TabItem(title = "Loan", screen = { TabScreen(content = "Loan") }),
-        TabItem(title = "Trust", screen = { TabScreen(content = "Trust") })
+        TabItem(title = "Account", screen = { AccountList() }),
+        TabItem(title = "Cards", screen = { CardsList() }),
+        TabItem(title = "Loan", screen = { LoansList() }),
+        TabItem(title = "Trust", screen = { AccountList() })
 
 
     )
+
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
 

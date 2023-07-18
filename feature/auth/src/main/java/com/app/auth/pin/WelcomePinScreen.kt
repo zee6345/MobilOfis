@@ -1,10 +1,8 @@
 package com.app.auth.pin
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -27,9 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.adjustments.navigation.homeScreen
-import com.app.auth.pin.components.CustomKeyboard
-import com.app.auth.pin.navigation.successfulRegistration
+import com.app.auth.home.adjustments.navigation.homeScreenRoute
 
 
 @Composable
@@ -76,7 +72,7 @@ fun WelcomePinScreen(navController: NavController) {
                     enteredPin = pin
 
                     if (pin.length == 5) {
-                        navController.navigate(homeScreen)
+                        navController.navigate(homeScreenRoute)
                     }
                 }
 

@@ -19,9 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-class MenuCard {
-}
-
 data class CardMenu(
     val title: String,
     val color: Color,

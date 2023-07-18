@@ -4,12 +4,11 @@ import MainScreenView
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.app.auth.home.adjustments.ForgetPasswordScreen
 import com.app.auth.home.adjustments.SecurityScreen
 import com.app.auth.login.home.AdjustmentsScreen
 
-const val homeScreen = "homeSCreen"
+const val homeScreenRoute = "homeSCreen"
 const val changePassScreen = "changePassSCreen"
 const val adjustmentScreen = "adjustmentScreen"
 const val securityScreen = "securityScreen"
@@ -18,7 +17,7 @@ fun NavGraphBuilder.homeScreen(
     navController: NavController
 ) {
     composable(
-        route = homeScreen,
+        route = homeScreenRoute,
     ) {
         MainScreenView(navController)
     }
