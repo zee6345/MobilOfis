@@ -1,9 +1,8 @@
-package com.app.auth.home.menu
+package com.app.auth.data
 
 import androidx.compose.ui.graphics.Color
 import com.app.auth.R
-import com.app.auth.data.CardFilters
-import com.app.auth.data.CardsListData
+import com.app.auth.home.menu.CardMenu
 import com.app.auth.home.menu.component.AccountListData
 
 
@@ -92,10 +91,59 @@ object DataProvider {
         CardFilters(
             "Currency",
             R.drawable.ic_filter_drop_down
+        )
+    )
+
+
+    val filtersTrustsList = listOf(
+        CardFilters(
+            "Deposit name",
+            R.drawable.ic_filter_search
         ),
 
-
+        CardFilters(
+            "Account number",
+            R.drawable.ic_filter_search
+        ),
+        CardFilters(
+            "Currency",
+            R.drawable.ic_filter_drop_down
         )
+    )
+
+
+
+    val loanDataList = listOf(
+        LoansData(
+            title = "SME Loan",
+            color = Color(0xFF0FBF1B),
+            snNumber = "002LCAR201270001",
+            amount = "10000.00 $"
+        ),
+
+        LoansData(
+            "Loan for renovation in new office",
+            color = Color(0xFFFF4E57),
+            snNumber = "002LCAR201270002",
+            amount = "10000.00 $"
+        )
+    )
+
+    val trustsDataList = listOf(
+        TrustsData(
+            title = "Term deposit",
+            amountPrcnt = "8%",
+            snNumber = "AZ47BRES38690AZ0021693229004",
+            amount = "10000.00 $"
+        ),
+
+        TrustsData(
+            "Term deposit",
+            amountPrcnt = "8%",
+            snNumber = "AZ47BRES38690AZ0021693229002",
+            amount = "90000.00 $"
+        )
+    )
 
 
     val menuList = listOf(

@@ -24,10 +24,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,14 +35,14 @@ import androidx.compose.ui.unit.sp
 import com.app.auth.data.CardFilters
 import com.app.auth.data.DataProvider
 import com.app.auth.data.LoansData
+import com.app.auth.data.TrustsData
 import ir.kaaveh.sdpcompose.sdp
 
-
 @Composable
-fun LoansList() {
+fun TrustsList() {
 
-    val cardsList = remember { DataProvider.loanDataList }
-    val cardFilters = remember { DataProvider.filtersLoanList }
+    val cardsList = remember { DataProvider.trustsDataList }
+    val cardFilters = remember { DataProvider.filtersTrustsList }
 
     Column(
         modifier = Modifier.padding(horizontal = 5.sdp, vertical = 5.sdp)
@@ -68,7 +68,7 @@ fun LoansList() {
             contentPadding = PaddingValues(vertical = 5.dp)
         ) {
             items(items = cardsList, itemContent = {
-                LoansListItem(obj = it)
+                TrustsListItem(obj = it)
             })
         }
 
@@ -79,7 +79,7 @@ fun LoansList() {
 
 
 @Composable
-private fun LoansListItem(obj: LoansData) {
+private fun TrustsListItem(obj: TrustsData) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
@@ -96,42 +96,48 @@ private fun LoansListItem(obj: LoansData) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Column {
+            Column() {
 
-                Row() {
-
-                    Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .width(10.dp)
-                            .height(10.dp)
-                            .drawBehind {
-                                drawCircle(
-                                    color = obj.color, radius = 5.dp.toPx()
-                                )
-                            }
-                            .align(Alignment.CenterVertically)
-                    ) {
-
-                    }
-
-                    Text(text = obj.title, style = TextStyle(fontSize = 14.sp))
-                }
+                Text(text = obj.title, style = TextStyle(fontSize = 14.sp))
 
                 Text(
                     obj.snNumber,
-                    style = TextStyle(fontSize = 14.sp, color = Color(0xFF859DB5))
+                    style = TextStyle(fontSize = 12.sp, color = Color(0xFF859DB5))
                 )
             }
 
-            Text(
-                text = obj.amount,
-                style = TextStyle(fontSize = 14.sp, color = Color(0xFF223142))
-            )
+            Column(
+
+            ) {
+
+                Text(
+                    text = obj.amount,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color(0xFF223142),
+                        textAlign = TextAlign.Right
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+
+                Text(
+                    text = obj.amountPrcnt,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color(0xFF859DB5),
+                        textAlign = TextAlign.Right
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+
+                )
+
+
+            }
 
 
         }
-
     }
 }
 
@@ -191,7 +197,7 @@ private fun Filters() {
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
             .clickable { selectedBoxIndex.value = 0 }) {
             Text(
-                "Current loans", style = TextStyle(
+                "Current deposits", style = TextStyle(
                     fontSize = 12.sp,
                     color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
                 )
@@ -207,7 +213,7 @@ private fun Filters() {
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
             .clickable { selectedBoxIndex.value = 1 }) {
             Text(
-                "Closed loans", style = TextStyle(
+                "Closed deposits", style = TextStyle(
                     fontSize = 12.sp,
                     color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
                 )
@@ -219,6 +225,6 @@ private fun Filters() {
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
-fun LoansPreview() {
-    LoansList()
+fun TrustsPreview() {
+    TrustsList()
 }
