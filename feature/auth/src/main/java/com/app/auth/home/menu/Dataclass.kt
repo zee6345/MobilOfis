@@ -2,6 +2,7 @@ package com.app.auth.home.menu
 
 import androidx.compose.ui.graphics.Color
 import com.app.auth.R
+import com.app.auth.home.adjustments.companies.CompanyListName
 import com.app.auth.home.menu.component.AccountListData
 import com.app.auth.home.menu.component.CardsListData
 
@@ -31,27 +32,24 @@ object DataProvider {
     )
 
 
-    val cardsList = listOf(
-        CardsListData(
-            icon = R.drawable.ic_master_card,
-            title = "MC Business Plus",
-            cardIcon = R.drawable.ic_master_card_icon,
-            cardTitle = "•••• 8339",
-            cardAmount = "1560.23 $"
-        ),
-        CardsListData(
-            icon = R.drawable.ic_visa_business,
-            title = "Visa Business",
-            cardIcon = R.drawable.ic_visa_icon,
-            cardTitle = "•••• 7443",
-            cardAmount = "1560.23 $"
-        ),
 
+    val cardList=listOf(
+        CardsListData(
+            title = "MC Business Plus",
+            image = R.drawable.ic_master_card,
+            card_icon = R.drawable.ic_master_card_icon,
+            card_num = "•••• 8339"
+        ),
+        CardsListData(
+            title = "Visa Business",
+            image = R.drawable.ic_visa_business,
+            card_icon = R.drawable.ic_visa_icon,
+            card_num = "•••• 7443"
+        )
     )
 
 
-
-    val menuList=listOf(
+    val menuList = listOf(
         CardMenu(
             title = "Signature\n" +
                     "Waiting",
@@ -81,5 +79,14 @@ object DataProvider {
             number = 1
         ),
 
+        )
+
+
+    val companyList =
+        listOf(CompanyListName(
+            name = "International Real Estate and Valuation Agency LLC",
+        ),
+            CompanyListName(name = "Value Services MMC"),
+            CompanyListName(name = "Səba MMC"),
         )
 }

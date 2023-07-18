@@ -106,5 +106,5 @@ sealed class BottomNavItem(var title: String, var icon: Int, var screen_route: S
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun BottomNavigationBarPreview() {
-//    MainScreenView(navController)
+    MainScreenView(rememberNavController())
 }
