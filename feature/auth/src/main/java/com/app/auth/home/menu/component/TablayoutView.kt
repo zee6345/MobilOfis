@@ -30,7 +30,7 @@ fun TabLayoutMenu() {
         TabItem(title = "Account", screen = { AccountList() }),
         TabItem(title = "Cards", screen = { CardsList() }),
         TabItem(title = "Loan", screen = { LoansList() }),
-        TabItem(title = "Trust", screen = { AccountList() })
+        TabItem(title = "Trust", screen = { TrustsList() })
 
 
     )

@@ -16,11 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.auth.data.CardFilters
 import com.app.auth.data.CardsListData
-import com.app.auth.home.menu.DataProvider
+import com.app.auth.data.DataProvider
 import ir.kaaveh.sdpcompose.sdp
 
 
@@ -64,9 +66,14 @@ fun CardsList() {
             })
         }
 
+        val lazyListState = rememberLazyListState()
+        LaunchedEffect(lazyListState) {
+            lazyListState.scrollToItem(0) // Optional: Scroll to an initial position when the list is first displayed
+        }
 
         LazyColumn(
-            contentPadding = PaddingValues(vertical = 5.dp)
+            contentPadding = PaddingValues(vertical = 5.dp),
+            state = lazyListState,
         ) {
             items(items = cardsList, itemContent = {
                 CardsListItem(obj = it)
