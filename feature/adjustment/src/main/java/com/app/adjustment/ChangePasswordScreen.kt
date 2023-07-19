@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-import com.sky.adjustment.R
+
 
 @Composable
 fun ForgetPasswordScreen(navController: NavController) {

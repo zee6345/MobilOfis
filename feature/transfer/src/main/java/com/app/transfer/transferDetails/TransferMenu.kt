@@ -1,4 +1,4 @@
-package com.app.home.transferDetails
+package com.app.transfer.transferDetails
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

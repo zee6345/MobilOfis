@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.navigation.changePassScreen
-import com.sky.adjustment.R
+
 
 
 @Composable

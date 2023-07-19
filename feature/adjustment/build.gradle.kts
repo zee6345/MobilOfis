@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sky.adjustment"
+    namespace = "com.app.adjustment"
     compileSdk = Android.compileSdk
 
     defaultConfig {
@@ -31,6 +31,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    buildFeatures {
+        compose  = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion =  "1.4.3"
     }
 }
 

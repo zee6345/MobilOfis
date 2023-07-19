@@ -41,7 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.navigation.displayDuringLogin
 import com.app.adjustment.navigation.securityScreen
 
-import com.sky.adjustment.R
+
 
 @Composable
 fun AdjustmentsScreen(navController: NavController) {

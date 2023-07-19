@@ -51,6 +51,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation(project(mapOf("path" to ":feature:adjustment")))
+    implementation(project(mapOf("path" to ":feature:transfer")))
 
     //Compose
     val composeBom = platform("androidx.compose:compose-bom:2023.05.01")

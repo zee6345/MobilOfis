@@ -71,6 +71,11 @@ dependencies {
 
     implementation (project (":core:designsystem"))
     implementation (project (":feature:auth" ))
+    implementation (project (":feature:adjustment" ))
+    implementation (project (":feature:home" ))
+    implementation (project (":feature:transfer" ))
+
+
     implementation (Libs.core)
     implementation (Lifecycle.runtime)
     implementation (Compose.activity_compose)

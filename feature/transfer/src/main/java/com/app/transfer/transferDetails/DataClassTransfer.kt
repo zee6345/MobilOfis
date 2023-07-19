@@ -1,4 +1,5 @@
-package com.app.home.transferDetails
+package com.app.transfer.transferDetails
+
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
