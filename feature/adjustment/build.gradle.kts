@@ -13,7 +13,7 @@ android {
         minSdk = Android.minSdk
         targetSdk = Android.targetSdk
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = Android.testRunner
     }
 
     buildTypes {
@@ -36,10 +36,20 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(Kotlin.coreKtx)
+    implementation(Kotlin.coreKtx)
+    implementation(Others.appCompat)
+    implementation(Others.material)
+    testImplementation(UnitTest.junit)
+    androidTestImplementation(UnitTest.JUNIT_TEST)
+    androidTestImplementation(UnitTest.Espresso)
+    implementation (Lifecycle.runtime)
+    implementation (Compose.activity_compose)
+    implementation (platform(Compose.composeBom))
+    implementation (Compose.composeUi)
+    implementation (Compose.graphUi)
+    implementation (Compose.compose_tooling_preview)
+    implementation (Compose.material3)
+    implementation(Lifecycle.runtime)
+    implementation(Compose.activity_compose)
 }

@@ -18,7 +18,7 @@ android {
         versionCode = Android.versionCode
         versionName = Android.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = Android.testRunner
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -71,6 +71,9 @@ dependencies {
 
     implementation (project (":core:designsystem"))
     implementation (project (":feature:auth" ))
+    implementation (project (":feature:home" ))
+    implementation (project (":feature:transfer" ))
+    implementation (project (":feature:adjustment" ))
     implementation (Libs.core)
     implementation (Lifecycle.runtime)
     implementation (Compose.activity_compose)
@@ -79,30 +82,18 @@ dependencies {
     implementation (Compose.graphUi)
     implementation (Compose.compose_tooling_preview)
     implementation (Compose.material3)
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    testImplementation ("junit:junit:4.13.2")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation (platform(Compose.composeBom))
+    implementation(Lifecycle.runtime)
+    implementation(Compose.activity_compose)
+    androidTestImplementation (UnitTest.JUNIT_TEST)
+    androidTestImplementation (UnitTest.Espresso)
     androidTestImplementation (Compose.junit4compose)
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation (Compose.composeTooling)
     debugImplementation (Compose.composeTest)
     implementation(Others.sdp_compose)
     //Navigation
-    //def nav_version = "2.6.0"
-    implementation ("androidx.navigation:navigation-compose:2.6.0")
+    implementation (Compose.composeNavigation)
 
     //Hilt
     implementation (Hilt.android)
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
     kapt (Hilt.compiler)
 }
