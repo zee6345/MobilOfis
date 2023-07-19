@@ -19,3 +19,6 @@ rootProject.name = "Mobil Office"
 include(":app")
 include(":feature:auth")
 include(":core:designsystem")
+include(":feature:home")
+include(":feature:adjustment")
+include(":feature:transfer")
