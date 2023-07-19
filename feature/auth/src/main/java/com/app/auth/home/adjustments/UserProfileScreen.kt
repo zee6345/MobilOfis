@@ -1,35 +1,28 @@
-package com.app.auth.home
+package com.app.auth.home.adjustments
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
+import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.auth.home.transferDetails.FiltersTopRow
-import com.app.auth.home.transferDetails.ItemClickedCallback
-import com.app.auth.home.transferDetails.TransferTopMenu
+import com.app.auth.R
 
 @Composable
-fun TransferScreen() {
-
+fun UserProfileScreen() {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+        modifier = Modifier.fillMaxSize()
     ) {
         Surface(
             modifier = Modifier
@@ -42,64 +35,51 @@ fun TransferScreen() {
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                Image(
+                    painter = painterResource(id = R.drawable.back_icon),
                     modifier = Modifier
                         .size(28.dp)
                         .align(Alignment.CenterVertically),
-
-                    contentDescription = "", tint = Color.White
+                    contentDescription = ""
                 )
                 Text(
-                    text = "Transfers",
+                    text = "User's profile",
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .padding(horizontal = 8.dp)
                 )
 
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Close",
-                    tint = Color.White
-                )
+
             }
         }
         Column(
             modifier = Modifier
-                .padding(10.dp)
                 .weight(0.9f)
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 22.dp),
+                backgroundColor = Color.White
+            ) {
 
-            TopMenuItem()
-            FilterListMenu()
+
+            }
+
+
         }
 
     }
-
-}
-
-@Composable
-fun TopMenuItem() {
-    TransferTopMenu()
-}
-
-@Composable
-fun FilterListMenu(){
-    FiltersTopRow(object : ItemClickedCallback{
-        override fun itemClicked(id: String) {
-
-        }
-
-    })
 }
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
-fun TransferScreenPreview() {
-    TransferScreen()
+fun UserProfileScreenPreview() {
+    UserProfileScreen()
 }

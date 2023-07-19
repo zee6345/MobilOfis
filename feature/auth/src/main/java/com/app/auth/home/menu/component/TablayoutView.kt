@@ -22,6 +22,15 @@ data class TabItem(
     val title: String, val screen: @Composable () -> Unit
 )
 
+
+@Composable
+fun TabScreen(
+    content: String
+) {
+    AccountList()
+}
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabLayoutMenu() {
@@ -34,7 +43,6 @@ fun TabLayoutMenu() {
 
 
     )
-
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
 

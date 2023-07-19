@@ -113,6 +113,7 @@ object DataProvider {
     )
 
 
+
     val loanDataList = listOf(
         LoansData(
             title = "SME Loan",
