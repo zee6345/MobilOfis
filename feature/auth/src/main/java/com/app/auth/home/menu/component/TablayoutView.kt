@@ -16,33 +16,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 data class TabItem(
     val title: String, val screen: @Composable () -> Unit
 )
 
-
-@Composable
-fun TabScreen(
-    content: String
-) {
-    AccountList()
-}
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabLayoutMenu() {
+fun TabLayoutMenu(navController: NavController) {
 
     val tabs = listOf(
-        TabItem(title = "Account", screen = { AccountList() }),
+        TabItem(title = "Account", screen = { AccountList(navController) }),
         TabItem(title = "Cards", screen = { CardsList() }),
         TabItem(title = "Loan", screen = { LoansList() }),
         TabItem(title = "Trust", screen = { TrustsList() })
-
-
     )
+
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -79,5 +71,5 @@ fun TabLayoutMenu() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TabLayoutMenuPreview() {
-    TabLayoutMenu()
+    TabLayoutMenu(rememberNavController())
 }

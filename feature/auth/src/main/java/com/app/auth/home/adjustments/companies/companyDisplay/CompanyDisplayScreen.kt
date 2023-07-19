@@ -74,6 +74,7 @@ fun CompanyDisplay(navController: NavController) {
 
             }
         }
+
         Column(
             modifier = Modifier
                 .weight(0.9f)

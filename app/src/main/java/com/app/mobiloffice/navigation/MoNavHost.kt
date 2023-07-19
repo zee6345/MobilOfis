@@ -3,6 +3,7 @@ package com.app.mobiloffice.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.app.auth.home.menu.accountdetails.navigation.accountDetails
 import com.app.auth.home.navigation.adjustmentScreen
 import com.app.auth.home.navigation.changePasswordScreen
 import com.app.auth.home.navigation.companyDisplayDuringLogin
@@ -44,6 +45,7 @@ fun MoNavHost(
         companyDisplayDuringLogin(navController)
         adjustmentScreen(navController)
         securitySCreen(navController)
+        accountDetails(navController)
     }
 }
 

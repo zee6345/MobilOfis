@@ -1,7 +1,15 @@
 package com.app.auth.home.menu.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
@@ -20,7 +28,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.data.DataProvider
+import com.app.auth.home.menu.accountdetails.navigation.accountDetailsRoute
 
 data class AccountListData(
     val title: String,
@@ -28,24 +39,27 @@ data class AccountListData(
 )
 
 @Composable
-fun AccountList() {
+fun AccountList(navController: NavController) {
     val accountList = remember { DataProvider.accountList }
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
     ) {
         items(items = accountList, itemContent = {
-            AccountListItem(list = it)
+            AccountListItem(list = it, navController)
         })
     }
 }
 
 @Composable
-fun AccountListItem(list: AccountListData) {
+fun AccountListItem(list: AccountListData, navController: NavController) {
 
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate(accountDetailsRoute)
+            },
         elevation = 1.dp,
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
@@ -116,5 +130,5 @@ fun AccountListItem(list: AccountListData) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TabPreview() {
-    AccountList()
+    AccountList(rememberNavController())
 }

@@ -59,11 +59,4 @@ fun SplashScreen(navController: NavController) {
     }
 
 
-    LaunchedEffect(Unit) {
-        // Delay for 2 seconds before navigating
-//        delay(40000)
-//        navController.navigate(loginNavigationRoute)
-    }
-
-
 }

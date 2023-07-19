@@ -1,4 +1,4 @@
-package com.app.auth.login
+package com.app.auth.home.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,13 +20,14 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.menu.CardMenuContent
 import com.app.auth.home.menu.component.TabLayoutMenu
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MenuScreen() {
+fun MenuScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -195,7 +196,7 @@ fun MenuScreen() {
                 .padding(horizontal = 12.dp)
         ) {
             CardMenuContent()
-            TabLayoutMenu()
+            TabLayoutMenu(navController)
 
         }
 
@@ -208,5 +209,5 @@ fun MenuScreen() {
 @Composable
 fun HomeScreenPreview() {
 //SimpleTabRow()
-    MenuScreen()
+    MenuScreen(rememberNavController())
 }

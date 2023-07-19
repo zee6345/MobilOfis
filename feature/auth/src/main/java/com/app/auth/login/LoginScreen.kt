@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -34,20 +36,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.login.components.alertdialog.CallTopAlertDialog
 import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginScreen(navController: NavController) {
+
     val (selected, setSelected) = remember { mutableStateOf(0) }
     val usernameState = remember { mutableStateOf("") }
     val paswdState = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
+    val showDialog = remember{ mutableStateOf(false) }
+    val showDialog2 = remember{ mutableStateOf(false) }
 
     BottomSheetScaffold(sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
@@ -94,6 +101,7 @@ fun LoginScreen(navController: NavController) {
                 BottomSheetItems(
                     R.drawable.ic_call_support, "Call Center"
                 )
+
 //                BottomSheetItems(
 //                    R.drawable.language, "Application Language"
 //                )
@@ -345,6 +353,21 @@ fun LoginScreen(navController: NavController) {
 
     ForgetPasswordModalBottomSheet(showForgetPassBottomSheetSheet)
 
+
+    LaunchedEffect(Unit) {
+        delay(1000)
+        showDialog.value = true
+    }
+
+    if (showDialog.value) {
+        CallTopAlertDialog(
+            backgroundColor = colorResource(R.color.background_card_blue),
+            cornerRadius = 12.dp,
+            title = "Attention!",
+            message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.",
+            onClose = { showDialog.value = false}
+        )
+    }
 }
 
 
@@ -388,8 +411,8 @@ fun LanguageOptions() {
 
             Box(
                 Modifier
-                    .width(36.sdp)
-                    .height(25.sdp)
+                    .width(32.sdp)
+                    .height(22.sdp)
                     .background(
                         color = if (isSelected) Color(0xFF203657) else Color(0xFFE7EEFC),
                         shape = RoundedCornerShape(size = 6.sdp)
