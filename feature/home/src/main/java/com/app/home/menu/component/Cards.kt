@@ -34,15 +34,18 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.home.data.CardFilters
 import com.app.home.data.CardsListData
 
 import com.app.home.data.DataProvider
+import com.app.home.menu.cards.navigation.homeToCardDetails
 import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
-fun CardsList() {
+fun CardsList(navController: NavController) {
 
     val cardsList = remember { DataProvider.cardsList }
     val cardFilters = remember { DataProvider.filtersList }
@@ -77,7 +80,9 @@ fun CardsList() {
             state = lazyListState,
         ) {
             items(items = cardsList, itemContent = {
-                CardsListItem(obj = it)
+                CardsListItem(obj = it){
+                    navController.navigate(homeToCardDetails)
+                }
             })
         }
 
@@ -88,11 +93,14 @@ fun CardsList() {
 
 
 @Composable
-fun CardsListItem(obj: CardsListData) {
+fun CardsListItem(obj: CardsListData, onCardClick:()->Unit) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                onCardClick()
+            },
         elevation = 1.dp,
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
@@ -258,5 +266,5 @@ private fun Filters() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun CardsPreview() {
-    CardsList()
+    CardsList(rememberNavController())
 }

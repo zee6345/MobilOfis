@@ -1,8 +1,13 @@
 package com.app.home.menu.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
@@ -15,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -30,12 +36,18 @@ fun TabLayoutMenu(navController: NavController) {
 
     val tabs = listOf(
         TabItem(title = "Account", screen = { AccountList(navController) }),
-        TabItem(title = "Cards", screen = { CardsList() }),
+        TabItem(title = "Cards", screen = { CardsList(navController) }),
         TabItem(title = "Loan", screen = { LoansList() }),
         TabItem(title = "Trust", screen = { TrustsList() })
     )
 
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        tabs.size
+    }
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -58,17 +70,30 @@ fun TabLayoutMenu(navController: NavController) {
             }
         }
         HorizontalPager(
-            pageCount = tabs.size, state = pagerState
-        ) {
-            tabs[pagerState.currentPage].screen()
-        }
+            modifier = Modifier,
+            state = pagerState,
+            pageSpacing = 0.dp,
+
+            userScrollEnabled = true,
+            reverseLayout = false,
+            contentPadding = PaddingValues(0.dp),
+            beyondBoundsPageCount = 0,
+            pageSize = PageSize.Fill,
+            key = null,
+            pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
+                Orientation.Horizontal
+            ),
+            pageContent = {
+                tabs[pagerState.currentPage].screen()
+            }
+        )
     }
 
 
 }
 
 
-@Preview(device = Devices.PIXEL_4)
+@Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun TabLayoutMenuPreview() {
     TabLayoutMenu(rememberNavController())

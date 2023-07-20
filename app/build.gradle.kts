@@ -71,17 +71,11 @@ dependencies {
 
     implementation (project (":core:designsystem"))
     implementation (project (":feature:auth" ))
-<<<<<<< HEAD
     implementation (project (":feature:adjustment" ))
     implementation (project (":feature:home" ))
     implementation (project (":feature:transfer" ))
 
 
-=======
-    implementation (project (":feature:home" ))
-    implementation (project (":feature:transfer" ))
-    implementation (project (":feature:adjustment" ))
->>>>>>> sprint_02
     implementation (Libs.core)
     implementation (Lifecycle.runtime)
     implementation (Compose.activity_compose)

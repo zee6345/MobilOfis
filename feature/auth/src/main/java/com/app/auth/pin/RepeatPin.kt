@@ -1,5 +1,6 @@
 package com.app.auth.pin
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -74,10 +75,12 @@ fun RepeatPin(navController: NavController) {
             PinInputView(navController, length = 5) { pin ->
                 enteredPin = pin
 
-                if (pin.length == 5) {
+                if (pin.isNotEmpty() && pin.length == 5) {
 
                     showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
                 }
+
+                Log.e("mTAG", "RepeatPin: $pin" )
             }
 
         }

@@ -165,17 +165,7 @@ fun KeyButton(
                         contentDescription = null,
                         modifier = Modifier
                             .size(64.dp)
-                            .padding(5.dp)
-//                            .clickable {
-//                                if (button == "fingerPrint" && screen == "PinScreen") {
-////                                    navController.navigate(resetPinNavigationRoute)
-//                                }
-//                                if(screen=="ResetPin") navController.navigate(successfulRegistration)
-//                                if (button == "fingerPrint" && screen == "Welcome") {
-////                                    navController.navigate(homeScreen)
-//                                }
-//                            }
-                        ,
+                            .padding(5.dp),
                         contentScale = ContentScale.Fit
                     )
                 } else {

@@ -15,6 +15,8 @@ import com.app.home.BottomNavItem
 import com.app.home.menu.MenuScreen
 import com.app.home.menu.accountdetails.AccountInformation
 import com.app.home.menu.accountdetails.navigation.accountDetailsRoute
+import com.app.home.menu.cards.CardDetails
+import com.app.home.menu.cards.navigation.homeToCardDetails
 import com.app.transfer.TransferScreen
 
 @Composable
@@ -26,7 +28,7 @@ fun NavigationGraph(navController: NavHostController) {
         }
 
         composable(BottomNavItem.Transfers.screen_route) {
-            TransferScreen()
+            TransferScreen(navController)
         }
 
         composable(BottomNavItem.Adjustments.screen_route) {
@@ -43,6 +45,10 @@ fun NavigationGraph(navController: NavHostController) {
 
         composable(accountDetailsRoute) {
             AccountInformation(navController = navController)
+        }
+
+        composable(homeToCardDetails) {
+            CardDetails(navController = navController)
         }
 
     }

@@ -5,9 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,15 +81,15 @@ fun FingerPrintModalBottomSheet(
                     .padding(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                androidx.compose.material.Button(
+                Button(
                     onClick = {
                         onClickThen()
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
-                        .background(Color(0xFFE7F0F9), RoundedCornerShape(12.dp))
+                        .background(Color(0xFFE7EEFC), RoundedCornerShape(12.dp))
                 ) {
                     Text(
                         "Then", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
@@ -92,15 +97,15 @@ fun FingerPrintModalBottomSheet(
                         )
                     )
                 }
-                androidx.compose.material.Button(
+                Button(
                     onClick = {
                         onClickYes()
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
-                        .background(Color(0xFF203657), RoundedCornerShape(12.dp))
+                        .background(Color(0xFF203657), RoundedCornerShape(12.dp)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
                     Text(
                         "Yes", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(

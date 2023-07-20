@@ -1,4 +1,4 @@
-package com.app.auth.login
+package com.app.auth.login.components.bottomSheet
 
 
 import androidx.compose.foundation.layout.Box
