@@ -14,7 +14,7 @@ android {
 //        versionName = "1.0"
         minSdk = Android.minSdk
         targetSdk = Android.targetSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = Android.testRunner
     }
 
     buildTypes {
@@ -43,6 +43,7 @@ android {
 
 dependencies {
 
+<<<<<<< HEAD
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -57,25 +58,47 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.05.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
+=======
+    implementation(Kotlin.coreKtx)
+    implementation(Others.appCompat)
+    implementation(Others.material)
+    testImplementation(UnitTest.junit)
+    androidTestImplementation(UnitTest.JUNIT_TEST)
+    androidTestImplementation(UnitTest.Espresso)
+    implementation (Lifecycle.runtime)
+    implementation (Compose.activity_compose)
+    implementation (platform(Compose.composeBom))
+    implementation (Compose.composeUi)
+    implementation (Compose.graphUi)
+    implementation (Compose.compose_tooling_preview)
+    implementation (Compose.material3)
+    implementation(Lifecycle.runtime)
+    implementation(Compose.activity_compose)
+>>>>>>> sprint_02
 
     // Choose one of the following:
     // Material Design 3
-    implementation("androidx.compose.material3:material3")
+//    implementation("androidx.compose.material3:material3")
     // or Material Design 2
-    implementation("androidx.compose.material:material")
+    implementation(Compose.normal_material)
     // or skip Material Design and build directly on top of foundational components
-    implementation("androidx.compose.foundation:foundation")
+    implementation(Compose.compose_foundation)
     // or only import the main APIs for the underlying toolkit systems,
     // such as input and measurement/layout
-    implementation("androidx.compose.ui:ui")
+    implementation(Compose.composeUi)
 
     // Android Studio Preview support
+<<<<<<< HEAD
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
+=======
+    implementation(Compose.compose_tooling_preview)
+    debugImplementation(Compose.composeTooling)
+>>>>>>> sprint_02
 
     //Navigation
-    implementation ("androidx.navigation:navigation-compose:2.6.0")
+    implementation (Compose.composeNavigation)
     implementation(Others.sdp_compose)
     //Constraint Layout
-    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation (Compose.compose_constraints)
 }

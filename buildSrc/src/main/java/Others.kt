@@ -22,6 +22,10 @@ private const val exoversion = "2.18.2"
     private const val paypalVersion = "0.8.7"
     private const val googleMapVersion = "18.1.0"
 
+    //appcompat
+    const val appCompat ="androidx.appcompat:appcompat:1.6.1"
+    const val material ="com.google.android.material:material:1.9.0"
+
     //ExoPlayer
     const val exoplayer = "com.google.android.exoplayer:exoplayer:$exoversion"
 

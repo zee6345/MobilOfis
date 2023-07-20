@@ -1,4 +1,4 @@
-package com.sky.adjustment
+package com.app.adjustment
 
 import org.junit.Test
 

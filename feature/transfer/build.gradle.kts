@@ -10,7 +10,7 @@ android {
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = Android.testRunner
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -24,11 +24,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+<<<<<<< HEAD
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -79,4 +80,22 @@ dependencies {
 
 
 
+=======
+    implementation(Kotlin.coreKtx)
+    implementation(Kotlin.coreKtx)
+    implementation(Others.appCompat)
+    implementation(Others.material)
+    testImplementation(UnitTest.junit)
+    androidTestImplementation(UnitTest.JUNIT_TEST)
+    androidTestImplementation(UnitTest.Espresso)
+    implementation (Lifecycle.runtime)
+    implementation (Compose.activity_compose)
+    implementation (platform(Compose.composeBom))
+    implementation (Compose.composeUi)
+    implementation (Compose.graphUi)
+    implementation (Compose.compose_tooling_preview)
+    implementation (Compose.material3)
+    implementation(Lifecycle.runtime)
+    implementation(Compose.activity_compose)
+>>>>>>> sprint_02
 }
