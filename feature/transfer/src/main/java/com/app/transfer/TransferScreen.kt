@@ -23,6 +23,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,14 +39,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.transfer.components.AccountBottomSheet
+import com.app.transfer.components.CurrencyBottomSheet
+import com.app.transfer.components.DateBottomSheet
+import com.app.transfer.components.StatusBottomSheet
+import com.app.transfer.components.TypeBottomSheet
 import com.app.transfer.transferDetails.FiltersTopRow
 import com.app.transfer.transferDetails.ItemClickedCallback
 import com.app.transfer.transferDetails.TransferTopMenu
 import ir.kaaveh.sdpcompose.sdp
 
+lateinit var showDateBottomSheet: MutableState<Boolean>
+lateinit var showFromAccountBottomSheet: MutableState<Boolean>
+lateinit var showStatusBottomSheet: MutableState<Boolean>
+lateinit var showTypeBottomSheet: MutableState<Boolean>
+lateinit var showAmountBottomSheet: MutableState<Boolean>
+lateinit var showCurrencyBottomSheet: MutableState<Boolean>
+
 @Composable
 fun TransferScreen(navController: NavController) {
 
+     showDateBottomSheet = rememberSaveable { mutableStateOf(false) }
+     showFromAccountBottomSheet = rememberSaveable { mutableStateOf(false) }
+     showStatusBottomSheet = rememberSaveable { mutableStateOf(false) }
+     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
+     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
+     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,6 +134,13 @@ fun TransferScreen(navController: NavController) {
 
     }
 
+    DateBottomSheet(showDateBottomSheet)
+    AccountBottomSheet(showFromAccountBottomSheet)
+    StatusBottomSheet(showStatusBottomSheet)
+    TypeBottomSheet(showTypeBottomSheet)
+//    AmountBottomSheet(showAmountBottomSheet)
+    CurrencyBottomSheet(showCurrencyBottomSheet)
+
 }
 
 @Composable
@@ -124,9 +152,21 @@ fun TopMenuItem() {
 fun FilterListMenu() {
     FiltersTopRow(object : ItemClickedCallback {
         override fun itemClicked(id: String) {
+        if (id.equals("date",true)){
+            showDateBottomSheet.value = !showDateBottomSheet.value
+        }else if (id.equals("type",true)){
+            showTypeBottomSheet.value = !showTypeBottomSheet.value
+        }else if (id.equals("account",true)){
+            showFromAccountBottomSheet.value = !showFromAccountBottomSheet.value
+        }else if (id.equals("amount",true)){
+            showAmountBottomSheet.value = !showAmountBottomSheet.value
+        }else if (id.equals("currency",true)){
+            showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
+        }else if (id.equals("status",true)){
+            showStatusBottomSheet.value = !showStatusBottomSheet.value
 
         }
-
+        }
     })
 }
 
