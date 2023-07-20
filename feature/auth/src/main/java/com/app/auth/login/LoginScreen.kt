@@ -7,9 +7,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,7 +62,7 @@ fun LoginScreen(navController: NavController) {
     val paswdState = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     val showDialog = remember{ mutableStateOf(false) }
-    val showDialog2 = remember{ mutableStateOf(false) }
+
 
     BottomSheetScaffold(sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
@@ -331,8 +339,7 @@ fun LoginScreen(navController: NavController) {
                     onClick = {
                         navController.navigate(otpNavigationRoute)
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
-
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color(0xFF203657), RoundedCornerShape(8.dp))

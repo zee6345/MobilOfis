@@ -30,10 +30,23 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    buildFeatures {
+        compose  = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion =  "1.4.3"
+    }
 }
 
 dependencies {
-    implementation(Kotlin.coreKtx)
+
+//    implementation (project (":core:designsystem"))
+//    implementation (project (":feature:auth" ))
+//    implementation (project (":feature:adjustment" ))
+//    implementation (project (":feature:home" ))
+
+
     implementation(Kotlin.coreKtx)
     implementation(Others.appCompat)
     implementation(Others.material)
@@ -49,4 +62,19 @@ dependencies {
     implementation (Compose.material3)
     implementation(Lifecycle.runtime)
     implementation(Compose.activity_compose)
+
+    implementation(Compose.normal_material)
+//    implementation(Compose.compose_foundation)
+    implementation(Compose.composeUi)
+    implementation(Compose.compose_tooling_preview)
+    debugImplementation(Compose.composeTooling)
+
+    //Navigation
+    implementation (Compose.composeNavigation)
+    implementation(Others.sdp_compose)
+    //Constraint Layout
+    implementation (Compose.compose_constraints)
+
+//    implementation (Compose.compose_pager)
+
 }

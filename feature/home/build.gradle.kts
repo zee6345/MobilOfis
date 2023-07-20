@@ -43,6 +43,12 @@ android {
 
 dependencies {
 
+//    implementation (project (":core:designsystem"))
+//    implementation (project (":feature:auth" ))
+    implementation (project (":feature:adjustment" ))
+    implementation (project (":feature:transfer" ))
+
+
     implementation(Kotlin.coreKtx)
     implementation(Others.appCompat)
     implementation(Others.material)
@@ -59,24 +65,21 @@ dependencies {
     implementation(Lifecycle.runtime)
     implementation(Compose.activity_compose)
 
-    // Choose one of the following:
-    // Material Design 3
-//    implementation("androidx.compose.material3:material3")
-    // or Material Design 2
     implementation(Compose.normal_material)
-    // or skip Material Design and build directly on top of foundational components
-    implementation(Compose.compose_foundation)
-    // or only import the main APIs for the underlying toolkit systems,
-    // such as input and measurement/layout
+//    implementation(Compose.compose_foundation)
     implementation(Compose.composeUi)
-
-    // Android Studio Preview support
     implementation(Compose.compose_tooling_preview)
     debugImplementation(Compose.composeTooling)
+
 
     //Navigation
     implementation (Compose.composeNavigation)
     implementation(Others.sdp_compose)
     //Constraint Layout
     implementation (Compose.compose_constraints)
+
+    implementation ("androidx.compose.foundation:foundation:1.5.0-alpha04")
+
+
+
 }

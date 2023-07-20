@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.home.navigation.homeScreenRoute
+import com.app.home.navigation.homeScreenRoute
 
 
 @Composable
@@ -72,7 +72,7 @@ fun WelcomePinScreen(navController: NavController) {
                     enteredPin = pin
 
                     if (pin.length == 5) {
-                        navController.navigate(homeScreenRoute)
+                        navController.navigate(com.app.home.navigation.homeScreenRoute)
                     }
                 }
 

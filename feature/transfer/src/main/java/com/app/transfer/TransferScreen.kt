@@ -1,0 +1,254 @@
+package com.app.transfer
+
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.app.transfer.transferDetails.FiltersTopRow
+import com.app.transfer.transferDetails.ItemClickedCallback
+import com.app.transfer.transferDetails.TransferTopMenu
+import ir.kaaveh.sdpcompose.sdp
+
+@Composable
+fun TransferScreen(navController: NavController) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(
+                rememberScrollState(), enabled = true
+            )
+            .background(color = Color(0xFFF3F7FA))
+    ) {
+
+        Surface(
+            modifier = Modifier
+                .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
+                .fillMaxWidth()
+                .weight(0.1f),
+            color = Color(0xFF203657),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(15.dp),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            navController.popBackStack()
+                        },
+                    contentDescription = ""
+                )
+                Text(
+                    text = "Transfers",
+                    style = TextStyle(color = Color.White, fontSize = 18.sp),
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(horizontal = 8.dp)
+                )
+
+
+            }
+        }
+
+
+        Column(
+            modifier = Modifier
+                .padding(10.dp)
+                .weight(0.9f)
+                .padding(horizontal = 10.dp)
+                .verticalScroll(
+                    rememberScrollState(), enabled = true
+                ),
+
+        ) {
+
+            TopMenuItem()
+
+            FilterListMenu()
+
+            TransactionHistory()
+            TransactionHistory()
+            TransactionHistory()
+            TransactionHistory()
+            TransactionHistory()
+
+        }
+
+    }
+
+}
+
+@Composable
+fun TopMenuItem() {
+    TransferTopMenu()
+}
+
+@Composable
+fun FilterListMenu() {
+    FiltersTopRow(object : ItemClickedCallback {
+        override fun itemClicked(id: String) {
+
+        }
+
+    })
+}
+
+@Composable
+fun TransactionHistory() {
+    Card(
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.sdp),
+        backgroundColor = Color.White
+    ) {
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.sdp, vertical = 5.sdp)
+
+        ) {
+
+            Column {
+
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "GARABAG REVIVAL FUND",
+
+                        )
+                    Text(
+                        text = "999 000 000.00 ₼",
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Row {
+                        Box(
+                            Modifier
+                                .background(
+                                    Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
+                                )
+                                .padding(vertical = 3.sdp, horizontal = 8.sdp)
+                        ) {
+                            Text(
+                                text = "AniPay - Non-budget", style = TextStyle(
+                                    color = Color(0xFF859DB5),
+
+                                    )
+                            )
+                        }
+
+                        Spacer(
+                            Modifier.size(width = 5.dp, height = 1.dp)
+                        )
+
+                        Box(
+                            Modifier
+                                .background(
+                                    Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
+                                )
+                                .padding(vertical = 3.sdp, horizontal = 8.sdp)
+                        ) {
+                            Text(
+                                text = "18:24", style = TextStyle(
+                                    color = Color(0xFF859DB5),
+
+                                    )
+                            )
+                        }
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+
+                        Box(modifier = Modifier
+                            .padding(2.dp)
+                            .width(10.dp)
+                            .height(10.dp)
+                            .drawBehind {
+                                drawCircle(
+                                    color = Color(0xFF0FBF1B), radius = 5.dp.toPx()
+                                )
+                            }
+                            .align(Alignment.CenterVertically)) {
+
+                        }
+
+                        Text(
+                            text = "Execution done",
+                        )
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        }
+
+
+    }
+}
+
+@Preview(device = Devices.PIXEL_4)
+@Composable
+fun TransferScreenPreview() {
+    TransferScreen(rememberNavController())
+}

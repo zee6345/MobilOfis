@@ -1,14 +1,27 @@
 package com.app.auth.login.components.bottomSheet
 
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+//import androidx.compose.material.BottomSheetState
+//import androidx.compose.material.BottomSheetValue
+//import androidx.compose.material.ModalBottomSheetValue
+//import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberBottomSheetState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -46,37 +59,37 @@ fun InformationBottomSheetScreen() {
 //    }
 
 //    InformationAndContentModalBottomSheet(showInformationBottomSheet)
-    InformationAndContentModalBottomSheet()
+//    InformationAndContentModalBottomSheet()
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
-@Composable
-fun InformationAndContentModalBottomSheet() {
-//    if (showModalBottomSheet.value)
-//    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val sheetState = rememberModalBottomSheetState(false)
-
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = {  },
-    ) {
-        Column(Modifier.fillMaxWidth()) {
-            Text(
-                text = "information And Content",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                fontWeight = FontWeight.Bold
-            )
-
-            BottomSheetItems(R.drawable.location, "Branches and ATMs")
-            BottomSheetItems(R.drawable.tariffs_icon, "Tariffs")
-            BottomSheetItems(R.drawable.whatsapp_icon, "WhatsApp support")
-            BottomSheetItems(R.drawable.call_icon, "Call Center")
-            BottomSheetItems(R.drawable.language, "Application Language")
-        }
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+//@Composable
+//fun InformationAndContentModalBottomSheet() {
+////    if (showModalBottomSheet.value)
+////    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+//    val sheetState = rememberModalBottomSheetState(false)
+//
+//    ModalBottomSheet(
+//        sheetState = sheetState,
+//        onDismissRequest = {  },
+//    ) {
+//        Column(Modifier.fillMaxWidth()) {
+//            Text(
+//                text = "information And Content",
+//                textAlign = TextAlign.Center,
+//                modifier = Modifier.fillMaxWidth(),
+//                fontWeight = FontWeight.Bold
+//            )
+//
+//            BottomSheetItems(R.drawable.location, "Branches and ATMs")
+//            BottomSheetItems(R.drawable.tariffs_icon, "Tariffs")
+//            BottomSheetItems(R.drawable.whatsapp_icon, "WhatsApp support")
+//            BottomSheetItems(R.drawable.call_icon, "Call Center")
+//            BottomSheetItems(R.drawable.language, "Application Language")
+//        }
+//    }
+//}
 
 
 fun Modifier.dashedBorder(strokeWidth: Dp, color: Color) = composed(factory = {
@@ -129,5 +142,5 @@ private fun BottomSheetItems(iconRes: Int, title: String) {
 @Composable
 fun preview() {
 //    InformationBottomSheet()
-    InformationBottomSheetScreen()
+//    InformationBottomSheetScreen()
 }

@@ -3,12 +3,11 @@ package com.app.mobiloffice.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import com.app.auth.home.menu.accountdetails.navigation.accountDetails
-import com.app.auth.home.navigation.adjustmentScreen
-import com.app.auth.home.navigation.changePasswordScreen
-import com.app.auth.home.navigation.companyDisplayDuringLogin
-import com.app.auth.home.navigation.homeScreen
-import com.app.auth.home.navigation.securitySCreen
+import com.app.adjustment.navigation.adjustmentScreen
+import com.app.adjustment.navigation.changePasswordScreen
+import com.app.adjustment.navigation.companyDisplayDuringLogin
+import com.app.adjustment.navigation.securitySCreen
+
 import com.app.auth.login.navigation.loginScreen
 import com.app.auth.login.navigation.otpScreen
 import com.app.auth.pin.navigation.pinScreen
@@ -17,6 +16,9 @@ import com.app.auth.pin.navigation.successfulRegistrationScreen
 import com.app.auth.pin.navigation.welcomePin
 import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.auth.splash.navigation.splashScreen
+import com.app.home.menu.accountdetails.navigation.accountDetails
+import com.app.home.menu.cards.navigation.cardDetailsNavigation
+import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
 
 
@@ -46,6 +48,7 @@ fun MoNavHost(
         adjustmentScreen(navController)
         securitySCreen(navController)
         accountDetails(navController)
+        cardDetailsNavigation(navController)
     }
 }
 
