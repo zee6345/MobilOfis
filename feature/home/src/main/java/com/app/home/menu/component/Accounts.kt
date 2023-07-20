@@ -32,7 +32,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.data.DataProvider
 
-import com.app.home.menu.accountdetails.navigation.accountDetailsRoute
+import com.app.home.menu.account.navigation.accountDetailsRoute
 
 data class AccountListData(
     val title: String,

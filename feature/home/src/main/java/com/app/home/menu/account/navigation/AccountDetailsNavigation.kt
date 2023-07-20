@@ -1,9 +1,9 @@
-package com.app.home.menu.accountdetails.navigation
+package com.app.home.menu.account.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.app.home.menu.accountdetails.AccountInformation
+import com.app.home.menu.account.AccountInformation
 
 const val accountDetailsRoute = "accountDetailsInformation"
 

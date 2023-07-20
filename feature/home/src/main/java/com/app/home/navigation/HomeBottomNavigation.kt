@@ -13,8 +13,8 @@ import com.app.adjustment.navigation.securityScreen
 import com.app.home.BottomNavItem
 
 import com.app.home.menu.MenuScreen
-import com.app.home.menu.accountdetails.AccountInformation
-import com.app.home.menu.accountdetails.navigation.accountDetailsRoute
+import com.app.home.menu.account.AccountInformation
+import com.app.home.menu.account.navigation.accountDetailsRoute
 import com.app.home.menu.cards.CardDetails
 import com.app.home.menu.cards.navigation.homeToCardDetails
 import com.app.transfer.TransferScreen

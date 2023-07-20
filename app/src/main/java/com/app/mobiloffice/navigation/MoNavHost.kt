@@ -16,7 +16,7 @@ import com.app.auth.pin.navigation.successfulRegistrationScreen
 import com.app.auth.pin.navigation.welcomePin
 import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.auth.splash.navigation.splashScreen
-import com.app.home.menu.accountdetails.navigation.accountDetails
+import com.app.home.menu.account.navigation.accountDetails
 import com.app.home.menu.cards.navigation.cardDetailsNavigation
 import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
