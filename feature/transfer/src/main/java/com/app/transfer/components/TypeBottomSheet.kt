@@ -83,7 +83,7 @@ fun TypeBottomSheet(showStatusBottomSheet: MutableState<Boolean>){
 
             Text(
                 text = "Type",
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 14.sdp),

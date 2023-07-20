@@ -141,7 +141,7 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
         ) {
             Text(
                 text = menuItem.title,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 14.sdp),
@@ -163,7 +163,7 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
         }
         Text(
             text = menuItem.subTitle,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 14.sdp),

@@ -81,7 +81,7 @@ fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
 
             Text(
                 text = "Type",
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 14.sdp),
@@ -119,7 +119,7 @@ fun CurrencyMenuItem(menuItem:CurrencyModel){
     ) {
         Text(
             text = menuItem.title,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 14.sdp),
