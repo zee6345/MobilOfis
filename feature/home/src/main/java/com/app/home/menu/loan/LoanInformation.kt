@@ -1,4 +1,4 @@
-package com.app.home.menu.cards
+package com.app.home.menu.loan
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,10 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -28,11 +25,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,16 +41,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.data.CardFilters
-import com.app.home.data.DataProvider
 import com.app.home.menu.cards.components.BusinessCardOptionSheet
 import com.app.home.menu.component.dashedBorder
+
 import ir.kaaveh.sdpcompose.sdp
 
-
 @Composable
-fun CardDetails(navController: NavController) {
-
+fun LoanInformationDetails(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,27 +108,27 @@ fun CardDetails(navController: NavController) {
                     MainContent(navController)
                 }
 
-                item {
-                    Text(
-                        text = "Additional cards",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-                    )
+//                item {
+//                    Text(
+//                        text = "Additional cards",
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//                    )
+//
+//                }
 
-                }
-
-                item {
-                    CardDetailsFilters(navController)
-                }
-
-                item {
-
-                    repeat(2) {
-                        AdditionalCards(navController)
-                    }
-
-                }
+//                item {
+//                    CardDetailsFilters(navController)
+//                }
+//
+//                item {
+//
+//                    repeat(2) {
+//                        AdditionalCards(navController)
+//                    }
+//
+//                }
             }
 
         }
@@ -168,26 +162,13 @@ private fun MainContent(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Row {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_master_card),
-                        contentDescription = "",
-                        modifier = Modifier.size(width = 36.dp, height = 24.dp)
+                Text(
+                    text = "SME loan", style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
-
-                    Spacer(
-                        Modifier.size(width = 5.dp, height = 1.dp)
-                    )
-
-                    Text(
-                        text = "Business Plus", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium))
-                        )
-                    )
-
-                }
+                )
 
 
                 Image(
@@ -201,66 +182,241 @@ private fun MainContent(navController: NavController) {
             }
 
 
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "N of the loan agreement", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "002LCAR201270001", style = TextStyle(
+
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.5f)
+
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Currency", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "AZN", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+            }
+
 
             Row(
                 Modifier
                     .fillMaxWidth()
                     .dashedBorder(3.dp, Color(0xFFE7EEFC))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-
             ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
 
-                Row {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_master_card_icon),
-                        contentDescription = "",
-                        modifier = Modifier.size(width = 36.dp, height = 24.dp)
-                    )
-
-                    Spacer(
-                        Modifier.size(width = 5.dp, height = 1.dp)
-                    )
+                ) {
 
                     Text(
-                        text = "5235 2222 5466 8339", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium))
-                        )
-                    )
-
-                }
-
-
-                Row {
-
-                    Text(
-                        text = "Additional card:", style = TextStyle(
-                            fontSize = 14.sp,
+                        text = "Status", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
-                            fontFamily = FontFamily(
-                                Font(R.font.roboto_medium),
+
+                            )
+                    )
+
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Box(
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .width(10.dp)
+                                .height(10.dp)
+                                .drawBehind {
+                                    drawCircle(
+                                        color = Color(0xFF0FBF1B), radius = 5.dp.toPx()
+                                    )
+                                }
+                        ) {
+
+                        }
+
+                        Text(
+                            text = "Not in delay", style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                color = Color(0xFF223142),
 
                                 )
                         )
-                    )
 
-                    Spacer(
-                        Modifier.size(width = 5.dp, height = 1.dp)
+                    }
+
+
+                }
+
+
+            }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Next payment date", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
                     )
 
                     Text(
-                        text = "2", style = TextStyle(
+                        text = "-", style = TextStyle(
+
                             fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium))
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
                         )
                     )
                 }
 
+                Column(
+                    Modifier
+                        .weight(0.5f)
 
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Next payment fee", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "0.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+            }
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Paid/Total Months", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "24/24", style = TextStyle(
+
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.5f)
+
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Remaining principal amount", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "0.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
             }
 
 
@@ -273,12 +429,13 @@ private fun MainContent(navController: NavController) {
 
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
+
             ) {
 
                 Column {
 
                     Text(
-                        text = "User", style = TextStyle(
+                        text = "Branch", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -286,7 +443,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "Elchin Huseynov", style = TextStyle(
+                        text = "Customer Service Department", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -296,6 +453,78 @@ private fun MainContent(navController: NavController) {
 
 
             }
+
+
+
+
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Loan amount", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "24/24", style = TextStyle(
+
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.5f)
+
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Remaining principal amount", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "0.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+            }
+
+
+
+
+
+
+
+
 
             Row(
                 Modifier
@@ -459,295 +688,12 @@ private fun MainContent(navController: NavController) {
         }
     }
 
-    BusinessCardOptionSheet(businessCardOptions)
-
-
-}
-
-@Composable
-private fun CardDetailsFilters(navController: NavController) {
-
-    val cardFilters = remember { DataProvider.filtersList }
-
-    LazyRow(
-        contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.dp)
-    ) {
-        items(items = cardFilters, itemContent = {
-            Row {
-                FilterItem(filter = it)
-                Box(modifier = Modifier.padding(end = 5.sdp))
-            }
-        })
-    }
-
-
-}
-
-@Composable
-private fun FilterItem(filter: CardFilters) {
-    Card(
-        modifier = Modifier
-            .padding(vertical = 5.dp)
-            .clickable {
-
-            },
-        elevation = 1.dp,
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(corner = CornerSize(8.dp))
-
-    ) {
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(6.sdp)
-        ) {
-
-            Text(
-                text = filter.filterName, style = TextStyle(fontSize = 12.sp)
-            )
-
-            Image(
-                painter = painterResource(id = filter.filterIcon),
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(1.dp)
-                    .width(14.dp)
-                    .height(14.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun AdditionalCards(navController: NavController) {
-
-    Card(
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 5.sdp, horizontal = 10.sdp),
-        backgroundColor = Color(0xFFE9ECF5)
-    ) {
-        Column(
-
-        ) {
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Row {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_visa_business),
-                        contentDescription = "",
-                        modifier = Modifier.size(width = 36.dp, height = 24.dp),
-                    )
-
-                    Spacer(
-                        Modifier.size(width = 5.dp, height = 1.dp)
-                    )
-
-                    Text(
-                        text = "Additional Business Plus", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium))
-                        )
-                    )
-
-                }
-
-
-                Row() {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_options),
-                        contentDescription = "",
-                        Modifier.size(height = 28.dp, width = 28.dp)
-                    )
-
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_option_up),
-                        contentDescription = "",
-                        Modifier.size(height = 28.dp, width = 28.dp)
-                    )
-
-                }
-
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Row {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_master_card_icon),
-                        contentDescription = "",
-                        modifier = Modifier.size(width = 36.dp, height = 24.dp)
-                    )
-
-                    Spacer(
-                        Modifier.size(width = 5.dp, height = 1.dp)
-                    )
-
-                    Text(
-                        text = "5235 2222 5466 8339", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium))
-                        )
-                    )
-
-                }
-
-
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Column {
-
-                    Text(
-                        text = "User", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "Elchin Huseynov", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-
-            }
-
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Status", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "Active", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Currency", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "AZN", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "End date", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "31.03.2023", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-
-                            )
-                    )
-                }
-            }
-
-
-        }
-    }
+//    BusinessCardOptionSheet(businessCardOptions)
 
 }
 
 @Preview
 @Composable
-fun PreviewCardDetails() {
-    CardDetails(navController = rememberNavController())
+fun PreviewLoadInformation(){
+    LoanInformationDetails(navController = rememberNavController())
 }

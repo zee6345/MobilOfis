@@ -7,24 +7,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,12 +54,14 @@ fun LoginScreen(navController: NavController) {
     val usernameState = remember { mutableStateOf("") }
     val paswdState = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
-    val showDialog = remember{ mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
 
 
-    BottomSheetScaffold(sheetPeekHeight = 50.sdp,
+    BottomSheetScaffold(
+        sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetContent = {
+
             Column(Modifier.fillMaxWidth()) {
 
                 Spacer(modifier = Modifier.padding(top = 10.sdp))
@@ -88,7 +83,7 @@ fun LoginScreen(navController: NavController) {
                 }
 
 
-                androidx.compose.material3.Text(
+                Text(
                     text = "information And Content",
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -133,7 +128,7 @@ fun LoginScreen(navController: NavController) {
                             .align(Alignment.CenterVertically),
                         contentDescription = ""
                     )
-                    androidx.compose.material3.Text(
+                    Text(
                         text = "Application Language",
                         modifier = Modifier.padding(vertical = 12.dp)
                     )
@@ -177,81 +172,7 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-                TabRow(
-                    selectedTabIndex = selected,
-                    indicator = {},
-                    divider = {},
-                    modifier = Modifier.padding(bottom = 16.dp)
-                ) {
-                    Tab(selectedContentColor = Color.Cyan, selected = selected == 0, onClick = {
-                        setSelected(0)
-                    }) {
-
-                        Box(contentAlignment = Alignment.Center) {
-                            androidx.compose.animation.AnimatedVisibility(visible = selected == 0) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(
-                                            shape = RoundedCornerShape(10.dp),
-                                        )
-                                        .background(
-                                            color = Color(0xFF203657),
-                                        )
-                                )
-                            }
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Login",
-                                color = if (selected == 0) Color.White else Color.Black
-                            )
-                        }
-
-
-                    }
-                    Tab(selected = selected == 1, onClick = { setSelected(1) }) {
-                        Box(contentAlignment = Alignment.Center) {
-                            androidx.compose.animation.AnimatedVisibility(visible = selected == 1) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(
-                                            shape = RoundedCornerShape(10.dp),
-                                        )
-                                        .background(
-                                            color = Color(0xFF203657),
-                                        )
-                                )
-                            }
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Google",
-                                color = if (selected == 1) Color.White else Color.Black
-                            )
-                        }
-                    }
-                    Tab(selected = selected == 2, onClick = { setSelected(2) }) {
-                        Box(contentAlignment = Alignment.Center) {
-                            androidx.compose.animation.AnimatedVisibility(visible = selected == 2) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(
-                                            shape = RoundedCornerShape(10.dp),
-                                        )
-                                        .background(
-                                            color = Color(0xFF203657),
-                                        )
-                                )
-                            }
-                            Text(
-                                modifier = Modifier.padding(12.dp),
-                                text = "Easy Signature",
-                                color = if (selected == 2) Color.White else Color.Black
-                            )
-                        }
-                    }
-                }
+                LoginTabsRow(selected, setSelected)
 
 
                 OutlinedTextField(
@@ -327,7 +248,8 @@ fun LoginScreen(navController: NavController) {
                         ClickableText(modifier = Modifier.padding(5.dp),
                             text = AnnotatedString(text = "Forgot your password?"),
                             onClick = {
-                                showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
+                                showForgetPassBottomSheetSheet.value =
+                                    !showForgetPassBottomSheetSheet.value
                             })
                     }
 
@@ -372,8 +294,89 @@ fun LoginScreen(navController: NavController) {
             cornerRadius = 12.dp,
             title = "Attention!",
             message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.",
-            onClose = { showDialog.value = false}
+            onClose = { showDialog.value = false }
         )
+    }
+}
+
+@Composable
+fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
+    TabRow(
+        selectedTabIndex = selected,
+        indicator = {},
+        divider = {},
+        modifier = Modifier.padding(bottom = 16.dp)
+    ) {
+        Tab(
+            selectedContentColor = Color.Cyan,
+            selected = selected == 0,
+            onClick = {
+                setSelected(0)
+            }) {
+
+            Box(contentAlignment = Alignment.Center) {
+                androidx.compose.animation.AnimatedVisibility(visible = selected == 0) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .background(color = Color(0xFF203657))
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = "Login",
+                    style = TextStyle(fontSize = 12.sp),
+                    color = if (selected == 0) Color.White else Color.Black
+                )
+            }
+
+
+        }
+        Tab(selected = selected == 1, onClick = { setSelected(1) }) {
+            Box(contentAlignment = Alignment.Center) {
+                androidx.compose.animation.AnimatedVisibility(visible = selected == 1) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(
+                                shape = RoundedCornerShape(10.dp),
+                            )
+                            .background(
+                                color = Color(0xFF203657),
+                            )
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = "Google",
+                    style = TextStyle(fontSize = 12.sp),
+                    color = if (selected == 1) Color.White else Color.Black
+                )
+            }
+        }
+        Tab(selected = selected == 2, onClick = { setSelected(2) }) {
+            Box(contentAlignment = Alignment.Center) {
+                androidx.compose.animation.AnimatedVisibility(visible = selected == 2) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(
+                                shape = RoundedCornerShape(10.dp),
+                            )
+                            .background(
+                                color = Color(0xFF203657),
+                            )
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = "Easy Signature",
+                    style = TextStyle(fontSize = 12.sp),
+                    color = if (selected == 2) Color.White else Color.Black
+                )
+            }
+        }
     }
 }
 
@@ -382,7 +385,7 @@ fun LoginScreen(navController: NavController) {
 private fun BottomSheetItems(iconRes: Int, title: String) {
     Row(
         modifier = Modifier
-            .padding(top = 10.sdp, start = 16.sdp)
+            .padding(top = 5.sdp, start = 16.sdp)
             .dashedBorder(
                 3.sdp, Color(0xFFE7EEFC)
             )
@@ -398,53 +401,61 @@ private fun BottomSheetItems(iconRes: Int, title: String) {
                 .align(Alignment.CenterVertically),
             contentDescription = ""
         )
-        androidx.compose.material3.Text(text = title, modifier = Modifier.padding(vertical = 12.dp))
+        Text(text = title, modifier = Modifier.padding(vertical = 12.dp))
 
     }
 }
 
-
 @Composable
-fun LanguageOptions() {
-    val languageOptions = listOf("AZ", "EN", "RU")
-    var selectedLanguage by remember { mutableStateOf(languageOptions[0]) }
+private fun LanguageOptions() {
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        languageOptions.forEach { language ->
-            val isSelected = language == selectedLanguage
+    val selectedBoxIndex = remember { mutableStateOf(-1) }
 
-            Box(
-                Modifier
-                    .width(32.sdp)
-                    .height(22.sdp)
-                    .background(
-                        color = if (isSelected) Color(0xFF203657) else Color(0xFFE7EEFC),
-                        shape = RoundedCornerShape(size = 6.sdp)
-                    )
-                    .clickable { selectedLanguage = language }
-                    .align(Alignment.CenterVertically)
-
-            ) {
-                Text(
-                    language,
-                    color = if (isSelected) Color.White else Color(0xFF203657),
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 4.sdp)
+    Row() {
+        Box(modifier = Modifier
+            .padding(6.dp)
+            .background(
+                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { selectedBoxIndex.value = 0 }) {
+            androidx.compose.material.Text(
+                text = "AZ", modifier = Modifier.padding(6.dp), style = TextStyle(
+                    if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
+                    fontSize = 12.sp
                 )
-            }
-
-            Spacer(modifier = Modifier.width(2.sdp))
-
+            )
+        }
+        Box(modifier = Modifier
+            .padding(6.dp)
+            .background(
+                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { selectedBoxIndex.value = 1 }) {
+            androidx.compose.material.Text(
+                text = "EN", modifier = Modifier.padding(6.dp), style = TextStyle(
+                    if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
+                    fontSize = 12.sp
+                )
+            )
+        }
+        Box(modifier = Modifier
+            .padding(6.dp)
+            .background(
+                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(0xFFE7EEFC),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { selectedBoxIndex.value = 2 }) {
+            androidx.compose.material.Text(
+                text = "RU", modifier = Modifier.padding(6.dp), style = TextStyle(
+                    if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
+                    fontSize = 12.sp
+                )
+            )
         }
     }
 }
-
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
