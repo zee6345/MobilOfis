@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.transfer.components.AccountBottomSheet
+import com.app.transfer.components.AmountBottomSheet
 import com.app.transfer.components.CurrencyBottomSheet
 import com.app.transfer.components.DateBottomSheet
 import com.app.transfer.components.StatusBottomSheet
@@ -138,7 +139,7 @@ fun TransferScreen(navController: NavController) {
     AccountBottomSheet(showFromAccountBottomSheet)
     StatusBottomSheet(showStatusBottomSheet)
     TypeBottomSheet(showTypeBottomSheet)
-//    AmountBottomSheet(showAmountBottomSheet)
+    AmountBottomSheet(showAmountBottomSheet)
     CurrencyBottomSheet(showCurrencyBottomSheet)
 
 }
