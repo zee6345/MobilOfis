@@ -17,7 +17,13 @@ import com.app.home.menu.account.AccountInformation
 import com.app.home.menu.account.navigation.accountDetailsRoute
 import com.app.home.menu.cards.CardDetails
 import com.app.home.menu.cards.navigation.homeToCardDetails
+import com.app.home.menu.loan.LoanInformationDetails
+import com.app.home.menu.loan.navigation.homeToLoanInformation
+import com.app.home.menu.trust.DepositDetails
+import com.app.home.menu.trust.navigation.homeToTrustDepositDetails
 import com.app.transfer.TransferScreen
+import com.app.transfer.transfers.TransferDetailsInformation
+import com.app.transfer.transfers.navigation.transferToDetails
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
@@ -49,6 +55,18 @@ fun NavigationGraph(navController: NavHostController) {
 
         composable(homeToCardDetails) {
             CardDetails(navController = navController)
+        }
+        
+        composable(homeToLoanInformation){
+            LoanInformationDetails(navController = navController)
+        }
+        
+        composable(homeToTrustDepositDetails){
+            DepositDetails(navController = navController)
+        }
+
+        composable(transferToDetails){
+            TransferDetailsInformation(navController = navController)
         }
 
     }

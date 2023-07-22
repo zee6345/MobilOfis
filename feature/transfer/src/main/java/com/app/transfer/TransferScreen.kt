@@ -44,9 +44,10 @@ import com.app.transfer.components.CurrencyBottomSheet
 import com.app.transfer.components.DateBottomSheet
 import com.app.transfer.components.StatusBottomSheet
 import com.app.transfer.components.TypeBottomSheet
-import com.app.transfer.transferDetails.FiltersTopRow
-import com.app.transfer.transferDetails.ItemClickedCallback
-import com.app.transfer.transferDetails.TransferTopMenu
+import com.app.transfer.transfers.FiltersTopRow
+import com.app.transfer.transfers.ItemClickedCallback
+import com.app.transfer.transfers.TransferTopMenu
+import com.app.transfer.transfers.navigation.transferToDetails
 import ir.kaaveh.sdpcompose.sdp
 
 lateinit var showDateBottomSheet: MutableState<Boolean>
@@ -59,12 +60,13 @@ lateinit var showCurrencyBottomSheet: MutableState<Boolean>
 @Composable
 fun TransferScreen(navController: NavController) {
 
-     showDateBottomSheet = rememberSaveable { mutableStateOf(false) }
-     showFromAccountBottomSheet = rememberSaveable { mutableStateOf(false) }
-     showStatusBottomSheet = rememberSaveable { mutableStateOf(false) }
-     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
-     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
-     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+    showDateBottomSheet = rememberSaveable { mutableStateOf(false) }
+    showFromAccountBottomSheet = rememberSaveable { mutableStateOf(false) }
+    showStatusBottomSheet = rememberSaveable { mutableStateOf(false) }
+    showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
+    showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
+    showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -84,12 +86,12 @@ fun TransferScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(15.dp),
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(width = 32.dp, height = 25.dp)
                         .align(Alignment.CenterVertically)
                         .clickable {
                             navController.popBackStack()
@@ -111,24 +113,22 @@ fun TransferScreen(navController: NavController) {
 
         Column(
             modifier = Modifier
-                .padding(10.dp)
                 .weight(0.9f)
                 .padding(horizontal = 10.dp)
                 .verticalScroll(
                     rememberScrollState(), enabled = true
                 ),
 
-        ) {
+            ) {
 
             TopMenuItem()
 
             FilterListMenu()
 
-            TransactionHistory()
-            TransactionHistory()
-            TransactionHistory()
-            TransactionHistory()
-            TransactionHistory()
+            repeat(5) {
+                TransactionHistory(navController)
+            }
+
 
         }
 
@@ -152,127 +152,144 @@ fun TopMenuItem() {
 fun FilterListMenu() {
     FiltersTopRow(object : ItemClickedCallback {
         override fun itemClicked(id: String) {
-        if (id.equals("date",true)){
-            showDateBottomSheet.value = !showDateBottomSheet.value
-        }else if (id.equals("type",true)){
-            showTypeBottomSheet.value = !showTypeBottomSheet.value
-        }else if (id.equals("account",true)){
-            showFromAccountBottomSheet.value = !showFromAccountBottomSheet.value
-        }else if (id.equals("amount",true)){
-            showAmountBottomSheet.value = !showAmountBottomSheet.value
-        }else if (id.equals("currency",true)){
-            showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
-        }else if (id.equals("status",true)){
-            showStatusBottomSheet.value = !showStatusBottomSheet.value
+            if (id.equals("date", true)) {
+                showDateBottomSheet.value = !showDateBottomSheet.value
+            } else if (id.equals("type", true)) {
+                showTypeBottomSheet.value = !showTypeBottomSheet.value
+            } else if (id.equals("account", true)) {
+                showFromAccountBottomSheet.value = !showFromAccountBottomSheet.value
+            } else if (id.equals("amount", true)) {
+                showAmountBottomSheet.value = !showAmountBottomSheet.value
+            } else if (id.equals("currency", true)) {
+                showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
+            } else if (id.equals("status", true)) {
+                showStatusBottomSheet.value = !showStatusBottomSheet.value
 
-        }
+            }
         }
     })
 }
 
 @Composable
-fun TransactionHistory() {
+fun TransactionHistory(navController: NavController) {
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 5.sdp),
+            .padding(vertical = 5.sdp)
+            .clickable {
+                navController.navigate(transferToDetails)
+            },
         backgroundColor = Color.White
     ) {
 
-        Row(
-            Modifier
+
+        Column(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 5.sdp, vertical = 5.sdp)
 
         ) {
 
-            Column {
 
-
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "GARABAG REVIVAL FUND",
-
-                        )
-                    Text(
-                        text = "999 000 000.00 ₼",
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "GARABAG REVIVAL FUND",
+                    style = TextStyle(
+                        fontSize = 14.sp
                     )
 
+                )
+                Text(
+                    text = "999 000 000.00 ₼",
+                    style = TextStyle(
+                        fontSize = 14.sp
+                    )
+                )
+
+            }
+
+            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Row {
+                    Box(
+                        Modifier
+                            .background(
+                                Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
+                            )
+                            .padding(vertical = 1.sdp, horizontal = 6.sdp)
+                    ) {
+                        Text(
+                            text = "AniPay - Non-budget", style = TextStyle(
+                                color = Color(0xFF859DB5),
+                                fontSize = 12.sp
+
+                            )
+                        )
+                    }
+
+                    Spacer(
+                        Modifier.size(width = 5.dp, height = 1.dp)
+                    )
+
+                    Box(
+                        Modifier
+                            .background(
+                                Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
+                            )
+                            .padding(vertical = 1.sdp, horizontal = 6.sdp)
+                    ) {
+                        Text(
+                            text = "18:24", style = TextStyle(
+                                color = Color(0xFF859DB5),
+                                fontSize = 12.sp
+
+                            )
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
-
                 Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Row {
-                        Box(
-                            Modifier
-                                .background(
-                                    Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
-                                )
-                                .padding(vertical = 3.sdp, horizontal = 8.sdp)
-                        ) {
-                            Text(
-                                text = "AniPay - Non-budget", style = TextStyle(
-                                    color = Color(0xFF859DB5),
 
-                                    )
+                    Box(modifier = Modifier
+                        .padding(2.dp)
+                        .width(10.dp)
+                        .height(10.dp)
+                        .drawBehind {
+                            drawCircle(
+                                color = Color(0xFF0FBF1B), radius = 5.dp.toPx()
                             )
                         }
-
-                        Spacer(
-                            Modifier.size(width = 5.dp, height = 1.dp)
-                        )
-
-                        Box(
-                            Modifier
-                                .background(
-                                    Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
-                                )
-                                .padding(vertical = 3.sdp, horizontal = 8.sdp)
-                        ) {
-                            Text(
-                                text = "18:24", style = TextStyle(
-                                    color = Color(0xFF859DB5),
-
-                                    )
-                            )
-                        }
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-
-                        Box(modifier = Modifier
-                            .padding(2.dp)
-                            .width(10.dp)
-                            .height(10.dp)
-                            .drawBehind {
-                                drawCircle(
-                                    color = Color(0xFF0FBF1B), radius = 5.dp.toPx()
-                                )
-                            }
-                            .align(Alignment.CenterVertically)) {
-
-                        }
-
-                        Text(
-                            text = "Execution done",
-                        )
-
+                        .align(Alignment.CenterVertically)) {
 
                     }
+
+
+                    Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+
+                    Text(
+                        text = "Execution done",
+                        style = TextStyle(
+                            fontSize = 14.sp
+                        )
+                    )
 
 
                 }

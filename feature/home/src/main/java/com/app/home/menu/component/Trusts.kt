@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,27 +34,33 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.home.data.CardFilters
 
 import com.app.home.data.DataProvider
 import com.app.home.data.TrustsData
+import com.app.home.menu.trust.navigation.homeToTrustDepositDetails
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun TrustsList() {
+fun TrustsList(navController: NavController) {
 
     val cardsList = remember { DataProvider.trustsDataList }
     val cardFilters = remember { DataProvider.filtersTrustsList }
 
     Column(
-        modifier = Modifier.padding(horizontal = 5.sdp, vertical = 5.sdp)
+        modifier = Modifier.padding(horizontal = 3.sdp, vertical = 5.sdp)
     ) {
 
+        Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
         Filters()
 
+        Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
         LazyRow(
-            contentPadding = PaddingValues(vertical = 5.dp)
+            contentPadding = PaddingValues(vertical = 1.dp)
         ) {
             items(items = cardFilters, itemContent = {
                 Row {
@@ -64,11 +72,12 @@ fun TrustsList() {
         }
 
 
+
         LazyColumn(
             contentPadding = PaddingValues(vertical = 5.dp)
         ) {
             items(items = cardsList, itemContent = {
-                TrustsListItem(obj = it)
+                TrustsListItem(obj = it, navController)
             })
         }
 
@@ -79,11 +88,14 @@ fun TrustsList() {
 
 
 @Composable
-private fun TrustsListItem(obj: TrustsData) {
+private fun TrustsListItem(obj: TrustsData, navController: NavController) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate(homeToTrustDepositDetails)
+            },
         elevation = 1.dp,
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
@@ -98,7 +110,9 @@ private fun TrustsListItem(obj: TrustsData) {
 
             Column() {
 
-                Text(text = obj.title, style = TextStyle(fontSize = 14.sp))
+                Text(text = obj.title, style = TextStyle(fontSize = 14.sp),
+                    modifier = Modifier.padding(vertical = 5.dp)
+                )
 
                 Text(
                     obj.snNumber,
@@ -119,6 +133,7 @@ private fun TrustsListItem(obj: TrustsData) {
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(vertical = 5.dp)
                 )
 
                 Text(
@@ -226,5 +241,5 @@ private fun Filters() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TrustsPreview() {
-    TrustsList()
+    TrustsList(rememberNavController())
 }

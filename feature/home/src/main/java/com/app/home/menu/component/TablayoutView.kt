@@ -37,8 +37,8 @@ fun TabLayoutMenu(navController: NavController) {
     val tabs = listOf(
         TabItem(title = "Account", screen = { AccountList(navController) }),
         TabItem(title = "Cards", screen = { CardsList(navController) }),
-        TabItem(title = "Loan", screen = { LoansList() }),
-        TabItem(title = "Trust", screen = { TrustsList() })
+        TabItem(title = "Loan", screen = { LoansList(navController) }),
+        TabItem(title = "Trust", screen = { TrustsList(navController) })
     )
 
     val pagerState = rememberPagerState(

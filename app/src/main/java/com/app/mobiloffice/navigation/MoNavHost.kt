@@ -18,8 +18,11 @@ import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.auth.splash.navigation.splashScreen
 import com.app.home.menu.account.navigation.accountDetails
 import com.app.home.menu.cards.navigation.cardDetailsNavigation
+import com.app.home.menu.loan.navigation.loanInformationNavigation
+import com.app.home.menu.trust.navigation.trustInformationNavigation
 import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
+import com.app.transfer.transfers.navigation.transferDetailsNavigation
 
 
 @Composable
@@ -49,6 +52,9 @@ fun MoNavHost(
         securitySCreen(navController)
         accountDetails(navController)
         cardDetailsNavigation(navController)
+        loanInformationNavigation(navController)
+        trustInformationNavigation(navController)
+        transferDetailsNavigation(navController)
     }
 }
 

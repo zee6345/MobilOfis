@@ -1,7 +1,6 @@
 package com.app.home.menu.cards.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.app.home.R
 import com.app.home.menu.component.dashedBorder
 import ir.kaaveh.sdpcompose.sdp
@@ -68,11 +70,12 @@ fun BusinessCardOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
 
     val rowModify = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 15.sdp, vertical = 5.sdp)
+        .padding(horizontal = 15.sdp)
         .dashedBorder(3.dp, Color(0x99C9CACC))
 
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = !showModalBottomSheet.value },
+        containerColor = Color.White,
     ) {
         Column(
             Modifier
@@ -81,111 +84,213 @@ fun BusinessCardOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
 
         ) {
 
+            Row(
+                modifier = rowModify,
+                verticalAlignment = Alignment.CenterVertically,
+
+                ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_details),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
+
+                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                Text(
+                    text = "Card account details",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
+
+            }
+
+
+
+
+
+
+            Row(
+                modifier = rowModify,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_info), contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
+
+
+                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                Text(
+                    text = "Details",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
+
+            }
+
+
+
+            Row(
+                modifier = rowModify,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_statement),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
+
+                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                Text(
+                    text = "Card account statement",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
+
+            }
+
+
+
+            Row(
+                modifier = rowModify,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_statement),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
+
+                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                Text(
+                    text = "Card statement",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
+
+            }
+
+
+
+            Row(
+                modifier = rowModify,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_limits),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
+
+                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                Text(
+                    text = "Limits",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
+
+            }
+
+
+
+
+            Row(
+                modifier = rowModify,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_block),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
+
+                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                Text(
+                    text = "Block the card",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
+
+            }
+
+
 
             Row(
                 modifier = rowModify,
                 verticalAlignment = Alignment.CenterVertically,
 
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_details),
-                    contentDescription = ""
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(text = "Card account details")
-
-            }
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(painterResource(id = R.drawable.ic_option_card_info), contentDescription = "")
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(text = "Details")
-
-            }
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_statement),
-                    contentDescription = ""
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(text = "Card account statement")
-
-            }
-
-            Row(modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
                 ) {
 
                 Image(
-                    painterResource(id = R.drawable.ic_option_card_statement),
-                    contentDescription = ""
+                    painterResource(id = R.drawable.ic_option_card_pin), contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(4.dp)
                 )
 
+
                 Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
-                Text(text = "Card statement")
+                Text(
+                    text = "Reset PIN attempts", style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    ),
 
-            }
-
-            Row(modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_limits),
-                    contentDescription = ""
                 )
 
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(text = "Limits")
 
             }
 
-            Row (modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ){
 
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_block),
-                    contentDescription = ""
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(text = "Block the card")
-
-            }
-
-            Row(modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                Image(painterResource(id = R.drawable.ic_option_card_pin), contentDescription = "")
-
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(text = "Reset PIN attempts")
-
-            }
 
             Row(
                 modifier = rowModify,
@@ -197,15 +302,25 @@ fun BusinessCardOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
 
                     Image(
                         painterResource(id = R.drawable.ic_option_card_sms),
-                        contentDescription = ""
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
+                            .padding(3.dp)
                     )
 
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
-                    Text(text = "SMS alert")
+                    Text(
+                        text = "SMS alert",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        ),
+
+                    )
+
 
                 }
-
 
 
                 Switch(
@@ -219,18 +334,35 @@ fun BusinessCardOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
 
                         )
                 )
+
+
             }
 
             Row(
-                modifier = rowModify,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Image(painterResource(id = R.drawable.ic_option_card_edit), contentDescription = "")
+                Image(
+                    painterResource(id = R.drawable.ic_option_card_edit), contentDescription = "",
+                    modifier = Modifier
+                        .size(width = 32.dp, height = 32.dp)
+                        .padding(3.dp)
+                )
 
                 Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
-                Text(text = "Change your name")
+                Text(
+                    text = "Change your name",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular))
+                    ),
+
+                )
+
 
             }
 

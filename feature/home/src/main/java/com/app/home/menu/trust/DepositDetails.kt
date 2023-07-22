@@ -1,21 +1,17 @@
-package com.app.home.menu.loan
+package com.app.home.menu.trust
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -42,12 +37,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.menu.component.dashedBorder
-import com.app.home.menu.loan.components.LoanInfoOptionSheet
-
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun LoanInformationDetails(navController: NavController){
+fun DepositDetails(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,13 +73,12 @@ fun LoanInformationDetails(navController: NavController){
                     contentDescription = ""
                 )
                 Text(
-                    text = "Detailed information of loan",
+                    text = "Detailed information on the deposit",
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .padding(horizontal = 8.dp)
                 )
-
 
             }
         }
@@ -102,33 +94,12 @@ fun LoanInformationDetails(navController: NavController){
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 50.sdp),
-//                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+
+                ) {
                 item {
                     MainContent(navController)
                 }
 
-//                item {
-//                    Text(
-//                        text = "Additional cards",
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-//                    )
-//
-//                }
-
-//                item {
-//                    CardDetailsFilters(navController)
-//                }
-//
-//                item {
-//
-//                    repeat(2) {
-//                        AdditionalCards(navController)
-//                    }
-//
-//                }
             }
 
         }
@@ -164,21 +135,21 @@ private fun MainContent(navController: NavController) {
 
 
                 Text(
-                    text = "SME loan", style = TextStyle(
+                    text = "Term Deposit", style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
                 )
 
 
-                Image(
-                    painter = painterResource(id = R.drawable.ic_options), contentDescription = "",
-                    Modifier
-                        .size(height = 28.dp, width = 28.dp)
-                        .clickable {
-                            loanInfoOptions.value = true
-                        }
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.ic_options), contentDescription = "",
+//                    Modifier
+//                        .size(height = 28.dp, width = 28.dp)
+//                        .clickable {
+//                            loanInfoOptions.value = true
+//                        }
+//                )
             }
 
 
@@ -197,7 +168,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "N of the loan agreement", style = TextStyle(
+                        text = "Account number", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -206,7 +177,91 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "002LCAR201270001", style = TextStyle(
+                        text = "AZ47BRES38690AZ0021693229002", style = TextStyle(
+
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+
+            }
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Branch", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+
+                        Text(
+                            text = "Customer Service Department", style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                color = Color(0xFF223142),
+
+                                )
+                        )
+
+                    }
+
+
+                }
+
+
+            }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Interest rate", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "8%", style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -219,6 +274,30 @@ private fun MainContent(navController: NavController) {
                     Modifier
                         .weight(0.5f)
 
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Duration, months", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "24", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.2f)
                         .fillMaxWidth()
                 ) {
 
@@ -257,287 +336,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Status", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Box(
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .width(10.dp)
-                                .height(10.dp)
-                                .drawBehind {
-                                    drawCircle(
-                                        color = Color(0xFF0FBF1B), radius = 5.dp.toPx()
-                                    )
-                                }
-                        ) {
-
-                        }
-
-                        Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
-
-                        Text(
-                            text = "Not in delay", style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = Color(0xFF223142),
-
-                                )
-                        )
-
-                    }
-
-
-                }
-
-
-            }
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Next payment date", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "20.03.2022", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Next payment fee", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "1000.00", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Paid/Total Months", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "7/24", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Remaining principal amount", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "657 333.00", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Column {
-
-                    Text(
-                        text = "Branch", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "Customer Service Department", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-
-            }
-
-
-
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Loan amount", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "100 000.00", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Interest rate", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "15%", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Credit issuance date", style = TextStyle(
+                        text = "Start date", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -583,6 +382,127 @@ private fun MainContent(navController: NavController) {
 
 
 
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Remainder", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "250000.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.5f)
+
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Free balance", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "250000.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+            }
+
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = "Initial amount", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "250000.00", style = TextStyle(
+
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.5f)
+
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Amount of income tax", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "0.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+            }
+
+
+
 
 
 
@@ -602,7 +522,7 @@ private fun MainContent(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Payment account", style = TextStyle(
+                        text = "Interest payment scheme", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -610,7 +530,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZ84BRES00370994400216569001", style = TextStyle(
+                        text = "On a monthly basis", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -619,12 +539,44 @@ private fun MainContent(navController: NavController) {
                 }
 
 
-                Image(
-                    painter = painterResource(id = R.drawable.ic_share), contentDescription = "",
-                    Modifier.size(height = 20.dp, width = 20.dp)
-                )
+            }
+
+
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Column {
+
+                    Text(
+                        text = "Account to which interest is transferred", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "AZ14BRES00330794400269322901", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
 
             }
+
+
 
 
             Row(
@@ -642,7 +594,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Balance in payment account", style = TextStyle(
+                        text = "Calculated interest amount", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -651,7 +603,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "97 402.08", style = TextStyle(
+                        text = "17111.64", style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -665,40 +617,6 @@ private fun MainContent(navController: NavController) {
                         .weight(0.5f)
 
                         .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Total interest amount", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "17 163.76", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
                 ) {
 
                     Text(
@@ -706,36 +624,11 @@ private fun MainContent(navController: NavController) {
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "8558.18", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Current interest amount", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
                         )
                     )
 
                     Text(
-                        text = "92.7", style = TextStyle(
+                        text = "120.76", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -744,138 +637,15 @@ private fun MainContent(navController: NavController) {
                     )
                 }
             }
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Number of days left on next payment date", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "0", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Total overdue amount", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "0", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Number of days delayed", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "827", style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Calculated fines", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "0.00", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
 
         }
     }
 
-    LoanInfoOptionSheet(loanInfoOptions)
 
 }
 
 @Preview
 @Composable
-fun PreviewLoadInformation(){
-    LoanInformationDetails(navController = rememberNavController())
+fun PreviewDepositDetails() {
+    DepositDetails(navController = rememberNavController())
 }

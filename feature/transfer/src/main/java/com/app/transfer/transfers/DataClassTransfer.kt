@@ -1,4 +1,4 @@
-package com.app.transfer.transferDetails
+package com.app.transfer.transfers
 
 
 import androidx.compose.material.icons.Icons

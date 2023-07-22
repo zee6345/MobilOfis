@@ -46,6 +46,7 @@ fun ForgetPasswordBottomSheetScreen() {
 fun ForgetPasswordModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = false },
+        containerColor = Color.White
     ) {
         Column(
             Modifier

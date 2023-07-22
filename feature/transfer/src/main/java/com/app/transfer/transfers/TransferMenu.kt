@@ -1,8 +1,10 @@
-package com.app.transfer.transferDetails
+package com.app.transfer.transfers
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +35,7 @@ fun TransferTopMenu() {
     ) {
         items(items = menu, itemContent = {
             TransferMenuItemView(menu = it)
+            Spacer(modifier = Modifier.size(width = 5.dp, height=1.dp))
         })
     }
 }
@@ -41,7 +44,7 @@ fun TransferMenuItemView(menu: MainCardTransfer) {
 
     Card(
         modifier = Modifier
-            .padding(5.dp), shape = RoundedCornerShape(8.dp)
+            .padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
     ) {
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(

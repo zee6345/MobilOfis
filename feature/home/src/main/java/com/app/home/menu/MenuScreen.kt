@@ -195,7 +195,7 @@ fun MenuScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .weight(0.75f)
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 5.dp)
         ) {
             CardMenuContent()
             TabLayoutMenu(navController)

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,6 +56,8 @@ fun CardsList(navController: NavController) {
     ) {
 
 
+        Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
         Filters()
 
 
@@ -76,11 +79,11 @@ fun CardsList(navController: NavController) {
         }
 
         LazyColumn(
-            contentPadding = PaddingValues(vertical = 5.dp),
+            contentPadding = PaddingValues(vertical = 1.dp),
             state = lazyListState,
         ) {
             items(items = cardsList, itemContent = {
-                CardsListItem(obj = it){
+                CardsListItem(obj = it) {
                     navController.navigate(homeToCardDetails)
                 }
             })
@@ -93,7 +96,7 @@ fun CardsList(navController: NavController) {
 
 
 @Composable
-fun CardsListItem(obj: CardsListData, onCardClick:()->Unit) {
+fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
@@ -118,17 +121,24 @@ fun CardsListItem(obj: CardsListData, onCardClick:()->Unit) {
                 modifier = Modifier.size(width = 36.dp, height = 24.dp)
             )
 
+            Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = 8.dp)
+                    .padding(end = 8.dp, top = 5.dp)
             ) {
                 Text(
-                    text = obj.title, style = TextStyle(fontSize = 14.sp), color = Color(0xFF223142)
+                    text = obj.title,
+                    style = TextStyle(fontSize = 14.sp),
+                    color = Color(0xFF223142),
+                    modifier = Modifier.padding(vertical = 5.dp)
+                        .fillMaxWidth()
                 )
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
                         painter = painterResource(id = obj.cardIcon),

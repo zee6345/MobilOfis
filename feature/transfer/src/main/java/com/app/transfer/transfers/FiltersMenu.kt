@@ -1,8 +1,9 @@
-package com.app.transfer.transferDetails
+package com.app.transfer.transfers
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -42,6 +43,7 @@ fun FiltersTopRow(callback: ItemClickedCallback) {
     ) {
         items(items = menu, itemContent = {
             FiltersMenuData(menu = it, callback)
+            Spacer(modifier = Modifier.size(width=5.dp, height=1.dp))
         })
     }
 }
@@ -50,7 +52,7 @@ fun FiltersTopRow(callback: ItemClickedCallback) {
 fun FiltersMenuData(menu: FilterModel, callback: ItemClickedCallback) {
     Card(
         modifier = Modifier
-            .padding(5.dp), shape = RoundedCornerShape(8.dp)
+            .padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
     ) {
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.clickable {
@@ -80,7 +82,7 @@ fun FiltersMenuData(menu: FilterModel, callback: ItemClickedCallback) {
                 modifier = Modifier
                     .padding(5.sdp)
                     .align(Alignment.CenterVertically)
-                    .size(10.sdp,10.sdp)
+                    .size(10.sdp, 10.sdp)
             )
 
         }

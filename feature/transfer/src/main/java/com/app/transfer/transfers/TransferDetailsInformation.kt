@@ -1,5 +1,4 @@
-package com.app.home.menu.account
-
+package com.app.transfer.transfers
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -32,28 +31,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.app.home.R
-import com.app.home.menu.account.details.Blockages
-import com.app.home.menu.account.details.MainInformation
-
+import com.app.transfer.R
+import com.app.transfer.transfers.transferdetails.Details
+import com.app.transfer.transfers.transferdetails.HistoryNnotes
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
 
-data class TabItem(
+private data class TabItem(
     val title: String, val screen: @Composable () -> Unit
 )
 
 @Composable
-fun AccountInformation(navController: NavController) {
+fun TransferDetailsInformation(navController: NavController) {
 
     Column(
         modifier = Modifier
@@ -87,7 +84,7 @@ fun AccountInformation(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Detailed account information",
+                    text = "Transfer details",
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -106,7 +103,7 @@ fun AccountInformation(navController: NavController) {
 
         ) {
 
-            MainContent(navController)
+            MainContentSource(navController)
 
 
         }
@@ -117,17 +114,18 @@ fun AccountInformation(navController: NavController) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun MainContent(navController: NavController) {
+private fun MainContentSource(navController: NavController) {
 
     val tabs = listOf(
-        TabItem(title = "Main information", screen = { MainInformation(navController) }),
-        TabItem(title = "Blockages", screen = { Blockages(navController) })
+        TabItem(title = "Details", screen = { Details(navController) }),
+        TabItem(title = "History and notes", screen = { HistoryNnotes(navController) })
     )
 
     val pagerState = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f
-    ) {
+    )
+    {
         // provide pageCount
         tabs.size
     }
@@ -166,7 +164,7 @@ private fun MainContent(navController: NavController) {
                 ) {
                 Text(
                     modifier = Modifier.padding(vertical = 5.sdp),
-                    text = "Main information",
+                    text = "Details",
                     style = TextStyle(
                         color = Color(0xFF859DB5),
                         textAlign = TextAlign.Center
@@ -198,7 +196,7 @@ private fun MainContent(navController: NavController) {
                 Alignment.Center
             ) {
                 Text(
-                    text = "Blockages",
+                    text = "History and notes",
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
                         color = Color(0xFF859DB5),
@@ -212,28 +210,19 @@ private fun MainContent(navController: NavController) {
             modifier = Modifier,
             state = pagerState,
             pageSpacing = 0.dp,
-
             userScrollEnabled = true,
             reverseLayout = false,
             contentPadding = PaddingValues(0.dp),
             beyondBoundsPageCount = 0,
             pageSize = PageSize.Fill,
-
             key = null,
             pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
                 Orientation.Horizontal
             ),
-            pageContent =  {
+            pageContent = {
                 tabs[pagerState.currentPage].screen()
             }
         )
 
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewAccountInformation() {
-//    AccountInformation(navController = rememberNavController())
-    MainContent(navController = rememberNavController())
 }

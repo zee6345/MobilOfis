@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -43,9 +45,15 @@ data class AccountListData(
 fun AccountList(navController: NavController) {
     val accountList = remember { DataProvider.accountList }
     LazyColumn(
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
+        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
     ) {
+
+        item {
+            Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
+        }
+
         items(items = accountList, itemContent = {
+
             AccountListItem(list = it, navController)
         })
     }
@@ -67,18 +75,22 @@ fun AccountListItem(list: AccountListData, navController: NavController) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 10.dp)
-                    .wrapContentWidth()
+                    .padding( vertical = 8.dp, horizontal = 10.dp)
+                    .fillMaxWidth()
                     .align(Alignment.CenterVertically)
+                    .weight(0.7f)
             ) {
                 Text(
                     text = list.title,
                     style = TextStyle(fontSize = 14.sp),
-                    color = Color(0xFF223142)
+                    color = Color(0xFF223142),
+                    modifier = Modifier
+                        .padding(vertical = 5.dp)
                 )
                 Box(
                     modifier = Modifier
@@ -97,31 +109,40 @@ fun AccountListItem(list: AccountListData, navController: NavController) {
                     )
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "2300.",
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    style = TextStyle(fontSize = 14.sp),
-                    color = Color(0xFF223142)
-                )
-                Text(
-                    text = "00",
-                    modifier = Modifier
-                        .padding(vertical = 3.dp)
-                        .align(Bottom),
-                    style = TextStyle(fontSize = 12.sp),
-                    color = Color(0xFF223142)
-                )
-                Text(
-                    text = "₼",
-                    modifier = Modifier
-                        .padding(end = 22.dp)
-                        .padding(vertical = 3.dp)
-                        .align(Bottom),
-                    style = TextStyle(fontSize = 12.sp),
-                    color = Color(0xFF223142)
-                )
-            }
+
+            Text(
+                text = "2300.00 ₼",
+                modifier = Modifier.padding(vertical = 4.dp)
+                    .weight(0.2f),
+                style = TextStyle(fontSize = 14.sp),
+                color = Color(0xFF223142)
+            )
+
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//                Text(
+//                    text = "2300.00 ₼",
+//                    modifier = Modifier.padding(vertical = 4.dp),
+//                    style = TextStyle(fontSize = 14.sp),
+//                    color = Color(0xFF223142)
+//                )
+////                Text(
+////                    text = "00",
+////                    modifier = Modifier
+////                        .padding(vertical = 3.dp)
+////                        .align(Bottom),
+////                    style = TextStyle(fontSize = 12.sp),
+////                    color = Color(0xFF223142)
+////                )
+////                Text(
+////                    text = "₼",
+////                    modifier = Modifier
+////                        .padding(end = 22.dp)
+////                        .padding(vertical = 3.dp)
+////                        .align(Bottom),
+////                    style = TextStyle(fontSize = 12.sp),
+////                    color = Color(0xFF223142)
+////                )
+//            }
 
         }
     }
