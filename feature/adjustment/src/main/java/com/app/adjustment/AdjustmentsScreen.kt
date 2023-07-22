@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -39,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
+import com.app.adjustment.components.AboutBankSheet
+import com.app.adjustment.components.ContactBottomSheet
 
 import com.app.adjustment.navigation.securityScreen
 import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
@@ -46,6 +49,8 @@ import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
 
 @Composable
 fun AdjustmentsScreen(navController: NavController) {
+    val aboutBankState = rememberSaveable { mutableStateOf(false) }
+    val contactState = rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -257,8 +262,12 @@ fun AdjustmentsScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),
+                            .padding(top = 10.dp)
+                            .clickable {
+                                aboutBankState.value = !aboutBankState.value
+                            },
                         shape = RoundedCornerShape(12.dp)
+                        ,
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -284,8 +293,12 @@ fun AdjustmentsScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),
+                            .padding(top = 10.dp)
+                            .clickable {
+                                contactState.value = !contactState.value
+                            },
                         shape = RoundedCornerShape(12.dp)
+                        ,
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -345,7 +358,8 @@ fun AdjustmentsScreen(navController: NavController) {
 
     }
 
-
+    AboutBankSheet(aboutBankState)
+    ContactBottomSheet(contactState)
 }
 
 

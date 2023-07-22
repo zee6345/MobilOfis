@@ -69,7 +69,7 @@ fun CurrencyBottomSheet() {
 @Composable
 fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
     if (showCurrencyBottomSheet.value) ModalBottomSheet(
-        contentColor = Color.White,
+        containerColor = Color.White,
         onDismissRequest = { showCurrencyBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {

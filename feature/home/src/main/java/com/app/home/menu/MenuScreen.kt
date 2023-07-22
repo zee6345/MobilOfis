@@ -1,23 +1,34 @@
 package com.app.home.menu
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -25,11 +36,18 @@ import androidx.navigation.compose.rememberNavController
 
 import com.app.home.menu.component.CardMenuContent
 import com.app.home.R
+import com.app.home.menu.component.SelectCompanyBottomSheet
 import com.app.home.menu.component.TabLayoutMenu
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController) {
+    val selectCompanyState = rememberSaveable { mutableStateOf(false) }
+    val balancePopup = rememberSaveable { mutableStateOf(false) }
+    var touchPoint: Offset by remember { mutableStateOf(Offset.Zero) }
+    val density = LocalDensity.current
+    val configuration = LocalConfiguration.current
+    val screenHeightDp = configuration.screenHeightDp.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,6 +74,9 @@ fun MenuScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 22.dp, end = 12.dp)
+                            .clickable {
+                                selectCompanyState.value = !selectCompanyState.value
+                            }
                     ) {
 
                         Row(
@@ -137,8 +158,17 @@ fun MenuScreen(navController: NavController) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Column(
-                        Modifier.padding(horizontal = 22.dp),
+                        Modifier.padding(horizontal = 22.dp)
+                            .pointerInput(Unit){
+                                detectTapGestures{
+                                    Log.d("TAG", "onCreate: $it")
+                                    touchPoint= it
+                                    balancePopup.value = !balancePopup.value
+                                }
+
+                            },
                         verticalArrangement = Arrangement.Center
+
                     ) {
                         val annotatedString = buildAnnotatedString {
                             withStyle(style = SpanStyle(Color.White.copy(0.5f), fontSize = 14.sp)) {
@@ -209,8 +239,48 @@ fun MenuScreen(navController: NavController) {
 
 
     }
+
+    SelectCompanyBottomSheet(selectCompanyState)
+    DropDownPopup(balancePopup,density,touchPoint,screenHeightDp)
+
 }
 
+@Composable
+fun DropDownPopup(
+    expanded: MutableState<Boolean>,
+    density: Density,
+    touchPoint: Offset,
+    screenHeightDp: Dp
+){
+    val (xDp, yDp) = with(density) {
+        (touchPoint.x.toDp()) to (touchPoint.y.toDp())
+    }
+    DropdownMenu(
+        expanded = expanded.value,
+        offset = DpOffset(xDp,  -screenHeightDp + yDp + 150.dp),
+        onDismissRequest = { expanded.value = false }
+    ) {
+        DropdownMenuItem(
+            content = {  Text("Blocked") },
+            onClick = { /* Handle refresh! */ }
+        )
+        Divider()
+        DropdownMenuItem(
+            content = { Text("Free Balance") },
+            onClick = { /* Handle settings! */ }
+        )
+        Divider()
+        DropdownMenuItem(
+            content = { Text("Bank Execution") },
+            onClick = { /* Handle send feedback! */ }
+        )
+        Divider()
+        DropdownMenuItem(
+            content = { Text("After Execution") },
+            onClick = { /* Handle send feedback! */ }
+        )
+    }
+}
 
 @Preview(device = Devices.PIXEL_4)
 @Composable

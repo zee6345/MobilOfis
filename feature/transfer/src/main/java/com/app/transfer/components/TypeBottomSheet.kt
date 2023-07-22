@@ -66,7 +66,7 @@ fun TypeBottomSheet() {
 @Composable
 fun TypeBottomSheet(showStatusBottomSheet: MutableState<Boolean>){
     if (showStatusBottomSheet.value) ModalBottomSheet(
-        contentColor = Color.White,
+        containerColor = Color.White,
         onDismissRequest = { showStatusBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {

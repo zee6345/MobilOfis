@@ -77,7 +77,7 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
     var sliderPosition by remember { mutableStateOf(0f..100000f) }
 
     if (showAmountBottomSheet.value) ModalBottomSheet(
-        contentColor = Color.White,
+        containerColor = Color.White,
         onDismissRequest = { showAmountBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {

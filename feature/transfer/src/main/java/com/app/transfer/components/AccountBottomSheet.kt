@@ -70,7 +70,7 @@ fun AccountBottomSheet() {
 @Composable
 fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
     if (showAccountBottomSheet.value) ModalBottomSheet(
-        contentColor = Color.White,
+        containerColor = Color.White,
         onDismissRequest = { showAccountBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {
