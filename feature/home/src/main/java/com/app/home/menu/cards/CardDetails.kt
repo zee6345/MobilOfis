@@ -46,7 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.data.CardFilters
 import com.app.home.data.DataProvider
-import com.app.home.menu.cards.components.BusinessCardOptionSheet
+import com.app.home.menu.cards.components.BusinessCardOptionsSheet
 import com.app.home.menu.component.dashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
@@ -459,7 +459,7 @@ private fun MainContent(navController: NavController) {
         }
     }
 
-    BusinessCardOptionSheet(businessCardOptions)
+    BusinessCardOptionsSheet(businessCardOptions)
 
 
 }

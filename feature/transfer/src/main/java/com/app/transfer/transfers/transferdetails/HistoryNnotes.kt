@@ -39,6 +39,8 @@ import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun HistoryNnotes(navController: NavController) {
+    var expanded1 by remember { mutableStateOf(true) }
+    var expanded2 by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -48,15 +50,107 @@ fun HistoryNnotes(navController: NavController) {
         ) {
 
 
-        CardInfo1(navController = navController)
+//        CardInfo1(navController = navController)
 
-        CardInfo2(navController = navController)
 
-        CardInfo3(navController = navController)
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.sdp, horizontal = 10.sdp),
+            backgroundColor = Color.White
+        ) {
 
-        CardInfo4(navController = navController)
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                    .clickable {
+                        expanded1 = !expanded1
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
-        CardInfo5(navController = navController)
+                androidx.compose.material.Text(
+                    text = "Transfer history",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(600),
+
+                        )
+                )
+
+                if (expanded1)
+                    Image(
+                        painterResource(id = R.drawable.ic_option_expand),
+                        contentDescription = "",
+                        modifier = Modifier.size(25.dp)
+                    ) else Image(
+                    painterResource(id = R.drawable.ic_option_collapse),
+                    contentDescription = "",
+                    modifier = Modifier.size(25.dp)
+                )
+            }
+
+        }
+
+        if(expanded1)
+            CardInfo2(navController = navController)
+
+        if (expanded1)
+            CardInfo3(navController = navController)
+
+//        CardInfo4(navController = navController)
+
+
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.sdp, horizontal = 10.sdp),
+            backgroundColor = Color.White
+        ) {
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                    .clickable {
+                        expanded2 = !expanded2
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                androidx.compose.material.Text(
+                    text = "Notes",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(600),
+
+                        )
+                )
+
+                if (expanded2)
+                    Image(
+                        painterResource(id = R.drawable.ic_option_expand),
+                        contentDescription = "",
+                        modifier = Modifier.size(25.dp)
+                    ) else Image(
+                    painterResource(id = R.drawable.ic_option_collapse),
+                    contentDescription = "",
+                    modifier = Modifier.size(25.dp)
+                )
+            }
+
+        }
+
+
+        if (expanded2)
+            CardInfo5(navController = navController)
 
 
 
@@ -199,6 +293,8 @@ private fun CardInfo2(navController: NavController) {
 
                     }
 
+                    Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+
 
                     androidx.compose.material.Text(
                         text = "Sent to the bank",
@@ -334,6 +430,8 @@ private fun CardInfo3(navController: NavController) {
 
                     }
 
+                    Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+
 
                     androidx.compose.material.Text(
                         text = "Signature and approval",
@@ -435,6 +533,7 @@ private fun CardInfo4(navController: NavController) {
     }
 
 }
+
 
 @Composable
 private fun CardInfo5(navController: NavController) {

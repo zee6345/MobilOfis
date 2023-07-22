@@ -72,6 +72,7 @@ fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
         containerColor = Color.White,
         onDismissRequest = { showCurrencyBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        containerColor = Color.White
     ) {
         Column(
             modifier = Modifier
