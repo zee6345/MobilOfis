@@ -1,8 +1,16 @@
-package com.app.adjustment
+package com.app.adjustment.security
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
@@ -20,14 +28,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.navigation.changePassScreen
+import com.app.adjustment.R
+import com.app.adjustment.Switch
+import com.app.adjustment.changepassword.navigation.securityToChangePassword
 
 
 
 @Composable
 fun SecurityScreen(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
             modifier = Modifier
@@ -42,14 +54,13 @@ fun SecurityScreen(navController: NavController) {
                     .padding(20.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(height = 25.dp, width = 32.dp)
                         .align(Alignment.CenterVertically)
                         .clickable {
                             navController.popBackStack()
-                        }
-                    ,
+                        },
                     contentDescription = ""
                 )
                 Text(
@@ -73,7 +84,7 @@ fun SecurityScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
-                    .clickable { navController.navigate(changePassScreen) },
+                    .clickable { navController.navigate(securityToChangePassword) },
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -86,7 +97,7 @@ fun SecurityScreen(navController: NavController) {
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.next_icon),
+                        painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                         contentDescription = "",
                         modifier = Modifier
                             .size(35.dp)
@@ -113,7 +124,7 @@ fun SecurityScreen(navController: NavController) {
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.next_icon),
+                        painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                         contentDescription = "",
                         modifier = Modifier
                             .size(35.dp)

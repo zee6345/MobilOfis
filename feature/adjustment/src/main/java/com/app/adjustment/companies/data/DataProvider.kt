@@ -1,6 +1,6 @@
 package com.app.adjustment.companies.data
 
-import com.app.adjustment.companies.CompanyListName
+import com.app.adjustment.companies.companylist.CompanyListName
 
 
 object DataProvider {

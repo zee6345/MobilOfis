@@ -3,11 +3,13 @@ package com.app.mobiloffice.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.app.adjustment.changepassword.navigation.changePasswordScreen
+import com.app.adjustment.companies.companydisplay.navigation.companyDisplayDuringLogin
+import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
 import com.app.adjustment.navigation.adjustmentScreen
-import com.app.adjustment.navigation.changePasswordScreen
-import com.app.adjustment.navigation.companyDisplayDuringLogin
-import com.app.adjustment.navigation.securitySCreen
 
+import com.app.adjustment.navigation.securitySCreen
+import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
 import com.app.auth.login.navigation.loginScreen
 import com.app.auth.login.navigation.otpScreen
 import com.app.auth.pin.navigation.pinScreen
@@ -48,6 +50,7 @@ fun MoNavHost(
         homeScreen(navController)
         changePasswordScreen(navController)
         companyDisplayDuringLogin(navController)
+        companiesDisplayToCompanies(navController)
         adjustmentScreen(navController)
         securitySCreen(navController)
         accountDetails(navController)
@@ -55,6 +58,7 @@ fun MoNavHost(
         loanInformationNavigation(navController)
         trustInformationNavigation(navController)
         transferDetailsNavigation(navController)
+        adjustmentToUserProfile(navController)
     }
 }
 

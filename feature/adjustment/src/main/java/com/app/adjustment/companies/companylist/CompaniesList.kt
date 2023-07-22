@@ -1,4 +1,4 @@
-package com.app.adjustment.companies
+package com.app.adjustment.companies.companylist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues

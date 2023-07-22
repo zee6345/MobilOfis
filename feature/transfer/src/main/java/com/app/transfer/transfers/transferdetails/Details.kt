@@ -763,7 +763,7 @@ private fun PdfAttachmentItem(title:String) {
 }
 
 @Composable
-fun CardInfo5(navController: NavController) {
+private fun CardInfo5(navController: NavController) {
 
     Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 

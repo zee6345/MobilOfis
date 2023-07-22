@@ -1,4 +1,4 @@
-package com.app.adjustment.companies.companyDisplay
+package com.app.adjustment.companies.companydisplay
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,9 +55,9 @@ fun CompanyDisplay(navController: NavController) {
                     .padding(15.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(height = 25.dp, width = 32.dp)
                         .align(Alignment.CenterVertically)
                         .clickable {
                             navController.popBackStack()
@@ -82,7 +82,8 @@ fun CompanyDisplay(navController: NavController) {
 
         ) {
 
-            CompanyDisplayList()
+            CompanyDisplayList(navController)
+
         }
 
 

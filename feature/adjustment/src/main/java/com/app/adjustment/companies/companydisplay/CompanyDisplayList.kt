@@ -1,4 +1,4 @@
-package com.app.adjustment.companies.companyDisplay
+package com.app.adjustment.companies.companydisplay
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,27 +19,32 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 
-import com.app.adjustment.companies.CompanyListName
+import com.app.adjustment.companies.companylist.CompanyListName
+import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
 import com.app.adjustment.companies.data.DataProvider
 
 
 
 @Composable
-fun CompanyDisplayList() {
+fun CompanyDisplayList(navController: NavController) {
     val companydisplayList = remember { DataProvider.companyList }
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
     ) {
         items(items = companydisplayList, itemContent = {
-            CompanyDisplayListItem(list = it)
+            CompanyDisplayListItem(list = it){
+                navController.navigate(companiesDisplayToCompanies)
+            }
         })
     }
 }
 
 @Composable
-fun CompanyDisplayListItem(list: CompanyListName) {
+private fun CompanyDisplayListItem(list: CompanyListName, onClick:() -> Unit) {
 
     var isClicked by remember { mutableStateOf(false) }
     var isClickedStar by remember { mutableStateOf(false) }
@@ -48,7 +53,11 @@ fun CompanyDisplayListItem(list: CompanyListName) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp), shape = RoundedCornerShape(8.dp)
+            .padding(5.dp)
+            .clickable {
+                onClick()
+            }
+        , shape = RoundedCornerShape(8.dp)
     ) {
         Row(
             modifier = Modifier
@@ -56,7 +65,9 @@ fun CompanyDisplayListItem(list: CompanyListName) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Row(
-                modifier = Modifier.weight(1f).padding(top = 12.dp, bottom = 3.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 12.dp, bottom = 3.dp),
             ) {
                 Box(modifier = Modifier.size(50.dp)) {
                     Image(painter = if (isClicked) painterResource(R.drawable.company_img) else painterResource(
@@ -91,8 +102,8 @@ fun CompanyDisplayListItem(list: CompanyListName) {
 
             }
 
-            Image(painter = if (isClickedStar) painterResource(R.drawable.filled_star) else painterResource(
-                R.drawable.outline_star
+            Image(painter = if (isClickedStar) painterResource(R.drawable.ic_star_filled) else painterResource(
+                R.drawable.ic_star_outlined
             ),
                 contentDescription = if (isClickedStar) "Filled Star Icon" else "Outlined Star Icon",
                 modifier = Modifier
@@ -108,5 +119,5 @@ fun CompanyDisplayListItem(list: CompanyListName) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun CompanyDisplayPreview() {
-    CompanyDisplayList()
+    CompanyDisplayList(rememberNavController())
 }

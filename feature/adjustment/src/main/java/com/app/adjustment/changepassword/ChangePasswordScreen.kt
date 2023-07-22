@@ -1,12 +1,28 @@
-package com.app.adjustment
+package com.app.adjustment.changepassword
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,13 +35,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
+import androidx.navigation.compose.rememberNavController
+import com.app.adjustment.R
 
 
 @Composable
 fun ForgetPasswordScreen(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA)),
     ) {
         Surface(
             modifier = Modifier
@@ -40,10 +59,11 @@ fun ForgetPasswordScreen(navController: NavController) {
                     .padding(20.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.CenterVertically),
+                        .size(height = 25.dp, width = 32.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable { navController.popBackStack() },
                     contentDescription = ""
                 )
                 Text(
@@ -72,7 +92,7 @@ fun ForgetPasswordScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 17.dp),
+                    .padding(top = 12.dp, bottom = 70.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Button(
@@ -117,6 +137,8 @@ fun ForgetPasswordScreen(navController: NavController) {
                 }
 
             }
+
+
         }
     }
 }
@@ -142,7 +164,7 @@ fun TextFieldWithEndDrawable(hint: String) {
         colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White),
         trailingIcon = {
             Icon(
-                painter = painterResource(R.drawable.password_visible),
+                painter = painterResource(R.drawable.ic_options_visible),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -153,5 +175,5 @@ fun TextFieldWithEndDrawable(hint: String) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun ChangePasswordScreenPreview() {
-//    ForgetPasswordScreen(navController)
+    ForgetPasswordScreen(rememberNavController())
 }

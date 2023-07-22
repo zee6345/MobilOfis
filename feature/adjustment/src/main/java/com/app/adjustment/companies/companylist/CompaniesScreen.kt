@@ -1,8 +1,16 @@
-package com.app.adjustment.companies
+package com.app.adjustment.companies.companylist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,12 +29,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 
 
-
 @Composable
-fun Companies() {
+fun Companies(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,10 +57,13 @@ fun Companies() {
                     .padding(15.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.CenterVertically),
+                        .size(height = 25.dp, width = 32.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            navController.popBackStack()
+                        },
                     contentDescription = ""
                 )
                 Text(
@@ -65,19 +77,26 @@ fun Companies() {
 
             }
         }
+
         Column(
             modifier = Modifier
                 .weight(0.9f)
                 .padding(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+
+            ) {
+
             CompanyList()
+
+
+            Spacer(modifier = Modifier.weight(1f))
+
+
             Button(
                 onClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 22.dp)
-                    .padding(horizontal = 28.dp)
+                    .padding(horizontal = 15.dp)
                     .background(Color(0xFF203657), RoundedCornerShape(12.dp)),
 
                 colors = ButtonDefaults.buttonColors(
@@ -92,6 +111,9 @@ fun Companies() {
                 )
             }
 
+            Spacer(modifier = Modifier.size(height = 50.dp, width = 1.dp))
+
+
         }
     }
 }
@@ -100,5 +122,5 @@ fun Companies() {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun CompanyScreenPreview() {
-    Companies()
+    Companies(rememberNavController())
 }

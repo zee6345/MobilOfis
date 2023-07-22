@@ -38,9 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.navigation.displayDuringLogin
-import com.app.adjustment.navigation.securityScreen
+import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
 
+import com.app.adjustment.navigation.securityScreen
+import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
 
 
 @Composable
@@ -63,11 +64,13 @@ fun AdjustmentsScreen(navController: NavController) {
                     .padding(20.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(width = 32.dp, height = 25.dp)
                         .align(CenterVertically)
-                       ,
+                        .clickable {
+                                   navController.popBackStack()
+                        },
                     contentDescription = ""
                 )
                 Text(
@@ -135,7 +138,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
                             Image(
-                                painter = painterResource(id = R.drawable.next_icon),
+                                painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(35.dp)
@@ -149,7 +152,10 @@ fun AdjustmentsScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),
+                            .padding(top = 10.dp)
+                            .clickable {
+                                       navController.navigate(adjustmentToUserProfile)
+                            },
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Row(
@@ -162,7 +168,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
                             Image(
-                                painter = painterResource(id = R.drawable.next_icon),
+                                painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(35.dp)
@@ -193,7 +199,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
                             Image(
-                                painter = painterResource(id = R.drawable.next_icon),
+                                painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(35.dp)
@@ -264,7 +270,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                             )
                             Image(
-                                painter = painterResource(id = R.drawable.next_icon),
+                                painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(35.dp)
@@ -291,7 +297,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
                             Image(
-                                painter = painterResource(id = R.drawable.next_icon),
+                                painter = painterResource(id = R.drawable.ic_option_arrow_forward),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(35.dp)
@@ -363,7 +369,7 @@ fun Switch() {
 
 
 @Composable
-fun ThreeBoxComponent() {
+private fun ThreeBoxComponent() {
     val selectedBoxIndex = remember { mutableStateOf(-1) }
 
     Row() {

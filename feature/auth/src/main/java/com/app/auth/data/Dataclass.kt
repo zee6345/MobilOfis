@@ -1,7 +1,7 @@
 package com.app.auth.data
 
 import androidx.compose.ui.graphics.Color
-import com.app.adjustment.companies.CompanyListName
+import com.app.adjustment.companies.companylist.CompanyListName
 import com.app.auth.R
 import com.app.home.menu.component.CardMenu
 import com.app.home.menu.component.AccountListData
