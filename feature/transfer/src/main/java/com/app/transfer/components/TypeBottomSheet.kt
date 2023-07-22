@@ -69,6 +69,7 @@ fun TypeBottomSheet(showStatusBottomSheet: MutableState<Boolean>){
         contentColor = Color.White,
         onDismissRequest = { showStatusBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        containerColor = Color.White
     ) {
         Column(
             modifier = Modifier

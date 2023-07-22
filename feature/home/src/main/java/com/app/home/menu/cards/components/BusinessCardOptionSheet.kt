@@ -30,6 +30,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.home.R
@@ -37,7 +38,7 @@ import com.app.home.menu.component.dashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun PreviewBottomSheetOptions() {
 
@@ -57,314 +58,347 @@ fun PreviewBottomSheetOptions() {
         )
     }
 
-//    BusinessCardOptionSheet(businessCardOptions)
+    BusinessCardOptionsSheet(businessCardOptions)
 
 }
 
 
+
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BusinessCardOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
+fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
     var switchCheckedState by remember { mutableStateOf(true) }
-
-    val rowModify = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 15.sdp)
-        .dashedBorder(3.dp, Color(0x99C9CACC))
 
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = !showModalBottomSheet.value },
         containerColor = Color.White,
     ) {
         Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 22.dp)
+            Modifier.fillMaxWidth()
+
 
         ) {
 
             Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+            ) {
 
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_details),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Card account details",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
-
-                )
-
-
-            }
-
-
-
-
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_info), contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
-
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Details",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
-
-                )
-
-
-            }
-
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_statement),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Card account statement",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
-
-                )
-
-
-            }
-
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_statement),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Card statement",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
-
-                )
-
-
-            }
-
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_limits),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Limits",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
-
-                )
-
-
-            }
-
-
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_block),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Block the card",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
-
-                )
-
-
-            }
-
-
-
-            Row(
-                modifier = rowModify,
-                verticalAlignment = Alignment.CenterVertically,
-
-                ) {
-
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_pin), contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(4.dp)
-                )
-
-
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
-
-                Text(
-                    text = "Reset PIN attempts", style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    ),
-
-                )
-
-
-            }
-
-
-
-            Row(
-                modifier = rowModify,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
 
                     Image(
-                        painterResource(id = R.drawable.ic_option_card_sms),
+                        painterResource(id = R.drawable.ic_option_card_details),
                         contentDescription = "",
                         modifier = Modifier
                             .size(width = 32.dp, height = 32.dp)
-                            .padding(3.dp)
+
                     )
 
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "SMS alert",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular))
-                        ),
+                        text = "Card account details", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
+                }
+
+            }
+
+
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+
+                ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_info),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
 
                     )
 
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
+                    Text(
+                        text = "Details", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
                 }
 
+            }
 
-                Switch(
-                    checked = switchCheckedState,
-                    onCheckedChange = { switchCheckedState = it },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = Color(0xFF1DD580),
-                        uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = Color(0xFFE7EEFC),
 
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+            ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_statement),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
+
+                    )
+
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                    Text(
+                        text = "Card account statement", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
-                )
+                    )
+                }
 
+            }
+
+
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+
+                ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_statement),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
+
+                    )
+
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                    Text(
+                        text = "Card statement", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
+                }
 
             }
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
             ) {
 
-                Image(
-                    painterResource(id = R.drawable.ic_option_card_edit), contentDescription = "",
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 32.dp)
-                        .padding(3.dp)
-                )
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
-                Text(
-                    text = "Change your name",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular))
-                    ),
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_limits),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
 
-                )
+                    )
 
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                    Text(
+                        text = "Limits", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
+                }
 
             }
+
+
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+
+                ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_block),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
+
+                    )
+
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                    Text(
+                        text = "Block the card", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
+                }
+
+            }
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+            ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_pin),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
+
+                    )
+
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                    Text(
+                        text = "Reset PIN attempts", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
+                }
+
+            }
+
+
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+
+                ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Image(
+                            painterResource(id = R.drawable.ic_option_card_sms),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(width = 32.dp, height = 32.dp)
+
+                        )
+
+                        Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                        Text(
+                            text = "SMS alert", style = TextStyle(
+                                fontSize = 16.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular))
+                            )
+                        )
+                    }
+
+
+                    Switch(
+                        checked = switchCheckedState,
+                        onCheckedChange = { switchCheckedState = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = Color(0xFF1DD580),
+                            uncheckedThumbColor = Color.White,
+                            uncheckedTrackColor = Color(0xFFE7EEFC),
+
+                            )
+                    )
+
+
+                }
+
+            }
+
+            Row(
+                modifier = Modifier
+                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .fillMaxWidth(),
+            ) {
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+                        painterResource(id = R.drawable.ic_option_card_edit),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 32.dp)
+
+                    )
+
+                    Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
+
+                    Text(
+                        text = "Change your name", style = TextStyle(
+                            fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
+                        )
+                    )
+                }
+
+            }
+
+
+
 
 
         }

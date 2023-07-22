@@ -73,6 +73,7 @@ fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
         contentColor = Color.White,
         onDismissRequest = { showAccountBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        containerColor = Color.White
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 10.dp)
