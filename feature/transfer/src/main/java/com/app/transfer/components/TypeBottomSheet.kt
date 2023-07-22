@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,21 +72,18 @@ fun TypeBottomSheet(showStatusBottomSheet: MutableState<Boolean>){
         Column(
             modifier = Modifier
                 .padding(3.dp)
-                .weight(0.9f)
                 .padding(horizontal = 10.dp)
-                ,
         ) {
-
-            Text(
-                text = "Type",
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.sdp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = Color(0xFF223142)
-            )
+            Row(modifier = Modifier.fillMaxWidth(),
+                Arrangement.Center
+            ) {
+                Text(
+                    text = "Type",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    color = Color(0xFF223142)
+                )
+            }
             Spacer(modifier = Modifier.padding(top = 5.sdp))
             TypeList()
         }
@@ -112,22 +110,23 @@ fun TypeMenuItem(menuItem:TypeModel){
     Column(
         modifier = Modifier
             .background(Color.White)
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .padding(horizontal = 10.dp,
+                vertical = 2.dp)
     ) {
             Text(
                 text = menuItem.title,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 14.sdp),
-                fontWeight = FontWeight.Bold,
+                    .padding(top = 2.sdp),
+                fontWeight = FontWeight.Normal,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 color = Color(0xFF223142)
             )
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
+        Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.sdp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier.fillMaxWidth()
         ) {
             Box(
@@ -140,7 +139,7 @@ fun TypeMenuItem(menuItem:TypeModel){
                     .align(Alignment.CenterVertically)
             )
         }
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
+        Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.sdp))
     }
 }
 

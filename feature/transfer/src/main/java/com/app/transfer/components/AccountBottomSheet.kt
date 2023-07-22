@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,32 +74,30 @@ fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {
         Column(
-            modifier = Modifier
-                .padding(3.dp)
-                .weight(0.9f)
-                .padding(horizontal = 10.dp)
+            modifier = Modifier.padding(horizontal = 10.dp)
         ) {
             Text(
                 text = "From the account",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.sdp),
+                    .fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
                 color = Color(0xFF223142)
             )
-            Spacer(modifier = Modifier.padding(top = 5.sdp))
+            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
             Text(
                 text = "All",
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.sdp),
+                    .padding(top = 2.sdp),
                 fontWeight = FontWeight.Normal,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 color = Color(0xFF223142)
             )
+            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+
             AccountTypeList()
         }
     }
@@ -126,19 +125,20 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
     Column(
         modifier = Modifier
             .background(Color.White)
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .padding(horizontal = 10.dp)
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 2.dp)
         ) {
             Text(
                 text = menuItem.title,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 14.sdp),
+                    .padding(top = 3.sdp),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 color = Color(0xFF223142)
@@ -148,7 +148,7 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
                     painterResource(id = R.drawable.ic_blocked),
                     contentDescription = "calender",
                     modifier = Modifier
-                        .padding(horizontal = 5.sdp)
+                        .padding(horizontal = 2.sdp)
                         .align(Alignment.CenterVertically)
                 )
             }else{
@@ -160,8 +160,8 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 14.sdp),
-            fontWeight = FontWeight.Bold,
+                .padding(top = 2.sdp),
+            fontWeight = FontWeight.Normal,
             fontFamily = FontFamily(Font(R.font.roboto_regular)),
             color = Color(0xFF223142)
         )

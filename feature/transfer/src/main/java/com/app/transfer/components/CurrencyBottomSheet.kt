@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +50,9 @@ fun CurrencyBottomSheet() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+
+
         ClickableText(modifier = Modifier.padding(5.dp),
             text = AnnotatedString(text = "Show Status BottomSheet"),
 //                    color = Color(0xFF203657),
@@ -71,23 +75,20 @@ fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
         Column(
             modifier = Modifier
                 .padding(3.dp)
-                .weight(0.9f)
                 .padding(horizontal = 10.dp)
-                ,
         ) {
-
-            Text(
-                text = "Type",
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.sdp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = Color(0xFF223142)
-            )
-            Spacer(modifier = Modifier.padding(top = 5.sdp))
-            StatusList()
+            Row(modifier = Modifier.fillMaxWidth()
+                ,Arrangement.Center) {
+                Text(
+                    text = "Currency",
+                    modifier = Modifier
+                        .padding(top = 5.sdp, bottom = 5.sdp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    color = Color(0xFF223142)
+                )
+            }
+            CurrencyList()
         }
     }
 }
@@ -112,19 +113,19 @@ fun CurrencyMenuItem(menuItem:CurrencyModel){
     Column(
         modifier = Modifier
             .background(Color.White)
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .padding(horizontal = 10.dp)
     ) {
         Text(
             text = menuItem.title,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 14.sdp),
+                .padding(top = 5.sdp, bottom = 5.sdp),
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily(Font(R.font.roboto_regular)),
             color = Color(0xFF223142)
         )
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
+        Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.sdp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -140,7 +141,7 @@ fun CurrencyMenuItem(menuItem:CurrencyModel){
                     .align(Alignment.CenterVertically)
             )
         }
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
+        Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.sdp))
     }
 }
 

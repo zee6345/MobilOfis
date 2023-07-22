@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,28 +68,25 @@ fun StatusBottomSheet() {
 @Composable
 fun StatusBottomSheet(showStatusBottomSheet:MutableState<Boolean>){
     if (showStatusBottomSheet.value) ModalBottomSheet(
+        contentColor = Color.White,
         onDismissRequest = { showStatusBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {
         Column(
             modifier = Modifier
-                .padding(3.dp)
-                .weight(0.9f)
-                .padding(horizontal = 10.dp)
-                ,
+
         ) {
 
             Text(
                 text = "Status",
-                textAlign = TextAlign.Start,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.sdp),
+                    .fillMaxWidth().padding(bottom = 5.dp),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
                 color = Color(0xFF223142)
             )
-            Spacer(modifier = Modifier.padding(top = 5.sdp))
+            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
             StatusList()
         }
     }
@@ -115,11 +113,12 @@ fun StatusMenuItem(menuItem:StatusModel){
     Column(
         modifier = Modifier
             .background(Color.White)
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .padding(horizontal = 10.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 2.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_circle),
@@ -131,10 +130,9 @@ fun StatusMenuItem(menuItem:StatusModel){
             )
             Text(
                 text = menuItem.title,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.sdp),
+                    .fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 color = Color(0xFF223142)
