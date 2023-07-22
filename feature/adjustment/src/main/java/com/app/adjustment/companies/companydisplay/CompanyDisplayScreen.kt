@@ -1,9 +1,18 @@
-package com.app.adjustment
+package com.app.adjustment.companies.companydisplay
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +26,21 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+
+import com.app.adjustment.R
 
 
 @Composable
-fun UserProfileScreen() {
+fun CompanyDisplay(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(
+                rememberScrollState(), enabled = true
+            )
+            .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
             modifier = Modifier
@@ -34,17 +52,20 @@ fun UserProfileScreen() {
             Row(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(20.dp),
+                    .padding(15.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.CenterVertically),
+                        .size(height = 25.dp, width = 32.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            navController.popBackStack()
+                        },
                     contentDescription = ""
                 )
                 Text(
-                    text = "User's profile",
+                    text = "Company to display during login",
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -54,32 +75,24 @@ fun UserProfileScreen() {
 
             }
         }
+
         Column(
             modifier = Modifier
                 .weight(0.9f)
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 22.dp),
-                backgroundColor = Color.White
-            ) {
 
-
-            }
-
+            CompanyDisplayList(navController)
 
         }
+
 
     }
 }
 
+
 @Preview(device = Devices.PIXEL_4)
 @Composable
-fun UserProfileScreenPreview() {
-    UserProfileScreen()
+fun CompanyDisplayScreenPreview() {
+    CompanyDisplay(rememberNavController())
 }

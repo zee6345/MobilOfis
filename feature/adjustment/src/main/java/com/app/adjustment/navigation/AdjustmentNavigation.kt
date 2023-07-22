@@ -4,24 +4,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.adjustment.AdjustmentsScreen
-import com.app.adjustment.ForgetPasswordScreen
-import com.app.adjustment.SecurityScreen
+import com.app.adjustment.changepassword.ForgetPasswordScreen
+import com.app.adjustment.security.SecurityScreen
 
-const val displayDuringLogin = "companyDisplayLogin"
+
 const val adjustmentScreen = "adjustmentScreen"
 const val securityScreen = "securityScreen"
-const val changePassScreen = "changePassSCreen"
 
 
-fun NavGraphBuilder.companyDisplayDuringLogin(
-    navController: NavController
-) {
-    composable(
-        route = displayDuringLogin,
-    ) {
-        com.app.adjustment.companies.companyDisplay.CompanyDisplay(navController)
-    }
-}
 
 
 fun NavGraphBuilder.adjustmentScreen(
@@ -44,12 +34,3 @@ fun NavGraphBuilder.securitySCreen(
     }
 }
 
-fun NavGraphBuilder.changePasswordScreen(
-    navController: NavController
-) {
-    composable(
-        route = changePassScreen,
-    ) {
-        ForgetPasswordScreen(navController)
-    }
-}

@@ -5,13 +5,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.app.adjustment.AdjustmentsScreen
-import com.app.adjustment.SecurityScreen
-import com.app.adjustment.companies.companyDisplay.CompanyDisplay
-import com.app.adjustment.navigation.displayDuringLogin
+import com.app.adjustment.changepassword.ForgetPasswordScreen
+import com.app.adjustment.changepassword.navigation.securityToChangePassword
+import com.app.adjustment.companies.companydisplay.CompanyDisplay
+import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
+import com.app.adjustment.companies.companylist.Companies
+import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
 import com.app.adjustment.navigation.securityScreen
-
+import com.app.adjustment.security.SecurityScreen
+import com.app.adjustment.userprofile.UserProfileScreen
+import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
 import com.app.home.BottomNavItem
-
 import com.app.home.menu.MenuScreen
 import com.app.home.menu.account.AccountInformation
 import com.app.home.menu.account.navigation.accountDetailsRoute
@@ -56,17 +60,31 @@ fun NavigationGraph(navController: NavHostController) {
         composable(homeToCardDetails) {
             CardDetails(navController = navController)
         }
-        
-        composable(homeToLoanInformation){
+
+        composable(homeToLoanInformation) {
             LoanInformationDetails(navController = navController)
         }
-        
-        composable(homeToTrustDepositDetails){
+
+        composable(homeToTrustDepositDetails) {
             DepositDetails(navController = navController)
         }
 
-        composable(transferToDetails){
+        composable(transferToDetails) {
             TransferDetailsInformation(navController = navController)
+        }
+
+        composable(companiesDisplayToCompanies) {
+            Companies(navController = navController)
+        }
+
+        composable(adjustmentToUserProfile) {
+            UserProfileScreen(navController)
+        }
+
+        composable(
+            securityToChangePassword,
+        ) {
+            ForgetPasswordScreen(navController)
         }
 
     }

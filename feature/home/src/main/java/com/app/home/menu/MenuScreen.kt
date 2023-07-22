@@ -57,13 +57,18 @@ fun MenuScreen(navController: NavController) {
                             .fillMaxWidth()
                             .padding(start = 22.dp, end = 12.dp)
                     ) {
-                        Row(modifier = Modifier.weight(0.7f)) {
-                            Image(
-                                painter = painterResource(id = R.drawable.business_icon),
+
+                        Row(
+                            modifier = Modifier.weight(0.7f),
+                            verticalAlignment = Alignment.CenterVertically
+                            ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_business_icon),
                                 modifier = Modifier
-                                    .size(25.dp)
+                                    .size(22.dp)
                                     .align(Alignment.Top),
-                                contentDescription = ""
+                                contentDescription = "",
+                                tint = Color.White
                             )
                             Column(
                                 modifier = Modifier
@@ -88,9 +93,9 @@ fun MenuScreen(navController: NavController) {
                             }
 
                             Image(
-                                painter = painterResource(id = R.drawable.dropdown_icon),
+                                painter = painterResource(id = R.drawable.ic_business_expand),
                                 modifier = Modifier
-                                    .size(15.dp)
+                                    .size(22.dp)
                                     .align(Alignment.Top),
                                 contentDescription = ""
                             )
@@ -105,17 +110,17 @@ fun MenuScreen(navController: NavController) {
                             verticalAlignment = Alignment.Top
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.eye_icon),
+                                painter = painterResource(id = R.drawable.ic_options_visible),
                                 modifier = Modifier
-                                    .size(20.dp)
+                                    .size(22.dp)
                                     .align(Alignment.Top),
                                 contentDescription = ""
                             )
                             Spacer(modifier = Modifier.width(20.dp))
                             Image(
-                                painter = painterResource(id = R.drawable.notification_icon),
+                                painter = painterResource(id = R.drawable.ic_option_icon),
                                 modifier = Modifier
-                                    .size(20.dp)
+                                    .size(22.dp)
                                     .align(Alignment.Top),
                                 contentDescription = ""
                             )
@@ -152,9 +157,9 @@ fun MenuScreen(navController: NavController) {
                                     .padding(end = 8.dp, top = 3.dp)
                             )
                             Image(
-                                painter = painterResource(id = R.drawable.dropdown_icon),
+                                painter = painterResource(id = R.drawable.ic_business_expand),
                                 modifier = Modifier
-                                    .size(15.dp)
+                                    .size(25.dp)
                                     .align(Bottom),
                                 contentDescription = ""
                             )

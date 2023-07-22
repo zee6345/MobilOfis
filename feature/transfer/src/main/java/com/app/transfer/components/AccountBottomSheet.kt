@@ -152,8 +152,8 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
                         .padding(horizontal = 2.sdp)
                         .align(Alignment.CenterVertically)
                 )
-            }else{
-                Log.e("error","icon hide")
+            } else {
+                Log.e("error", "icon hide")
             }
         }
         Text(
