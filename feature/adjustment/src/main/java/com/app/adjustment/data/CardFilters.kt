@@ -1,4 +1,4 @@
-package com.app.adjustment.companies.data
+package com.app.adjustment.data
 
 data class CardFilters(
     val filterName:String,

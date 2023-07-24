@@ -21,15 +21,15 @@ fun NavGraphBuilder.splashScreen(
         SplashScreen(navController = navController)
 
         LaunchedEffect(Unit) {
-            delay(5000) // 5000 milliseconds = 5 seconds delay
+            delay(4000) // 5000 milliseconds = 5 seconds delay
 
-//            navController.navigate(route = loginNavigationRoute) {
-//                popUpTo(splashNavigationRoute) { inclusive = true }
-//            }
-
-            navController.navigate(route = homeScreenRoute) {
+            navController.navigate(route = loginNavigationRoute) {
                 popUpTo(splashNavigationRoute) { inclusive = true }
             }
+
+//            navController.navigate(route = homeScreenRoute) {
+//                popUpTo(splashNavigationRoute) { inclusive = true }
+//            }
         }
     }
 

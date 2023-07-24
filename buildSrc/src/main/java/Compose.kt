@@ -11,7 +11,7 @@ object Compose {
     const val material3 = "androidx.compose.material3:material3:1.1.0-alpha06"
     const val activity_compose = "androidx.activity:activity-compose$activity_compose_value"
     const val composeBom = "androidx.compose:compose-bom$composeBom_value"
-    const val junit4compose = "androidx.compose.ui:ui-test-junit4"
+//    const val junit4compose = "androidx.compose.ui:ui-test-junit4"
     const val composeNavigation ="androidx.navigation:navigation-compose:2.6.0"
     const val normal_material ="androidx.compose.material:material"
    // const val compose_foundation ="androidx.compose.foundation$foundation"

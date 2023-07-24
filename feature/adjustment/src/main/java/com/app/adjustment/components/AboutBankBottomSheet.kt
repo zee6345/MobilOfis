@@ -4,6 +4,7 @@ package com.app.adjustment.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,11 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
+import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun AboutBankSheet() {
+fun AboutBankSheet(navController: NavController) {
     val aboutBankState = rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -58,11 +62,12 @@ fun AboutBankSheet() {
         )
     }
 
-    AboutBankSheet(aboutBankState)
+    AboutBankSheet(aboutBankState, navController)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutBankSheet(aboutBankState: MutableState<Boolean>) {
+fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavController) {
     if (aboutBankState.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { aboutBankState.value = false },
@@ -86,9 +91,11 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>) {
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth().dashedBorder(
-                    3.dp, Color(0xFFE7EEFC)
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(
+                        3.dp, Color(0xFFE7EEFC)
+                    ),
                 horizontalArrangement = Arrangement.Start
 
             ) {
@@ -109,9 +116,11 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>) {
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth().dashedBorder(
-                    3.dp, Color(0xFFE7EEFC)
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(
+                        3.dp, Color(0xFFE7EEFC)
+                    ),
                 horizontalArrangement = Arrangement.Start
             ) {
                 Image(
@@ -132,9 +141,16 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>) {
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth().dashedBorder(
-                    3.dp, Color(0xFFE7EEFC)
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(
+                        3.dp, Color(0xFFE7EEFC)
+                    )
+                    .clickable {
+                        aboutBankState.value = false
+                        navController.navigate(adjustmentToExchangeRates)
+
+                    },
                 horizontalArrangement = Arrangement.Start
             ) {
                 Image(
@@ -159,5 +175,5 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>) {
 @Preview
 @Composable
 fun view(){
-    AboutBankSheet()
+    AboutBankSheet(rememberNavController())
 }

@@ -1,4 +1,4 @@
-package com.app.auth.login
+package com.app.auth.login.easysignature
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

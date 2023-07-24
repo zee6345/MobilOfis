@@ -4,8 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.app.adjustment.changepassword.navigation.changePasswordScreen
+import com.app.adjustment.changepin.navigation.changePin
+import com.app.adjustment.changepin.navigation.confirmPin
 import com.app.adjustment.companies.companydisplay.navigation.companyDisplayDuringLogin
 import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
+import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRate
 import com.app.adjustment.navigation.adjustmentScreen
 
 import com.app.adjustment.navigation.securitySCreen
@@ -59,6 +62,9 @@ fun MoNavHost(
         trustInformationNavigation(navController)
         transferDetailsNavigation(navController)
         adjustmentToUserProfile(navController)
+        changePin(navController)
+        confirmPin(navController)
+        adjustmentToExchangeRate(navController)
     }
 }
 

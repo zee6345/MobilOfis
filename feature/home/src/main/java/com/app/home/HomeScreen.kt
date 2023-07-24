@@ -75,7 +75,7 @@ fun BottomNavigation(navController: NavController) {
 
 sealed class BottomNavItem(var title: String, var icon: Int, var screen_route: String) {
 
-    object Menu : BottomNavItem("Menu", R.drawable.ic_menu, "menu")
+    object Menu : BottomNavItem("Main", R.drawable.ic_menu, "menu")
     object Transfers : BottomNavItem("Transfers", R.drawable.ic_transfers, "transfers")
     object Adjustments : BottomNavItem("Adjustments", R.drawable.ic_adjusments, "adjustment")
 

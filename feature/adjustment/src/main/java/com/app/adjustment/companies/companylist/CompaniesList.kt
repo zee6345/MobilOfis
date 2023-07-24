@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.adjustment.R
-import com.app.adjustment.companies.data.DataProvider
+import com.app.adjustment.data.DataProvider
 
 
 data class CompanyListName(

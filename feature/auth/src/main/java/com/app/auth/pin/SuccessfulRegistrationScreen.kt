@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.pin.navigation.welcomePinScreen
+import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun SuccessfulRegistrationScreen(navController: NavController) {
@@ -99,10 +100,10 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.registration),
+                painter = painterResource(id = R.drawable.ic_successfull_registration),
                 modifier = Modifier
                     .padding(top = 6.dp)
-                    .size(220.dp),
+                    .size(150.sdp),
                 contentDescription = ""
             )
 

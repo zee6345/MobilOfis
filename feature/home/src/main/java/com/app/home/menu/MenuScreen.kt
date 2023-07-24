@@ -43,11 +43,13 @@ import com.app.home.menu.component.TabLayoutMenu
 @Composable
 fun MenuScreen(navController: NavController) {
     val selectCompanyState = rememberSaveable { mutableStateOf(false) }
+    val showBalance = rememberSaveable { mutableStateOf(false) }
     val balancePopup = rememberSaveable { mutableStateOf(false) }
     var touchPoint: Offset by remember { mutableStateOf(Offset.Zero) }
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,9 +76,7 @@ fun MenuScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 22.dp, end = 12.dp)
-                            .clickable {
-                                selectCompanyState.value = !selectCompanyState.value
-                            }
+
                     ) {
 
                         Row(
@@ -117,7 +117,10 @@ fun MenuScreen(navController: NavController) {
                                 painter = painterResource(id = R.drawable.ic_business_expand),
                                 modifier = Modifier
                                     .size(22.dp)
-                                    .align(Alignment.Top),
+                                    .align(Alignment.Top)
+                                    .clickable {
+                                        selectCompanyState.value = !selectCompanyState.value
+                                    },
                                 contentDescription = ""
                             )
                         }
@@ -131,10 +134,16 @@ fun MenuScreen(navController: NavController) {
                             verticalAlignment = Alignment.Top
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_options_visible),
+                                painter =
+                                if(showBalance.value)
+                                    painterResource(id = R.drawable.ic_password_visible_off)
+                                    else painterResource(id = R.drawable.ic_password_visible),
                                 modifier = Modifier
                                     .size(22.dp)
-                                    .align(Alignment.Top),
+                                    .align(Alignment.Top)
+                                    .clickable {
+                                        showBalance.value = !showBalance.value
+                                    },
                                 contentDescription = ""
                             )
                             Spacer(modifier = Modifier.width(20.dp))

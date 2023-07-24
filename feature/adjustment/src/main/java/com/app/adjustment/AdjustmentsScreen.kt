@@ -210,9 +210,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                     .size(35.dp)
                                     .align(CenterVertically)
                                     .padding(end = 12.dp)
-                                    .clickable {
-
-                                    },
+                                    ,
                             )
                         }
 
@@ -358,7 +356,7 @@ fun AdjustmentsScreen(navController: NavController) {
 
     }
 
-    AboutBankSheet(aboutBankState)
+    AboutBankSheet(aboutBankState, navController)
     ContactBottomSheet(contactState)
 }
 

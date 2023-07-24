@@ -80,7 +80,7 @@ fun RepeatPin(navController: NavController) {
                     showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
                 }
 
-                Log.e("mTAG", "RepeatPin: $pin" )
+//                Log.e("mTAG", "RepeatPin: $pin" )
             }
 
         }

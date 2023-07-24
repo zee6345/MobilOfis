@@ -25,7 +25,7 @@ import com.app.adjustment.R
 
 import com.app.adjustment.companies.companylist.CompanyListName
 import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
-import com.app.adjustment.companies.data.DataProvider
+import com.app.adjustment.data.DataProvider
 
 
 

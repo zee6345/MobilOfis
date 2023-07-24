@@ -11,6 +11,8 @@ import com.app.adjustment.companies.companydisplay.CompanyDisplay
 import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
 import com.app.adjustment.companies.companylist.Companies
 import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
+import com.app.adjustment.exchangerate.ExchangeRatesScreen
+import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
 import com.app.adjustment.navigation.securityScreen
 import com.app.adjustment.security.SecurityScreen
 import com.app.adjustment.userprofile.UserProfileScreen
@@ -86,6 +88,12 @@ fun NavigationGraph(navController: NavHostController) {
         ) {
             ForgetPasswordScreen(navController)
         }
+
+        composable(adjustmentToExchangeRates){
+            ExchangeRatesScreen(navController)
+        }
+
+
 
     }
 }

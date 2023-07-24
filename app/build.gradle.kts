@@ -88,7 +88,7 @@ dependencies {
     implementation(Compose.activity_compose)
     androidTestImplementation (UnitTest.JUNIT_TEST)
     androidTestImplementation (UnitTest.Espresso)
-    androidTestImplementation (Compose.junit4compose)
+//    androidTestImplementation (Compose.junit4compose)
     debugImplementation (Compose.composeTooling)
     debugImplementation (Compose.composeTest)
     implementation(Others.sdp_compose)

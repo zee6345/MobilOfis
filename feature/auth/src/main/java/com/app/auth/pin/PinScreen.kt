@@ -85,7 +85,7 @@ fun PinScreen(navController: NavController) {
 
             Card(modifier = Modifier.wrapContentSize(), shape = RoundedCornerShape(14.dp)) {
                 Text(
-                    text = "No",
+                    text = "Skip",
                     fontSize = 16.sp,
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 18.dp),
                     color = Color(0xFF203657)
