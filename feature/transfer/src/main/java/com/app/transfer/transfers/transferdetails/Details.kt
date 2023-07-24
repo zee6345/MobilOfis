@@ -47,6 +47,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.transfer.R
 import com.app.transfer.components.dashedBorder
+import com.app.transfer.components.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 
@@ -67,6 +68,8 @@ fun Details(navController: NavController) {
         CardInfo3(navController = navController)
 
         CardInfo4(navController = navController)
+
+        PdfAttachmentItem("PDF")
 
         CardInfo5(navController = navController)
 
@@ -97,12 +100,14 @@ private fun CardInfo1(navController: NavController) {
                 Modifier
                     .fillMaxWidth()
                     .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                    ,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
+                        .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
                 ) {
@@ -129,7 +134,7 @@ private fun CardInfo1(navController: NavController) {
                 Column(
                     Modifier
                         .weight(0.5f)
-
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
                 ) {
 
@@ -352,12 +357,14 @@ private fun CardInfo2(navController: NavController) {
                     Modifier
                         .fillMaxWidth()
                         .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                        ,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
                         Modifier
                             .weight(0.7f)
+                            .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
+                            .padding(horizontal = 10.sdp, vertical = 8.sdp)
                             .fillMaxWidth()
 
                     ) {
@@ -384,6 +391,7 @@ private fun CardInfo2(navController: NavController) {
                     Column(
                         Modifier
                             .weight(0.3f)
+                            .padding(horizontal = 10.sdp, vertical = 8.sdp)
                             .fillMaxWidth()
                     ) {
 
@@ -533,12 +541,14 @@ private fun CardInfo4(navController: NavController) {
                 Modifier
                     .fillMaxWidth()
                     .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                    ,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.7f)
+                        .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
                 ) {
@@ -565,6 +575,7 @@ private fun CardInfo4(navController: NavController) {
                 Column(
                     Modifier
                         .weight(0.3f)
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
                 ) {
 

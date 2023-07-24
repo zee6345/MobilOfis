@@ -9,7 +9,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.util.concurrent.TimeUnit
 
 @Composable
@@ -39,6 +44,11 @@ fun TimerTextView() {
     Text(
         text = formattedTime,
         modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
-        color = Color(0xFF223142)
+        color = Color(0xFF223142),
+        style = TextStyle(
+            fontSize = 16.sp,
+            fontWeight = FontWeight(500),
+
+        )
     )
 }

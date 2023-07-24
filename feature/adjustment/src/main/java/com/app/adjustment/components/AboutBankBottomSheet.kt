@@ -75,8 +75,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
     ) {
 
         Column(
-            modifier = Modifier.padding(horizontal = 15.dp, vertical = 12.dp)
-
+            modifier = Modifier.padding(vertical = 12.dp)
         ) {
             Text(
                 text = "About The Bank",
@@ -99,43 +98,58 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 horizontalArrangement = Arrangement.Start
 
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_location),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(35.dp)
-                        .align(Alignment.CenterVertically)
-                        .padding(end = 12.dp)
-                )
-                androidx.compose.material.Text(
-                    text = "Branches And ATMs",
-                    style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                        .fillMaxWidth()
+                ) {
+
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_location),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .align(Alignment.CenterVertically)
+                            .padding(2.dp)
+                    )
+                    androidx.compose.material.Text(
+                        text = "Branches And ATMs",
+                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                    )
+                }
             }
+
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
+                        2.dp, Color(0xFFE7EEFC)
                     ),
                 horizontalArrangement = Arrangement.Start
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_tariff),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(35.dp)
-                        .align(Alignment.CenterVertically)
-                        .padding(end = 12.dp)
-                )
-                androidx.compose.material.Text(
-                    text = "Tariffs",
-                    style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                        .fillMaxWidth()
+                ) {
+
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_tariff),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .align(Alignment.CenterVertically)
+                            .padding(2.dp)
+                    )
+                    androidx.compose.material.Text(
+                        text = "Tariffs",
+                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
@@ -143,29 +157,30 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
-                    )
                     .clickable {
                         aboutBankState.value = false
                         navController.navigate(adjustmentToExchangeRates)
-
                     },
                 horizontalArrangement = Arrangement.Start
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_arrow),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(35.dp)
-                        .align(Alignment.CenterVertically)
-                        .padding(end = 12.dp)
-                )
-                androidx.compose.material.Text(
-                    text = "Exchange Rates",
-                    style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                        .fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_arrow),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .align(Alignment.CenterVertically)
+                            .padding(vertical = 3.dp, horizontal = 7.dp)
+                    )
+                    androidx.compose.material.Text(
+                        text = "Exchange Rates",
+                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                    )
+                }
             }
 
         }

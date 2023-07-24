@@ -2,8 +2,8 @@ package com.app.home.data
 
 import androidx.compose.ui.graphics.Color
 import com.app.home.R
-import com.app.home.menu.component.AccountListData
-import com.app.home.menu.component.CardMenu
+import com.app.home.main.component.AccountListData
+import com.app.home.main.component.CardMenu
 
 
 object DataProvider {

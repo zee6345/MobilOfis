@@ -73,11 +73,11 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
     if (contactSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { contactSheet.value = false },
-        shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        shape = RoundedCornerShape(topStart = 12.sdp, topEnd = 12.sdp),
     ) {
 
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
 
         ) {
             androidx.compose.material3.Text(
@@ -95,17 +95,24 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
                 Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .border(border = BorderStroke(2.dp,Color(0xFFE7EEFC)), shape = RoundedCornerShape(10.dp))
+                    .border(
+                        border = BorderStroke(2.dp, Color(0xFFE7EEFC)),
+                        shape = RoundedCornerShape(10.dp)
+                    )
                     .background(color = Color(0xFFFFFFFF)),
                 contentAlignment = Alignment.Center
 
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
-                    )
-                        .padding(horizontal = 10.dp,
-                        vertical = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .dashedBorder(
+                            3.dp, Color(0xFFE7EEFC)
+                        )
+                        .padding(
+                            horizontal = 10.dp,
+                            vertical = 10.dp
+                        ),
                     horizontalArrangement = Arrangement.Start,
                     Alignment.CenterVertically
                 ) {
@@ -132,16 +139,20 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .padding( vertical = 10.dp)
-                    .border(border = BorderStroke(2.dp,Color(0xFFE7EEFC)), shape = RoundedCornerShape(10.dp))
+                    .padding(vertical = 10.dp)
+                    .border(
+                        border = BorderStroke(2.dp, Color(0xFFE7EEFC)),
+                        shape = RoundedCornerShape(10.dp)
+                    )
                     .background(color = Color(0xFFFFFFFF)),
                 contentAlignment = Alignment.Center
 
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
-                    ).padding(horizontal = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .padding(horizontal = 10.dp),
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
@@ -149,29 +160,53 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
                         contentDescription = "",
                         modifier = Modifier
                             .align(Alignment.Top)
-                            .padding(top = 8.dp)
+                            .padding(top = 10.dp, start = 5.dp)
                     )
                     Column(
-                        modifier = Modifier.padding(horizontal = 10.dp)
-                    ){
-                        Text(
-                            text = "(077) 434-07-77",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                        )
-                        Text(
-                            text = "(077) 434-07-77",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                        )
+                        modifier = Modifier.padding(start = 20.dp)
 
-                        Text(
-                            text = "(077) 434-07-77",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                        )
+                    ){
+                        Row(
+                            modifier = Modifier
+                                .padding( horizontal = 12.dp)
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "(077) 434-07-77",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier
+                                    .padding(vertical = 10.dp,)
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .padding( horizontal = 12.dp)
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "(077) 434-07-77",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier
+                                    .padding(vertical = 10.dp,)
+                                )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .padding( horizontal = 12.dp)
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "(077) 434-07-77",
+                                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                                modifier = Modifier
+                                    .padding(vertical = 10.dp,)
+                                )
+                        }
 
                     }
                 }

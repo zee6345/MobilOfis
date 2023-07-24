@@ -29,3 +29,25 @@ fun Modifier.dashedBorder(strokeWidth: Dp, color: Color) = composed(factory = {
         }
     })
 })
+
+fun Modifier.rightVerticalDashedBorder(strokeWidth: Dp, color: Color) = composed(factory = {
+    val density = LocalDensity.current
+    val strokeWidthPx = density.run { strokeWidth.toPx() }
+    this.then(Modifier.drawWithCache {
+        onDrawBehind {
+            val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+            val strokeWidthWithDensity = strokeWidthPx / density.density
+            val start = Offset(size.width, 0f)
+            val end = Offset(size.width, size.height)
+
+            // Draw the dashed line
+            drawLine(
+                color = color,
+                start = start,
+                end = end,
+                strokeWidth = strokeWidthWithDensity,
+                pathEffect = pathEffect
+            )
+        }
+    })
+})

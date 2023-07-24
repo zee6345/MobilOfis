@@ -21,10 +21,10 @@ import com.app.auth.pin.navigation.successfulRegistrationScreen
 import com.app.auth.pin.navigation.welcomePin
 import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.auth.splash.navigation.splashScreen
-import com.app.home.menu.account.navigation.accountDetails
-import com.app.home.menu.cards.navigation.cardDetailsNavigation
-import com.app.home.menu.loan.navigation.loanInformationNavigation
-import com.app.home.menu.trust.navigation.trustInformationNavigation
+import com.app.home.main.account.navigation.accountDetails
+import com.app.home.main.cards.navigation.cardDetailsNavigation
+import com.app.home.main.loan.navigation.loanInformationNavigation
+import com.app.home.main.trust.navigation.trustInformationNavigation
 import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
 import com.app.transfer.transfers.navigation.transferDetailsNavigation
