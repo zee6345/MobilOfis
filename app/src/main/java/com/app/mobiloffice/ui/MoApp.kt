@@ -17,7 +17,7 @@ import com.app.mobiloffice.navigation.MoNavHost
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoApp(
-    appState: MoState = rememberMoState()
+    appState: MoState = rememberMoState(),
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 

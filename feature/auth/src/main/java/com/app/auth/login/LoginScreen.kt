@@ -1,13 +1,18 @@
 package com.app.auth.login
 
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.Absolute.Center
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Tab
@@ -15,6 +20,8 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -36,6 +45,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
@@ -43,21 +55,30 @@ import com.app.auth.login.components.alertdialog.CallTopAlertDialog
 import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
-import com.app.auth.login.navigation.otpNavigationRoute
+import com.app.network.data.DataState
+import com.app.network.data.callModels.LoginRequest
+import com.app.network.data.responseModels.LoginResponse
+import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
+
 import kotlinx.coroutines.delay
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
 
     val (selected, setSelected) = remember { mutableStateOf(0) }
     val usernameState = remember { mutableStateOf("") }
     val paswdState = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
+    var userErrorCheck by remember { mutableStateOf(false) }
+    var pswdErrorCheck by remember { mutableStateOf(false) }
+    var isLoading = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
+    val loginData by viewModel.data.collectAsState()
 
     BottomSheetScaffold(
         sheetPeekHeight = 50.sdp,
@@ -97,14 +118,10 @@ fun LoginScreen(navController: NavController) {
                     )
                 )
 
-                BottomSheetItems(R.drawable.ic_location, "Branches and ATMs",true)
+                BottomSheetItems(R.drawable.ic_location, "Branches and ATMs", true)
                 BottomSheetItems(R.drawable.ic_tariff, "Tariffs", true)
                 BottomSheetItems(R.drawable.ic_whatsapp_support, "WhatsApp support", true)
                 BottomSheetItems(R.drawable.ic_call_support, "Call Center", true)
-
-//                BottomSheetItems(
-//                    R.drawable.language, "Application Language"
-//                )
 
                 Row(
                     modifier = Modifier
@@ -161,6 +178,7 @@ fun LoginScreen(navController: NavController) {
                     )
                 }
             }
+
             Column(
                 modifier = Modifier
                     .weight(0.7f)
@@ -169,10 +187,7 @@ fun LoginScreen(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
-
                 LoginTabsRow(selected, setSelected)
-//                TabLayoutDemo()
-
 
                 OutlinedTextField(
                     value = usernameState.value,
@@ -183,8 +198,10 @@ fun LoginScreen(navController: NavController) {
                             text = if (selected == 2) "Mobile Number" else "Username",
                             fontSize = 14.sp
                         )
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    }, trailingIcon = {
+                        if (userErrorCheck)
+                            Icon(Icons.Filled.Info, "Error", tint = Color.Red)
+                    }, colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF223142),
                         unfocusedBorderColor = Color(0xFFE7EEFC),
@@ -196,9 +213,7 @@ fun LoginScreen(navController: NavController) {
 
                 OutlinedTextField(
                     value = paswdState.value,
-                    onValueChange = { /* Handle value change */
-                        paswdState.value = it
-                    },
+                    onValueChange = { paswdState.value = it },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     label = {
@@ -206,6 +221,9 @@ fun LoginScreen(navController: NavController) {
                             text = if (selected == 2) "User ID" else "Password",
                             fontSize = 14.sp
                         )
+                    }, trailingIcon = {
+                        if (pswdErrorCheck)
+                            Icon(Icons.Filled.Info, "Error", tint = Color.Red)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -219,6 +237,7 @@ fun LoginScreen(navController: NavController) {
                     ),
                     singleLine = true
                 )
+
 
                 if (selected != 2) {
                     Row(
@@ -255,7 +274,48 @@ fun LoginScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(otpNavigationRoute)
+                        if (usernameState.value.isNotEmpty()) {
+                            userErrorCheck = false
+                            if (paswdState.value.isNotEmpty()) {
+                                pswdErrorCheck = false
+
+                                //handle success
+                                when (selected) {
+                                    0 -> {
+                                        Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+
+                                    1 -> {
+
+                                        viewModel.loginWithUserName(
+                                            LoginRequest(
+                                                userName = usernameState.value,
+                                                password = paswdState.value,
+                                                authType = "TOTP",
+                                                channel = "INT"
+                                            )
+                                        )
+
+
+                                    }
+
+                                    2 -> {
+                                        Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+
+//                                checkUserAuth(usernameState, paswdState, selected, context, loginData)
+
+
+                            } else {
+                                pswdErrorCheck = !pswdErrorCheck
+                            }
+                        } else {
+                            userErrorCheck = !userErrorCheck
+                        }
+
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
                     modifier = Modifier
@@ -293,8 +353,38 @@ fun LoginScreen(navController: NavController) {
             onClose = { showDialog.value = false }
         )
     }
-}
 
+
+    /**
+     * handle login response data
+     */
+    loginData?.let {
+        when (it) {
+            is DataState.Loading -> {
+                Log.e("mTAG", "LoginScreen: loading...")
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
+
+                }
+            }
+
+            is DataState.Error -> {
+                Log.e("mTAG", "LoginScreen: $it")
+            }
+
+            is DataState.Success -> {
+                val loginResponse = it.data as LoginResponse
+                loginResponse?.apply {
+                    isLoading.value = false
+                    Log.e("mTAG", "LoginScreen: $code")
+                }
+
+            }
+        }
+    }
+}
 
 
 @Composable
@@ -304,7 +394,8 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
         selectedTabIndex = selected,
         indicator = {},
         divider = {},
-        modifier = Modifier.padding(bottom = 16.dp)
+        modifier = Modifier
+            .padding(bottom = 16.dp)
             .background(Color(0xFFF3F7FA))
     ) {
 
@@ -362,32 +453,36 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 
 
 @Composable
-private fun BottomSheetItems(iconRes: Int, title: String, showBorder:Boolean) {
+private fun BottomSheetItems(iconRes: Int, title: String, showBorder: Boolean) {
 
-    val borderModify = Modifier.dashedBorder(3.sdp, Color(0xFFE7EEFC)).fillMaxWidth()
+    val borderModify = Modifier
+        .dashedBorder(3.sdp, Color(0xFFE7EEFC))
+        .fillMaxWidth()
     val nonBorderModify = Modifier.fillMaxWidth()
 
     Row(
         modifier = if (showBorder) borderModify else nonBorderModify,
     ) {
 
-      Row(
-          modifier = Modifier.padding(top = 5.sdp, start = 16.sdp),
-          horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
-      ){
-          androidx.compose.material3.Icon(
-              painter = painterResource(id = iconRes),
-              modifier = Modifier
-                  .height(32.dp)
-                  .width(32.dp)
-                  .align(Alignment.CenterVertically),
-              contentDescription = ""
-          )
-          Text(text = title, modifier = Modifier.padding(vertical = 12.dp), style = TextStyle(
-              fontSize = 16.sp,
-              fontWeight = FontWeight(400)
-          ))
-      }
+        Row(
+            modifier = Modifier.padding(top = 5.sdp, start = 16.sdp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+        ) {
+            androidx.compose.material3.Icon(
+                painter = painterResource(id = iconRes),
+                modifier = Modifier
+                    .height(32.dp)
+                    .width(32.dp)
+                    .align(Alignment.CenterVertically),
+                contentDescription = ""
+            )
+            Text(
+                text = title, modifier = Modifier.padding(vertical = 12.dp), style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(400)
+                )
+            )
+        }
 
     }
 }
@@ -442,6 +537,34 @@ private fun LanguageOptions() {
         }
     }
 }
+
+@Composable
+private fun ShowProgressDialog(isLoading: MutableState<Boolean>) {
+    Dialog(
+        onDismissRequest = { isLoading.value = false },
+        DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        Box(
+            contentAlignment= Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .background(White, shape = RoundedCornerShape(8.dp))
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ){
+
+                CircularProgressIndicator()
+
+                Text("Please wait...",
+                    Modifier.padding(horizontal = 5.dp))
+            }
+
+        }
+    }
+}
+
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
