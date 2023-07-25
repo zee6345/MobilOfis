@@ -5,11 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-
-const val homeScreenRoute = "homeSCreen"
-
-
-
+const val homeScreenRoute = "homeScreen"
 
 fun NavGraphBuilder.homeScreen(
     navController: NavController

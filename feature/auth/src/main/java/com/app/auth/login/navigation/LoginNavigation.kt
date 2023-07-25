@@ -21,6 +21,7 @@ fun NavGraphBuilder.loginScreen(
         LoginScreen(navController)
     }
 }
+
 fun NavGraphBuilder.otpScreen(
     navController: NavController
 ) {

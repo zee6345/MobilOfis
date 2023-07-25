@@ -12,8 +12,6 @@ const val adjustmentScreen = "adjustmentScreen"
 const val securityScreen = "securityScreen"
 
 
-
-
 fun NavGraphBuilder.adjustmentScreen(
     navController: NavController
 ) {

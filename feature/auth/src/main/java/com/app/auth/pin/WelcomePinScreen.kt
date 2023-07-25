@@ -72,7 +72,7 @@ fun WelcomePinScreen(navController: NavController) {
                     enteredPin = pin
 
                     if (pin.length == 5) {
-                        navController.navigate(com.app.home.navigation.homeScreenRoute)
+                        navController.navigate(homeScreenRoute)
                     }
                 }
 

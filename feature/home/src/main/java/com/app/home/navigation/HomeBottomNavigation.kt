@@ -7,6 +7,15 @@ import androidx.navigation.compose.composable
 import com.app.adjustment.AdjustmentsScreen
 import com.app.adjustment.changepassword.ForgetPasswordScreen
 import com.app.adjustment.changepassword.navigation.securityToChangePassword
+import com.app.adjustment.changepin.confirmpin.RepeatPin
+
+import com.app.adjustment.changepin.confirmpin.navigation.adjustmentToConfirmPin
+
+import com.app.adjustment.changepin.currentpin.CurrentPin
+import com.app.adjustment.changepin.currentpin.navigation.adjustmentToCurrentPin
+import com.app.adjustment.changepin.newpin.NewPin
+import com.app.adjustment.changepin.newpin.navigation.adjustmentToNewPin
+
 import com.app.adjustment.companies.companydisplay.CompanyDisplay
 import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
 import com.app.adjustment.companies.companylist.Companies
@@ -93,6 +102,28 @@ fun NavigationGraph(navController: NavHostController) {
             ExchangeRatesScreen(navController)
         }
 
+        composable(adjustmentToExchangeRates){
+            ExchangeRatesScreen(navController)
+        }
+
+        composable(
+            adjustmentToCurrentPin,
+        ) {
+            CurrentPin(navController)
+        }
+
+
+        composable(
+            adjustmentToNewPin,
+        ) {
+            NewPin(navController)
+        }
+
+        composable(
+            adjustmentToConfirmPin,
+        ) {
+            RepeatPin(navController)
+        }
 
 
     }

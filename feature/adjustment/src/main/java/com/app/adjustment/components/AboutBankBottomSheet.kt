@@ -187,6 +187,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
     }
 
 }
+
 @Preview
 @Composable
 fun view(){
