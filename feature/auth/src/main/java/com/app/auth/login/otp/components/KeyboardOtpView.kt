@@ -1,3 +1,5 @@
+package com.app.auth.login.otp.components
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button

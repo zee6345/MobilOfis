@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
@@ -25,11 +26,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.utils.Message
 import com.app.home.navigation.homeScreenRoute
+import com.app.network.helper.MainApp
 
 
 @Composable
 fun WelcomePinScreen(navController: NavController) {
+    var enteredPin by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
             modifier = Modifier
@@ -44,11 +50,12 @@ fun WelcomePinScreen(navController: NavController) {
                     .padding(20.dp)
 
             ) {
+                val username = MainApp.session["username"]
                 Text(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = "Welcome,\nSamire",
+                    text = "Welcome,\n$username",
                     style = TextStyle(color = Color.White, fontSize = 22.sp)
                 )
             }
@@ -67,12 +74,17 @@ fun WelcomePinScreen(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
-                var enteredPin by remember { mutableStateOf("") }
+
                 PinInputView(navController, length = 5) { pin ->
                     enteredPin = pin
+                    if (pin.isNotEmpty() && pin.length == 5) {
+                        val finalPin = MainApp.session["finalPin"]
+                        if(finalPin.equals(pin)){
+                            navController.navigate(homeScreenRoute)
+                        } else {
+                            Message.showMessage(context, "Wrong pin entered!")
+                        }
 
-                    if (pin.length == 5) {
-                        navController.navigate(homeScreenRoute)
                     }
                 }
 

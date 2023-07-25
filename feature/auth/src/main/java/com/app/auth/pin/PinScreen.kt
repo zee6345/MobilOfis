@@ -1,5 +1,6 @@
 package com.app.auth.pin
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,10 +35,13 @@ import androidx.navigation.compose.rememberNavController
 import com.app.auth.pin.components.CustomKeyboard
 import com.app.auth.pin.components.PinTextField
 import com.app.auth.pin.navigation.resetPinNavigationRoute
+import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.network.helper.MainApp
 
 
 @Composable
 fun PinScreen(navController: NavController) {
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -77,6 +81,8 @@ fun PinScreen(navController: NavController) {
                 enteredPin = pin
 
                 if (pin.length == 5) {
+
+                    MainApp.session.put("firstPin", pin)
                     navController.navigate(resetPinNavigationRoute)
                 }
             }

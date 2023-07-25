@@ -9,6 +9,7 @@ import com.app.network.data.responseModels.ChangePasswordResponse
 import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerificationResponse
+import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import com.app.network.retrofitClient.BaseRetrofitClient
 
@@ -18,7 +19,7 @@ class LoginRepository: BaseRetrofitClient() {
         return apiServiceAuthInterceptor.loginWithUserName(loginRequest)
     }
 
-    suspend fun sendLoginVerificationRequest(loginVerificationRequest: LoginVerificationRequest): LoginVerificationResponse {
+    suspend fun sendLoginVerificationRequest(loginVerificationRequest: LoginVerificationRequest): LoginVerifyResponse {
         return apiService.loginVerification(loginVerificationRequest)
 
     }

@@ -43,6 +43,7 @@ dependencies {
     implementation(Kotlin.coreKtx)
     implementation(Others.appCompat)
     implementation(Others.material)
+
     testImplementation(UnitTest.junit)
     androidTestImplementation(UnitTest.JUNIT_TEST)
     androidTestImplementation(UnitTest.Espresso)

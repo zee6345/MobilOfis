@@ -1,6 +1,9 @@
 package com.app.network.retrofitClient
 
+
 import com.app.network.apiService.APIService
+import com.app.network.helper.MainApp
+
 import com.app.network.retrofitClient.BaseRetrofitClient.Companion.AUTH_TOKEN
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -61,7 +64,7 @@ abstract class BaseRetrofitClient {
 class AuthInterceptor(private val authToken: String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .addHeader("auth_token", authToken)
+            .addHeader("Auth_token", authToken)
             .build()
 
         return chain.proceed(request)
@@ -74,12 +77,15 @@ class AuthTokenInterceptor : Interceptor {
         val response = chain.proceed(request)
 
         // Extract the AUTH_TOKEN from the response headers
-        val authToken = response.header("auth_token")
+        val authToken = response.header("Auth_token")
 
         // You can now store the token in a shared preference or any other place for future use
         // For this example, I'm just printing it
         authToken?.let {
             println("auth_token: $it")
+            //store auth token
+            MainApp.session.put("token", it)
+
             AUTH_TOKEN= it
         }
 

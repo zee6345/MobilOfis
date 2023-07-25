@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Absolute.Center
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,7 +19,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -45,22 +42,23 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.components.alertdialog.CallTopAlertDialog
+import com.app.auth.login.components.alertdialog.ShowProgressDialog
 import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
+import com.app.auth.login.navigation.otpNavigationRoute
+import com.app.auth.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.responseModels.LoginResponse
+import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
-
 import kotlinx.coroutines.delay
 
 
@@ -274,20 +272,23 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 Button(
                     onClick = {
-                        if (usernameState.value.isNotEmpty()) {
-                            userErrorCheck = false
-                            if (paswdState.value.isNotEmpty()) {
-                                pswdErrorCheck = false
 
-                                //handle success
-                                when (selected) {
-                                    0 -> {
-                                        Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
-                                            .show()
-                                    }
+//                        navController.navigate(otpNavigationRoute)
 
-                                    1 -> {
+                        when (selected) {
+                            0 -> {
+                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
 
+                            1 -> {
+
+                                if (usernameState.value.isNotEmpty()) {
+                                    userErrorCheck = false
+                                    if (paswdState.value.isNotEmpty()) {
+                                        pswdErrorCheck = false
+
+                                        //handle success
                                         viewModel.loginWithUserName(
                                             LoginRequest(
                                                 userName = usernameState.value,
@@ -297,24 +298,22 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                                             )
                                         )
 
-
+                                    } else {
+                                        pswdErrorCheck = !pswdErrorCheck
                                     }
-
-                                    2 -> {
-                                        Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
-                                            .show()
-                                    }
+                                } else {
+                                    userErrorCheck = !userErrorCheck
                                 }
 
-//                                checkUserAuth(usernameState, paswdState, selected, context, loginData)
-
-
-                            } else {
-                                pswdErrorCheck = !pswdErrorCheck
                             }
-                        } else {
-                            userErrorCheck = !userErrorCheck
+
+                            2 -> {
+                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
+
+
 
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
@@ -371,19 +370,28 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             }
 
             is DataState.Error -> {
-                Log.e("mTAG", "LoginScreen: $it")
+                Message.showMessage(context, "Failed to login!")
             }
 
             is DataState.Success -> {
                 val loginResponse = it.data as LoginResponse
                 loginResponse?.apply {
                     isLoading.value = false
-                    Log.e("mTAG", "LoginScreen: $code")
+
+
+                    LaunchedEffect(Unit) {
+                        //route to OTP
+                        MainApp.session.put("username", usernameState.value)
+                        navController.navigate(otpNavigationRoute)
+                    }
+
                 }
 
             }
         }
     }
+
+
 }
 
 
@@ -534,33 +542,6 @@ private fun LanguageOptions() {
                     fontSize = 12.sp
                 )
             )
-        }
-    }
-}
-
-@Composable
-private fun ShowProgressDialog(isLoading: MutableState<Boolean>) {
-    Dialog(
-        onDismissRequest = { isLoading.value = false },
-        DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    ) {
-        Box(
-            contentAlignment= Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(White, shape = RoundedCornerShape(8.dp))
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-
-                CircularProgressIndicator()
-
-                Text("Please wait...",
-                    Modifier.padding(horizontal = 5.dp))
-            }
-
         }
     }
 }

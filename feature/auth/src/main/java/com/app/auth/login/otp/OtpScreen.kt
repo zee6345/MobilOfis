@@ -1,9 +1,7 @@
-package com.app.auth.login
+package com.app.auth.login.otp
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,17 +17,17 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,26 +35,37 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.auth.login.components.alertdialog.ShowProgressDialog
 import com.app.auth.login.components.utils.TimerTextView
-import com.app.auth.login.navigation.pinNavigationRoute
+import com.app.auth.login.otp.components.OtpView
+import com.app.auth.pin.navigation.pinNavigationRoute
+import com.app.auth.utils.Message
+import com.app.network.data.DataState
+import com.app.network.data.callModels.LoginVerificationRequest
+import com.app.network.data.responseModels.LoginVerificationResponse
+import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.helper.MainApp
+import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
-import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OtpScreen(navController: NavController) {
+fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
 
-//    val keyboardController = LocalSoftwareKeyboardController.current
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    coroutineScope.launch {
-//        keyboardController?.show() // Open the soft input keyboard
-//    }
+    val context = LocalContext.current
+    val otpValue = remember { mutableStateOf("") }
+    val isLoading = remember { mutableStateOf(false) }
+    val loginData by viewModel.data.collectAsState()
+    var offset by remember { mutableStateOf(0f) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF3F7FA))
+    ) {
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -93,117 +102,167 @@ fun OtpScreen(navController: NavController) {
             modifier = Modifier
                 .weight(0.8f)
                 .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
 
 
+            Column {
+                OtpView() {
+                    otpValue.value = it
+                }
 
-            OtpView()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp, bottom = 17.dp)
+                        .padding(horizontal = 22.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(
+                                shape = RoundedCornerShape(15.dp),
+                            )
+                            .background(
+                                color = Color(0xFFE7F0F9),
+                            )
+                    ) {
 
-            Row(
+                        TimerTextView()
+
+                    }
+
+                    ClickableText(modifier = Modifier.padding(5.dp),
+                        text = AnnotatedString(text = "Re-send SMS code"),
+                        onClick = {
+                            Message.showMessage(context, "OTP send again!")
+                        })
+                }
+            }
+
+
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 17.dp)
-                    .padding(horizontal = 22.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Box(
+                Row(
                     modifier = Modifier
-                        .clip(
-                            shape = RoundedCornerShape(15.dp),
-                        )
-                        .background(
-                            color = Color(0xFFE7F0F9),
-                        )
+                        .fillMaxWidth()
+                        .padding(top = 12.dp, bottom = 17.dp)
+                        .padding(horizontal = 18.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.Bottom
                 ) {
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFE7EEFC), // Change the background color here
+                            contentColor = Color(0xFF203657) // Change the text color here if needed
+                        ),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f)
 
-                   TimerTextView()
+                    ) {
+                        Text(
+                            "Close",
+                            modifier = Modifier.padding(vertical = 6.dp),
+                            style = TextStyle(
+                                fontSize = 17.sp, shadow = null
+                            )
+                        )
+                    }
 
+                    Button(
+                        onClick = {
+//                    navController.navigate(pinNavigationRoute)
+                            if (otpValue.value.isNotEmpty()) {
+                                if (otpValue.value.length == 6) {
+
+                                    val username = MainApp.session["username"]
+
+                                    viewModel.loginAuthVerification(
+                                        LoginVerificationRequest(
+                                            userName = username!!,
+                                            verfication = otpValue.value.toInt(),
+                                            channel = "INT",
+                                        )
+                                    )
+
+
+                                } else {
+                                    Message.showMessage(context, "OTP must be 6 digit..")
+                                }
+
+                            } else {
+                                Message.showMessage(context, "Please add your OTP..")
+                            }
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF203657), contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            "Next", modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
+                                color = Color.White, fontSize = 17.sp, shadow = null
+                            )
+                        )
+                    }
                 }
-
-                ClickableText(modifier = Modifier.padding(5.dp),
-                    text = AnnotatedString(text = "Re-send SMS code"),
-//                    color = Color(0xFF203657),
-                    onClick = { })
             }
-
-
-//            CustomKeyboardOtp()
-
-            ScrollableButtons(navController = navController)
 
         }
 
 
     }
 
+    loginData?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
 
-}
-
-@Composable
-private fun ScrollableButtons(navController: NavController) {
-    var offset by remember { mutableStateOf(0f) }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .scrollable(
-                orientation = Orientation.Vertical,
-                // Scrollable state: describes how to consume
-                // scrolling delta and update offset
-                state = rememberScrollableState { delta ->
-                    offset += delta
-                    delta
                 }
-            ),
-//        contentAlignment = Alignment.BottomCenter
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 17.dp)
-                .padding(horizontal = 18.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Button(
-                onClick = { },
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFE7EEFC), // Change the background color here
-                    contentColor = Color(0xFF203657) // Change the text color here if needed
-                ),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .weight(1f)
-
-            ) {
-                Text(
-                    "Close",
-                    modifier = Modifier.padding(vertical = 6.dp),
-                    style = TextStyle(
-                        fontSize = 17.sp, shadow = null
-                    )
-                )
             }
 
-            Button(
-                onClick = { navController.navigate(pinNavigationRoute) },
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF203657), contentColor = Color.White
-                ),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .weight(1f)
-            ) {
-                Text(
-                    "Next", modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
-                        color = Color.White, fontSize = 17.sp, shadow = null
-                    )
-                )
+            is DataState.Error -> {
+                Message.showMessage(context, "Failed to verify user!")
+
+                //on error remove keys
+                MainApp.session.delete("username")
+                MainApp.session.delete("token")
+
+            }
+
+            is DataState.Success -> {
+                val loginVerifyResponse = it.data as LoginVerifyResponse
+                loginVerifyResponse?.apply {
+                    isLoading.value = false
+
+                    //remove username after use
+//                    MainApp.session.delete("username")
+
+                    //route to OTP
+                    LaunchedEffect(Unit) {
+                        navController.navigate(pinNavigationRoute)
+                    }
+
+                }
+
             }
         }
     }
+
+
 }
 
 

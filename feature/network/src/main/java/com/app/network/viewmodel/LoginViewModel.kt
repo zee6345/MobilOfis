@@ -29,12 +29,7 @@ class LoginViewModel () : ViewModel(){
     private val _data = MutableStateFlow<DataState<Any>?>(null)
     val data: MutableStateFlow<DataState<Any>?> get() = _data
 
-//    private val _loginData = MutableStateFlow<LoginResponse?>(null)
-//    val loginData: MutableStateFlow<LoginResponse?>
-//        get() = _loginData
 
-//    val loginResponseLiveData = MutableLiveData<LoginResponse>()
-    val loginVerificationLiveData = MutableLiveData<LoginVerificationResponse>()
     val loginAsan = MutableLiveData<LoginAsanResponse>()
     val changePassword = MutableLiveData<ChangePasswordResponse>()
     val changePasswordVerification = MutableLiveData<VerifyChangePasswordResponse>()
@@ -54,16 +49,17 @@ class LoginViewModel () : ViewModel(){
             }
         }
     }
-    fun LoginVerification(loginVerificationRequest: LoginVerificationRequest) {
+    fun loginAuthVerification(loginVerificationRequest: LoginVerificationRequest) {
+        _data.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val post = repository.sendLoginVerificationRequest(loginVerificationRequest)
+                val post = async { repository.sendLoginVerificationRequest(loginVerificationRequest) }
                 withContext(Dispatchers.Main) {
-                    loginVerificationLiveData.value = post
+                    _data.value = DataState.Success(post.await())
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Handle error here, maybe update a separate error LiveData
+                _data.value = DataState.Error(e.message.toString())
             }
         }
     }

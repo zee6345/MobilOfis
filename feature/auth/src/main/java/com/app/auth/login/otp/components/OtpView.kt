@@ -1,8 +1,9 @@
-package com.app.auth.login
+package com.app.auth.login.otp.components
 
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -89,7 +90,7 @@ private fun CharView(
 }
 
 @Composable
-fun OtpView() {
+fun OtpView(onValueChange:(String)->Unit) {
     val focusRequester = remember { FocusRequester() }
     Surface(
         modifier = Modifier
@@ -108,15 +109,21 @@ fun OtpView() {
             mutableStateOf("")
         }
 
-        OtpTextField(otpText = otpValue, onOtpTextChange = { value, otpInputFilled ->
-            otpValue = value
-        })
+        OtpTextField(
+            otpText = otpValue,
+            onOtpTextChange = { value, _ ->
+                otpValue = value
+            })
+
+        onValueChange(otpValue)
     }
 }
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun OtpPreview() {
-    OtpView()
+    OtpView(){
+
+    }
 //    Abc()
 }

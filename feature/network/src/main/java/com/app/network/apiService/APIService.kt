@@ -11,6 +11,7 @@ import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerificationResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import com.app.network.data.callModels.VerifyChangePasswordRequest
+import com.app.network.data.responseModels.LoginVerifyResponse
 import retrofit2.http.Body
 
 import retrofit2.http.POST
@@ -22,7 +23,7 @@ interface APIService {
     suspend fun loginWithUserName(@Body loginBody: LoginRequest): LoginResponse
 
     @POST("auth/login/verify")
-    suspend fun loginVerification(@Body loginVerification: LoginVerificationRequest): LoginVerificationResponse
+    suspend fun loginVerification(@Body loginVerification: LoginVerificationRequest): LoginVerifyResponse
 
     @POST("auth/asan")
     suspend fun loginAsan(@Body loginAsanRequest: LoginAsanRequest): LoginAsanResponse
