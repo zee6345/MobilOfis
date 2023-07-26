@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LoginViewModel () : ViewModel(){
+class LoginViewModel : ViewModel(){
 
     private val repository: LoginRepository = LoginRepository()
 

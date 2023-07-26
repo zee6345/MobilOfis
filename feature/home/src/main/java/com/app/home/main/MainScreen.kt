@@ -31,16 +31,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.component.CardMenuContent
 import com.app.home.main.component.SelectCompanyBottomSheet
 import com.app.home.main.component.TabLayoutMenu
+import com.app.network.helper.MainApp
+import com.app.network.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MenuScreen(navController: NavController) {
+fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+
     val selectCompanyState = rememberSaveable { mutableStateOf(false) }
     val showBalance = rememberSaveable { mutableStateOf(false) }
     val balancePopup = rememberSaveable { mutableStateOf(false) }
@@ -89,6 +94,9 @@ fun MenuScreen(navController: NavController) {
                                     .align(Alignment.Top)
                                     .clickable {
                                         selectCompanyState.value = !selectCompanyState.value
+
+//                                        viewModel.getAccounts(MainApp.session["token"]!!, 1629245)
+
                                     },
                                 contentDescription = "",
                                 tint = Color.White
