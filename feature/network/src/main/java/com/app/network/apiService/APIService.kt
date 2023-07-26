@@ -1,5 +1,6 @@
 package com.app.network.apiService
 
+import com.app.network.data.callModels.AccountNickNameRequest
 import com.app.network.data.callModels.ChangePasswordRequest
 import com.app.network.data.callModels.LoginAsanRequest
 import com.app.network.data.callModels.LoginRequest
@@ -16,6 +17,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface APIService {
@@ -39,7 +41,32 @@ interface APIService {
 
     @GET("customers/{customerId}/accounts")
     suspend fun getAccounts(
-        @Header("Auth_token") token: String,
+        @Header("auth_token") token: String,
         @Path("customerId") customerId: Int
     ): ResponseBody
+
+    @GET("customers/{customerId}/accounts/nickname")
+    suspend fun setAccountNickName(
+        @Header("auth_token") token: String,
+        @Body accountNickNameRequest: AccountNickNameRequest
+    ): ResponseBody
+
+    @GET("customers/{customerId}/balance")
+    suspend fun getBalance(
+        @Header("auth_token") token: String,
+        @Path("customerId") customerId: String
+    ): ResponseBody
+
+    @GET("auth/getlastlogin")
+    suspend fun getLastLogin(@Header("auth_token")token: String):ResponseBody
+
+    @GET("auth/getuserinfo")
+    suspend fun getUserInfo(@Header("auth_token",)token: String,@Query("customerNo") customerNo: String):ResponseBody
+    @GET("customers/{customerId}/accounts/blocksbyiban/{iban}")
+    fun getAccountBlockByIBAN(@Header("auth_token")token: String,
+                              @Path("customerId")customerId: String,
+                              @Path("iban") iban: String): ResponseBody
+
+  //  @GET("bank/dashboardMessage")
+
 }
