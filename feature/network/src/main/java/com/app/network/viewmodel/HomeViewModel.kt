@@ -145,6 +145,7 @@ class HomeViewModel : ViewModel() {
 
                 override fun onFailure(call: Call<GetOldCards>, t: Throwable) {
                     _data.value = DataState.Error(t.message.toString())
+
                 }
             })
         }
