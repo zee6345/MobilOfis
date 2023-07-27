@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -69,7 +70,7 @@ fun Details(navController: NavController) {
 
         CardInfo4(navController = navController)
 
-        PdfAttachmentItem("PDF")
+        PdfAttachmentItem(stringResource(R.string.pdf))
 
         CardInfo5(navController = navController)
 
@@ -113,7 +114,7 @@ private fun CardInfo1(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Source of origin", style = TextStyle(
+                        text = stringResource(R.string.source_of_origin), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -122,7 +123,7 @@ private fun CardInfo1(navController: NavController) {
                     )
 
                     Text(
-                        text = "Internet Office", style = TextStyle(
+                        text = stringResource(R.string.internet_office), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -139,7 +140,7 @@ private fun CardInfo1(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Document no", style = TextStyle(
+                        text = stringResource(R.string.document_no), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -147,7 +148,7 @@ private fun CardInfo1(navController: NavController) {
                     )
 
                     Text(
-                        text = "P10001080", style = TextStyle(
+                        text = stringResource(R.string.p10001080), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -173,7 +174,7 @@ private fun CardInfo1(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Transfer type", style = TextStyle(
+                        text = stringResource(R.string.transfer_type), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -181,7 +182,7 @@ private fun CardInfo1(navController: NavController) {
                     )
 
                     Text(
-                        text = "OES-Non-budget", style = TextStyle(
+                        text = stringResource(R.string.oes_non_budget), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -208,7 +209,7 @@ private fun CardInfo1(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Sender", style = TextStyle(
+                        text = stringResource(R.string.sender), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -216,7 +217,7 @@ private fun CardInfo1(navController: NavController) {
                     )
 
                     Text(
-                        text = "VALUE SERVICES LLC COMPANY", style = TextStyle(
+                        text = stringResource(R.string.value_services_llc_company), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -242,7 +243,7 @@ private fun CardInfo1(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "From the account", style = TextStyle(
+                        text = stringResource(id = R.string.from_the_account), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -250,7 +251,7 @@ private fun CardInfo1(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZ78BRES00380394400262924501 AZN", style = TextStyle(
+                        text = stringResource(R.string.az78bres00380394400262924501_azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -296,7 +297,7 @@ private fun CardInfo2(navController: NavController) {
             ) {
 
                 Text(
-                    text = "Field",
+                    text = stringResource(R.string.field),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(600),
@@ -333,7 +334,7 @@ private fun CardInfo2(navController: NavController) {
                     Column {
 
                         Text(
-                            text = "Name", style = TextStyle(
+                            text = stringResource(R.string.name), style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF859DB5),
@@ -341,7 +342,7 @@ private fun CardInfo2(navController: NavController) {
                         )
 
                         Text(
-                            text = "FARMASKOP MƏHDUD MƏSULİYYƏTLİ CƏMİYYƏTİ", style = TextStyle(
+                            text = stringResource(R.string.farmaskop_m_hdud_m_sul_yy_tl_c_m_yy_t), style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF223142),
@@ -370,7 +371,7 @@ private fun CardInfo2(navController: NavController) {
                     ) {
 
                         Text(
-                            text = "Account number", style = TextStyle(
+                            text = stringResource(R.string.account_number), style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF859DB5),
@@ -379,7 +380,7 @@ private fun CardInfo2(navController: NavController) {
                         )
 
                         Text(
-                            text = "AZ78BRES00380394400262924504", style = TextStyle(
+                            text = stringResource(R.string.az78bres00380394400262924504), style = TextStyle(
 
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -396,7 +397,7 @@ private fun CardInfo2(navController: NavController) {
                     ) {
 
                         Text(
-                            text = "TIN", style = TextStyle(
+                            text = stringResource(R.string.tin), style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF859DB5),
@@ -404,7 +405,7 @@ private fun CardInfo2(navController: NavController) {
                         )
 
                         Text(
-                            text = "1700986181", style = TextStyle(
+                            text = stringResource(R.string._1700986181), style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF223142),
@@ -453,7 +454,7 @@ private fun CardInfo3(navController: NavController) {
             ) {
 
                 Text(
-                    text = "Alan's bank",
+                    text = stringResource(R.string.alan_s_bank),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(600),
@@ -490,7 +491,7 @@ private fun CardInfo3(navController: NavController) {
                     Column {
 
                         Text(
-                            text = "Code and name", style = TextStyle(
+                            text = stringResource(R.string.code_and_name), style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF859DB5),
@@ -498,7 +499,7 @@ private fun CardInfo3(navController: NavController) {
                         )
 
                         Text(
-                            text = "805722 - International Bank of Azerbaijan OJSC Central branch", style = TextStyle(
+                            text = stringResource(R.string._805722_international_bank_of_azerbaijan_ojsc_central_branch), style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF223142),
@@ -554,7 +555,7 @@ private fun CardInfo4(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Amount", style = TextStyle(
+                        text = stringResource(id = R.string.amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -563,7 +564,7 @@ private fun CardInfo4(navController: NavController) {
                     )
 
                     Text(
-                        text = "100000.00 AZN", style = TextStyle(
+                        text = stringResource(R.string._100000_00_azn), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -580,7 +581,7 @@ private fun CardInfo4(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Commission", style = TextStyle(
+                        text = stringResource(R.string.commission), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -588,7 +589,7 @@ private fun CardInfo4(navController: NavController) {
                     )
 
                     Text(
-                        text = "900.50 AZN", style = TextStyle(
+                        text = stringResource(R.string._900_50_azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -615,7 +616,7 @@ private fun CardInfo4(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "The purpose of the payment", style = TextStyle(
+                        text = stringResource(R.string.the_purpose_of_the_payment), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -623,7 +624,7 @@ private fun CardInfo4(navController: NavController) {
                     )
 
                     Text(
-                        text = "TEST IPS PI PHARMASCOPE LIMITED",
+                        text = stringResource(R.string.test_ips_pi_pharmascope_limited),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -650,7 +651,7 @@ private fun CardInfo4(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Information for Alan", style = TextStyle(
+                        text = stringResource(R.string.information_for_alan), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -658,7 +659,7 @@ private fun CardInfo4(navController: NavController) {
                     )
 
                     Text(
-                        text = "HELLO, DEAR IPS",
+                        text = stringResource(R.string.hello_dear_ips),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -687,7 +688,7 @@ private fun CardInfo4(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Attached pdf", style = TextStyle(
+                        text = stringResource(R.string.attached_pdf), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -703,11 +704,11 @@ private fun CardInfo4(navController: NavController) {
                     ) {
 
                         item {
-                            PdfAttachmentItem("Salary_template_Value_132.pdf")
+                            PdfAttachmentItem(stringResource(R.string.salary_template_value_132_pdf))
                         }
 
                         item {
-                            PdfAttachmentItem("Salary_template_Value_133.pdf")
+                            PdfAttachmentItem(stringResource(R.string.salary_template_value_133_pdf))
                         }
                     }
 
@@ -795,7 +796,7 @@ private fun CardInfo5(navController: NavController) {
             )
     ) {
         Text(
-            "Back", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
+            stringResource(R.string.back), modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
                 fontSize = 17.sp, shadow = null
             )
         )

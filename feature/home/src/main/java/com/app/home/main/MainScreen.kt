@@ -19,8 +19,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,7 +33,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -39,8 +40,18 @@ import com.app.home.R
 import com.app.home.main.component.CardMenuContent
 import com.app.home.main.component.SelectCompanyBottomSheet
 import com.app.home.main.component.TabLayoutMenu
+
+import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
+
+
+private const val TAG = "MenuScreen"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -53,6 +64,24 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
+
+    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
+    val context = LocalContext.current
+
+
+    val userDetails = fetchUserDetails()
+
+    LaunchedEffect(key1 = true ){
+        //fetch accounts list
+        viewModel.getAccounts(
+            MainApp.session[Keys.KEY_TOKEN]!!,
+            userDetails.customerNo
+        )
+
+
+
+    }
+
 
     Column(
         modifier = Modifier
@@ -91,12 +120,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 painter = painterResource(id = R.drawable.ic_business_icon),
                                 modifier = Modifier
                                     .size(28.dp)
-                                    .align(Alignment.Top)
+                                    .align(Top)
                                     .clickable {
                                         selectCompanyState.value = !selectCompanyState.value
-
-//                                        viewModel.getAccounts(MainApp.session["token"]!!, 1629245)
-
                                     },
                                 contentDescription = "",
                                 tint = Color.White
@@ -107,7 +133,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                     .padding(start = 5.dp)
                             ) {
                                 Text(
-                                    text = "International Real \nEstate and Appraisal Agency",
+                                    text = stringResource(R.string.international_real_estate_and_appraisal_agency),
                                     style = TextStyle(color = Color.White, fontSize = 14.sp),
                                     modifier = Modifier
                                         .padding(start = 3.dp)
@@ -117,7 +143,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
-                                    text = "Semire", style = TextStyle(
+                                    text = stringResource(R.string.semire), style = TextStyle(
                                         color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
                                     )
                                 )
@@ -127,7 +153,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 painter = painterResource(id = R.drawable.ic_business_expand),
                                 modifier = Modifier
                                     .size(16.dp)
-                                    .align(Alignment.Top)
+                                    .align(Top)
                                     .clickable {
                                         selectCompanyState.value = !selectCompanyState.value
                                     },
@@ -141,7 +167,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 .weight(0.3f)
                                 .padding(8.dp),
                             horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.Top
+                            verticalAlignment = Top
                         ) {
                             Image(
                                 painter =
@@ -150,7 +176,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 else painterResource(id = R.drawable.ic_password_visible),
                                 modifier = Modifier
                                     .size(22.dp)
-                                    .align(Alignment.Top)
+                                    .align(Top)
                                     .clickable {
                                         showBalance.value = !showBalance.value
                                     },
@@ -161,7 +187,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 painter = painterResource(id = R.drawable.ic_option_icon),
                                 modifier = Modifier
                                     .size(22.dp)
-                                    .align(Alignment.Top),
+                                    .align(Top),
                                 contentDescription = ""
                             )
                         }
@@ -182,7 +208,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                             .padding(horizontal = 22.dp)
                             .pointerInput(Unit) {
                                 detectTapGestures {
-                                    Log.d("TAG", "onCreate: $it")
+
                                     touchPoint = it
                                     balancePopup.value = !balancePopup.value
                                 }
@@ -193,10 +219,10 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                     ) {
                         val annotatedString = buildAnnotatedString {
                             withStyle(style = SpanStyle(Color.White.copy(0.5f), fontSize = 14.sp)) {
-                                append("Total accounts ")
+                                append(stringResource(R.string.total_accounts))
                             }
                             withStyle(style = SpanStyle(Color.White, fontSize = 14.sp)) {
-                                append("balance")
+                                append(stringResource(R.string.balance))
                             }
                         }
 
@@ -218,13 +244,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         }
                         Row() {
                             Text(
-                                text = "10 000 000.",
+                                text = stringResource(R.string._10_000_000),
                                 modifier = Modifier.align(Top),
                                 style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold),
                                 color = Color.White
                             )
                             Text(
-                                text = "00",
+                                text = stringResource(R.string._00),
                                 modifier = Modifier
                                     .align(Bottom)
                                     .padding(vertical = 3.dp),
@@ -232,7 +258,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 color = Color.White
                             )
                             Text(
-                                text = "₼",
+                                text = stringResource(R.string.text_currency_type),
                                 modifier = Modifier
                                     .padding(end = 22.dp)
                                     .padding(3.dp)
@@ -248,13 +274,15 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
             }
 
         }
+
         Column(
             modifier = Modifier
                 .weight(0.75f)
                 .padding(horizontal = 5.dp)
         ) {
             CardMenuContent()
-            TabLayoutMenu(navController)
+
+            TabLayoutMenu(navController, homeData)
 
         }
 
@@ -263,6 +291,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
 
     SelectCompanyBottomSheet(selectCompanyState)
     DropDownPopup(balancePopup, density, touchPoint, screenHeightDp)
+
 
 }
 
@@ -282,25 +311,30 @@ fun DropDownPopup(
         onDismissRequest = { expanded.value = false }
     ) {
         DropdownMenuItem(
-            content = { Text("Blocked") },
+            content = { Text(stringResource(R.string.blocked)) },
             onClick = { /* Handle refresh! */ }
         )
         Divider()
         DropdownMenuItem(
-            content = { Text("Free Balance") },
+            content = { Text(stringResource(R.string.free_balance)) },
             onClick = { /* Handle settings! */ }
         )
         Divider()
         DropdownMenuItem(
-            content = { Text("Bank Execution") },
+            content = { Text(stringResource(R.string.bank_execution)) },
             onClick = { /* Handle send feedback! */ }
         )
         Divider()
         DropdownMenuItem(
-            content = { Text("After Execution") },
+            content = { Text(stringResource(R.string.after_execution)) },
             onClick = { /* Handle send feedback! */ }
         )
     }
+}
+
+private fun fetchUserDetails(): LoginVerifyResponse {
+    val str = MainApp.session[Keys.KEY_USER_DETAILS]
+    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
 @Preview(device = Devices.PIXEL_4)

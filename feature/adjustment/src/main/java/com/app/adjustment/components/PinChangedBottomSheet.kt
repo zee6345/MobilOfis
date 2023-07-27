@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +48,7 @@ fun PinChangeSheet(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Status BottomSheet"),
+            text = AnnotatedString(text = stringResource(id = R.string.show_status_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 aboutBankState.value = !aboutBankState.value
@@ -70,7 +71,8 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
     ) {
 
         Column(
-            modifier = Modifier.padding(vertical = 12.dp)
+            modifier = Modifier
+                .padding(vertical = 12.dp)
                 .fillMaxWidth()
         ) {
 
@@ -89,7 +91,7 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
                 ) {
 
                     Text(
-                        text="Successful operation!",
+                        text= stringResource(R.string.successful_operation),
                         style= TextStyle(
                             fontWeight = FontWeight(700),
                             color = Color(0xFFFFFFFF),
@@ -97,7 +99,7 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
                     )
 
                     Text(
-                        text="PIN has been changed",
+                        text= stringResource(R.string.pin_has_been_changed),
                         style=TextStyle(
                             fontWeight = FontWeight(400),
                             color = Color(0xFFFFFFFF),
@@ -115,14 +117,16 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
                 onClick = {
 
             },
-                modifier = Modifier.background(
-                    Color.White,
-                    shape = RoundedCornerShape(16.dp)
-                ).fillMaxWidth(),
+                modifier = Modifier
+                    .background(
+                        Color.White,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .fillMaxWidth(),
 
             ) {
                 Text(
-                    "Close",
+                    stringResource(R.string.close),
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = Color(0xFF203657),

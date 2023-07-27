@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -79,10 +80,11 @@ fun StatusBottomSheet(showStatusBottomSheet:MutableState<Boolean>){
         ) {
 
             Text(
-                text = "Status",
+                text = stringResource(R.string.status),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .fillMaxWidth().padding(bottom = 5.dp),
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
                 color = Color(0xFF223142)

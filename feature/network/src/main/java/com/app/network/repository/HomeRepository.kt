@@ -1,13 +1,16 @@
 package com.app.network.repository
 
 import com.app.network.data.callModels.AccountNickNameRequest
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetOldCards
 import com.app.network.retrofitClient.BaseRetrofitClient
 import okhttp3.ResponseBody
+import retrofit2.Call
 
 class HomeRepository: BaseRetrofitClient() {
 
-    suspend fun getAccounts(token:String, customerId:Int ):ResponseBody{
-        return apiService.getAccounts(token, customerId)
+    suspend fun getAccounts(token:String, customerId:Int ): GetAccounts {
+        return apiService.getAccounts(customerId)
     }
 
     suspend fun getLastLogin(token:String):ResponseBody{
@@ -26,7 +29,15 @@ class HomeRepository: BaseRetrofitClient() {
         return apiService.setAccountNickName(token, accountNickNameRequest)
     }
 
-    suspend fun getAccountBlockByIban(token: String, customerId: String, iban: String):ResponseBody {
-        return apiService.getAccountBlockByIBAN(token,customerId,iban)
+    fun getAccountBlockByIban(token: String, customerId: Int, iban: String): Call<ResponseBody> {
+        return apiService.getAccountBlockByIBAN(customerId,iban)
+    }
+
+    fun getOldBusinessCards(customerId: Int): Call<GetOldCards> {
+        return apiService.getOldBusinessCards(customerId)
+    }
+
+    fun getNewBusinessCards(customerId: Int): Call<ResponseBody> {
+        return apiService.getNewBusinessCards(customerId)
     }
 }

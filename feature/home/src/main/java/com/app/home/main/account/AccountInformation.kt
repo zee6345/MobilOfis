@@ -1,6 +1,10 @@
 package com.app.home.main.account
 
 
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,16 +38,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.account.details.Blockages
 import com.app.home.main.account.details.MainInformation
+import com.app.network.data.responseModels.GetAccountsItem
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
 
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -52,8 +63,14 @@ data class TabItem(
     val title: String, val screen: @Composable () -> Unit
 )
 
+private const val TAG = "AccountInformation"
+
+
 @Composable
-fun AccountInformation(navController: NavController) {
+fun AccountInformation(navController: NavController,
+//                       arguments: Bundle?
+) {
+
 
     Column(
         modifier = Modifier
@@ -87,7 +104,7 @@ fun AccountInformation(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Detailed account information",
+                    text = stringResource(R.string.detailed_account_information),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -120,8 +137,8 @@ fun AccountInformation(navController: NavController) {
 private fun MainContent(navController: NavController) {
 
     val tabs = listOf(
-        TabItem(title = "Main information", screen = { MainInformation(navController) }),
-        TabItem(title = "Blockages", screen = { Blockages(navController) })
+        TabItem(title = stringResource(R.string.main_information), screen = { MainInformation(navController) }),
+        TabItem(title = stringResource(R.string.blockages), screen = { Blockages(navController) })
     )
 
     val pagerState = rememberPagerState(
@@ -166,7 +183,7 @@ private fun MainContent(navController: NavController) {
                 ) {
                 Text(
                     modifier = Modifier.padding(vertical = 5.sdp),
-                    text = "Main information",
+                    text = stringResource(id = R.string.main_information),
                     style = TextStyle(
                         color = Color(0xFF859DB5),
                         textAlign = TextAlign.Center
@@ -198,7 +215,7 @@ private fun MainContent(navController: NavController) {
                 Alignment.Center
             ) {
                 Text(
-                    text = "Blockages",
+                    text = stringResource(id = R.string.blockages),
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
                         color = Color(0xFF859DB5),

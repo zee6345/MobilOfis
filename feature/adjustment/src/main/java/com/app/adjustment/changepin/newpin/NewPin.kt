@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,7 +83,7 @@ fun NewPin(navController: NavController) {
                     Text(
                         modifier = Modifier
                             .padding(12.dp),
-                        text = "Set a new PIN",
+                        text = stringResource(R.string.set_a_new_pin),
                         style = TextStyle(color = Color.White, fontSize = 22.sp)
                     )
 

@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -81,7 +82,7 @@ fun LoanInformationDetails(navController: NavController){
                     contentDescription = ""
                 )
                 Text(
-                    text = "Detailed information of loan",
+                    text = stringResource(R.string.detailed_information_of_loan),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -165,7 +166,7 @@ private fun MainContent(navController: NavController) {
 
 
                 Text(
-                    text = "SME loan", style = TextStyle(
+                    text = stringResource(R.string.sme_loan), style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
@@ -198,7 +199,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "N of the loan agreement", style = TextStyle(
+                        text = stringResource(R.string.n_of_the_loan_agreement), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -207,7 +208,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "002LCAR201270001", style = TextStyle(
+                        text = stringResource(R.string._002lcar201270001), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -224,7 +225,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Currency", style = TextStyle(
+                        text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -232,7 +233,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZN", style = TextStyle(
+                        text = stringResource(id = R.string.azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -258,7 +259,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Status", style = TextStyle(
+                        text = stringResource(id = R.string.status), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -287,7 +288,7 @@ private fun MainContent(navController: NavController) {
                         Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
                         Text(
-                            text = "Not in delay", style = TextStyle(
+                            text = stringResource(R.string.not_in_delay), style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF223142),
@@ -320,7 +321,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Next payment date", style = TextStyle(
+                        text = stringResource(R.string.next_payment_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -329,7 +330,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "20.03.2022", style = TextStyle(
+                        text = stringResource(R.string._20_03_2022), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -346,7 +347,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Next payment fee", style = TextStyle(
+                        text = stringResource(R.string.next_payment_fee), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -354,7 +355,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "1000.00", style = TextStyle(
+                        text = stringResource(R.string._1000_00), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -381,7 +382,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Paid/Total Months", style = TextStyle(
+                        text = stringResource(R.string.paid_total_months), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -390,7 +391,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "7/24", style = TextStyle(
+                        text = stringResource(R.string._7_24), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -408,7 +409,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Remaining principal amount", style = TextStyle(
+                        text = stringResource(R.string.remaining_principal_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -416,7 +417,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "657 333.00", style = TextStyle(
+                        text = stringResource(R.string._657_333_00), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -442,7 +443,7 @@ private fun MainContent(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Branch", style = TextStyle(
+                        text = stringResource(id = R.string.branch), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -450,7 +451,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "Customer Service Department", style = TextStyle(
+                        text = stringResource(R.string.customer_service_department), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -483,7 +484,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Loan amount", style = TextStyle(
+                        text = stringResource(R.string.loan_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -492,7 +493,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "100 000.00", style = TextStyle(
+                        text = stringResource(R.string._100_000_00), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -510,7 +511,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Interest rate", style = TextStyle(
+                        text = stringResource(R.string.interest_rate), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -547,7 +548,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Credit issuance date", style = TextStyle(
+                        text = stringResource(R.string.credit_issuance_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -556,7 +557,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "06.05.2022", style = TextStyle(
+                        text = stringResource(R.string._06_05_2022), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -574,7 +575,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "End date", style = TextStyle(
+                        text = stringResource(id = R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -582,7 +583,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "06.05.2023", style = TextStyle(
+                        text = stringResource(R.string._06_05_2023), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),

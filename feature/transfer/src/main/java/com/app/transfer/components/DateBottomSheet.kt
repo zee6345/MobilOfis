@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -61,7 +62,7 @@ fun DateBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Date BottomSheet"),
+            text = AnnotatedString(text = stringResource(id = R.string.show_account_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 showDateBottomSheetSheet.value = !showDateBottomSheetSheet.value
@@ -87,7 +88,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                 .padding(horizontal = 20.dp, vertical = 10.dp),
         ) {
             Text(
-                text = "Duration",
+                text = stringResource(R.string.duration),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
@@ -100,7 +101,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
             DateTypeMenu()
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
             Text(
-                text = "Duration",
+                text = stringResource(id = R.string.duration),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,7 +117,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ItemsCardRow("18.11.2021")
+                ItemsCardRow(stringResource(R.string._18_11_2021))
                 Box(
                     modifier = Modifier
                         .width(10.sdp)
@@ -126,7 +127,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                         )
                         .align(Alignment.CenterVertically)
                 )
-                ItemsCardRow("14.11.2021")
+                ItemsCardRow(stringResource(R.string._14_11_2021))
             }
 
             Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
@@ -136,7 +137,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ClickableText(
-                    text = AnnotatedString("Cancel"),
+                    text = AnnotatedString(stringResource(id = R.string.cancel)),
                     style = TextStyle(
                         color = Color(0xFF203657),
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
@@ -148,7 +149,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                 )
 
                 ClickableText(
-                    text = AnnotatedString("Apply"),
+                    text = AnnotatedString(stringResource(id = R.string.apply)),
                     style = TextStyle(
                         color = Color(0xFF203657),
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),

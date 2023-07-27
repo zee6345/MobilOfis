@@ -2,6 +2,7 @@ package com.app.network.retrofitClient
 
 
 import com.app.network.apiService.APIService
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 
 import com.app.network.retrofitClient.BaseRetrofitClient.Companion.AUTH_TOKEN
@@ -16,8 +17,9 @@ private const val baseUrl = "https://newinternetofistest.bankrespublika.az/weblo
 
 abstract class BaseRetrofitClient {
     companion object {
-         var AUTH_TOKEN = "testing"
+        var AUTH_TOKEN = "testing"
     }
+
     protected val apiService: APIService by lazy { createApiService() }
     protected val apiServiceAuthInterceptor by lazy { createApiServiceAuthIntercepter() }
 
@@ -27,15 +29,20 @@ abstract class BaseRetrofitClient {
                 level = HttpLoggingInterceptor.Level.BODY
             })
             .addInterceptor(AuthInterceptor(AUTH_TOKEN))
+            .addInterceptor(AuthTokenInterceptor())
             .build()
 
-        val retrofit = Retrofit.Builder()
+
+        return client(httpClient).create(APIService::class.java)
+    }
+
+
+    private fun client(httpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
-        return retrofit.create(APIService::class.java)
     }
 
 
@@ -47,18 +54,12 @@ abstract class BaseRetrofitClient {
             .addInterceptor(AuthTokenInterceptor())
             .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(httpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-        return retrofit.create(APIService::class.java)
+        return client(httpClient).create(APIService::class.java)
     }
 
 
 }
-
 
 
 class AuthInterceptor(private val authToken: String) : Interceptor {
@@ -82,11 +83,11 @@ class AuthTokenInterceptor : Interceptor {
         // You can now store the token in a shared preference or any other place for future use
         // For this example, I'm just printing it
         authToken?.let {
-            println("auth_token: $it")
+//            println("auth_token: $it")
             //store auth token
-            MainApp.session.put("token", it)
+            MainApp.session.put(Keys.KEY_TOKEN, it)
 
-            AUTH_TOKEN= it
+            AUTH_TOKEN = it
         }
 
         return response

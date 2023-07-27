@@ -5,4 +5,8 @@
     <color name="blueColor">#2CCAD3</color>
     <color name="black">#000000</color>
     <color name="red">#F3646C</color>
+
+    <color name="white">#FFF3F7FA</color>
+    <color name="blue_01">#FF203657</color>
+
 </resources>

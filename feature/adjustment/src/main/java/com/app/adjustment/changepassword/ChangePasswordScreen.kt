@@ -27,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices
@@ -44,7 +46,7 @@ fun ForgetPasswordScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF3F7FA)),
+            .background(color = colorResource(id = R.color.white)),
     ) {
         Surface(
             modifier = Modifier
@@ -67,7 +69,7 @@ fun ForgetPasswordScreen(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Changing the password",
+                    text = stringResource(R.string.changing_the_password),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -83,9 +85,9 @@ fun ForgetPasswordScreen(navController: NavController) {
                 .padding(horizontal = 12.dp), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column() {
-                TextFieldWithEndDrawable("Current password")
-                TextFieldWithEndDrawable("New password")
-                TextFieldWithEndDrawable("Repeat the new password")
+                TextFieldWithEndDrawable(stringResource(R.string.current_password))
+                TextFieldWithEndDrawable(stringResource(R.string.new_password))
+                TextFieldWithEndDrawable(stringResource(R.string.repeat_the_new_password))
             }
 
 
@@ -112,7 +114,7 @@ fun ForgetPasswordScreen(navController: NavController) {
                         )
                 ) {
                     Text(
-                        "Back", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
+                        stringResource(R.string.back), modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
                             fontSize = 17.sp, shadow = null
                         )
                     )
@@ -130,7 +132,7 @@ fun ForgetPasswordScreen(navController: NavController) {
                         .weight(1f)
                 ) {
                     Text(
-                        "Refresh", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
+                        stringResource(R.string.refresh), modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(
                             color = Color.White, fontSize = 17.sp, shadow = null
                         )
                     )

@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.home.R
 import com.app.home.data.CardFilters
 
 import com.app.home.data.DataProvider
@@ -212,7 +214,7 @@ private fun Filters() {
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
             .clickable { selectedBoxIndex.value = 0 }) {
             Text(
-                "Current deposits", style = TextStyle(
+                stringResource(R.string.current_deposits), style = TextStyle(
                     fontSize = 12.sp,
                     color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
                 )
@@ -228,7 +230,7 @@ private fun Filters() {
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
             .clickable { selectedBoxIndex.value = 1 }) {
             Text(
-                "Closed deposits", style = TextStyle(
+                stringResource(R.string.closed_deposits), style = TextStyle(
                     fontSize = 12.sp,
                     color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
                 )

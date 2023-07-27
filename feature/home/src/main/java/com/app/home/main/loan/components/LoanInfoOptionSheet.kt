@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -81,7 +82,7 @@ fun LoanInfoOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
                     .dashedBorder(3.dp, Color(0x99C9CACC))
             ) {
                 Text(
-                    text = "Contract payment schedule",
+                    text = stringResource(R.string.contract_payment_schedule),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 15.dp, vertical = 10.dp),
@@ -96,7 +97,7 @@ fun LoanInfoOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
 
 
             Text(
-                text = "Actual payment schedule",
+                text = stringResource(R.string.actual_payment_schedule),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 15.dp, vertical = 10.dp),

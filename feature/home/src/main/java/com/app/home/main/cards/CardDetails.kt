@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -87,7 +88,7 @@ fun CardDetails(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Business Cards",
+                    text = stringResource(R.string.business_cards),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -117,7 +118,7 @@ fun CardDetails(navController: NavController) {
 
                 item {
                     Text(
-                        text = "Additional cards",
+                        text = stringResource(R.string.additional_cards),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -182,7 +183,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "Business Plus", style = TextStyle(
+                        text = stringResource(R.string.business_plus), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -227,7 +228,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "5235 2222 5466 8339", style = TextStyle(
+                        text = stringResource(R.string.text_account_id), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -239,7 +240,7 @@ private fun MainContent(navController: NavController) {
                 Row {
 
                     Text(
-                        text = "Additional card:", style = TextStyle(
+                        text = stringResource(R.string.additional_card), style = TextStyle(
                             fontSize = 14.sp,
                             color = Color(0xFF859DB5),
                             fontFamily = FontFamily(
@@ -254,7 +255,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "2", style = TextStyle(
+                        text = stringResource(R.string._2), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -279,7 +280,7 @@ private fun MainContent(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "User", style = TextStyle(
+                        text = stringResource(R.string.user), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -287,7 +288,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "Elchin Huseynov", style = TextStyle(
+                        text = stringResource(R.string.elchin_huseynov), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -311,7 +312,7 @@ private fun MainContent(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Card account (IBAN)", style = TextStyle(
+                        text = stringResource(R.string.card_account_iban), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -319,7 +320,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZ78BRES00380394400262924501", style = TextStyle(
+                        text = stringResource(R.string.az78bres00380394400262924501), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -353,7 +354,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Status", style = TextStyle(
+                        text = stringResource(R.string.status), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -362,7 +363,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "Active", style = TextStyle(
+                        text = stringResource(R.string.active), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -380,7 +381,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "End date", style = TextStyle(
+                        text = stringResource(R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -388,7 +389,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "31.03.2023", style = TextStyle(
+                        text = stringResource(R.string._31_03_2023), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF7B61FF),
@@ -417,7 +418,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Balance", style = TextStyle(
+                        text = stringResource(id = R.string.balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -427,7 +428,6 @@ private fun MainContent(navController: NavController) {
 
                     Text(
                         text = "2500.00", style = TextStyle(
-
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -443,7 +443,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Currency", style = TextStyle(
+                        text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -451,7 +451,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZN", style = TextStyle(
+                        text = stringResource(R.string.azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -560,7 +560,7 @@ private fun AdditionalCards(navController: NavController) {
                     )
 
                     Text(
-                        text = "Additional Business Plus", style = TextStyle(
+                        text = stringResource(R.string.additional_business_plus), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -580,8 +580,9 @@ private fun AdditionalCards(navController: NavController) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_option_up),
                         contentDescription = "",
-                        Modifier.size(height = 28.dp, width = 28.dp)
-                            .clickable {  }
+                        Modifier
+                            .size(height = 28.dp, width = 28.dp)
+                            .clickable { }
                     )
 
                 }
@@ -614,7 +615,7 @@ private fun AdditionalCards(navController: NavController) {
                     )
 
                     Text(
-                        text = "5235 2222 5466 8339", style = TextStyle(
+                        text = stringResource(R.string._5235_2222_5466_8339), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -640,7 +641,7 @@ private fun AdditionalCards(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "User", style = TextStyle(
+                        text = stringResource(id = R.string.user), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -648,7 +649,7 @@ private fun AdditionalCards(navController: NavController) {
                     )
 
                     Text(
-                        text = "Elchin Huseynov", style = TextStyle(
+                        text = stringResource(id = R.string.elchin_huseynov), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -677,7 +678,7 @@ private fun AdditionalCards(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Status", style = TextStyle(
+                        text = stringResource(id = R.string.status), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -686,7 +687,7 @@ private fun AdditionalCards(navController: NavController) {
                     )
 
                     Text(
-                        text = "Active", style = TextStyle(
+                        text = stringResource(id = R.string.active), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -703,7 +704,7 @@ private fun AdditionalCards(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Currency", style = TextStyle(
+                        text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -711,7 +712,7 @@ private fun AdditionalCards(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZN", style = TextStyle(
+                        text = stringResource(id = R.string.azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -727,7 +728,7 @@ private fun AdditionalCards(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "End date", style = TextStyle(
+                        text = stringResource(id = R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -735,7 +736,7 @@ private fun AdditionalCards(navController: NavController) {
                     )
 
                     Text(
-                        text = "31.03.2023", style = TextStyle(
+                        text = stringResource(id = R.string._31_03_2023), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),

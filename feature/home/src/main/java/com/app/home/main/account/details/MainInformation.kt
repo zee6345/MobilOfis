@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -32,6 +33,10 @@ import com.app.home.R
 
 import com.app.home.main.account.component.MainInfoBottomSheet
 import com.app.home.main.component.dashedBorder
+import com.app.network.data.responseModels.GetAccountsItem
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
 
 
 import ir.kaaveh.sdpcompose.sdp
@@ -40,6 +45,10 @@ import ir.kaaveh.sdpcompose.sdp
 fun MainInformation(navController: NavController) {
 
     val mainInfoOptions = rememberSaveable { mutableStateOf(false) }
+
+    val str = MainApp.session[Keys.KEY_MAIN_INFO]
+    val data = Converter.fromJson(str!!, GetAccountsItem::class.java)
+
 
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -61,14 +70,15 @@ fun MainInformation(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Current Account at Head Office", style = TextStyle(
+                    text = "${data.NICKNAME}", style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
                 )
                 Image(
                     painter = painterResource(id = R.drawable.ic_options), contentDescription = "",
-                    Modifier.size(height = 28.dp, width = 28.dp)
+                    Modifier
+                        .size(height = 28.dp, width = 28.dp)
                         .clickable {
                             mainInfoOptions.value = true
                         }
@@ -91,7 +101,7 @@ fun MainInformation(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "New IBAN", style = TextStyle(
+                        text = stringResource(R.string.new_iban), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -100,7 +110,7 @@ fun MainInformation(navController: NavController) {
 
 
                     Text(
-                        text = "AZ78BRES00380394400262924501", style = TextStyle(
+                        text = "${data.IBAN}", style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -134,7 +144,7 @@ fun MainInformation(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Old IBAN", style = TextStyle(
+                        text = stringResource(R.string.old_iban), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -142,7 +152,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZ78BRES00380394400262924501", style = TextStyle(
+                        text = "${data.ORJ_IBAN}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -178,7 +188,7 @@ fun MainInformation(navController: NavController) {
                 Spacer(Modifier.size(width=5.dp, height=1.dp))
 
                 Text(
-                    text = "Settlement-card account", style = TextStyle(
+                    text = "${data.ACCOUNT_TYPE}", style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                         color = Color(0xFF223142),
@@ -200,7 +210,7 @@ fun MainInformation(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Branch", style = TextStyle(
+                        text = stringResource(R.string.branch), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -209,7 +219,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "Customer Service Department", style = TextStyle(
+                        text = "${data.BRANCH_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -237,7 +247,7 @@ fun MainInformation(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Balance", style = TextStyle(
+                        text = stringResource(id = R.string.balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -246,7 +256,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "2500.00", style = TextStyle(
+                        text = "${data.BALANCE}", style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -263,7 +273,7 @@ fun MainInformation(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Currency", style = TextStyle(
+                        text = stringResource(R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -271,7 +281,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZN", style = TextStyle(
+                        text = "${data.CCY_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -299,7 +309,7 @@ fun MainInformation(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Blocked", style = TextStyle(
+                        text = stringResource(id = R.string.blocked), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -308,7 +318,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "50 000 000.00", style = TextStyle(
+                        text = "${data.BLOCKSAMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             color = Color(0xFFFF4E57)
 
@@ -324,7 +334,7 @@ fun MainInformation(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Free balance", style = TextStyle(
+                        text = stringResource(id = R.string.free_balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -333,7 +343,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "-50 000 000.00", style = TextStyle(
+                        text = "${data.REAL_BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
                             color = Color(0xFFFF4E57)
 
@@ -358,7 +368,7 @@ fun MainInformation(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Bank Execution", style = TextStyle(
+                        text = stringResource(id = R.string.bank_execution), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -367,7 +377,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "0.00", style = TextStyle(
+                        text = "${data.WFA_AMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -384,7 +394,7 @@ fun MainInformation(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "After execution", style = TextStyle(
+                        text = stringResource(id = R.string.after_execution), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -392,7 +402,7 @@ fun MainInformation(navController: NavController) {
                     )
 
                     Text(
-                        text = "0.00", style = TextStyle(
+                        text = "${data.LAST_BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),

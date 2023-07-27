@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -54,7 +55,7 @@ fun AccountBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Account BottomSheet"),
+            text = AnnotatedString(text = stringResource(R.string.show_account_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 showAccountBottomSheet.value = !showAccountBottomSheet.value
@@ -79,7 +80,7 @@ fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
             modifier = Modifier.padding(horizontal = 10.dp)
         ) {
             Text(
-                text = "From the account",
+                text = stringResource(R.string.from_the_account),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -89,7 +90,7 @@ fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
             )
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
             Text(
-                text = "All",
+                text = stringResource(R.string.all),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -148,13 +149,13 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
             if (menuItem.showIcon) {
                 Icon(
                     painterResource(id = R.drawable.ic_blocked),
-                    contentDescription = "calender",
+                    contentDescription = stringResource(R.string.calender),
                     modifier = Modifier
                         .padding(horizontal = 2.sdp)
                         .align(Alignment.CenterVertically)
                 )
             } else {
-                Log.e("error", "icon hide")
+//                Log.e("error", "icon hide")
             }
         }
         Text(

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -41,8 +42,9 @@ import com.app.adjustment.data.ExchangeRatesModel
 @Composable
 fun ExchangeRatesScreen(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
-        .background(color = Color(0xFFF3F7FA)),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA)),
     ) {
         Surface(
             modifier = Modifier
@@ -65,7 +67,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Exchange rates",
+                    text = stringResource(id = R.string.exchange_rates),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -100,7 +102,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                                 3.dp, Color(0xFFE7EEFC)
                             )
                             .padding(horizontal = 12.dp, vertical = 12.dp),
-                        text = "17.10.2022",
+                        text = stringResource(R.string._17_10_2022),
                         style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Center)
                     )
 
@@ -125,7 +127,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                                 modifier = Modifier
                                     .padding(vertical = 12.dp)
                                     .fillMaxWidth(),
-                                text = "Bank Republic",
+                                text = stringResource(R.string.bank_republic),
                                 style = TextStyle(fontSize = 14.sp, textAlign = TextAlign.Center)
                             )
                         }
@@ -137,7 +139,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                                     3.dp, Color(0xFFE7EEFC)
                                 )
                                 .padding(vertical = 12.dp),
-                            text = "Central Bank",
+                            text = stringResource(R.string.central_bank),
                             style = TextStyle(fontSize = 14.sp, textAlign = TextAlign.Center)
                         )
 
@@ -169,7 +171,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                                 )
                                 Text(
                                     modifier = Modifier.padding(vertical = 12.dp),
-                                    text = "Purchase",
+                                    text = stringResource(R.string.purchase),
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         textAlign = TextAlign.Center,
@@ -178,7 +180,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                                 )
                                 Text(
                                     modifier = Modifier.padding(vertical = 12.dp),
-                                    text = "Sale",
+                                    text = stringResource(R.string.sale),
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         textAlign = TextAlign.Center,

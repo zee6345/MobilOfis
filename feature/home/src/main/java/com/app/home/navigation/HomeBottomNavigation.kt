@@ -42,9 +42,9 @@ import com.app.transfer.transfers.navigation.transferToDetails
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = BottomNavItem.Menu.screen_route) {
+    NavHost(navController, startDestination = BottomNavItem.Main.screen_route) {
 
-        composable(BottomNavItem.Menu.screen_route) {
+        composable(BottomNavItem.Main.screen_route) {
             MenuScreen(navController)
         }
 
@@ -64,7 +64,15 @@ fun NavigationGraph(navController: NavHostController) {
             SecurityScreen(navController)
         }
 
-        composable(accountDetailsRoute) {
+        composable(
+//            route= "$accountDetailsRoute/{account}",
+            route= accountDetailsRoute,
+//            arguments = listOf(
+//                navArgument("account"){
+//                    type = NavType.StringType
+//                }
+//            )
+            ) {
             AccountInformation(navController = navController)
         }
 

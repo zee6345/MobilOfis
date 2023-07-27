@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -74,7 +75,7 @@ fun HistoryNnotes(navController: NavController) {
             ) {
 
                 androidx.compose.material.Text(
-                    text = "Transfer history",
+                    text = stringResource(R.string.transfer_history),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(600),
@@ -126,7 +127,7 @@ fun HistoryNnotes(navController: NavController) {
             ) {
 
                 androidx.compose.material.Text(
-                    text = "Notes",
+                    text = stringResource(R.string.notes),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(600),
@@ -186,7 +187,7 @@ private fun CardInfo1(navController: NavController) {
         ) {
 
             androidx.compose.material.Text(
-                text = "Transfer history",
+                text = stringResource(id = R.string.transfer_history),
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight(600),
@@ -240,7 +241,7 @@ private fun CardInfo2(navController: NavController) {
             ) {
 
                 androidx.compose.material.Text(
-                    text = "Eyyubov, son of Samir Kurdoglu",
+                    text = stringResource(R.string.eyyubov_son_of_samir_kurdoglu),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -250,7 +251,7 @@ private fun CardInfo2(navController: NavController) {
 
 
                 androidx.compose.material.Text(
-                    text = "Sameer",
+                    text = stringResource(R.string.sameer),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -297,7 +298,7 @@ private fun CardInfo2(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "Sent to the bank",
+                        text = stringResource(R.string.sent_to_the_bank),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -312,7 +313,7 @@ private fun CardInfo2(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "01.11.2021",
+                        text = stringResource(R.string._01_11_2021),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -326,7 +327,7 @@ private fun CardInfo2(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "14:34",
+                        text = stringResource(R.string._14_34),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -377,7 +378,7 @@ private fun CardInfo3(navController: NavController) {
             ) {
 
                 androidx.compose.material.Text(
-                    text = "Hajiyev Yusif Adil oglu",
+                    text = stringResource(R.string.hajiyev_yusif_adil_oglu),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -387,7 +388,7 @@ private fun CardInfo3(navController: NavController) {
 
 
                 androidx.compose.material.Text(
-                    text = "Yusif",
+                    text = stringResource(R.string.yusif),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -434,7 +435,7 @@ private fun CardInfo3(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "Signature and approval",
+                        text = stringResource(R.string.signature_and_approval),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -463,7 +464,7 @@ private fun CardInfo3(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "14:34",
+                        text = stringResource(id = R.string._14_34),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -510,7 +511,7 @@ private fun CardInfo4(navController: NavController) {
         ) {
 
             androidx.compose.material.Text(
-                text = "Notes",
+                text = stringResource(id = R.string.notes),
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight(600),
@@ -565,7 +566,7 @@ private fun CardInfo5(navController: NavController) {
             ) {
 
                 androidx.compose.material.Text(
-                    text = "Not sent.",
+                    text = stringResource(R.string.not_sent),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -575,7 +576,7 @@ private fun CardInfo5(navController: NavController) {
 
 
                 androidx.compose.material.Text(
-                    text = "samirmss",
+                    text = stringResource(R.string.samirmss),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
@@ -620,7 +621,7 @@ private fun CardInfo5(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "Please resend",
+                        text = stringResource(R.string.please_resend),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -635,7 +636,7 @@ private fun CardInfo5(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "01.11.2021",
+                        text = stringResource(id = R.string._01_11_2021),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -649,7 +650,7 @@ private fun CardInfo5(navController: NavController) {
 
 
                     androidx.compose.material.Text(
-                        text = "14:34",
+                        text = stringResource(id = R.string._14_34),
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),

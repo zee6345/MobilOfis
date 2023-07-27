@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,10 +53,11 @@ import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
-import com.app.auth.utils.Message
+import com.app.network.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.responseModels.LoginResponse
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -73,7 +75,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     val showDialog = remember { mutableStateOf(false) }
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
-    var isLoading = remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val loginData by viewModel.data.collectAsState()
@@ -105,7 +107,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
 
                 Text(
-                    text = "information And Content",
+                    text = stringResource(R.string.information_and_content),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -116,10 +118,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     )
                 )
 
-                BottomSheetItems(R.drawable.ic_location, "Branches and ATMs", true)
-                BottomSheetItems(R.drawable.ic_tariff, "Tariffs", true)
-                BottomSheetItems(R.drawable.ic_whatsapp_support, "WhatsApp support", true)
-                BottomSheetItems(R.drawable.ic_call_support, "Call Center", true)
+                BottomSheetItems(R.drawable.ic_location, stringResource(R.string.branches_and_atms), true)
+                BottomSheetItems(R.drawable.ic_tariff, stringResource(R.string.tariffs), true)
+                BottomSheetItems(R.drawable.ic_whatsapp_support, stringResource(R.string.whatsapp_support), true)
+                BottomSheetItems(R.drawable.ic_call_support, stringResource(R.string.call_center), true)
 
                 Row(
                     modifier = Modifier
@@ -138,7 +140,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         contentDescription = ""
                     )
                     Text(
-                        text = "Application Language",
+                        text = stringResource(R.string.application_language),
                         modifier = Modifier.padding(vertical = 12.dp)
                     )
 
@@ -171,7 +173,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 ) {
                     Text(
                         modifier = Modifier.align(Alignment.BottomStart),
-                        text = "Mobile Office\nWelcome",
+                        text = stringResource(R.string.mobile_office_welcome),
                         style = TextStyle(color = Color.White, fontSize = 29.sp)
                     )
                 }
@@ -193,12 +195,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     onValueChange = { usernameState.value = it },
                     label = {
                         Text(
-                            text = if (selected == 2) "Mobile Number" else "Username",
+                            text = if (selected == 2) stringResource(R.string.mobile_number) else stringResource(
+                                R.string.username
+                            ),
                             fontSize = 14.sp
                         )
                     }, trailingIcon = {
                         if (userErrorCheck)
-                            Icon(Icons.Filled.Info, "Error", tint = Color.Red)
+                            Icon(Icons.Filled.Info, stringResource(R.string.error), tint = Color.Red)
                     }, colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF223142),
@@ -216,12 +220,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     label = {
                         Text(
-                            text = if (selected == 2) "User ID" else "Password",
+                            text = if (selected == 2) stringResource(R.string.user_id) else stringResource(
+                                R.string.password
+                            ),
                             fontSize = 14.sp
                         )
                     }, trailingIcon = {
                         if (pswdErrorCheck)
-                            Icon(Icons.Filled.Info, "Error", tint = Color.Red)
+                            Icon(Icons.Filled.Info, stringResource(id = R.string.error), tint = Color.Red)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -259,7 +265,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         }
 
                         ClickableText(modifier = Modifier.padding(5.dp),
-                            text = AnnotatedString(text = "Forgot your password?"),
+                            text = AnnotatedString(text = stringResource(R.string.forgot_your_password)),
                             onClick = {
                                 showForgetPassBottomSheetSheet.value =
                                     !showForgetPassBottomSheetSheet.value
@@ -277,8 +283,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                         when (selected) {
                             0 -> {
-                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT).show()
                             }
 
                             1 -> {
@@ -308,8 +313,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                             }
 
                             2 -> {
-                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT).show()
                             }
                         }
 
@@ -323,7 +327,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 ) {
                     Text(
-                        "Login", modifier = Modifier.padding(vertical = 12.dp), color = Color.White
+                        stringResource(R.string.login), modifier = Modifier.padding(vertical = 12.dp), color = Color.White
                     )
                 }
 
@@ -347,8 +351,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
         CallTopAlertDialog(
             backgroundColor = colorResource(R.color.background_card_blue),
             cornerRadius = 12.dp,
-            title = "Attention!",
-            message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.",
+            title = stringResource(R.string.attention),
+            message = stringResource(R.string.demo_text),
             onClose = { showDialog.value = false }
         )
     }
@@ -360,7 +364,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     loginData?.let {
         when (it) {
             is DataState.Loading -> {
-                Log.e("mTAG", "LoginScreen: loading...")
+
                 isLoading.value = true
                 if (isLoading.value) {
                     ShowProgressDialog(isLoading)
@@ -370,7 +374,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, "Failed to login!")
+                Message.showMessage(context, stringResource(R.string.failed_to_login))
             }
 
             is DataState.Success -> {
@@ -381,8 +385,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                     LaunchedEffect(Unit) {
                         //route to OTP
-                        MainApp.session.put("username", usernameState.value)
+                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
                         navController.navigate(otpNavigationRoute)
+
                     }
 
                 }
@@ -418,7 +423,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 
             Text(
                 modifier = Modifier.padding(12.dp),
-                text = "Login",
+                text = stringResource(id = R.string.login),
                 style = TextStyle(fontSize = 12.sp),
                 color = if (selected == 0) Color.White else Color.Black
             )
@@ -436,7 +441,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
-                text = "Google",
+                text = stringResource(R.string.google),
                 style = TextStyle(fontSize = 12.sp),
                 color = if (selected == 1) Color.White else Color.Black
             )
@@ -451,7 +456,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
-                text = "Easy Signature",
+                text = stringResource(R.string.easy_signature),
                 style = TextStyle(fontSize = 12.sp),
                 color = if (selected == 2) Color.White else Color.Black
             )
@@ -509,7 +514,7 @@ private fun LanguageOptions() {
             )
             .clickable { selectedBoxIndex.value = 0 }) {
             androidx.compose.material.Text(
-                text = "AZ", modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.az), modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )
@@ -523,7 +528,7 @@ private fun LanguageOptions() {
             )
             .clickable { selectedBoxIndex.value = 1 }) {
             androidx.compose.material.Text(
-                text = "EN", modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.en), modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )
@@ -537,7 +542,7 @@ private fun LanguageOptions() {
             )
             .clickable { selectedBoxIndex.value = 2 }) {
             androidx.compose.material.Text(
-                text = "RU", modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.ru), modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )

@@ -1,6 +1,5 @@
 package com.app.auth.login.otp
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,15 +38,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.auth.R
 import com.app.auth.login.components.alertdialog.ShowProgressDialog
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.otp.components.OtpView
 import com.app.auth.pin.navigation.pinNavigationRoute
-import com.app.auth.utils.Message
+import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.network.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginVerificationRequest
-import com.app.network.data.responseModels.LoginVerificationResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -82,13 +85,13 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     modifier = Modifier.align(Alignment.BottomStart)
                 ) {
                     Text(
-                        text = "Enter SMS code", style = TextStyle(
+                        text = stringResource(R.string.enter_sms_code), style = TextStyle(
                             color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.SemiBold
                         ),
                         modifier = Modifier.padding(vertical = 10.sdp)
                     )
                     Text(
-                        text = "Please enter the SMS code sent to the number ***68-06.",
+                        text = stringResource(R.string.text_send_otp),
                         style = TextStyle(
                             color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.SemiBold
                         )
@@ -134,7 +137,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     }
 
                     ClickableText(modifier = Modifier.padding(5.dp),
-                        text = AnnotatedString(text = "Re-send SMS code"),
+                        text = AnnotatedString(text = stringResource(R.string.re_send_sms_code)),
                         onClick = {
                             Message.showMessage(context, "OTP send again!")
                         })
@@ -168,7 +171,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
 
                     ) {
                         Text(
-                            "Close",
+                            stringResource(R.string.close),
                             modifier = Modifier.padding(vertical = 6.dp),
                             style = TextStyle(
                                 fontSize = 17.sp, shadow = null
@@ -182,7 +185,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                             if (otpValue.value.isNotEmpty()) {
                                 if (otpValue.value.length == 6) {
 
-                                    val username = MainApp.session["username"]
+                                    val username = MainApp.session[Keys.KEY_USERNAME]
 
                                     viewModel.loginAuthVerification(
                                         LoginVerificationRequest(
@@ -210,7 +213,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                             .weight(1f)
                     ) {
                         Text(
-                            "Next", modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
+                            stringResource(R.string.next), modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
                                 color = Color.White, fontSize = 17.sp, shadow = null
                             )
                         )
@@ -235,11 +238,11 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, "Failed to verify user!")
+                Message.showMessage(context, stringResource(R.string.failed_to_verify_user))
 
                 //on error remove keys
-                MainApp.session.delete("username")
-                MainApp.session.delete("token")
+                MainApp.session.delete(Keys.KEY_USERNAME)
+                MainApp.session.delete(Keys.KEY_TOKEN)
 
             }
 
@@ -249,11 +252,23 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     isLoading.value = false
 
                     //remove username after use
-//                    MainApp.session.delete("username")
+                    MainApp.session.delete(Keys.KEY_USERNAME)
 
+
+                    //cache login verify response
+                    val strJson = Converter.toJson(loginVerifyResponse)
+                    MainApp.session.put(Keys.KEY_USER_DETAILS, strJson)
+
+
+                    //check if pin already set
+                    val pin = MainApp.session[Keys.KEY_USER_PIN]
                     //route to OTP
                     LaunchedEffect(Unit) {
-                        navController.navigate(pinNavigationRoute)
+                        if(pin.isNullOrEmpty()) {
+                            navController.navigate(pinNavigationRoute)
+                        } else{
+                            navController.navigate(welcomePinScreen)
+                        }
                     }
 
                 }

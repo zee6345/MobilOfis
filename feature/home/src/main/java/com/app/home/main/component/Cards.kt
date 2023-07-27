@@ -1,5 +1,6 @@
 package com.app.home.main.component
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,29 +25,53 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.home.R
 import com.app.home.data.CardFilters
 import com.app.home.data.CardsListData
 
 import com.app.home.data.DataProvider
 import com.app.home.main.cards.navigation.homeToCardDetails
+import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetOldCards
+
+import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
+import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
-fun CardsList(navController: NavController) {
+fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+
+    val userDetails = fetchUserDetails()
+    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
+
+    LaunchedEffect(key1 = true) {
+        viewModel.getOldBusinessCards(userDetails.customerNo)
+//        viewModel.getNewBusinessCards(userDetails.customerNo)
+    }
+
 
     val cardsList = remember { DataProvider.cardsList }
     val cardFilters = remember { DataProvider.filtersList }
@@ -92,6 +117,34 @@ fun CardsList(navController: NavController) {
     }
 
 
+
+    homeData.value?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+
+            }
+
+            is DataState.Success -> {
+                val cards = it.data as GetOldCards
+
+
+                cards.oldBusinessCards.MainCards.forEach {
+                    Log.e("mTAG", "CardsList: ${it.nickName}" )
+                    Log.e("mTAG", "CardsList: ${it.Currency}" )
+                    Log.e("mTAG", "CardsList: ${it.EncryptedPan}" )
+                    Log.e("mTAG", "CardsList: ${it.AdditionNumb}" )
+                }
+
+
+            }
+        }
+
+    }
+
 }
 
 
@@ -132,7 +185,8 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     text = obj.title,
                     style = TextStyle(fontSize = 14.sp),
                     color = Color(0xFF223142),
-                    modifier = Modifier.padding(vertical = 5.dp)
+                    modifier = Modifier
+                        .padding(vertical = 5.dp)
                         .fillMaxWidth()
                 )
 
@@ -245,7 +299,7 @@ private fun Filters() {
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
             .clickable { selectedBoxIndex.value = 0 }) {
             Text(
-                "In the name of a physical person", style = TextStyle(
+                stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
                     fontSize = 12.sp,
                     color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
                 )
@@ -262,7 +316,7 @@ private fun Filters() {
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
             .clickable { selectedBoxIndex.value = 1 }) {
             Text(
-                "TIN based", style = TextStyle(
+                stringResource(R.string.tin_based), style = TextStyle(
                     fontSize = 12.sp,
                     color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
                 )
@@ -270,6 +324,11 @@ private fun Filters() {
         }
 
     }
+}
+
+private fun fetchUserDetails(): LoginVerifyResponse {
+    val str = MainApp.session[Keys.KEY_USER_DETAILS]
+    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -53,7 +54,7 @@ fun AboutBankSheet(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Status BottomSheet"),
+            text = AnnotatedString(text = stringResource(R.string.show_status_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 aboutBankState.value = !aboutBankState.value
@@ -78,7 +79,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
             modifier = Modifier.padding(vertical = 12.dp)
         ) {
             Text(
-                text = "About The Bank",
+                text = stringResource(R.string.about_the_bank),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +100,8 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
 
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 5.dp)
                         .fillMaxWidth()
                 ) {
 
@@ -113,7 +115,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                             .padding(2.dp)
                     )
                     androidx.compose.material.Text(
-                        text = "Branches And ATMs",
+                        text = stringResource(R.string.branches_and_atms),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
@@ -131,7 +133,8 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 horizontalArrangement = Arrangement.Start
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 5.dp)
                         .fillMaxWidth()
                 ) {
 
@@ -145,7 +148,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                             .padding(2.dp)
                     )
                     androidx.compose.material.Text(
-                        text = "Tariffs",
+                        text = stringResource(R.string.tariffs),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
@@ -164,7 +167,8 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 horizontalArrangement = Arrangement.Start
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 5.dp)
                         .fillMaxWidth()
                 ) {
                     Image(
@@ -176,7 +180,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                             .padding(vertical = 3.dp, horizontal = 7.dp)
                     )
                     androidx.compose.material.Text(
-                        text = "Exchange Rates",
+                        text = stringResource(R.string.exchange_rates),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )

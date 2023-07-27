@@ -7,6 +7,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,15 +28,24 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.utils.Message
+import com.app.network.utils.Message
 import com.app.home.navigation.homeScreenRoute
+import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 
+private const val TAG = "WelcomePinScreen"
 
 @Composable
 fun WelcomePinScreen(navController: NavController) {
     var enteredPin by remember { mutableStateOf("") }
+    val username = remember { mutableStateOf("") }
     val context = LocalContext.current
+
+
+    fetchUserDetails(username)
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -50,12 +61,12 @@ fun WelcomePinScreen(navController: NavController) {
                     .padding(20.dp)
 
             ) {
-                val username = MainApp.session["username"]
+
                 Text(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = "Welcome,\n$username",
+                    text = stringResource(id = R.string.text_welcome) + ",\n${username.value}",
                     style = TextStyle(color = Color.White, fontSize = 22.sp)
                 )
             }
@@ -78,7 +89,7 @@ fun WelcomePinScreen(navController: NavController) {
                 PinInputView(navController, length = 5) { pin ->
                     enteredPin = pin
                     if (pin.isNotEmpty() && pin.length == 5) {
-                        val finalPin = MainApp.session["finalPin"]
+                        val finalPin = MainApp.session[Keys.KEY_USER_PIN]
                         if(finalPin.equals(pin)){
                             navController.navigate(homeScreenRoute)
                         } else {
@@ -110,7 +121,7 @@ fun WelcomePinScreen(navController: NavController) {
                             .padding(end = 12.dp),
                     )
                     Text(
-                        text = "Enter in a different way",
+                        text = stringResource(R.string.enter_in_a_different_way),
                         style = TextStyle(color = Color(0xFF667080), fontSize = 14.sp),
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -124,6 +135,14 @@ fun WelcomePinScreen(navController: NavController) {
 
         }
 
+    }
+}
+
+private fun fetchUserDetails(username: MutableState<String>) {
+    val str = MainApp.session[Keys.KEY_USER_DETAILS]
+    val loginVerify = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+    loginVerify.let {
+        username.value = it.userName
     }
 }
 

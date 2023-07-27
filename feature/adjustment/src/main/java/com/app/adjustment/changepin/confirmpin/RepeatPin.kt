@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,13 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.adjustment.R
 import com.app.adjustment.changepin.currentpin.PinInputView
 
 
 @Composable
 fun RepeatPin(navController: NavController) {
 
-    Column(modifier = Modifier.fillMaxSize()
+    Column(modifier = Modifier
+        .fillMaxSize()
         .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
@@ -56,7 +59,7 @@ fun RepeatPin(navController: NavController) {
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = "Repeat the PIN",
+                    text = stringResource(R.string.repeat_the_pin),
                     style = TextStyle(color = Color.White, fontSize = 22.sp)
                 )
             }
@@ -79,7 +82,7 @@ fun RepeatPin(navController: NavController) {
 
                 }
 
-                Log.e("mTAG", "RepeatPin: $pin" )
+//                Log.e("mTAG", "RepeatPin: $pin" )
             }
 
         }

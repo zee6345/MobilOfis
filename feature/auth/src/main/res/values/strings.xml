@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="mobile_office">Mobile Office</string>
+    <string name="information_and_content">information And Content</string>
+    <string name="branches_and_atms">Branches and ATMs</string>
+    <string name="tariffs">Tariffs</string>
+    <string name="whatsapp_support">WhatsApp support</string>
+    <string name="call_center">Call Center</string>
+    <string name="application_language">Application Language</string>
+    <string name="mobile_office_welcome">Mobile Office\nWelcome</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="username">Username</string>
+    <string name="error">Error</string>
+    <string name="user_id">User ID</string>
+    <string name="password">Password</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="coming_soon">Coming soon!</string>
+    <string name="login">Login</string>
+    <string name="attention">Attention!</string>
+    <string name="demo_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.</string>
+    <string name="failed_to_login">Failed to login!</string>
+    <string name="google">Google</string>
+    <string name="easy_signature">Easy Signature</string>
+    <string name="az">AZ</string>
+    <string name="en">EN</string>
+    <string name="ru">RU</string>
+    <string name="enter_sms_code">Enter SMS code</string>
+    <string name="text_send_otp">Please enter the SMS code sent to the number ***68-06.</string>
+    <string name="re_send_sms_code">Re-send SMS code</string>
+    <string name="close">Close</string>
+    <string name="next">Next</string>
+    <string name="failed_to_verify_user">Failed to verify user!</string>
+    <string name="do_you_want_to_set_a_pin">Do you want to set a PIN?</string>
+    <string name="skip">Skip</string>
+    <string name="repeat_pin">Repeat PIN</string>
+    <string name="successful_registration">Successful Registration!</string>
+    <string name="pin_set">PIN set</string>
+    <string name="text_continue">Continue</string>
+    <string name="text_welcome">Welcome</string>
+    <string name="enter_in_a_different_way">Enter in a different way</string>
+
+</resources>

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -72,7 +73,7 @@ fun UserProfileScreen(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "User's profile",
+                    text = stringResource(R.string.user_s_profile),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -143,7 +144,7 @@ private fun CardInfo1(navController: NavController) {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Source of origin", style = TextStyle(
+                        text = stringResource(R.string.source_of_origin), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -155,7 +156,7 @@ private fun CardInfo1(navController: NavController) {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Internet Office", style = TextStyle(
+                        text = stringResource(R.string.internet_office), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -172,7 +173,7 @@ private fun CardInfo1(navController: NavController) {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Document no", style = TextStyle(
+                        text = stringResource(R.string.document_no), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -182,7 +183,7 @@ private fun CardInfo1(navController: NavController) {
                     Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "P10001080", style = TextStyle(
+                        text = stringResource(R.string.p10001080), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -199,7 +200,7 @@ private fun CardInfo1(navController: NavController) {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Father's name", style = TextStyle(
+                        text = stringResource(R.string.father_s_name), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -236,7 +237,7 @@ private fun CardInfo1(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Login", style = TextStyle(
+                        text = stringResource(R.string.login), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -246,7 +247,7 @@ private fun CardInfo1(navController: NavController) {
                     Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
 
                     Text(
-                        text = "Jahangire", style = TextStyle(
+                        text = stringResource(R.string.jahangire), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -273,7 +274,7 @@ private fun CardInfo1(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Mobile number for SMS", style = TextStyle(
+                        text = stringResource(R.string.mobile_number_for_sms), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -285,7 +286,7 @@ private fun CardInfo1(navController: NavController) {
 
 
                     Text(
-                        text = "505553467", style = TextStyle(
+                        text = stringResource(R.string._505553467), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -304,7 +305,7 @@ private fun CardInfo1(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Easy Signature mobile number", style = TextStyle(
+                        text = stringResource(R.string.easy_signature_mobile_number), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -315,7 +316,7 @@ private fun CardInfo1(navController: NavController) {
 
 
                     Text(
-                        text = "505553468", style = TextStyle(
+                        text = stringResource(R.string._505553468), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -344,7 +345,7 @@ private fun CardInfo1(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "E-mail", style = TextStyle(
+                        text = stringResource(R.string.e_mail), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -354,7 +355,7 @@ private fun CardInfo1(navController: NavController) {
                     Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
 
                     Text(
-                        text = "Jahangir.Eyyubov@bankrespublika.az", style = TextStyle(
+                        text = stringResource(R.string.text_email), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -378,7 +379,7 @@ private fun CardInfo1(navController: NavController) {
             ) {
 
                 Text(
-                    text = "Language", style = TextStyle(
+                    text = stringResource(R.string.language), style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                         color = Color(0xFF859DB5),
@@ -404,7 +405,7 @@ private fun CardInfo1(navController: NavController) {
             ) {
 
                 Text(
-                    text = "Google Authenticator", style = TextStyle(
+                    text = stringResource(R.string.google_authenticator), style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                         color = Color(0xFF859DB5),
@@ -422,7 +423,7 @@ private fun CardInfo1(navController: NavController) {
 
                 ) {
                     Text(
-                        text = "Activate",
+                        text = stringResource(R.string.activate),
                         style = TextStyle(
 
                             fontWeight = FontWeight(500),

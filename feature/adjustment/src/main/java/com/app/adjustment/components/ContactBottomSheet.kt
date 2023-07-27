@@ -19,24 +19,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +43,7 @@ import com.app.adjustment.R
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun ContactBottomSheet(){
+fun ContactBottomSheet() {
     val ContactState = rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -57,7 +54,7 @@ fun ContactBottomSheet(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Status BottomSheet"),
+            text = AnnotatedString(text = stringResource(id = R.string.show_status_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 ContactState.value = !ContactState.value
@@ -68,8 +65,9 @@ fun ContactBottomSheet(){
 
     ContactBottomSheet(ContactState)
 }
+
 @Composable
-fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
+fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
     if (contactSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { contactSheet.value = false },
@@ -81,7 +79,7 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
 
         ) {
             androidx.compose.material3.Text(
-                text = "Contact",
+                text = stringResource(R.string.contact),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,14 +122,18 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
                             .align(Alignment.CenterVertically)
                     )
                     Text(
-                        text = "144",
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 22.sp, FontWeight.Bold),
-                        modifier = Modifier.padding( horizontal = 12.dp)
+                        text = stringResource(R.string._144),
+                        style = TextStyle(
+                            color = Color(0xFF223142),
+                            fontSize = 22.sp,
+                            FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(horizontal = 12.dp)
                     )
                     Text(
-                        text = "Call center",
+                        text = stringResource(R.string.call_center),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                        modifier = Modifier.padding( horizontal = 12.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp)
                     )
                 }
             }
@@ -165,47 +167,47 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
                     Column(
                         modifier = Modifier.padding(start = 20.dp)
 
-                    ){
+                    ) {
                         Row(
                             modifier = Modifier
-                                .padding( horizontal = 12.dp)
+                                .padding(horizontal = 12.dp)
                                 .dashedBorder(3.dp, Color(0xFFE7EEFC))
                                 .fillMaxWidth()
                         ) {
                             Text(
-                                text = "(077) 434-07-77",
+                                text = stringResource(R.string._077_434_07_77),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier
-                                    .padding(vertical = 10.dp,)
+                                    .padding(vertical = 10.dp)
                             )
                         }
 
                         Row(
                             modifier = Modifier
-                                .padding( horizontal = 12.dp)
+                                .padding(horizontal = 12.dp)
                                 .dashedBorder(3.dp, Color(0xFFE7EEFC))
                                 .fillMaxWidth()
                         ) {
                             Text(
-                                text = "(077) 434-07-77",
+                                text = stringResource(id = R.string._077_434_07_77),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier
-                                    .padding(vertical = 10.dp,)
-                                )
+                                    .padding(vertical = 10.dp)
+                            )
                         }
 
                         Row(
                             modifier = Modifier
-                                .padding( horizontal = 12.dp)
+                                .padding(horizontal = 12.dp)
                                 .dashedBorder(3.dp, Color(0xFFE7EEFC))
                                 .fillMaxWidth()
                         ) {
                             Text(
-                                text = "(077) 434-07-77",
+                                text = stringResource(id = R.string._077_434_07_77),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier
-                                    .padding(vertical = 10.dp,)
-                                )
+                                    .padding(vertical = 10.dp)
+                            )
                         }
 
                     }
@@ -218,6 +220,6 @@ fun ContactBottomSheet(contactSheet:MutableState<Boolean>){
 
 @Preview
 @Composable
-fun preview(){
+fun preview() {
     ContactBottomSheet()
 }

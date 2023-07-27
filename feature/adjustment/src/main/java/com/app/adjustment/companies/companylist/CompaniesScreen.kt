@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,7 +68,7 @@ fun Companies(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Companies",
+                    text = stringResource(R.string.companies),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -105,7 +106,7 @@ fun Companies(navController: NavController) {
 
             ) {
                 Text(
-                    "Save",
+                    stringResource(R.string.save),
                     modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp),
                     color = Color.White
                 )

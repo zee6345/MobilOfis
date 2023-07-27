@@ -28,7 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 
 @Composable
-fun CustomKeyboard(navController: NavController, screen: String, onKeyPressed: (String) -> Unit) {
+fun CustomKeyboard(navController: NavController, screen: String?, onKeyPressed: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -139,7 +139,7 @@ fun KeyButton(
     imageRes: Int? = null,
     navController: NavController,
     button: String? = null,
-    screen: String,
+    screen: String?,
     onKeyPressed: (String) -> Unit
 ) {
     Box(modifier = Modifier

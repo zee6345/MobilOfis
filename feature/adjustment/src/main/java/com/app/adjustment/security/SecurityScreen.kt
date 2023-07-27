@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +64,7 @@ fun SecurityScreen(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Security",
+                    text = stringResource(R.string.security),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -91,7 +92,7 @@ fun SecurityScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Change Password",
+                        text = stringResource(R.string.change_password),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                     )
@@ -114,14 +115,15 @@ fun SecurityScreen(navController: NavController) {
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
                             navController.navigate(adjustmentToCurrentPin)
                         },
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Change PIN",
+                        text = stringResource(R.string.change_pin),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                     )
@@ -148,7 +150,7 @@ fun SecurityScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Fingerprint login",
+                        text = stringResource(R.string.fingerprint_login),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                     )

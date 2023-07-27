@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -106,7 +107,7 @@ fun SplashScreen(navController: NavController) {
 
             ) {
             Text(
-                text = "Mobile Office",
+                text = stringResource(R.string.mobile_office),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
@@ -135,46 +136,6 @@ fun PreviewSplash() {
 }
 
 
-
-@Composable
-fun AnimatedView() {
-    var isVisible by remember { mutableStateOf(true) }
-
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = slideInVertically(
-            initialOffsetY = { fullHeight -> fullHeight },
-            animationSpec = tween(
-                durationMillis = 300,
-                delayMillis = 200,
-                easing = LinearOutSlowInEasing
-            )
-        ),
-        exit = slideOutVertically(
-            targetOffsetY = { fullHeight -> fullHeight },
-            animationSpec = tween(
-                durationMillis = 300,
-                easing = FastOutLinearInEasing
-            )
-        ),
-        content = {
-            Box(
-                modifier = Modifier
-                    .background(Color.Blue)
-                    .wrapContentSize(Alignment.Center)
-                    .clickable {
-                        isVisible = !isVisible
-                    }
-            ) {
-                Text(
-                    text = "Mobile Office",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-            }
-        }
-    )
-}
 
 
 

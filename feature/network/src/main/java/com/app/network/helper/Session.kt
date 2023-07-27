@@ -3,6 +3,8 @@ package com.app.network.helper
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class Session private constructor(context: Context) {
     init {
@@ -60,6 +62,14 @@ class Session private constructor(context: Context) {
         editor!!.putBoolean(key, value)
         return editor!!.commit()
     }
+
+//    fun toJson(obj:Any): String?{
+//        return Gson().toJson(obj)
+//    }
+//
+//    fun <T> fromJson(json: String, classOfT: Class<T>): T {
+//        return Gson().fromJson(json, classOfT)
+//    }
 
     operator fun get(key: String?): String? {
         return savedSession!!.getString(key, BLANK_STRING_KEY)

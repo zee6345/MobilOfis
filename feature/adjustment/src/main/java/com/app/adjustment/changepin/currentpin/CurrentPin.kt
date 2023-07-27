@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +46,8 @@ import com.app.adjustment.changepin.newpin.navigation.adjustmentToNewPin
 @Composable
 fun CurrentPin(navController: NavController) {
 
-    Column(modifier = Modifier.fillMaxSize()
+    Column(modifier = Modifier
+        .fillMaxSize()
         .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
@@ -62,7 +64,8 @@ fun CurrentPin(navController: NavController) {
 
             ) {
                 Row(
-                    Modifier.align(Alignment.BottomStart)
+                    Modifier
+                        .align(Alignment.BottomStart)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
 
@@ -71,12 +74,13 @@ fun CurrentPin(navController: NavController) {
                     Image(
                         painterResource(id = R.drawable.ic_back_arrow),
                         contentDescription = null,
-                        modifier = Modifier.size(width=32.dp, height=25.dp)
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 25.dp)
                             .clickable { navController.popBackStack() }
                     )
 
                     Text(
-                        text = "Enter your current PIN",
+                        text = stringResource(R.string.enter_your_current_pin),
                         style = TextStyle(color = Color.White, fontSize = 22.sp),
                         modifier = Modifier.padding(12.dp)
                     )
@@ -132,7 +136,7 @@ fun PinInputView(
         )
     }
 
-    CustomKeyboard(navController, "PinScreen") { key ->
+    CustomKeyboard(navController, null) { key ->
         if (key == "del") {
             if (pinValue.value.isNotEmpty()) {
                 pinValue.value = pinValue.value.dropLast(1)

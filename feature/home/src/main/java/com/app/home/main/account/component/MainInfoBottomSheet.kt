@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -45,7 +46,7 @@ fun PreviewBottomSheetOption() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Click me!"),
+            text = AnnotatedString(text = stringResource(R.string.click_me)),
             onClick = {
                 businessCardOptions.value = !businessCardOptions.value
             }
@@ -101,7 +102,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Circulation",
+                        text = stringResource(R.string.circulation),
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),
@@ -134,7 +135,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Transfers",
+                        text = stringResource(R.string.transfers),
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),
@@ -168,7 +169,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Extract",
+                        text = stringResource(R.string.extract),
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),
@@ -202,7 +203,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Details",
+                        text = stringResource(R.string.details),
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),
@@ -235,7 +236,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Account details",
+                        text = stringResource(R.string.account_details),
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),
@@ -270,7 +271,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Change your name",
+                        text = stringResource(R.string.change_your_name),
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),

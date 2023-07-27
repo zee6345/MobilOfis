@@ -31,7 +31,7 @@ fun MainScreenView(navController: NavController) {
 @Composable
 fun BottomNavigation(navController: NavController) {
     val items = listOf(
-        BottomNavItem.Menu,
+        BottomNavItem.Main,
         BottomNavItem.Transfers,
         BottomNavItem.Adjustments,
 
@@ -75,7 +75,7 @@ fun BottomNavigation(navController: NavController) {
 
 sealed class BottomNavItem(var title: String, var icon: Int, var screen_route: String) {
 
-    object Menu : BottomNavItem("Main", R.drawable.ic_menu, "menu")
+    object Main : BottomNavItem("Main", R.drawable.ic_menu, "menu")
     object Transfers : BottomNavItem("Transfers", R.drawable.ic_transfers, "transfers")
     object Adjustments : BottomNavItem("Adjustments", R.drawable.ic_adjusments, "adjustment")
 

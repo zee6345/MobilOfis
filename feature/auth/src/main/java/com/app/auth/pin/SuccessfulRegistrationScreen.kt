@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,11 +74,11 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                         )
                         Column() {
                             Text(
-                                text = "Successful Registration!",
+                                text = stringResource(R.string.successful_registration),
                                 style = TextStyle(color = Color.White, fontSize = 24.sp)
                             )
                             Text(
-                                text = "PIN set",
+                                text = stringResource(R.string.pin_set),
                                 style = TextStyle(color = Color.White, fontSize = 16.sp)
                             )
                         }
@@ -121,7 +122,7 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                 )
 
             ) {
-                Text("Continue", modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
+                Text(stringResource(R.string.text_continue), modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
             }
 
         }

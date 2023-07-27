@@ -7,11 +7,14 @@ import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.callModels.LoginVerificationRequest
 import com.app.network.data.callModels.VerifyChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetOldCards
 import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -21,6 +24,7 @@ import retrofit2.http.Query
 
 
 interface APIService {
+
     // Define your API endpoints here
     @POST("auth/login")
     suspend fun loginWithUserName(@Body loginBody: LoginRequest): LoginResponse
@@ -41,9 +45,9 @@ interface APIService {
 
     @GET("customers/{customerId}/accounts")
     suspend fun getAccounts(
-        @Header("auth_token") token: String,
         @Path("customerId") customerId: Int
-    ): ResponseBody
+    ): GetAccounts
+
 
     @GET("customers/{customerId}/accounts/nickname")
     suspend fun setAccountNickName(
@@ -51,22 +55,41 @@ interface APIService {
         @Body accountNickNameRequest: AccountNickNameRequest
     ): ResponseBody
 
+
     @GET("customers/{customerId}/balance")
     suspend fun getBalance(
         @Header("auth_token") token: String,
         @Path("customerId") customerId: String
     ): ResponseBody
 
+
     @GET("auth/getlastlogin")
-    suspend fun getLastLogin(@Header("auth_token")token: String):ResponseBody
+    suspend fun getLastLogin(@Header("auth_token") token: String): ResponseBody
+
 
     @GET("auth/getuserinfo")
-    suspend fun getUserInfo(@Header("auth_token",)token: String,@Query("customerNo") customerNo: String):ResponseBody
-    @GET("customers/{customerId}/accounts/blocksbyiban/{iban}")
-    fun getAccountBlockByIBAN(@Header("auth_token")token: String,
-                              @Path("customerId")customerId: String,
-                              @Path("iban") iban: String): ResponseBody
+    suspend fun getUserInfo(
+        @Header("auth_token") token: String,
+        @Query("customerNo") customerNo: String
+    ): ResponseBody
 
-  //  @GET("bank/dashboardMessage")
+
+    @GET("customers/{customerId}/accounts/blocksbyiban/{iban}")
+    fun getAccountBlockByIBAN(
+        @Path("customerId") customerId: Int,
+        @Path("iban") iban: String
+    ): Call<ResponseBody>
+
+    @GET("brcards/get-old-business-cards-by-cif/{customerId}")
+    fun getOldBusinessCards(
+        @Path("customerId") customerId: Int
+    ):Call<GetOldCards>
+
+
+    @GET("brcards/get-new-business-cards-by-cif/{customerId}")
+    fun getNewBusinessCards(
+        @Path("customerId") customerId: Int
+    ):Call<ResponseBody>
+
 
 }

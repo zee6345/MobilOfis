@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -74,7 +75,7 @@ fun DepositDetails(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Detailed information on the deposit",
+                    text = stringResource(R.string.detailed_information_on_the_deposit),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -136,7 +137,7 @@ private fun MainContent(navController: NavController) {
 
 
                 Text(
-                    text = "Term Deposit", style = TextStyle(
+                    text = stringResource(R.string.term_deposit), style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
@@ -169,7 +170,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Account number", style = TextStyle(
+                        text = stringResource(R.string.account_number), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -178,7 +179,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZ47BRES38690AZ0021693229002", style = TextStyle(
+                        text = stringResource(R.string.az47bres38690az0021693229002), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -206,7 +207,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Branch", style = TextStyle(
+                        text = stringResource(id = R.string.branch), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -221,7 +222,7 @@ private fun MainContent(navController: NavController) {
 
 
                         Text(
-                            text = "Customer Service Department", style = TextStyle(
+                            text = stringResource(id = R.string.customer_service_department), style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = Color(0xFF223142),
@@ -253,7 +254,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Interest rate", style = TextStyle(
+                        text = stringResource(id = R.string.interest_rate), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -262,7 +263,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "8%", style = TextStyle(
+                        text = stringResource(R.string._8), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -279,7 +280,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Duration, months", style = TextStyle(
+                        text = stringResource(R.string.duration_months), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -287,7 +288,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "24", style = TextStyle(
+                        text = stringResource(R.string._24), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -303,7 +304,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Currency", style = TextStyle(
+                        text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -311,7 +312,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZN", style = TextStyle(
+                        text = stringResource(id = R.string.azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -338,7 +339,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Start date", style = TextStyle(
+                        text = stringResource(R.string.start_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -347,7 +348,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "06.05.2022", style = TextStyle(
+                        text = stringResource(id = R.string._06_05_2022), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -364,7 +365,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "End date", style = TextStyle(
+                        text = stringResource(id = R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -372,70 +373,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "06.05.2023", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    ,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = "Remainder", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Text(
-                        text = "250000.00", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = "Free balance", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Text(
-                        text = "250000.00", style = TextStyle(
+                        text = stringResource(id = R.string._06_05_2023), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -464,7 +402,70 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Initial amount", style = TextStyle(
+                        text = stringResource(R.string.remainder), style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+
+                            )
+                    )
+
+                    Text(
+                        text = "250000.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+                        )
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .weight(0.5f)
+
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = stringResource(id = R.string.free_balance), style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF859DB5),
+                        )
+                    )
+
+                    Text(
+                        text = "250000.00", style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = Color(0xFF223142),
+
+                            )
+                    )
+                }
+            }
+
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    ,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    Modifier
+                        .weight(0.5f)
+                        .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                        .fillMaxWidth()
+
+                ) {
+
+                    Text(
+                        text = stringResource(R.string.initial_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -490,7 +491,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Amount of income tax", style = TextStyle(
+                        text = stringResource(R.string.amount_of_income_tax), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -529,7 +530,7 @@ private fun MainContent(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Interest payment scheme", style = TextStyle(
+                        text = stringResource(R.string.interest_payment_scheme), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -537,7 +538,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "On a monthly basis", style = TextStyle(
+                        text = stringResource(R.string.on_a_monthly_basis), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -564,7 +565,7 @@ private fun MainContent(navController: NavController) {
                 Column {
 
                     Text(
-                        text = "Account to which interest is transferred", style = TextStyle(
+                        text = stringResource(R.string.account_to_which_interest_is_transferred), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -572,7 +573,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "AZ14BRES00330794400269322901", style = TextStyle(
+                        text = stringResource(R.string.az14bres00330794400269322901), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF223142),
@@ -603,7 +604,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Calculated interest amount", style = TextStyle(
+                        text = stringResource(R.string.calculated_interest_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -612,7 +613,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = "17111.64", style = TextStyle(
+                        text = stringResource(R.string._17111_64), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -629,7 +630,7 @@ private fun MainContent(navController: NavController) {
                 ) {
 
                     Text(
-                        text = "Amount of interest paid", style = TextStyle(
+                        text = stringResource(R.string.amount_of_interest_paid), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),

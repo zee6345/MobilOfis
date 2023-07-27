@@ -1,6 +1,5 @@
 package com.app.auth.pin
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +39,8 @@ import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.auth.login.components.bottomSheet.FingerPrintModalBottomSheet
 import com.app.auth.pin.navigation.successfulRegistration
-import com.app.auth.utils.Message
+import com.app.network.utils.Message
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 
 
@@ -85,7 +85,7 @@ fun RepeatPin(navController: NavController) {
                     Text(
                         modifier = Modifier
                             .padding(12.dp),
-                        text = "Repeat PIN",
+                        text = stringResource(com.app.auth.R.string.repeat_pin),
                         style = TextStyle(color = Color.White, fontSize = 22.sp)
                     )
 
@@ -108,7 +108,7 @@ fun RepeatPin(navController: NavController) {
 
                 if (pin.isNotEmpty() && pin.length == 5) {
 
-                    val firstPin = MainApp.session["firstPin"]
+                    val firstPin = MainApp.session[Keys.KEY_PIN]
                     if (firstPin.equals(pin)){
 
                         enteredPin = pin
@@ -116,7 +116,7 @@ fun RepeatPin(navController: NavController) {
                         showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
 
                     } else{
-                        MainApp.session.delete("firstPin")
+                        MainApp.session.delete(Keys.KEY_PIN)
                         Message.showMessage(context, "Pin not matched")
 
                     }
@@ -129,15 +129,15 @@ fun RepeatPin(navController: NavController) {
     }
 
     FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, onClickThen = {
-        MainApp.session.delete("firstPin")
-        MainApp.session.put("finalPin", enteredPin)
+        MainApp.session.delete(Keys.KEY_PIN)
+        MainApp.session.put(Keys.KEY_USER_PIN, enteredPin)
 
         navController.navigate(successfulRegistration)
 
     }, onClickYes = {
 
-        MainApp.session.delete("firstPin")
-        MainApp.session.put("finalPin", enteredPin)
+        MainApp.session.delete(Keys.KEY_PIN)
+        MainApp.session.put(Keys.KEY_USER_PIN, enteredPin)
 
         navController.navigate(successfulRegistration)
 

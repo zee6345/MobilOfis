@@ -12,6 +12,7 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -22,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.app.network.data.DataState
 import kotlinx.coroutines.launch
 
 data class TabItem(
@@ -31,10 +32,10 @@ data class TabItem(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabLayoutMenu(navController: NavController) {
+fun TabLayoutMenu(navController: NavController, homeData: State<DataState<Any>?>) {
 
     val tabs = listOf(
-        TabItem(title = "Account", screen = { AccountList(navController) }),
+        TabItem(title = "Account", screen = { AccountList(navController, homeData) }),
         TabItem(title = "Cards", screen = { CardsList(navController) }),
         TabItem(title = "Loan", screen = { LoansList(navController) }),
         TabItem(title = "Trust", screen = { TrustsList(navController) })
@@ -95,5 +96,5 @@ fun TabLayoutMenu(navController: NavController) {
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun TabLayoutMenuPreview() {
-    TabLayoutMenu(rememberNavController())
+//    TabLayoutMenu(rememberNavController(), homeData)
 }

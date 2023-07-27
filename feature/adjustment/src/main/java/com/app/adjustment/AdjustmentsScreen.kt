@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,12 +75,12 @@ fun AdjustmentsScreen(navController: NavController) {
                         .size(width = 32.dp, height = 25.dp)
                         .align(CenterVertically)
                         .clickable {
-                                   navController.popBackStack()
+                            navController.popBackStack()
                         },
                     contentDescription = ""
                 )
                 Text(
-                    text = "Adjustments",
+                    text = stringResource(R.string.adjustments),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(CenterVertically)
@@ -115,7 +116,7 @@ fun AdjustmentsScreen(navController: NavController) {
                                 mutableStateOf(true)
                             }
                             Text(
-                                text = "Language of the application",
+                                text = stringResource(R.string.language_of_the_application),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
@@ -138,7 +139,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Company to display during login",
+                                text = stringResource(id = R.string.company_to_display_during_login),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
@@ -159,7 +160,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             .fillMaxWidth()
                             .padding(top = 10.dp)
                             .clickable {
-                                       navController.navigate(adjustmentToUserProfile)
+                                navController.navigate(adjustmentToUserProfile)
                             },
                         shape = RoundedCornerShape(12.dp)
                     ) {
@@ -168,7 +169,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "User's profile",
+                                text = stringResource(id = R.string.user_s_profile),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
@@ -199,7 +200,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                text = "Security",
+                                text = stringResource(id = R.string.security),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
@@ -227,7 +228,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Receive push notifications",
+                                text = stringResource(R.string.receive_push_notifications),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
@@ -248,7 +249,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Night mode",
+                                text = stringResource(R.string.night_mode),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                             )
@@ -272,7 +273,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "About the bank",
+                                text = stringResource(id = R.string.about_the_bank),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                             )
@@ -303,7 +304,7 @@ fun AdjustmentsScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Contact information",
+                                text = stringResource(R.string.contact_information),
                                 style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
@@ -327,7 +328,7 @@ fun AdjustmentsScreen(navController: NavController) {
                     Card(shape = RoundedCornerShape(12.dp)) {
                         Row() {
                             Text(
-                                text = "Safe Exit",
+                                text = stringResource(R.string.safe_exit),
                                 style = TextStyle(color = Color(0xFFFF4E57), fontSize = 16.sp),
                                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                             )
@@ -342,7 +343,7 @@ fun AdjustmentsScreen(navController: NavController) {
                         }
                     }
                     Text(
-                        text = "Application version: 00001",
+                        text = stringResource(R.string.application_version_00001),
                         style = TextStyle(color = Color.Black, fontSize = 12.sp),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
@@ -393,7 +394,7 @@ private fun ThreeBoxComponent() {
             )
             .clickable { selectedBoxIndex.value = 0 }) {
             Text(
-                text = "AZ", modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.az), modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )
@@ -407,7 +408,7 @@ private fun ThreeBoxComponent() {
             )
             .clickable { selectedBoxIndex.value = 1 }) {
             Text(
-                text = "EN", modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.en), modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )
@@ -421,7 +422,7 @@ private fun ThreeBoxComponent() {
             )
             .clickable { selectedBoxIndex.value = 2 }) {
             Text(
-                text = "RU", modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.ru), modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )

@@ -153,5 +153,5 @@ fun CardsListItem(list: CardsListData) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TabCardPreview() {
-    CardsListView()
+//    CardsListView()
 }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -44,7 +45,7 @@ fun SelectCompanyBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Status BottomSheet"),
+            text = AnnotatedString(text = stringResource(com.app.home.R.string.show_status_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 selectCompanyState.value = !selectCompanyState.value
@@ -69,7 +70,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
         ) {
 
             Text(
-                text = "Select Company",
+                text = stringResource(com.app.home.R.string.select_company),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
@@ -88,7 +89,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "International Real Estate and Valuation Agency MMC",
+                        text = stringResource(com.app.home.R.string.text_agency),
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
@@ -111,7 +112,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Value Services MMC",
+                        text = stringResource(com.app.home.R.string.value_services_mmc),
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
@@ -134,7 +135,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Saba MMC",
+                        text = stringResource(com.app.home.R.string.saba_mmc),
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),

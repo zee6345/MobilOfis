@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -100,7 +101,7 @@ fun TransferScreen(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Transfers",
+                    text = stringResource(R.string.transfers),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -201,14 +202,14 @@ fun TransactionHistory(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "GARABAG REVIVAL FUND",
+                    text = stringResource(R.string.garabag_revival_fund),
                     style = TextStyle(
                         fontSize = 14.sp
                     )
 
                 )
                 Text(
-                    text = "999 000 000.00 ₼",
+                    text = stringResource(R.string._999_000_000_00),
                     style = TextStyle(
                         fontSize = 14.sp
                     )
@@ -235,7 +236,7 @@ fun TransactionHistory(navController: NavController) {
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
-                            text = "AniPay - Non-budget", style = TextStyle(
+                            text = stringResource(R.string.anipay_non_budget), style = TextStyle(
                                 color = Color(0xFF859DB5),
                                 fontSize = 12.sp
 
@@ -255,7 +256,7 @@ fun TransactionHistory(navController: NavController) {
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
-                            text = "18:24", style = TextStyle(
+                            text = stringResource(R.string._18_24), style = TextStyle(
                                 color = Color(0xFF859DB5),
                                 fontSize = 12.sp
 
@@ -286,7 +287,7 @@ fun TransactionHistory(navController: NavController) {
                     Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
                     Text(
-                        text = "Execution done",
+                        text = stringResource(R.string.execution_done),
                         style = TextStyle(
                             fontSize = 14.sp
                         )

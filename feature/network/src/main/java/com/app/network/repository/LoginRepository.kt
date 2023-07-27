@@ -21,7 +21,6 @@ class LoginRepository: BaseRetrofitClient() {
 
     suspend fun sendLoginVerificationRequest(loginVerificationRequest: LoginVerificationRequest): LoginVerifyResponse {
         return apiService.loginVerification(loginVerificationRequest)
-
     }
 
     suspend fun sendLoginAsanRequest(loginAsanRequest: LoginAsanRequest): LoginAsanResponse {

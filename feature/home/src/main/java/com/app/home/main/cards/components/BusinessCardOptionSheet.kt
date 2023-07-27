@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -104,7 +105,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Card account details", style = TextStyle(
+                        text = stringResource(R.string.card_account_details), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -138,7 +139,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Details", style = TextStyle(
+                        text = stringResource(id = R.string.details), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -171,7 +172,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Card account statement", style = TextStyle(
+                        text = stringResource(R.string.card_account_statement), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -205,7 +206,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Card statement", style = TextStyle(
+                        text = stringResource(R.string.card_statement), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -236,7 +237,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Limits", style = TextStyle(
+                        text = stringResource(R.string.limits), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -270,7 +271,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Block the card", style = TextStyle(
+                        text = stringResource(R.string.block_the_card), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -301,7 +302,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Reset PIN attempts", style = TextStyle(
+                        text = stringResource(R.string.reset_pin_attempts), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )
@@ -319,7 +320,8 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                 ) {
 
                 Row(
-                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp)
+                    modifier = Modifier
+                        .padding(vertical = 12.dp, horizontal = 15.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -340,7 +342,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                         Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                         Text(
-                            text = "SMS alert", style = TextStyle(
+                            text = stringResource(R.string.sms_alert), style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular))
                             )
@@ -388,7 +390,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = "Change your name", style = TextStyle(
+                        text = stringResource(id = R.string.change_your_name), style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )

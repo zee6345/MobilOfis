@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -60,7 +61,7 @@ fun AmountBottomSheet() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
-            text = AnnotatedString(text = "Show Account BottomSheet"),
+            text = AnnotatedString(text = stringResource(id = R.string.show_account_bottomsheet)),
 //                    color = Color(0xFF203657),
             onClick = {
                 showAmountBottomSheet.value = !showAmountBottomSheet.value
@@ -90,7 +91,7 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                 Arrangement.Center
             ) {
                 Text(
-                    text = "Amount",
+                    text = stringResource(R.string.amount),
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily(Font(R.font.roboto_medium)),
                     color = Color(0xFF223142)
@@ -103,13 +104,15 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
             ) {
                 OutlinedTextField(
                     value = minAmountState.value,
-                    modifier = Modifier.fillMaxWidth().weight(0.1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.1f),
                     onValueChange = {
                         minAmountState.value = it
                     },
                     label = {
                         Text(
-                            text = "20000",
+                            text = stringResource(R.string._20000),
                             fontSize = 14.sp
                         )
 
@@ -124,7 +127,9 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                     singleLine = true
                 )
                 Box(
-                    modifier = Modifier.fillMaxWidth().weight(0.01f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.01f)
                         .width(2.sdp)
                         .height(1.sdp)
                         .background(
@@ -134,14 +139,16 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                 )
                 OutlinedTextField(
                     value = minAmountState.value,
-                    modifier = Modifier.fillMaxWidth().weight(0.1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.1f),
                     onValueChange = {
                         /* Handle value change */
                         maxAmountState.value = it
                     },
                     label = {
                         Text(
-                            text = "10000000",
+                            text = stringResource(R.string._10000000),
                             fontSize = 14.sp
                         )
 
@@ -174,7 +181,7 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     ClickableText(
-                        text = AnnotatedString("Cancel"),
+                        text = AnnotatedString(stringResource(R.string.cancel)),
                         style = TextStyle(
                             color = Color(0xFF203657),
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),
@@ -186,7 +193,7 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                     )
 
                     ClickableText(
-                        text = AnnotatedString("Apply"),
+                        text = AnnotatedString(stringResource(R.string.apply)),
                         style = TextStyle(
                             color = Color(0xFF203657),
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),

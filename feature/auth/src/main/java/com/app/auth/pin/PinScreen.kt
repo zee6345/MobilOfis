@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,10 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.auth.R
 import com.app.auth.pin.components.CustomKeyboard
 import com.app.auth.pin.components.PinTextField
 import com.app.auth.pin.navigation.resetPinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 
 
@@ -61,7 +64,7 @@ fun PinScreen(navController: NavController) {
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(12.dp),
-                    text = "Do you want to set a PIN?",
+                    text = stringResource(R.string.do_you_want_to_set_a_pin),
                     style = TextStyle(color = Color.White, fontSize = 22.sp)
                 )
             }
@@ -82,7 +85,7 @@ fun PinScreen(navController: NavController) {
 
                 if (pin.length == 5) {
 
-                    MainApp.session.put("firstPin", pin)
+                    MainApp.session.put(Keys.KEY_PIN, pin)
                     navController.navigate(resetPinNavigationRoute)
                 }
             }
@@ -91,7 +94,7 @@ fun PinScreen(navController: NavController) {
 
             Card(modifier = Modifier.wrapContentSize(), shape = RoundedCornerShape(14.dp)) {
                 Text(
-                    text = "Skip",
+                    text = stringResource(R.string.skip),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 18.dp),
                     color = Color(0xFF203657)
@@ -127,7 +130,7 @@ fun PinInputView(
         )
     }
 
-    CustomKeyboard(navController, "PinScreen") { key ->
+    CustomKeyboard(navController, null) { key ->
         if (key == "del") {
             if (pinValue.value.isNotEmpty()) {
                 pinValue.value = pinValue.value.dropLast(1)

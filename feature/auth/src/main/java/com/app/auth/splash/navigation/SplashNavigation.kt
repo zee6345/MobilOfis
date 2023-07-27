@@ -28,44 +28,29 @@ fun NavGraphBuilder.splashScreen(
             val token = MainApp.session["token"]
             val pin = MainApp.session["finalPin"]
 
-            if (pin.isNullOrEmpty()) {
-                if (!token.isNullOrEmpty()) {
-                    // If pin is empty and token is not empty, move to the welcome screen.
-                    navController.navigate(route = pinNavigationRoute) {
-                        popUpTo(splashNavigationRoute) { inclusive = true }
-                    }
-                } else {
-                    // If both pin and token are empty, move to the login screen.
-                    navController.navigate(route = loginNavigationRoute) {
-                        popUpTo(splashNavigationRoute) { inclusive = true }
-                    }
-                }
-            } else {
-                // If pin is not empty, move to the pin screen.
-                navController.navigate(route = welcomePinScreen) {
-                    popUpTo(splashNavigationRoute) { inclusive = true }
-                }
-            }
-
-
-//            if (!token.isNullOrEmpty()) {
-//                navController.navigate(route = pinNavigationRoute) {
-//                    popUpTo(splashNavigationRoute) { inclusive = true }
+//            if (pin.isNullOrEmpty()) {
+//                if (!token.isNullOrEmpty()) {
+//                    // If pin is empty and token is not empty, move to the welcome screen.
+//                    navController.navigate(route = pinNavigationRoute) {
+//                        popUpTo(splashNavigationRoute) { inclusive = true }
+//                    }
+//                } else {
+//                    // If both pin and token are empty, move to the login screen.
+//                    navController.navigate(route = loginNavigationRoute) {
+//                        popUpTo(splashNavigationRoute) { inclusive = true }
+//                    }
 //                }
-//            } else if (!pin.isNullOrEmpty()){
+//            } else {
+//                // If pin is not empty, move to the pin screen.
 //                navController.navigate(route = welcomePinScreen) {
 //                    popUpTo(splashNavigationRoute) { inclusive = true }
 //                }
-//            } else {
-//                navController.navigate(route = loginNavigationRoute) {
-//                    popUpTo(splashNavigationRoute) { inclusive = true }
-//                }
 //            }
 
+            navController.navigate(route = loginNavigationRoute) {
+                popUpTo(splashNavigationRoute) { inclusive = true }
+            }
 
-//            navController.navigate(route = homeScreenRoute) {
-//                popUpTo(splashNavigationRoute) { inclusive = true }
-//            }
         }
     }
 

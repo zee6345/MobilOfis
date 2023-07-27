@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,7 +85,7 @@ fun TransferDetailsInformation(navController: NavController) {
                     contentDescription = ""
                 )
                 Text(
-                    text = "Transfer details",
+                    text = stringResource(R.string.transfer_details),
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -164,7 +165,7 @@ private fun MainContentSource(navController: NavController) {
                 ) {
                 Text(
                     modifier = Modifier.padding(vertical = 5.sdp),
-                    text = "Details",
+                    text = stringResource(R.string.details),
                     style = TextStyle(
                         color = Color(0xFF859DB5),
                         textAlign = TextAlign.Center
@@ -196,7 +197,7 @@ private fun MainContentSource(navController: NavController) {
                 Alignment.Center
             ) {
                 Text(
-                    text = "History and notes",
+                    text = stringResource(R.string.history_and_notes),
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
                         color = Color(0xFF859DB5),

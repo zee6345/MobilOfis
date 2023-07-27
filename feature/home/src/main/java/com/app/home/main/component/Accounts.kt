@@ -18,21 +18,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.app.home.data.DataProvider
-
 import com.app.home.main.account.navigation.accountDetailsRoute
+import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetAccountsItem
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 
 data class AccountListData(
     val title: String,
@@ -40,8 +46,47 @@ data class AccountListData(
 )
 
 @Composable
-fun AccountList(navController: NavController) {
-    val accountList = remember { DataProvider.accountList }
+fun AccountList(navController: NavController, homeData: State<DataState<Any>?>) {
+    val context = LocalContext.current
+
+    /**
+     * handle home response data
+     */
+    homeData.value?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+//                isLoading.value = true
+//                if (isLoading.value) {
+//                    ShowProgressDialog(isLoading)
+//                } else {
+//
+//                }
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, "Failed to login!")
+            }
+
+            is DataState.Success -> {
+                val userAccounts = it.data
+                userAccounts?.apply {
+
+                    val accounts = userAccounts as GetAccounts
+                    accounts?.apply {
+                        Accounts(accountList = accounts, navController = navController)
+                    }
+
+                }
+
+            }
+        }
+    }
+
+}
+
+@Composable
+fun Accounts(accountList: GetAccounts, navController: NavController) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
     ) {
@@ -52,19 +97,23 @@ fun AccountList(navController: NavController) {
 
         items(items = accountList, itemContent = {
 
-            AccountListItem(list = it, navController)
+            AccountListItem(obj = it, navController)
+
         })
     }
 }
 
 @Composable
-fun AccountListItem(list: AccountListData, navController: NavController) {
+fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
 
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
             .fillMaxWidth()
             .clickable {
+//                navController.navigate(accountDetailsRoute + "/${Converter.toJson(obj)}")
+                MainApp.session.put(Keys.KEY_MAIN_INFO, Converter.toJson(obj))
+
                 navController.navigate(accountDetailsRoute)
             },
         elevation = 1.dp,
@@ -76,15 +125,14 @@ fun AccountListItem(list: AccountListData, navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
+
             Column(
                 modifier = Modifier
-                    .padding( vertical = 8.dp, horizontal = 10.dp)
-                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 10.dp)
                     .align(Alignment.CenterVertically)
-                    .weight(0.7f)
             ) {
                 Text(
-                    text = list.title,
+                    text = obj.BRANCH_NAME,
                     style = TextStyle(fontSize = 14.sp),
                     color = Color(0xFF223142),
                     modifier = Modifier
@@ -100,7 +148,7 @@ fun AccountListItem(list: AccountListData, navController: NavController) {
                         )
                 ) {
                     Text(
-                        text = list.description,
+                        text = obj.IBAN,
                         modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
                         style = TextStyle(fontSize = 11.sp),
                         color = Color(0xFF859DB5)
@@ -109,46 +157,27 @@ fun AccountListItem(list: AccountListData, navController: NavController) {
             }
 
             Text(
-                text = "2300.00 ₼",
-                modifier = Modifier.padding(vertical = 4.dp)
-                    .weight(0.2f),
-                style = TextStyle(fontSize = 14.sp),
-                color = Color(0xFF223142)
+                text = "${obj.BALANCE} ₼",
+                modifier = Modifier
+                    .padding(vertical = 4.dp, horizontal = 10.dp),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.End,
+                    color = Color(0xFF223142)
+                )
             )
-
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Text(
-//                    text = "2300.00 ₼",
-//                    modifier = Modifier.padding(vertical = 4.dp),
-//                    style = TextStyle(fontSize = 14.sp),
-//                    color = Color(0xFF223142)
-//                )
-////                Text(
-////                    text = "00",
-////                    modifier = Modifier
-////                        .padding(vertical = 3.dp)
-////                        .align(Bottom),
-////                    style = TextStyle(fontSize = 12.sp),
-////                    color = Color(0xFF223142)
-////                )
-////                Text(
-////                    text = "₼",
-////                    modifier = Modifier
-////                        .padding(end = 22.dp)
-////                        .padding(vertical = 3.dp)
-////                        .align(Bottom),
-////                    style = TextStyle(fontSize = 12.sp),
-////                    color = Color(0xFF223142)
-////                )
-//            }
-
         }
     }
 }
+
+//private fun fetchUserDetails(): LoginVerifyResponse {
+//    val str = MainApp.session[Keys.KEY_USER_DETAILS]
+//    return MainApp.session.fromJson(str!!, LoginVerifyResponse::class.java)
+//}
 
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TabPreview() {
-    AccountList(rememberNavController())
+//    AccountList(rememberNavController())
 }

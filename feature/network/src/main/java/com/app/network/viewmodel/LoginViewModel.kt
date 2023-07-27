@@ -49,6 +49,7 @@ class LoginViewModel : ViewModel(){
             }
         }
     }
+
     fun loginAuthVerification(loginVerificationRequest: LoginVerificationRequest) {
         _data.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
