@@ -78,7 +78,6 @@ fun AccountList(navController: NavController, homeData: State<DataState<Any>?>) 
                     }
 
                 }
-
             }
         }
     }

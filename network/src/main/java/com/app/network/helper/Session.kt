@@ -3,8 +3,6 @@ package com.app.network.helper
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class Session private constructor(context: Context) {
     init {

@@ -20,8 +20,13 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,11 +46,90 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.components.dashedBorder
+import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.data.responseModels.UserInfo
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
+import com.app.network.helper.MainApp.Companion.context
+import com.app.network.utils.Message
+import com.app.network.viewmodel.AdjustmentViewModel
 import ir.kaaveh.sdpcompose.sdp
+import androidx.compose.runtime.remember
 
+lateinit var userName: MutableState<String>
+lateinit var customerName: MutableState<String>
+lateinit var customerLastName: MutableState<String>
+lateinit var customerAtaAdi: MutableState<String>
+lateinit var lang: MutableState<String>
+lateinit var phoneNumber: MutableState<String>
+lateinit var email: MutableState<String>
+lateinit var TOTPEnabled: MutableState<String>
+lateinit var TOTPChangeDate: MutableState<String>
+lateinit var nonOtpEnabled: MutableState<String>
 
 @Composable
-fun UserProfileScreen(navController: NavController) {
+fun UserProfileScreen(
+    navController: NavController,
+    viewModel: AdjustmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    val adjustmentViewModel by rememberUpdatedState(viewModel.data.collectAsState())
+
+    val userInfo = fetchUserDetails()
+    LaunchedEffect(key1 = true) {
+        //fetch accounts list
+        viewModel.getUserInfo(
+            MainApp.session[Keys.KEY_TOKEN]!!,
+            userInfo.customerNo.toString()
+        )
+    }
+
+    userName = remember { mutableStateOf("") }
+    customerName = remember { mutableStateOf("") }
+    customerLastName = remember { mutableStateOf("") }
+    customerAtaAdi = remember { mutableStateOf("") }
+    lang = remember { mutableStateOf("") }
+    phoneNumber = remember { mutableStateOf("") }
+    email = remember { mutableStateOf("") }
+    TOTPEnabled = remember { mutableStateOf("") }
+    TOTPChangeDate = remember { mutableStateOf("") }
+    nonOtpEnabled = remember { mutableStateOf("") }
+
+    adjustmentViewModel.value?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, "Failed to Get UserInfo")
+            }
+
+            is DataState.Success -> {
+                val userAccounts = it.data
+                userAccounts.apply {
+                    val accounts = userAccounts as UserInfo
+                    accounts.apply {
+                        userName.value = accounts.userName
+                        customerName.value = accounts.customerName
+                        customerLastName.value = accounts.customerLastName
+                        customerAtaAdi.value = accounts.customerAtaAdi
+                        lang.value = accounts.lang
+                        phoneNumber.value = accounts.phoneNumber
+                        email.value = accounts.email
+                        TOTPEnabled.value = accounts.TOTPEnabled
+                        TOTPChangeDate.value = accounts.TOTPChangeDate
+                        nonOtpEnabled.value = accounts.nonOtpEnabled
+                    }
+                }
+            }
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,6 +198,7 @@ fun UserProfileScreen(navController: NavController) {
 
     }
 }
+
 
 @Composable
 private fun CardInfo1(navController: NavController) {
@@ -305,7 +390,8 @@ private fun CardInfo1(navController: NavController) {
                 ) {
 
                     Text(
-                        text = stringResource(R.string.easy_signature_mobile_number), style = TextStyle(
+                        text = stringResource(R.string.easy_signature_mobile_number),
+                        style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF859DB5),
@@ -492,6 +578,12 @@ private fun ThreeBoxComponent() {
             )
         }
     }
+}
+
+
+private fun fetchUserDetails(): LoginVerifyResponse {
+    val str = MainApp.session[Keys.KEY_USER_DETAILS]
+    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true)

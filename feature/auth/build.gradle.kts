@@ -47,7 +47,7 @@ dependencies {
     implementation (project (":feature:adjustment" ))
     implementation (project (":feature:home" ))
     implementation (project (":feature:transfer" ))
-    implementation(project(mapOf("path" to ":feature:network")))
+    implementation(project(mapOf("path" to ":network")))
 
     implementation(Kotlin.coreKtx)
     implementation(Others.appCompat)

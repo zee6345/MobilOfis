@@ -1,6 +1,5 @@
 package com.app.network.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.app.network.data.DataState
@@ -11,8 +10,6 @@ import com.app.network.data.callModels.LoginVerificationRequest
 import com.app.network.data.callModels.VerifyChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
 import com.app.network.data.responseModels.LoginAsanResponse
-import com.app.network.data.responseModels.LoginResponse
-import com.app.network.data.responseModels.LoginVerificationResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import com.app.network.repository.LoginRepository
 import kotlinx.coroutines.CoroutineScope

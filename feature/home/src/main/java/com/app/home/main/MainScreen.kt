@@ -77,9 +77,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
             MainApp.session[Keys.KEY_TOKEN]!!,
             userDetails.customerNo
         )
-
-
-
     }
 
 

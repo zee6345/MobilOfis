@@ -19,8 +19,8 @@
             <option value="$PROJECT_DIR$/feature/adjustment" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/home" />
-            <option value="$PROJECT_DIR$/feature/network" />
             <option value="$PROJECT_DIR$/feature/transfer" />
+            <option value="$PROJECT_DIR$/network" />
           </set>
         </option>
       </GradleProjectSettings>
