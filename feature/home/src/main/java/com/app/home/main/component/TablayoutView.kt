@@ -32,10 +32,10 @@ data class TabItem(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabLayoutMenu(navController: NavController, homeData: State<DataState<Any>?>) {
+fun TabLayoutMenu(navController: NavController) {
 
     val tabs = listOf(
-        TabItem(title = "Account", screen = { AccountList(navController, homeData) }),
+        TabItem(title = "Account", screen = { AccountList(navController) }),
         TabItem(title = "Cards", screen = { CardsList(navController) }),
         TabItem(title = "Loan", screen = { LoansList(navController) }),
         TabItem(title = "Trust", screen = { TrustsList(navController) })

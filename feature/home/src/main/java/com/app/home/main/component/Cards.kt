@@ -27,12 +27,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -48,33 +50,34 @@ import com.app.home.data.CardFilters
 import com.app.home.data.CardsListData
 
 import com.app.home.data.DataProvider
+import com.app.home.data.DataProvider.cardsList
 import com.app.home.main.cards.navigation.homeToCardDetails
 import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetOldCards
 
 import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.data.responseModels.MainCard
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
 fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
-
+    val context = LocalContext.current
     val userDetails = fetchUserDetails()
-    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
+    val homeData by rememberUpdatedState(viewModel.oldBusinessCards.collectAsState())
+    val cardsList = remember { mutableStateListOf<MainCard>() }
+    val cardFilters = remember { DataProvider.filtersList }
 
     LaunchedEffect(key1 = true) {
         viewModel.getOldBusinessCards(userDetails.customerNo)
-//        viewModel.getNewBusinessCards(userDetails.customerNo)
     }
 
 
-    val cardsList = remember { DataProvider.cardsList }
-    val cardFilters = remember { DataProvider.filtersList }
 
     Column(
         modifier = Modifier.padding(horizontal = 5.sdp, vertical = 5.sdp)
@@ -125,20 +128,24 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
             }
 
             is DataState.Error -> {
-
+                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
-                val cards = it.data as GetOldCards
+                try {
+                    val cards = it.data as GetOldCards
 
+                    cards.oldBusinessCards.MainCards.forEach {
+                        cardsList.add(it)
 
-                cards.oldBusinessCards.MainCards.forEach {
-                    Log.e("mTAG", "CardsList: ${it.nickName}" )
-                    Log.e("mTAG", "CardsList: ${it.Currency}" )
-                    Log.e("mTAG", "CardsList: ${it.EncryptedPan}" )
-                    Log.e("mTAG", "CardsList: ${it.AdditionNumb}" )
+//                        Log.e("mTAG", "CardsList: ${it.nickName}")
+//                        Log.e("mTAG", "CardsList: ${it.Currency}")
+//                        Log.e("mTAG", "CardsList: ${it.EncryptedPan}")
+//                        Log.e("mTAG", "CardsList: ${it.AdditionNumb}")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
 
             }
         }
@@ -149,7 +156,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
 
 @Composable
-fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
+fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
@@ -169,7 +176,7 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
-                painter = painterResource(id = obj.icon),
+                painter = painterResource(id = R.drawable.ic_master_card),
                 contentDescription = "",
                 modifier = Modifier.size(width = 36.dp, height = 24.dp)
             )
@@ -182,7 +189,7 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     .padding(end = 8.dp, top = 5.dp)
             ) {
                 Text(
-                    text = obj.title,
+                    text = obj.nickName,
                     style = TextStyle(fontSize = 14.sp),
                     color = Color(0xFF223142),
                     modifier = Modifier
@@ -195,13 +202,13 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = obj.cardIcon),
+                        painter = painterResource(id = R.drawable.ic_master_card_icon),
                         contentDescription = "",
                         modifier = Modifier.size(width = 30.dp, height = 20.dp)
                     )
 
                     Text(
-                        text = obj.cardTitle,
+                        text = obj.EncryptedPan,
                         style = TextStyle(fontSize = 14.sp),
                         color = Color(0xFF223142),
                         modifier = Modifier.padding(start = 4.dp)
@@ -223,7 +230,7 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     ) {
                         Text(
 
-                            text = obj.cardInc, style = TextStyle(
+                            text = "${obj.AdditionNumb}", style = TextStyle(
                                 fontSize = 14.sp, color = Color(0xFF859DB5)
                             )
 
@@ -233,7 +240,7 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
             }
 
             Text(
-                text = obj.cardAmount,
+                text = "Amount",
                 style = TextStyle(fontSize = 14.sp),
                 color = Color(0xFF223142)
             )

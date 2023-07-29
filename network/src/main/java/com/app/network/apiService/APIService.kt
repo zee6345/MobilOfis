@@ -15,6 +15,7 @@ import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -27,10 +28,15 @@ interface APIService {
 
     // Define your API endpoints here
     @POST("auth/login")
-    suspend fun loginWithUserName(@Body loginBody: LoginRequest): LoginResponse
+    fun loginWithUserName(@Body loginBody: LoginRequest): Call<LoginResponse>
 
     @POST("auth/login/verify")
-    suspend fun loginVerification(@Body loginVerification: LoginVerificationRequest): LoginVerifyResponse
+    fun loginVerification(
+        @Header("Auth_token") token: String,
+        @Body loginVerification: LoginVerificationRequest
+    ): Call<LoginVerifyResponse>
+
+
 
     @POST("auth/asan")
     suspend fun loginAsan(@Body loginAsanRequest: LoginAsanRequest): LoginAsanResponse
@@ -44,21 +50,22 @@ interface APIService {
     // Main
 
     @GET("customers/{customerId}/accounts")
-    suspend fun getAccounts(
+    fun getAccounts(
+        @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ): GetAccounts
+    ): Call<GetAccounts>
 
 
     @GET("customers/{customerId}/accounts/nickname")
     suspend fun setAccountNickName(
-        @Header("auth_token") token: String,
+        @Header("Auth_token") token: String,
         @Body accountNickNameRequest: AccountNickNameRequest
     ): ResponseBody
 
 
     @GET("customers/{customerId}/balance")
     suspend fun getBalance(
-        @Header("auth_token") token: String,
+        @Header("Auth_token") token: String,
         @Path("customerId") customerId: String
     ): ResponseBody
 
@@ -69,7 +76,7 @@ interface APIService {
 
     @GET("auth/getuserinfo")
     suspend fun getUserInfo(
-        @Header("auth_token") token: String,
+        @Header("Auth_token") token: String,
         @Query("customerNo") customerNo: String
     ): ResponseBody
 
@@ -82,12 +89,14 @@ interface APIService {
 
     @GET("brcards/get-old-business-cards-by-cif/{customerId}")
     fun getOldBusinessCards(
+        @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
     ):Call<GetOldCards>
 
 
     @GET("brcards/get-new-business-cards-by-cif/{customerId}")
     fun getNewBusinessCards(
+        @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
     ):Call<ResponseBody>
 

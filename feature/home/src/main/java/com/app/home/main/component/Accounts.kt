@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,15 +33,18 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.app.home.main.account.navigation.accountDetailsRoute
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetAccountsItem
+import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
+import com.app.network.viewmodel.HomeViewModel
 
 data class AccountListData(
     val title: String,
@@ -46,8 +52,18 @@ data class AccountListData(
 )
 
 @Composable
-fun AccountList(navController: NavController, homeData: State<DataState<Any>?>) {
+fun AccountList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     val context = LocalContext.current
+    val userDetails = fetchUserDetails()
+    val homeData by rememberUpdatedState(viewModel.accountsData.collectAsState())
+
+    LaunchedEffect(key1 = true ){
+        //fetch accounts list
+        viewModel.getAccounts(
+            userDetails.customerNo
+        )
+    }
+
 
     /**
      * handle home response data
@@ -65,7 +81,7 @@ fun AccountList(navController: NavController, homeData: State<DataState<Any>?>) 
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, "Failed to login!")
+                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -169,10 +185,11 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
     }
 }
 
-//private fun fetchUserDetails(): LoginVerifyResponse {
-//    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-//    return MainApp.session.fromJson(str!!, LoginVerifyResponse::class.java)
-//}
+
+private fun fetchUserDetails(): LoginVerifyResponse {
+    val str = MainApp.session[Keys.KEY_USER_DETAILS]
+    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+}
 
 
 @Preview(device = Devices.PIXEL_4)

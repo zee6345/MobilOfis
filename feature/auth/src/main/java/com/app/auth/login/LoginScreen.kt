@@ -53,6 +53,8 @@ import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
+import com.app.auth.login.otp.OtpScreen
+import com.app.auth.login.otp.otpScreen
 import com.app.network.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginRequest
@@ -278,12 +280,29 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 Button(
                     onClick = {
-
-//                        navController.navigate(otpNavigationRoute)
-
                         when (selected) {
                             0 -> {
-                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT).show()
+                                if (usernameState.value.isNotEmpty()) {
+                                    userErrorCheck = false
+                                    if (paswdState.value.isNotEmpty()) {
+                                        pswdErrorCheck = false
+
+                                        //handle success
+                                        viewModel.loginWithUserName(
+                                            LoginRequest(
+                                                userName = usernameState.value,
+                                                password = paswdState.value,
+                                                authType = "OTP",
+                                                channel = "INT"
+                                            )
+                                        )
+
+                                    } else {
+                                        pswdErrorCheck = !pswdErrorCheck
+                                    }
+                                } else {
+                                    userErrorCheck = !userErrorCheck
+                                }
                             }
 
                             1 -> {
@@ -374,7 +393,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, stringResource(R.string.failed_to_login))
+                val msg = it.errorMessage.ifEmpty {
+                    stringResource(R.string.failed_to_login)
+                }
+                Message.showMessage(context, msg)
             }
 
             is DataState.Success -> {
@@ -385,7 +407,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                     LaunchedEffect(Unit) {
                         //route to OTP
-                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
+//                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
+                        otpScreen.userName = usernameState.value
+                        otpScreen.loginType = selected
+
                         navController.navigate(otpNavigationRoute)
 
                     }

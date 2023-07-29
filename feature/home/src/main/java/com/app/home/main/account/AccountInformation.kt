@@ -50,10 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.account.details.Blockages
 import com.app.home.main.account.details.MainInformation
-import com.app.network.data.responseModels.GetAccountsItem
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
+
 
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -67,7 +64,8 @@ private const val TAG = "AccountInformation"
 
 
 @Composable
-fun AccountInformation(navController: NavController,
+fun AccountInformation(
+    navController: NavController,
 //                       arguments: Bundle?
 ) {
 

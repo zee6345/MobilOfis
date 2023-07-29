@@ -1,0 +1,32 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:2:1-13:12
+INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:2:1-13:12
+	package
+		INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:2:11-69
+application
+ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:4:5-11:52
+	android:supportsRtl
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:10:9-35
+	android:label
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:8:9-41
+	android:roundIcon
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:9:9-54
+	android:icon
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:7:9-43
+	android:allowBackup
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:6:9-35
+	android:theme
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:11:9-49
+	android:name
+		ADDED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml:5:9-39
+uses-sdk
+INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml
+INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/manjaro/Documents/freelance/builtinsoft_Projects-mobil-office-app-android-442b8c05f20e/feature/network/src/main/AndroidManifest.xml

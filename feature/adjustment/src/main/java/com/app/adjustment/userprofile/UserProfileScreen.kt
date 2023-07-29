@@ -87,16 +87,16 @@ fun UserProfileScreen(
         )
     }
 
-    userName = remember { mutableStateOf("") }
-    customerName = remember { mutableStateOf("") }
-    customerLastName = remember { mutableStateOf("") }
-    customerAtaAdi = remember { mutableStateOf("") }
-    lang = remember { mutableStateOf("") }
-    phoneNumber = remember { mutableStateOf("") }
-    email = remember { mutableStateOf("") }
-    TOTPEnabled = remember { mutableStateOf("") }
-    TOTPChangeDate = remember { mutableStateOf("") }
-    nonOtpEnabled = remember { mutableStateOf("") }
+    val userName = remember { mutableStateOf("") }
+    val customerName = remember { mutableStateOf("") }
+    val customerLastName = remember { mutableStateOf("") }
+    val customerAtaAdi = remember { mutableStateOf("") }
+    val lang = remember { mutableStateOf("") }
+    val phoneNumber = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val TOTPEnabled = remember { mutableStateOf("") }
+    val TOTPChangeDate = remember { mutableStateOf("") }
+    val nonOtpEnabled = remember { mutableStateOf("") }
 
     adjustmentViewModel.value?.let {
         when (it) {

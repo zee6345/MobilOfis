@@ -49,7 +49,7 @@ fun CardsListView() {
 
 
 @Composable
-fun CardsListItem(list: CardsListData) {
+fun CardsListItems(list: CardsListData) {
 
     Card(
         modifier = Modifier

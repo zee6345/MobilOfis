@@ -1,6 +1,5 @@
 package com.app.home.main
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,13 +40,10 @@ import com.app.home.main.component.CardMenuContent
 import com.app.home.main.component.SelectCompanyBottomSheet
 import com.app.home.main.component.TabLayoutMenu
 
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 
 
@@ -65,19 +61,16 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
 
-    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
-    val context = LocalContext.current
+//    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
+//    val context = LocalContext.current
+//    val userDetails = fetchUserDetails()
 
-
-    val userDetails = fetchUserDetails()
-
-    LaunchedEffect(key1 = true ){
-        //fetch accounts list
-        viewModel.getAccounts(
-            MainApp.session[Keys.KEY_TOKEN]!!,
-            userDetails.customerNo
-        )
-    }
+//    LaunchedEffect(key1 = true ){
+//        //fetch accounts list
+//        viewModel.getAccounts(
+//            userDetails.customerNo
+//        )
+//    }
 
 
     Column(
@@ -279,7 +272,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
         ) {
             CardMenuContent()
 
-            TabLayoutMenu(navController, homeData)
+            TabLayoutMenu(navController)
 
         }
 

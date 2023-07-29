@@ -41,19 +41,27 @@ import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.components.alertdialog.ShowProgressDialog
 import com.app.auth.login.components.utils.TimerTextView
+import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.otp.components.OtpView
+import com.app.auth.login.otp.otpScreen.loginType
+import com.app.auth.login.otp.otpScreen.userName
 import com.app.auth.pin.navigation.pinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
-import com.app.network.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginVerificationRequest
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
 
+
+object otpScreen {
+    var loginType: Int? = null
+    var userName: String? = null
+}
 
 @Composable
 fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
@@ -63,6 +71,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
     val isLoading = remember { mutableStateOf(false) }
     val loginData by viewModel.data.collectAsState()
     var offset by remember { mutableStateOf(0f) }
+
 
     Column(
         modifier = Modifier
@@ -85,13 +94,15 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     modifier = Modifier.align(Alignment.BottomStart)
                 ) {
                     Text(
-                        text = stringResource(R.string.enter_sms_code), style = TextStyle(
+                        text = stringResource(R.string.enter_otp_code), style = TextStyle(
                             color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.SemiBold
                         ),
                         modifier = Modifier.padding(vertical = 10.sdp)
                     )
                     Text(
-                        text = stringResource(R.string.text_send_otp),
+                        text = if (loginType == 0) stringResource(R.string.text_send_otp) else if (loginType == 1) stringResource(
+                            R.string.text_auth_otp
+                        ) else "",
                         style = TextStyle(
                             color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.SemiBold
                         )
@@ -159,7 +170,9 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     verticalAlignment = Alignment.Bottom
                 ) {
                     Button(
-                        onClick = { },
+                        onClick = {
+                            navController.navigate(loginNavigationRoute)
+                        },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color(0xFFE7EEFC), // Change the background color here
@@ -185,11 +198,11 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                             if (otpValue.value.isNotEmpty()) {
                                 if (otpValue.value.length == 6) {
 
-                                    val username = MainApp.session[Keys.KEY_USERNAME]
+//                                    val username = MainApp.session[Keys.KEY_USERNAME]
 
                                     viewModel.loginAuthVerification(
                                         LoginVerificationRequest(
-                                            userName = username!!,
+                                            userName = userName!!,
                                             verfication = otpValue.value.toInt(),
                                             channel = "INT",
                                         )
@@ -213,7 +226,9 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                             .weight(1f)
                     ) {
                         Text(
-                            stringResource(R.string.next), modifier = Modifier.padding(vertical = 6.dp), style = TextStyle(
+                            stringResource(R.string.next),
+                            modifier = Modifier.padding(vertical = 6.dp),
+                            style = TextStyle(
                                 color = Color.White, fontSize = 17.sp, shadow = null
                             )
                         )
@@ -241,7 +256,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                 Message.showMessage(context, stringResource(R.string.failed_to_verify_user))
 
                 //on error remove keys
-                MainApp.session.delete(Keys.KEY_USERNAME)
+//                MainApp.session.delete(Keys.KEY_USERNAME)
                 MainApp.session.delete(Keys.KEY_TOKEN)
 
             }
@@ -252,7 +267,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     isLoading.value = false
 
                     //remove username after use
-                    MainApp.session.delete(Keys.KEY_USERNAME)
+//                    MainApp.session.delete(Keys.KEY_USERNAME)
 
 
                     //cache login verify response
@@ -264,9 +279,9 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                     val pin = MainApp.session[Keys.KEY_USER_PIN]
                     //route to OTP
                     LaunchedEffect(Unit) {
-                        if(pin.isNullOrEmpty()) {
+                        if (pin.isNullOrEmpty()) {
                             navController.navigate(pinNavigationRoute)
-                        } else{
+                        } else {
                             navController.navigate(welcomePinScreen)
                         }
                     }
