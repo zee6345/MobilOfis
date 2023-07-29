@@ -59,16 +59,16 @@ import com.app.network.viewmodel.AdjustmentViewModel
 import ir.kaaveh.sdpcompose.sdp
 import androidx.compose.runtime.remember
 
-lateinit var userName: MutableState<String>
-lateinit var customerName: MutableState<String>
-lateinit var customerLastName: MutableState<String>
-lateinit var customerAtaAdi: MutableState<String>
-lateinit var lang: MutableState<String>
-lateinit var phoneNumber: MutableState<String>
-lateinit var email: MutableState<String>
-lateinit var TOTPEnabled: MutableState<String>
-lateinit var TOTPChangeDate: MutableState<String>
-lateinit var nonOtpEnabled: MutableState<String>
+//lateinit var userName: MutableState<String>
+//lateinit var customerName: MutableState<String>
+//lateinit var customerLastName: MutableState<String>
+//lateinit var customerAtaAdi: MutableState<String>
+//lateinit var lang: MutableState<String>
+//lateinit var phoneNumber: MutableState<String>
+//lateinit var email: MutableState<String>
+//lateinit var TOTPEnabled: MutableState<String>
+//lateinit var TOTPChangeDate: MutableState<String>
+//lateinit var nonOtpEnabled: MutableState<String>
 
 @Composable
 fun UserProfileScreen(
@@ -87,16 +87,16 @@ fun UserProfileScreen(
         )
     }
 
-    userName = remember { mutableStateOf("") }
-    customerName = remember { mutableStateOf("") }
-    customerLastName = remember { mutableStateOf("") }
-    customerAtaAdi = remember { mutableStateOf("") }
-    lang = remember { mutableStateOf("") }
-    phoneNumber = remember { mutableStateOf("") }
-    email = remember { mutableStateOf("") }
-    TOTPEnabled = remember { mutableStateOf("") }
-    TOTPChangeDate = remember { mutableStateOf("") }
-    nonOtpEnabled = remember { mutableStateOf("") }
+//    userName = remember { mutableStateOf("") }
+//    customerName = remember { mutableStateOf("") }
+//    customerLastName = remember { mutableStateOf("") }
+//    customerAtaAdi = remember { mutableStateOf("") }
+//    lang = remember { mutableStateOf("") }
+//    phoneNumber = remember { mutableStateOf("") }
+//    email = remember { mutableStateOf("") }
+//    TOTPEnabled = remember { mutableStateOf("") }
+//    TOTPChangeDate = remember { mutableStateOf("") }
+//    nonOtpEnabled = remember { mutableStateOf("") }
 
     adjustmentViewModel.value?.let {
         when (it) {
@@ -113,16 +113,7 @@ fun UserProfileScreen(
                 userAccounts.apply {
                     val accounts = userAccounts as UserInfo
                     accounts.apply {
-                        userName.value = accounts.userName
-                        customerName.value = accounts.customerName
-                        customerLastName.value = accounts.customerLastName
-                        customerAtaAdi.value = accounts.customerAtaAdi
-                        lang.value = accounts.lang
-                        phoneNumber.value = accounts.phoneNumber
-                        email.value = accounts.email
-                        TOTPEnabled.value = accounts.TOTPEnabled
-                        TOTPChangeDate.value = accounts.TOTPChangeDate
-                        nonOtpEnabled.value = accounts.nonOtpEnabled
+
                     }
                 }
             }
