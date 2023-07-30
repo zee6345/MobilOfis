@@ -1,6 +1,7 @@
 package com.app.auth.pin
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.network.utils.Message
 import com.app.home.navigation.homeScreenRoute
 import com.app.network.data.responseModels.LoginVerifyResponse
@@ -110,6 +112,9 @@ fun WelcomePinScreen(navController: NavController) {
                 )
                 Row(
                     modifier = Modifier.padding(top = 5.dp, bottom = 17.dp)
+                        .clickable {
+                            navController.navigate(loginNavigationRoute)
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.exit_icon),

@@ -3,6 +3,8 @@ package com.app.network.viewmodel
 import androidx.lifecycle.ViewModel
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
@@ -27,9 +29,14 @@ class HomeViewModel : ViewModel() {
     private val _accountsData = MutableStateFlow<DataState<Any>?>(null)
     val accountsData: MutableStateFlow<DataState<Any>?> get() = _accountsData
 
-
     private val _oldBusinessCardsData = MutableStateFlow<DataState<Any>?>(null)
     val oldBusinessCards: MutableStateFlow<DataState<Any>?> get() = _oldBusinessCardsData
+
+    private val _newBusinessCardsData = MutableStateFlow<DataState<Any>?>(null)
+    val newBusinessCards: MutableStateFlow<DataState<Any>?> get() = _newBusinessCardsData
+
+    private val _accountBalance = MutableStateFlow<DataState<Any>?>(null)
+    val accountBalance: MutableStateFlow<DataState<Any>?> get() = _accountBalance
 
     fun getAccounts(customerId: Int) {
 
@@ -91,20 +98,29 @@ class HomeViewModel : ViewModel() {
 //        }
 //    }
 //
-//    fun getBalance(token: String,customerId: String){
-//        _userBalance.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.getUserBalance(token,customerId) }
-//                withContext(Dispatchers.Main){
-//                    _userBalance.value = DataState.Success(post.await())
-//                }
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-//
+    fun getBalance(customerId: Int){
+        _accountBalance.value = DataState.Loading
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.getUserBalance(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetCustomerBalance> {
+                    override fun onResponse(
+                        call: Call<GetCustomerBalance>,
+                        response: Response<GetCustomerBalance>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _accountBalance.value = DataState.Success(response.body()!!)
+                        } else {
+                            _accountBalance.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetCustomerBalance>, t: Throwable) {
+                        _accountBalance.value = DataState.Error(t.message.toString())
+                    }
+                })
+        }
+    }
+
 //    fun setUserNickName(token: String,accountNickNameRequest: AccountNickNameRequest){
 //        _setAccountNickNameResponse.value = DataState.Loading
 //        CoroutineScope(Dispatchers.IO).launch {
@@ -119,10 +135,10 @@ class HomeViewModel : ViewModel() {
 //        }
 //    }
 
-    fun getAccountBlockByIBAN(token: String, customerId: Int, IBAN: String) {
+    fun getAccountBlockByIBAN(customerId: Int, IBAN: String) {
         _accountsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getAccountBlockByIban(token, customerId, IBAN)
+            repository.getAccountBlockByIban(MainApp.session[Keys.KEY_TOKEN]!!, customerId, IBAN)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -165,22 +181,22 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getNewBusinessCards(customerId: Int) {
-        _accountsData.value = DataState.Loading
+        _newBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getNewBusinessCards(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object : Callback<ResponseBody> {
+            repository.getNewBusinessCards(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object : Callback<GetNewCards> {
                 override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
+                    call: Call<GetNewCards>,
+                    response: Response<GetNewCards>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        _accountsData.value = DataState.Success(response.body()!!)
+                        _newBusinessCardsData.value = DataState.Success(response.body()!!)
                     } else {
-                        _accountsData.value = DataState.Error(response.errorBody()!!.string())
+                        _newBusinessCardsData.value = DataState.Error(response.errorBody()!!.string())
                     }
                 }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    handleException(t)
+                override fun onFailure(call: Call<GetNewCards>, t: Throwable) {
+                    _newBusinessCardsData.value = DataState.Error(handleException(t))
                 }
             })
         }
@@ -189,42 +205,34 @@ class HomeViewModel : ViewModel() {
     private fun handleException(throwable: Throwable):String {
         return when (throwable) {
             is ConnectException -> {
-//                _accountsData.value = DataState.Error("no internet connection")
                 "no internet connection"
             }
 
             is SocketTimeoutException -> {
-//                _accountsData.value = DataState.Error("connection timeout")
                 "connection timeout"
             }
 
             is UnknownHostException -> {
-//                _accountsData.value = DataState.Error("failed to reached network")
                 "failed to reached network"
-
             }
 
             is HttpException -> {
                 when (throwable.code()) {
                     401 -> {
                         // HTTP 401 Unauthorized: Invalid credentials
-//                        _accountsData.value = DataState.Error("Unauthorized: Invalid credentials")
                         "Unauthorized: Invalid credentials"
                     }
                     403 -> {
                         // HTTP 403 Forbidden: Access denied
-//                        _accountsData.value = DataState.Error("Forbidden: Access denied")
                         "Forbidden: Access denied"
                     }
                     404 -> {
                         // HTTP 404 Not Found: Requested resource not found
-//                        _accountsData.value = DataState.Error("Not Found: Requested resource not found")
                         "Not Found: Requested resource not found"
                     }
                     // Add more cases for other HTTP error codes if needed
                     else -> {
                         // Handle other HTTP error codes with a generic message
-//                        _accountsData.value = DataState.Error("Failed to connect to server")
                         "Failed to connect to server"
                     }
                 }

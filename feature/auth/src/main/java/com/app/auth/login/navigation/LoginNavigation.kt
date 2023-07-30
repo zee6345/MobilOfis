@@ -26,13 +26,7 @@ fun NavGraphBuilder.otpScreen(
 ) {
     composable(
         route = otpNavigationRoute,
-//        arguments = listOf(
-//            navArgument("loginType"){
-//                type = NavType.StringType
-//            }
-//        )
     ) {
-//        val loginType = it.arguments?.getString("loginType")
         OtpScreen(navController)
     }
 }

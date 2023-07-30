@@ -53,6 +53,7 @@ import com.app.home.data.DataProvider
 import com.app.home.data.DataProvider.cardsList
 import com.app.home.main.cards.navigation.homeToCardDetails
 import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
 
 import com.app.network.data.responseModels.LoginVerifyResponse
@@ -69,14 +70,15 @@ import ir.kaaveh.sdpcompose.sdp
 fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     val context = LocalContext.current
     val userDetails = fetchUserDetails()
-    val homeData by rememberUpdatedState(viewModel.oldBusinessCards.collectAsState())
+    val selectedBoxIndex = remember { mutableStateOf(0) }
+    val oldBusinessCards by rememberUpdatedState(viewModel.oldBusinessCards.collectAsState())
+    val newBusinessCards by rememberUpdatedState(viewModel.newBusinessCards.collectAsState())
     val cardsList = remember { mutableStateListOf<MainCard>() }
     val cardFilters = remember { DataProvider.filtersList }
 
     LaunchedEffect(key1 = true) {
         viewModel.getOldBusinessCards(userDetails.customerNo)
     }
-
 
 
     Column(
@@ -86,7 +88,52 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
         Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-        Filters()
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+            verticalAlignment = Alignment.Top,
+        ) {
+            Box(modifier = Modifier
+                .background(
+                    if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                    shape = RoundedCornerShape(size = 6.dp)
+                )
+                .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                .clickable {
+                    selectedBoxIndex.value = 0
+
+                    viewModel.getOldBusinessCards(userDetails.customerNo)
+
+                }) {
+                Text(
+                    stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
+                        fontSize = 12.sp,
+                        color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
+                    )
+                )
+            }
+
+
+
+            Box(modifier = Modifier
+                .background(
+                    if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                    shape = RoundedCornerShape(size = 6.dp)
+                )
+                .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                .clickable {
+                    selectedBoxIndex.value = 1
+
+                    viewModel.getNewBusinessCards(userDetails.customerNo)
+                }) {
+                Text(
+                    stringResource(R.string.tin_based), style = TextStyle(
+                        fontSize = 12.sp,
+                        color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
+                    )
+                )
+            }
+
+        }
 
 
         LazyRow(
@@ -106,6 +153,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
             lazyListState.scrollToItem(0) // Optional: Scroll to an initial position when the list is first displayed
         }
 
+
         LazyColumn(
             contentPadding = PaddingValues(vertical = 1.dp),
             state = lazyListState,
@@ -121,7 +169,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
 
 
-    homeData.value?.let {
+    oldBusinessCards.value?.let {
         when (it) {
             is DataState.Loading -> {
 
@@ -137,12 +185,36 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
                     cards.oldBusinessCards.MainCards.forEach {
                         cardsList.add(it)
-
-//                        Log.e("mTAG", "CardsList: ${it.nickName}")
-//                        Log.e("mTAG", "CardsList: ${it.Currency}")
-//                        Log.e("mTAG", "CardsList: ${it.EncryptedPan}")
-//                        Log.e("mTAG", "CardsList: ${it.AdditionNumb}")
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+
+    }
+
+    newBusinessCards.value?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                try {
+                    val cards = it.data as GetNewCards
+
+//                    if (cardsList.isNotEmpty()){
+//                        cardsList.clear()
+//                    }
+
+//                    cards.newBusinessCards.MainCards
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -240,7 +312,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
             }
 
             Text(
-                text = "Amount",
+                text = if (obj.Balance == null) "0.00" else "${obj.Balance}",
                 style = TextStyle(fontSize = 14.sp),
                 color = Color(0xFF223142)
             )
@@ -289,49 +361,50 @@ private fun FilterView(filter: CardFilters) {
 }
 
 
-@Composable
-private fun Filters() {
-
-    val selectedBoxIndex = remember { mutableStateOf(-1) }
-
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Box(modifier = Modifier
-            .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
-                shape = RoundedCornerShape(size = 6.dp)
-            )
-            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 0 }) {
-            Text(
-                stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
-                    fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
-                )
-            )
-        }
-
-
-
-        Box(modifier = Modifier
-            .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
-                shape = RoundedCornerShape(size = 6.dp)
-            )
-            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 1 }) {
-            Text(
-                stringResource(R.string.tin_based), style = TextStyle(
-                    fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
-                )
-            )
-        }
-
-    }
-}
+//@Composable
+//private fun Filters() {
+//
+////    val selectedBoxIndex = remember { mutableStateOf(-1) }
+////    val selectedBoxIndex = remember { mutableStateOf(0) }
+//
+//    Row(
+//        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+//        verticalAlignment = Alignment.Top,
+//    ) {
+//        Box(modifier = Modifier
+//            .background(
+//                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+//                shape = RoundedCornerShape(size = 6.dp)
+//            )
+//            .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//            .clickable { selectedBoxIndex.value = 0 }) {
+//            Text(
+//                stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
+//                    fontSize = 12.sp,
+//                    color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
+//                )
+//            )
+//        }
+//
+//
+//
+//        Box(modifier = Modifier
+//            .background(
+//                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+//                shape = RoundedCornerShape(size = 6.dp)
+//            )
+//            .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//            .clickable { selectedBoxIndex.value = 1 }) {
+//            Text(
+//                stringResource(R.string.tin_based), style = TextStyle(
+//                    fontSize = 12.sp,
+//                    color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
+//                )
+//            )
+//        }
+//
+//    }
+//}
 
 private fun fetchUserDetails(): LoginVerifyResponse {
     val str = MainApp.session[Keys.KEY_USER_DETAILS]

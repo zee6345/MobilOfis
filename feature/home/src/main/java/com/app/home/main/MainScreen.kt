@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Top
@@ -39,17 +40,21 @@ import com.app.home.R
 import com.app.home.main.component.CardMenuContent
 import com.app.home.main.component.SelectCompanyBottomSheet
 import com.app.home.main.component.TabLayoutMenu
+import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetCustomerBalanceItem
 
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 
 
 private const val TAG = "MenuScreen"
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
 
@@ -57,20 +62,20 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     val showBalance = rememberSaveable { mutableStateOf(false) }
     val balancePopup = rememberSaveable { mutableStateOf(false) }
     var touchPoint: Offset by remember { mutableStateOf(Offset.Zero) }
+    val customerBalanceType = remember { mutableStateOf(Balance.BALANCE) }
+    val balance = remember { mutableStateOf("") }
+    val customerBalance = remember { mutableStateListOf<GetCustomerBalanceItem>() }
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
 
-//    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
-//    val context = LocalContext.current
-//    val userDetails = fetchUserDetails()
+    val accountBalance by rememberUpdatedState(viewModel.accountBalance.collectAsState())
+    val context = LocalContext.current
+    val userDetails = fetchUserDetails()
 
-//    LaunchedEffect(key1 = true ){
-//        //fetch accounts list
-//        viewModel.getAccounts(
-//            userDetails.customerNo
-//        )
-//    }
+    LaunchedEffect(key1 = true) {
+        viewModel.getBalance(userDetails.customerNo)
+    }
 
 
     Column(
@@ -123,7 +128,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                     .padding(start = 5.dp)
                             ) {
                                 Text(
-                                    text = stringResource(R.string.international_real_estate_and_appraisal_agency),
+                                    text = userDetails.customerName,
                                     style = TextStyle(color = Color.White, fontSize = 14.sp),
                                     modifier = Modifier
                                         .padding(start = 3.dp)
@@ -212,7 +217,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 append(stringResource(R.string.total_accounts))
                             }
                             withStyle(style = SpanStyle(Color.White, fontSize = 14.sp)) {
-                                append(stringResource(R.string.balance))
+                                append(customerBalanceType.value.name)
                             }
                         }
 
@@ -234,19 +239,12 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         }
                         Row() {
                             Text(
-                                text = stringResource(R.string._10_000_000),
+                                text = balance.value,
                                 modifier = Modifier.align(Top),
                                 style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold),
                                 color = Color.White
                             )
-                            Text(
-                                text = stringResource(R.string._00),
-                                modifier = Modifier
-                                    .align(Bottom)
-                                    .padding(vertical = 3.dp),
-                                style = TextStyle(fontSize = 24.sp),
-                                color = Color.White
-                            )
+
                             Text(
                                 text = stringResource(R.string.text_currency_type),
                                 modifier = Modifier
@@ -280,9 +278,99 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     }
 
     SelectCompanyBottomSheet(selectCompanyState)
-    DropDownPopup(balancePopup, density, touchPoint, screenHeightDp)
+
+    DropDownPopup(balancePopup, density, touchPoint, screenHeightDp) {
+        customerBalanceType.value = it
+        when(it){
+            Balance.BLOCKED -> {
+                balance.value = customerBalance[0].BLOCK_BALANCE
+            }
+            Balance.FREE_BALANCE -> {
+                balance.value = customerBalance[0].AVAIL_BALANCE
+            }
+            Balance.BANK_EXECUTION -> {
+                balance.value = customerBalance[0].WAITING_BALANCE
+            }
+            Balance.AFTER_EXECUTION -> {
+                balance.value = customerBalance[0].AFTERAPPROVE_BALANCE
+            }
+            Balance.BALANCE -> {
+                balance.value = customerBalance[0].BALANCE
+            }
+
+        }
+    }
 
 
+
+    if (customerBalance.isNotEmpty() && customerBalance != null) {
+        setDefaultBalanceValue(customerBalanceType, balance, customerBalance)
+    }
+
+
+
+    //handle API Responce
+    accountBalance.value?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                try {
+
+                    val data = it.data as GetCustomerBalance
+
+                    data.forEach { balance ->
+                        customerBalance.add(balance)
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+
+    }
+
+
+}
+
+fun setDefaultBalanceValue(
+    customerBalanceType: MutableState<Balance>,
+    balance: MutableState<String>,
+    customerBalance: SnapshotStateList<GetCustomerBalanceItem>
+) {
+    customerBalance?.let {
+
+        when (customerBalanceType.value) {
+            Balance.BLOCKED -> {
+                balance.value = customerBalance[0].BLOCK_BALANCE
+            }
+
+            Balance.FREE_BALANCE -> {
+                balance.value = customerBalance[0].AVAIL_BALANCE
+            }
+
+            Balance.BANK_EXECUTION -> {
+                balance.value = customerBalance[0].WAITING_BALANCE
+            }
+
+            Balance.AFTER_EXECUTION -> {
+                balance.value = customerBalance[0].AFTERAPPROVE_BALANCE
+            }
+
+            Balance.BALANCE -> {
+                balance.value = customerBalance[0].BALANCE
+            }
+
+        }
+    }
 }
 
 @Composable
@@ -290,7 +378,8 @@ fun DropDownPopup(
     expanded: MutableState<Boolean>,
     density: Density,
     touchPoint: Offset,
-    screenHeightDp: Dp
+    screenHeightDp: Dp,
+    selectedString: (type: Balance) -> Unit
 ) {
     val (xDp, yDp) = with(density) {
         (touchPoint.x.toDp()) to (touchPoint.y.toDp())
@@ -300,26 +389,55 @@ fun DropDownPopup(
         offset = DpOffset(xDp, -screenHeightDp + yDp + 150.dp),
         onDismissRequest = { expanded.value = false }
     ) {
+
+        DropdownMenuItem(
+            content = { Text(stringResource(R.string.balance)) },
+            onClick = {
+                selectedString(Balance.BALANCE)
+                expanded.value = false
+            }
+        )
+        Divider()
+
         DropdownMenuItem(
             content = { Text(stringResource(R.string.blocked)) },
-            onClick = { /* Handle refresh! */ }
+            onClick = {
+                selectedString(Balance.BLOCKED)
+                expanded.value = false
+            }
         )
         Divider()
         DropdownMenuItem(
             content = { Text(stringResource(R.string.free_balance)) },
-            onClick = { /* Handle settings! */ }
+            onClick = {
+                selectedString(Balance.FREE_BALANCE)
+                expanded.value = false
+            }
         )
         Divider()
         DropdownMenuItem(
             content = { Text(stringResource(R.string.bank_execution)) },
-            onClick = { /* Handle send feedback! */ }
+            onClick = { selectedString(Balance.BANK_EXECUTION)
+                expanded.value = false
+            }
         )
         Divider()
         DropdownMenuItem(
             content = { Text(stringResource(R.string.after_execution)) },
-            onClick = { /* Handle send feedback! */ }
+            onClick = {
+                selectedString(Balance.AFTER_EXECUTION)
+                expanded.value = false
+            }
         )
     }
+}
+
+enum class Balance{
+    BALANCE,
+    BLOCKED,
+    FREE_BALANCE,
+    BANK_EXECUTION,
+    AFTER_EXECUTION
 }
 
 private fun fetchUserDetails(): LoginVerifyResponse {

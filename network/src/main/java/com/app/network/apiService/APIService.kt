@@ -8,14 +8,15 @@ import com.app.network.data.callModels.LoginVerificationRequest
 import com.app.network.data.callModels.VerifyChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
 import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetCustomerBalance
 import com.app.network.data.responseModels.GetOldCards
 import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -64,10 +65,10 @@ interface APIService {
 
 
     @GET("customers/{customerId}/balance")
-    suspend fun getBalance(
+    fun getBalance(
         @Header("Auth_token") token: String,
-        @Path("customerId") customerId: String
-    ): ResponseBody
+        @Path("customerId") customerId: Int
+    ): Call<GetCustomerBalance>
 
 
     @GET("auth/getlastlogin")
@@ -81,8 +82,12 @@ interface APIService {
     ): ResponseBody
 
 
+
+
+
     @GET("customers/{customerId}/accounts/blocksbyiban/{iban}")
     fun getAccountBlockByIBAN(
+        @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int,
         @Path("iban") iban: String
     ): Call<ResponseBody>
@@ -98,7 +103,7 @@ interface APIService {
     fun getNewBusinessCards(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ):Call<ResponseBody>
+    ):Call<GetNewCards>
 
 
 }

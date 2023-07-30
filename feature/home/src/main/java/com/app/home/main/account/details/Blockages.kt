@@ -56,7 +56,6 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
 
     LaunchedEffect(key1 = true) {
         viewModel.getAccountBlockByIBAN(
-            "",
             data.CUSTOMER_NO,
             data.IBAN
         )
