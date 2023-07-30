@@ -9,11 +9,13 @@ import com.app.network.data.callModels.VerifyChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetLoans
 import com.app.network.data.responseModels.GetOldCards
 import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.GetNewCards
+import com.app.network.data.responseModels.GetTrusts
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -105,5 +107,18 @@ interface APIService {
         @Path("customerId") customerId: Int
     ):Call<GetNewCards>
 
+
+    @GET("credit/{customerId}")
+    fun getLoans(
+        @Header("Auth_token") token: String,
+        @Path("customerId") customerId: Int
+    ):Call<GetLoans>
+
+
+    @GET("customers/{customerId}/timedeposits")
+    fun getTrusts(
+        @Header("Auth_token") token: String,
+        @Path("customerId") customerId: Int
+    ):Call<GetTrusts>
 
 }

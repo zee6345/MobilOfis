@@ -70,36 +70,80 @@ class AuthInterceptor(authToken: String?) : Interceptor {
     }
 }
 
+//class AuthTokenInterceptor : Interceptor {
+//    override fun intercept(chain: Interceptor.Chain): Response {
+//        val request = chain.request()
+//        var response:Response ?= null
+//
+//        if (request != null) {
+//            response = try {
+//                chain.proceed(request)
+//            } catch (e: IOException) {
+//                // Handle network exceptions here if needed
+////            throw NetworkException("Network error: ${e.message}")
+//                createDefaultResponse()
+//            }
+//
+//
+//            val authToken = response!!.header("Auth_token")
+//            authToken?.let {
+//                // Store auth token
+//                MainApp.session.put(Keys.KEY_TOKEN, it)
+//                AUTH_TOKEN = it
+//            }
+//        }
+//
+//        return response!!
+//    }
+//}
+
+
 class AuthTokenInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response = try {
-            chain.proceed(request)
+        var response: Response?
+
+        try {
+            response = chain.proceed(request)
+
+            val authToken = response.header("Auth_token")
+            authToken?.let {
+                // Store auth token
+                MainApp.session.put(Keys.KEY_TOKEN, it)
+                AUTH_TOKEN = it
+            }
         } catch (e: IOException) {
             // Handle network exceptions here if needed
-//            throw NetworkException("Network error: ${e.message}")
-            createDefaultResponse()
+            // You can throw a custom NetworkException here if desired
+            // throw NetworkException("Network error: ${e.message}")
+            response = createDefaultResponse()
         }
 
-        val authToken = response.header("Auth_token")
-        authToken?.let {
-            // Store auth token
-            MainApp.session.put(Keys.KEY_TOKEN, it)
-            AUTH_TOKEN = it
-        }
+        return response!!
+    }
 
-        return response
+    // Define the createDefaultResponse function to return a default Response
+    private fun createDefaultResponse(): Response {
+        // Create and return a default Response here
+        // For example:
+        return Response.Builder()
+            .code(500) // Set appropriate HTTP status code
+            .protocol(Protocol.HTTP_1_1) // Set the protocol
+            .body(ResponseBody.create("text/plain".toMediaTypeOrNull(), ""))
+            .request(Request.Builder().url(baseUrl).build()) // Set a dummy request
+            .build()
     }
 }
 
-private fun createDefaultResponse(): Response {
-    return Response.Builder()
-        .code(500) // You can choose an appropriate error code here
-        .protocol(Protocol.HTTP_1_1)
-        .message("Network error")
-        .body(ResponseBody.create("text/plain".toMediaTypeOrNull(), ""))
-        .build()
-}
 
-// Custom network exception class
-class NetworkException(message: String) : IOException(message)
+//private fun createDefaultResponse(): Response {
+//    return Response.Builder()
+//        .code(500) // You can choose an appropriate error code here
+//        .protocol(Protocol.HTTP_1_1)
+//        .message("Network error")
+//        .body(ResponseBody.create("text/plain".toMediaTypeOrNull(), ""))
+//        .build()
+//}
+//
+//// Custom network exception class
+//class NetworkException(message: String) : IOException(message)

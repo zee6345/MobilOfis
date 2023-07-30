@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetLoans
 import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
+import com.app.network.data.responseModels.GetTrusts
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.repository.HomeRepository
@@ -38,6 +40,12 @@ class HomeViewModel : ViewModel() {
     private val _accountBalance = MutableStateFlow<DataState<Any>?>(null)
     val accountBalance: MutableStateFlow<DataState<Any>?> get() = _accountBalance
 
+    private val _customerLoans = MutableStateFlow<DataState<Any>?>(null)
+    val customerLoans: MutableStateFlow<DataState<Any>?> get() = _customerLoans
+
+    private val _customerTrusts = MutableStateFlow<DataState<Any>?>(null)
+    val customerTrusts: MutableStateFlow<DataState<Any>?> get() = _customerTrusts
+
     fun getAccounts(customerId: Int) {
 
         _accountsData.value = DataState.Loading
@@ -59,6 +67,61 @@ class HomeViewModel : ViewModel() {
 
                     override fun onFailure(call: Call<GetAccounts>, t: Throwable) {
                         _accountsData.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
+
+    fun getLoans(customerId: Int) {
+
+        _customerLoans.value = DataState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            repository.getLoans(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetLoans> {
+                    override fun onResponse(
+                        call: Call<GetLoans>,
+                        response: Response<GetLoans>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _customerLoans.value = DataState.Success(response.body()!!)
+                        } else {
+                            _customerLoans.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetLoans>, t: Throwable) {
+                        _customerLoans.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
+
+
+    fun getTrusts(customerId: Int) {
+
+        _customerTrusts.value = DataState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            repository.getTrusts(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetTrusts> {
+                    override fun onResponse(
+                        call: Call<GetTrusts>,
+                        response: Response<GetTrusts>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _customerTrusts.value = DataState.Success(response.body()!!)
+                        } else {
+                            _customerTrusts.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetTrusts>, t: Throwable) {
+                        _customerTrusts.value = DataState.Error(handleException(t))
                     }
 
                 })

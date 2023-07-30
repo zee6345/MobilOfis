@@ -3,8 +3,10 @@ package com.app.network.repository
 import com.app.network.data.callModels.AccountNickNameRequest
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetLoans
 import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
+import com.app.network.data.responseModels.GetTrusts
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.retrofitClient.BaseRetrofitClient
@@ -44,4 +46,14 @@ class HomeRepository: BaseRetrofitClient() {
     fun getNewBusinessCards(token: String, customerId: Int): Call<GetNewCards> {
         return apiService.getNewBusinessCards(token, customerId)
     }
+
+    fun getLoans(token: String, customerId: Int):Call<GetLoans>{
+        return apiService.getLoans(token, customerId)
+    }
+
+    fun getTrusts(token: String, customerId: Int):Call<GetTrusts>{
+        return apiService.getTrusts(token, customerId)
+    }
+
+
 }

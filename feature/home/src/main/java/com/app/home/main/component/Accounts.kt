@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,11 +18,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.home.main.account.navigation.accountDetailsRoute
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetAccountsItem
 import com.app.network.data.responseModels.LoginVerifyResponse
+
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
@@ -56,13 +63,44 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = viewMod
     val context = LocalContext.current
     val userDetails = fetchUserDetails()
     val homeData by rememberUpdatedState(viewModel.accountsData.collectAsState())
+    val cardsList = remember { mutableListOf<GetAccountsItem>() }
+    val isLoading = remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = true ){
+
+    LaunchedEffect(Unit ){
         //fetch accounts list
         viewModel.getAccounts(
             userDetails.customerNo
         )
     }
+
+    if (isLoading.value){
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ){
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+
+
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
+        ) {
+
+            item {
+                Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
+            }
+
+            items(items = cardsList, itemContent = {
+
+                AccountListItem(obj = it, navController)
+
+            })
+        }
+    }
+
 
 
     /**
@@ -71,51 +109,28 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = viewMod
     homeData.value?.let {
         when (it) {
             is DataState.Loading -> {
-
-//                isLoading.value = true
-//                if (isLoading.value) {
-//                    ShowProgressDialog(isLoading)
-//                } else {
-//
-//                }
+                isLoading.value = true
             }
 
             is DataState.Error -> {
+                isLoading.value = false
                 Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
-                val userAccounts = it.data
-                userAccounts?.apply {
+                val userAccounts = it.data as GetAccounts
 
-                    val accounts = userAccounts as GetAccounts
-                    accounts?.apply {
-                        Accounts(accountList = accounts, navController = navController)
-                    }
+                isLoading.value = false
 
+                cardsList.apply {
+                    clear()
+                    cardsList.addAll(userAccounts)
                 }
+
             }
         }
     }
 
-}
-
-@Composable
-fun Accounts(accountList: GetAccounts, navController: NavController) {
-    LazyColumn(
-        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
-    ) {
-
-        item {
-            Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
-        }
-
-        items(items = accountList, itemContent = {
-
-            AccountListItem(obj = it, navController)
-
-        })
-    }
 }
 
 @Composable
@@ -126,9 +141,7 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
             .padding(vertical = 5.dp)
             .fillMaxWidth()
             .clickable {
-//                navController.navigate(accountDetailsRoute + "/${Converter.toJson(obj)}")
                 MainApp.session.put(Keys.KEY_MAIN_INFO, Converter.toJson(obj))
-
                 navController.navigate(accountDetailsRoute)
             },
         elevation = 1.dp,
@@ -195,5 +208,5 @@ private fun fetchUserDetails(): LoginVerifyResponse {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TabPreview() {
-//    AccountList(rememberNavController())
+    AccountList(rememberNavController())
 }

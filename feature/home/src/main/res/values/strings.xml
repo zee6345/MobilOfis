@@ -106,4 +106,7 @@
     <string name="calculated_interest_amount">Calculated interest amount</string>
     <string name="_17111_64">17111.64</string>
     <string name="amount_of_interest_paid">Amount of interest paid</string>
+    <string name="payment_account">Payment account</string>
+    <string name="balance_in_payment_account">Balance in payment account</string>
+    <string name="total_interest_amount">Total interest amount</string>
 </resources>

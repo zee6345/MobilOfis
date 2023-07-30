@@ -8,6 +8,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.navigation.loginNavigationRoute
+import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.network.utils.Message
 import com.app.home.navigation.homeScreenRoute
 import com.app.network.data.responseModels.LoginVerifyResponse
@@ -111,9 +114,14 @@ fun WelcomePinScreen(navController: NavController) {
                     modifier = Modifier.padding(vertical = 8.dp) // Replace with your desired modifier
                 )
                 Row(
-                    modifier = Modifier.padding(top = 5.dp, bottom = 17.dp)
+                    modifier = Modifier
+                        .padding(top = 5.dp, bottom = 17.dp)
                         .clickable {
-                            navController.navigate(loginNavigationRoute)
+
+                            navController.navigate(loginNavigationRoute){
+                                    popUpTo(loginNavigationRoute) { inclusive = true }
+                            }
+
                         }
                 ) {
                     Image(
