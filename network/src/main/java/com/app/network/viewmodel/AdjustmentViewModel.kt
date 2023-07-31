@@ -1,33 +1,50 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetUserProfile
+import com.app.network.helper.Error
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
 import com.app.network.repository.AdjustmentRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AdjustmentViewModel  : ViewModel()  {
 
     private val repository: AdjustmentRepository = AdjustmentRepository()
-    private val _data = MutableStateFlow<DataState<Any>?>(null)
-    val data: MutableStateFlow<DataState<Any>?> get() = _data
 
-    fun getUserInfo(token: String, customerId: String) {
-        _data.value = DataState.Loading
+    private val _userInfo = MutableStateFlow<DataState<Any>?>(null)
+    val userInfo: MutableStateFlow<DataState<Any>?> get() = _userInfo
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val post = async { repository.getUserInfo(token, customerId) }
-                withContext(Dispatchers.Main) {
-                    _data.value = DataState.Success(post.await())
+    fun getUserInfo(customerId: String) {
+        _userInfo.value = DataState.Loading
+
+        viewModelScope.launch {
+
+            repository.getUserInfo(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object :Callback<GetUserProfile>{
+                override fun onResponse(
+                    call: Call<GetUserProfile>,
+                    response: Response<GetUserProfile>
+                ) {
+                    if (response.isSuccessful && response.body() != null){
+                        _userInfo.value = DataState.Success(response.body()!!)
+                    } else {
+                        _userInfo.value = DataState.Error(response.errorBody()!!.string())
+                    }
                 }
-            } catch (e: Exception) {
-                _data.value = DataState.Error(e.message.toString())
-            }
+
+                override fun onFailure(call: Call<GetUserProfile>, t: Throwable) {
+                    _userInfo.value = DataState.Error(Error.handleException(t))
+                }
+
+            })
+
         }
     }
 

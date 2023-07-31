@@ -17,6 +17,7 @@ import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetRecentOps
 import com.app.network.data.responseModels.GetTrusts
+import com.app.network.data.responseModels.GetUserProfile
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -78,10 +79,10 @@ interface APIService {
 
 
     @GET("auth/getuserinfo")
-    suspend fun getUserInfo(
+    fun getUserInfo(
         @Header("Auth_token") token: String,
         @Query("customerNo") customerNo: String
-    ): ResponseBody
+    ): Call<GetUserProfile>
 
 
 

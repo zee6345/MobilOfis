@@ -24,10 +24,6 @@ class HomeRepository: BaseRetrofitClient() {
         return apiService.getLastLogin(token)
     }
 
-    suspend fun getUserInfo(token: String, customerNo: String):ResponseBody {
-        return apiService.getUserInfo(token,customerNo)
-    }
-
    fun getUserBalance(token: String, customerId: Int):Call<GetCustomerBalance> {
         return apiService.getBalance(token,customerId)
     }

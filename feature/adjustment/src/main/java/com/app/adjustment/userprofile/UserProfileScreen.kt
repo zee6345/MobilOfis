@@ -26,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,9 +46,8 @@ import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.components.dashedBorder
 import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetUserProfile
 import com.app.network.data.responseModels.LoginVerifyResponse
-import com.app.network.data.responseModels.UserInfo
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
@@ -57,18 +55,10 @@ import com.app.network.helper.MainApp.Companion.context
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import ir.kaaveh.sdpcompose.sdp
-import androidx.compose.runtime.remember
 
-lateinit var userName: MutableState<String>
-lateinit var customerName: MutableState<String>
-lateinit var customerLastName: MutableState<String>
-lateinit var customerAtaAdi: MutableState<String>
+
 lateinit var lang: MutableState<String>
-lateinit var phoneNumber: MutableState<String>
-lateinit var email: MutableState<String>
-lateinit var TOTPEnabled: MutableState<String>
-lateinit var TOTPChangeDate: MutableState<String>
-lateinit var nonOtpEnabled: MutableState<String>
+
 
 @Composable
 fun UserProfileScreen(
@@ -76,13 +66,12 @@ fun UserProfileScreen(
     viewModel: AdjustmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
-    val adjustmentViewModel by rememberUpdatedState(viewModel.data.collectAsState())
+    val userProfileInfo by viewModel.userInfo.collectAsState()
 
     val userInfo = fetchUserDetails()
     LaunchedEffect(key1 = true) {
         //fetch accounts list
         viewModel.getUserInfo(
-            MainApp.session[Keys.KEY_TOKEN]!!,
             userInfo.customerNo.toString()
         )
     }
@@ -90,7 +79,7 @@ fun UserProfileScreen(
     val userName = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
     val customerLastName = remember { mutableStateOf("") }
-    val customerAtaAdi = remember { mutableStateOf("") }
+    val customerFatherName = remember { mutableStateOf("") }
     val lang = remember { mutableStateOf("") }
     val phoneNumber = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -98,7 +87,7 @@ fun UserProfileScreen(
     val TOTPChangeDate = remember { mutableStateOf("") }
     val nonOtpEnabled = remember { mutableStateOf("") }
 
-    adjustmentViewModel.value?.let {
+    userProfileInfo?.let {
         when (it) {
             is DataState.Loading -> {
 
@@ -109,21 +98,20 @@ fun UserProfileScreen(
             }
 
             is DataState.Success -> {
-                val userAccounts = it.data
+                val userAccounts = it.data as GetUserProfile
                 userAccounts.apply {
-                    val accounts = userAccounts as UserInfo
-                    accounts.apply {
-                        userName.value = accounts.userName
-                        customerName.value = accounts.customerName
-                        customerLastName.value = accounts.customerLastName
-                        customerAtaAdi.value = accounts.customerAtaAdi
-                        lang.value = accounts.lang
-                        phoneNumber.value = accounts.phoneNumber
-                        email.value = accounts.email
-                        TOTPEnabled.value = accounts.TOTPEnabled
-                        TOTPChangeDate.value = accounts.TOTPChangeDate
-                        nonOtpEnabled.value = accounts.nonOtpEnabled
-                    }
+
+                        userName.value = this.userName
+                        customerName.value = this.customerName
+                        customerLastName.value = this.customerLastName
+                        customerFatherName.value = this.customerAtaAdi
+                        lang.value = this.lang
+                        phoneNumber.value = this.phoneNumber
+                        email.value = "${this.email}"
+                        TOTPEnabled.value = this.TOTPEnabled
+                        TOTPChangeDate.value = this.TOTPChangeDate
+                        nonOtpEnabled.value = this.nonOtpEnabled
+
                 }
             }
         }
@@ -185,7 +173,330 @@ fun UserProfileScreen(
 
                 ) {
 
-                CardInfo1(navController = navController)
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.sdp),
+                    backgroundColor = Color.White
+                ) {
+                    Column(
+
+                    ) {
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.source_of_origin), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+
+                                        )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.internet_office), style = TextStyle(
+
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+                                    )
+                                )
+                            }
+
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.document_no), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.p10001080), style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+
+                                        )
+                                )
+                            }
+
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.father_s_name), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = customerFatherName.value, style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+
+                                        )
+                                )
+                            }
+                        }
+
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+
+                            Column {
+
+                                Text(
+                                    text = stringResource(R.string.login), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+
+                                Text(
+                                    text = userName.value, style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+                                    )
+                                )
+                            }
+
+
+                        }
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+                                    .fillMaxWidth()
+
+                            ) {
+
+                                Text(
+                                    text = stringResource(R.string.mobile_number_for_sms), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+
+                                        )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+
+
+                                Text(
+                                    text = phoneNumber.value, style = TextStyle(
+
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+                                    )
+                                )
+                            }
+
+
+
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    text = stringResource(R.string.easy_signature_mobile_number),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+
+
+                                Text(
+                                    text = stringResource(R.string._505553468), style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+
+                                        )
+                                )
+                            }
+
+
+                        }
+
+
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+
+                            Column {
+
+                                Text(
+                                    text = stringResource(R.string.e_mail), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF859DB5),
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+
+                                Text(
+                                    text = stringResource(R.string.text_email), style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+                                    )
+                                )
+                            }
+
+
+                        }
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+
+                            Text(
+                                text = stringResource(R.string.language), style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                    color = Color(0xFF859DB5),
+                                )
+                            )
+
+
+                            ThreeBoxComponent()
+
+
+                        }
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+
+                            Text(
+                                text = stringResource(R.string.google_authenticator), style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                    color = Color(0xFF859DB5),
+                                )
+                            )
+
+
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = Color(0xFF203657),
+                                        shape = RoundedCornerShape(size = 6.dp)
+                                    )
+                                    .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 5.dp)
+
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.activate),
+                                    style = TextStyle(
+
+                                        fontWeight = FontWeight(500),
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+
+
+                                        )
+                                )
+                            }
+
+
+                        }
+
+
+                    }
+                }
 
 
 
@@ -200,335 +511,7 @@ fun UserProfileScreen(
 }
 
 
-@Composable
-private fun CardInfo1(navController: NavController) {
 
-    Card(
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 5.sdp),
-        backgroundColor = Color.White
-    ) {
-        Column(
-
-        ) {
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.source_of_origin), style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.internet_office), style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.document_no), style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.p10001080), style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.father_s_name), style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "-", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-            }
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Column {
-
-                    Text(
-                        text = stringResource(R.string.login), style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-                    Text(
-                        text = stringResource(R.string.jahangire), style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-
-            }
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .fillMaxWidth()
-
-                ) {
-
-                    Text(
-                        text = stringResource(R.string.mobile_number_for_sms), style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-
-                            )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-
-                    Text(
-                        text = stringResource(R.string._505553467), style = TextStyle(
-
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-
-
-                Column(
-                    Modifier
-                        .weight(0.5f)
-
-                        .fillMaxWidth()
-                ) {
-
-                    Text(
-                        text = stringResource(R.string.easy_signature_mobile_number),
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-
-                    Text(
-                        text = stringResource(R.string._505553468), style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-
-                            )
-                    )
-                }
-
-
-            }
-
-
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Column {
-
-                    Text(
-                        text = stringResource(R.string.e_mail), style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-                    Text(
-                        text = stringResource(R.string.text_email), style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                        )
-                    )
-                }
-
-
-            }
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Text(
-                    text = stringResource(R.string.language), style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                        color = Color(0xFF859DB5),
-                    )
-                )
-
-
-                ThreeBoxComponent()
-
-
-            }
-
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-                Text(
-                    text = stringResource(R.string.google_authenticator), style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                        color = Color(0xFF859DB5),
-                    )
-                )
-
-
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Color(0xFF203657),
-                            shape = RoundedCornerShape(size = 6.dp)
-                        )
-                        .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 5.dp)
-
-                ) {
-                    Text(
-                        text = stringResource(R.string.activate),
-                        style = TextStyle(
-
-                            fontWeight = FontWeight(500),
-                            color = Color(0xFFFFFFFF),
-                            textAlign = TextAlign.Center,
-
-
-                            )
-                    )
-                }
-
-
-            }
-
-
-        }
-    }
-
-}
 
 @Composable
 private fun ThreeBoxComponent() {
