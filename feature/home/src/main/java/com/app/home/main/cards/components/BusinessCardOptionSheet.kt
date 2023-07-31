@@ -63,9 +63,6 @@ fun PreviewBottomSheetOptions() {
 }
 
 
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
@@ -97,8 +94,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_details),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                     )
 
@@ -131,8 +127,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_info),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                     )
 
@@ -164,8 +159,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_statement),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                     )
 
@@ -198,9 +192,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_statement),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
-
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
                     )
 
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
@@ -219,21 +211,16 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     .dashedBorder(3.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
             ) {
-
                 Row(
                     modifier = Modifier.padding(vertical = 12.dp, horizontal = 15.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-
                     Image(
                         painterResource(id = R.drawable.ic_option_card_limits),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
-
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
                     )
-
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
@@ -263,8 +250,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_block),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                     )
 
@@ -294,8 +280,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_pin),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                     )
 
@@ -334,8 +319,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                         Image(
                             painterResource(id = R.drawable.ic_option_card_sms),
                             contentDescription = "",
-                            modifier = Modifier
-                                .size(width = 32.dp, height = 32.dp)
+                            modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                         )
 
@@ -382,8 +366,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Image(
                         painterResource(id = R.drawable.ic_option_card_edit),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 32.dp)
+                        modifier = Modifier.size(width = 32.dp, height = 32.dp)
 
                     )
 
@@ -397,9 +380,6 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                 }
 
             }
-
-
-
 
 
         }

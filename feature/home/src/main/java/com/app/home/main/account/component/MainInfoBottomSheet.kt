@@ -64,7 +64,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 
     val rowModify = Modifier
         .fillMaxWidth()
-        .dashedBorder(3.dp, Color(0x99C9CACC))
+        .dashedBorder(3.dp, Color(R.color.border_grey))
 
     val innerRowModify = Modifier.padding(vertical = 12.dp, horizontal = 15.dp)
 
@@ -82,13 +82,11 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 
 
             Row(
-                rowModify,
-                verticalAlignment = Alignment.CenterVertically
+                rowModify, verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Row(
-                    innerRowModify,
-                    verticalAlignment = Alignment.CenterVertically
+                    innerRowModify, verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Image(
@@ -114,13 +112,11 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 
 
             Row(
-                rowModify,
-                verticalAlignment = Alignment.CenterVertically
+                rowModify, verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Row(
-                    innerRowModify,
-                    verticalAlignment = Alignment.CenterVertically
+                    innerRowModify, verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Image(
@@ -148,13 +144,11 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 
 
             Row(
-                rowModify,
-                verticalAlignment = Alignment.CenterVertically
+                rowModify, verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Row(
-                    innerRowModify,
-                    verticalAlignment = Alignment.CenterVertically
+                    innerRowModify, verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Image(
@@ -182,13 +176,11 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
             }
 
             Row(
-                rowModify,
-                verticalAlignment = Alignment.CenterVertically
+                rowModify, verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Row(
-                    innerRowModify,
-                    verticalAlignment = Alignment.CenterVertically
+                    innerRowModify, verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Image(
@@ -216,13 +208,11 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 
 
             Row(
-                rowModify,
-                verticalAlignment = Alignment.CenterVertically
+                rowModify, verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Row(
-                    innerRowModify,
-                    verticalAlignment = Alignment.CenterVertically
+                    innerRowModify, verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_option_card_details),
@@ -255,8 +245,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                 ) {
 
                 Row(
-                    innerRowModify,
-                    verticalAlignment = Alignment.CenterVertically
+                    innerRowModify, verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Image(

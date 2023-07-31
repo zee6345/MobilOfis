@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.home.R
 
 
 data class CardsListData(
@@ -76,7 +77,7 @@ fun CardsListItems(list: CardsListData) {
                     Text(
                         text = list.title,
                         style = TextStyle(
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400)
                         ),
@@ -110,7 +111,7 @@ fun CardsListItems(list: CardsListData) {
                             Text(
                                 modifier = Modifier.padding(2.dp),
                                 text = "+1",
-                                color = Color(0xFF859DB5), fontSize = 12.sp
+                                color = Color(R.color.grey_text), fontSize = 12.sp
                             )
 
                         }
@@ -123,7 +124,7 @@ fun CardsListItems(list: CardsListData) {
                     text = "10 000 000.",
                     modifier = Modifier.align(Alignment.Top),
                     style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold),
-                    color = Color(0xFF223142)
+                    color = Color(R.color.background_card_blue)
                 )
                 Text(
                     text = "00",
@@ -131,7 +132,7 @@ fun CardsListItems(list: CardsListData) {
                         .align(Alignment.Bottom)
                         .padding(vertical = 3.dp),
                     style = TextStyle(fontSize = 12.sp),
-                    color = Color(0xFF223142)
+                    color = Color(R.color.background_card_blue)
                 )
                 Text(
                     text = "₼",
@@ -140,7 +141,7 @@ fun CardsListItems(list: CardsListData) {
                         .padding(3.dp)
                         .align(Alignment.Bottom),
                     style = TextStyle(fontSize = 12.sp),
-                    color = Color(0xFF223142)
+                    color = Color(R.color.background_card_blue)
                 )
             }
 

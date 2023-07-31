@@ -183,7 +183,7 @@ private fun MainContent(navController: NavController) {
                     modifier = Modifier.padding(vertical = 5.sdp),
                     text = stringResource(id = R.string.main_information),
                     style = TextStyle(
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Center
                     )
 
@@ -216,7 +216,7 @@ private fun MainContent(navController: NavController) {
                     text = stringResource(id = R.string.blockages),
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Center
                     )
                 )
@@ -227,7 +227,6 @@ private fun MainContent(navController: NavController) {
             modifier = Modifier,
             state = pagerState,
             pageSpacing = 0.dp,
-
             userScrollEnabled = true,
             reverseLayout = false,
             contentPadding = PaddingValues(0.dp),
