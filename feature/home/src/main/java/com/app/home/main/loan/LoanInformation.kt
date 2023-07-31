@@ -52,6 +52,7 @@ import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun LoanInformationDetails(navController: NavController){
+
     val data = loansList[0]
 
     Column(

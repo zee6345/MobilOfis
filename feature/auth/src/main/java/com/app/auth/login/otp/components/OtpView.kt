@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpCount: Int,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -90,7 +90,7 @@ private fun CharView(
 }
 
 @Composable
-fun OtpView(onValueChange:(String)->Unit) {
+fun OtpView(viewCount:Int, onValueChange: (String) -> Unit) {
     val focusRequester = remember { FocusRequester() }
     Surface(
         modifier = Modifier
@@ -110,6 +110,7 @@ fun OtpView(onValueChange:(String)->Unit) {
         }
 
         OtpTextField(
+            otpCount= viewCount,
             otpText = otpValue,
             onOtpTextChange = { value, _ ->
                 otpValue = value
@@ -122,7 +123,7 @@ fun OtpView(onValueChange:(String)->Unit) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun OtpPreview() {
-    OtpView(){
+    OtpView(6) {
 
     }
 //    Abc()

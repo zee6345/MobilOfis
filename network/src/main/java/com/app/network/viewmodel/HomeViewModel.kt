@@ -1,13 +1,16 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetCustomerBalance
 import com.app.network.data.responseModels.GetLoans
 import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
+import com.app.network.data.responseModels.GetRecentOps
 import com.app.network.data.responseModels.GetTrusts
+import com.app.network.helper.Error.handleException
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.repository.HomeRepository
@@ -45,6 +48,9 @@ class HomeViewModel : ViewModel() {
 
     private val _customerTrusts = MutableStateFlow<DataState<Any>?>(null)
     val customerTrusts: MutableStateFlow<DataState<Any>?> get() = _customerTrusts
+
+    private val _recentOps = MutableStateFlow<DataState<Any>?>(null)
+    val recentOps: MutableStateFlow<DataState<Any>?> get() = _recentOps
 
     fun getAccounts(customerId: Int) {
 
@@ -128,39 +134,6 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-
-
-//    fun getLastLogin(token:String){
-//        _lastLoginResponse.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try{
-//
-//                // for reference its response data model is LastLoginTime
-//                val post = async { repository.getLastLogin(token) }
-//                withContext(Dispatchers.Main){
-//                    _lastLoginResponse.value = DataState.Success(post.await())
-//                }
-//            } catch (e:Exception){
-//                e.printStackTrace()
-//                _lastLoginResponse.value = DataState.Error(e.message.toString())
-//            }
-//        }
-//    }
-
-    //    fun getUserInfo(token: String,customerNo: String){
-//        _userInfo.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.getUserInfo(token,customerNo) }
-//                withContext(Dispatchers.Main){
-//                    _userInfo.value = DataState.Success(post.await())
-//                }
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-//
     fun getBalance(customerId: Int){
         _accountBalance.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
@@ -183,20 +156,6 @@ class HomeViewModel : ViewModel() {
                 })
         }
     }
-
-//    fun setUserNickName(token: String,accountNickNameRequest: AccountNickNameRequest){
-//        _setAccountNickNameResponse.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.setUserNickName(token,accountNickNameRequest) }
-//                withContext(Dispatchers.Main){
-//                    _setAccountNickNameResponse.value = DataState.Success(post.await())
-//                }
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//        }
-//    }
 
     fun getAccountBlockByIBAN(customerId: Int, IBAN: String) {
         _accountsData.value = DataState.Loading
@@ -265,46 +224,30 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private fun handleException(throwable: Throwable):String {
-        return when (throwable) {
-            is ConnectException -> {
-                "no internet connection"
-            }
+    fun getRecentOps(customerId: Int){
+        _recentOps.value = DataState.Loading
 
-            is SocketTimeoutException -> {
-                "connection timeout"
-            }
-
-            is UnknownHostException -> {
-                "failed to reached network"
-            }
-
-            is HttpException -> {
-                when (throwable.code()) {
-                    401 -> {
-                        // HTTP 401 Unauthorized: Invalid credentials
-                        "Unauthorized: Invalid credentials"
-                    }
-                    403 -> {
-                        // HTTP 403 Forbidden: Access denied
-                        "Forbidden: Access denied"
-                    }
-                    404 -> {
-                        // HTTP 404 Not Found: Requested resource not found
-                        "Not Found: Requested resource not found"
-                    }
-                    // Add more cases for other HTTP error codes if needed
-                    else -> {
-                        // Handle other HTTP error codes with a generic message
-                        "Failed to connect to server"
+        viewModelScope.launch {
+            repository.getRecentOps(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object :Callback<GetRecentOps>{
+                override fun onResponse(
+                    call: Call<GetRecentOps>,
+                    response: Response<GetRecentOps>
+                ) {
+                    if (response.isSuccessful && response.body() != null){
+                        _recentOps.value = DataState.Success(response.body()!!)
+                    } else {
+                        _recentOps.value = DataState.Error(response.errorBody()!!.string())
                     }
                 }
-            }
 
-            else -> {
-                ""
-            }
+                override fun onFailure(call: Call<GetRecentOps>, t: Throwable) {
+                    _recentOps.value = DataState.Error(handleException(t))
+                }
+
+            })
         }
     }
+
+
 
 }

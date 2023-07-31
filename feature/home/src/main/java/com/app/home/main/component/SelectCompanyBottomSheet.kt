@@ -153,6 +153,6 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
 
 @Preview
 @Composable
-fun display() {
+private fun display() {
     SelectCompanyBottomSheet()
 }

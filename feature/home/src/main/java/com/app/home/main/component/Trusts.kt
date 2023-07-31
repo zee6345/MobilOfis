@@ -64,6 +64,8 @@ import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
 
+val trustsList =  mutableListOf<GetTrustsItem>()
+
 @Composable
 fun TrustsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
 
@@ -72,7 +74,7 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = viewMode
     val userDetails = fetchUserDetails()
 
     val isLoading = remember { mutableStateOf(false) }
-    val cardsList = remember { mutableListOf<GetTrustsItem>() }
+//    val cardsList = remember { mutableListOf<GetTrustsItem>() }
     val cardFilters = remember { DataProvider.filtersTrustsList }
 
     LaunchedEffect(Unit) {
@@ -117,7 +119,7 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = viewMode
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 5.dp)
             ) {
-                items(items = cardsList, itemContent = {
+                items(items = trustsList, itemContent = {
                     TrustsListItem(obj = it, navController)
                 })
             }
@@ -143,9 +145,9 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = viewMode
 
                 isLoading.value = false
 
-                cardsList.apply {
+                trustsList.apply {
                     clear()
-                    cardsList.addAll(data)
+                    trustsList.addAll(data)
                 }
 
             }

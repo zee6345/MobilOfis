@@ -71,6 +71,13 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
     val isLoading = remember { mutableStateOf(false) }
     val loginData by viewModel.data.collectAsState()
     var offset by remember { mutableStateOf(0f) }
+    val otpCount = remember { mutableStateOf(6) }
+
+    //set initial value for OTP view
+    when (loginType) {
+        0 -> otpCount.value = 5
+        1 -> otpCount.value = 6
+    }
 
 
     Column(
@@ -122,7 +129,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
 
 
             Column {
-                OtpView() {
+                OtpView(otpCount.value) {
                     otpValue.value = it
                 }
 
@@ -196,7 +203,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                         onClick = {
 //                    navController.navigate(pinNavigationRoute)
                             if (otpValue.value.isNotEmpty()) {
-                                if (otpValue.value.length == 6) {
+                                if (otpValue.value.length == otpCount.value) {
 
 //                                    val username = MainApp.session[Keys.KEY_USERNAME]
 

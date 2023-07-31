@@ -38,6 +38,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,6 +58,7 @@ import com.app.auth.login.otp.OtpScreen
 import com.app.auth.login.otp.otpScreen
 import com.app.network.utils.Message
 import com.app.network.data.DataState
+import com.app.network.data.callModels.LoginAsanRequest
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.helper.Keys
@@ -78,9 +80,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+    val isPswdVisible = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val loginData by viewModel.data.collectAsState()
+    val asanLogin by viewModel.asanLogin.collectAsState()
 
     BottomSheetScaffold(
         sheetPeekHeight = 50.sdp,
@@ -120,10 +124,22 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     )
                 )
 
-                BottomSheetItems(R.drawable.ic_location, stringResource(R.string.branches_and_atms), true)
+                BottomSheetItems(
+                    R.drawable.ic_location,
+                    stringResource(R.string.branches_and_atms),
+                    true
+                )
                 BottomSheetItems(R.drawable.ic_tariff, stringResource(R.string.tariffs), true)
-                BottomSheetItems(R.drawable.ic_whatsapp_support, stringResource(R.string.whatsapp_support), true)
-                BottomSheetItems(R.drawable.ic_call_support, stringResource(R.string.call_center), true)
+                BottomSheetItems(
+                    R.drawable.ic_whatsapp_support,
+                    stringResource(R.string.whatsapp_support),
+                    true
+                )
+                BottomSheetItems(
+                    R.drawable.ic_call_support,
+                    stringResource(R.string.call_center),
+                    true
+                )
 
                 Row(
                     modifier = Modifier
@@ -204,7 +220,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         )
                     }, trailingIcon = {
                         if (userErrorCheck)
-                            Icon(Icons.Filled.Info, stringResource(R.string.error), tint = Color.Red)
+                            Icon(
+                                Icons.Filled.Info,
+                                stringResource(R.string.error),
+                                tint = Color.Red
+                            )
                     }, colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF223142),
@@ -218,7 +238,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 OutlinedTextField(
                     value = paswdState.value,
                     onValueChange = { paswdState.value = it },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (isPswdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     label = {
                         Text(
@@ -229,7 +249,26 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         )
                     }, trailingIcon = {
                         if (pswdErrorCheck)
-                            Icon(Icons.Filled.Info, stringResource(id = R.string.error), tint = Color.Red)
+                            Icon(
+                                Icons.Filled.Info,
+                                stringResource(id = R.string.error),
+                                tint = Color.Red
+                            )
+
+                        if (isPswdVisible.value) {
+                            Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible),
+                                "",
+                                modifier = Modifier.clickable {
+                                    isPswdVisible.value = false
+                                })
+                        } else {
+                            Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible_off),
+                                "",
+                                modifier = Modifier.clickable {
+                                    isPswdVisible.value = true
+                                })
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -332,10 +371,28 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                             }
 
                             2 -> {
-                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT).show()
+                                if (usernameState.value.isNotEmpty()) {
+                                    userErrorCheck = false
+                                    if (paswdState.value.isNotEmpty()) {
+                                        pswdErrorCheck = false
+
+                                        //handle success
+                                        viewModel.asanLogin(
+                                            LoginAsanRequest(
+                                                phoneNumber = usernameState.value,
+                                                userId = paswdState.value,
+                                                channel = "INT"
+                                            )
+                                        )
+
+                                    } else {
+                                        pswdErrorCheck = !pswdErrorCheck
+                                    }
+                                } else {
+                                    userErrorCheck = !userErrorCheck
+                                }
                             }
                         }
-
 
 
                     },
@@ -346,7 +403,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 ) {
                     Text(
-                        stringResource(R.string.login), modifier = Modifier.padding(vertical = 12.dp), color = Color.White
+                        stringResource(R.string.login),
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        color = Color.White
                     )
                 }
 
@@ -416,6 +475,27 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     }
 
                 }
+
+            }
+        }
+    }
+
+
+    asanLogin?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                }
+            }
+
+            is DataState.Error -> {
+
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
 
             }
         }
@@ -539,7 +619,9 @@ private fun LanguageOptions() {
             )
             .clickable { selectedBoxIndex.value = 0 }) {
             androidx.compose.material.Text(
-                text = stringResource(R.string.az), modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.az),
+                modifier = Modifier.padding(6.dp),
+                style = TextStyle(
                     if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )
@@ -553,7 +635,9 @@ private fun LanguageOptions() {
             )
             .clickable { selectedBoxIndex.value = 1 }) {
             androidx.compose.material.Text(
-                text = stringResource(R.string.en), modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.en),
+                modifier = Modifier.padding(6.dp),
+                style = TextStyle(
                     if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )
@@ -567,7 +651,9 @@ private fun LanguageOptions() {
             )
             .clickable { selectedBoxIndex.value = 2 }) {
             androidx.compose.material.Text(
-                text = stringResource(R.string.ru), modifier = Modifier.padding(6.dp), style = TextStyle(
+                text = stringResource(R.string.ru),
+                modifier = Modifier.padding(6.dp),
+                style = TextStyle(
                     if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
                     fontSize = 12.sp
                 )

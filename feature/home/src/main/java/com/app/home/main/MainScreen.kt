@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -24,7 +26,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,11 +43,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.component.CardMenuContent
+
 import com.app.home.main.component.SelectCompanyBottomSheet
 import com.app.home.main.component.TabLayoutMenu
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetCustomerBalance
 import com.app.network.data.responseModels.GetCustomerBalanceItem
+import com.app.network.data.responseModels.GetRecentOps
+import com.app.network.data.responseModels.GetRecentOpsItem
 
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
@@ -50,11 +58,14 @@ import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
+import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 
 private const val TAG = "MenuScreen"
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
 
@@ -68,214 +79,446 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
+    val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
+    var isBottomSheetExpanded by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
-    val accountBalance by rememberUpdatedState(viewModel.accountBalance.collectAsState())
+    val accountBalance by viewModel.accountBalance.collectAsState()
+    val recentOps by viewModel.recentOps.collectAsState()
+//    val dates = mutableListOf<String>()
+    val recentData = mutableListOf<GetRecentOpsItem>()
+
     val context = LocalContext.current
     val userDetails = fetchUserDetails()
 
     LaunchedEffect(key1 = true) {
         viewModel.getBalance(userDetails.customerNo)
+        viewModel.getRecentOps(userDetails.customerNo)
     }
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFFF3F7FA))
-    ) {
-        Surface(
-            modifier = Modifier
-                .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
-                .fillMaxWidth()
-                .weight(0.25f),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxHeight()
-            ) {
 
-                Column(
+
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetPeekHeight = 40.sdp,
+        modifier = Modifier.padding(bottom = 40.sdp),
+        sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        sheetContent = {
+
+            Column(Modifier.fillMaxWidth()) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                        .background(color = Color(0xFF203657).copy(alpha = 0.9f)),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 22.dp, end = 12.dp)
+                        .clickable {
+                            isBottomSheetExpanded = !isBottomSheetExpanded
 
-                    ) {
-
-                        Row(
-                            modifier = Modifier.weight(0.7f),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_business_icon),
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .align(Top)
-                                    .clickable {
-                                        selectCompanyState.value = !selectCompanyState.value
-                                    },
-                                contentDescription = "",
-                                tint = Color.White
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .wrapContentHeight()
-                                    .padding(start = 5.dp)
-                            ) {
-                                Text(
-                                    text = userDetails.customerName,
-                                    style = TextStyle(color = Color.White, fontSize = 14.sp),
-                                    modifier = Modifier
-                                        .padding(start = 3.dp)
-                                        .widthIn(max = 140.dp)
-                                        .wrapContentWidth(align = Alignment.Start),
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = stringResource(R.string.semire), style = TextStyle(
-                                        color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
-                                    )
-                                )
+                            coroutineScope.launch {
+                                if (isBottomSheetExpanded) {
+                                    scaffoldState.bottomSheetState.expand()
+                                } else {
+                                    scaffoldState.bottomSheetState.collapse()
+                                }
                             }
 
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_business_expand),
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .align(Top)
-                                    .clickable {
-                                        selectCompanyState.value = !selectCompanyState.value
-                                    },
-                                contentDescription = ""
+                        }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_options_up),
+                        modifier = Modifier.size(width = 24.sdp, height = 24.sdp),
+                        tint = Color(0xFF223142),
+                        contentDescription = ""
+                    )
+                }
+
+
+                Text(
+                    text = "Recent operations on accounts",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 5.sdp),
+                    fontWeight = FontWeight.Medium,
+                    style = TextStyle(
+                        fontSize = 14.sp
+                    )
+                )
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Row {
+
+                        Icon(
+                            painterResource(id = R.drawable.ic_options_arrow_in),
+                            modifier = Modifier.size(width = 18.sdp, height = 12.sdp),
+                            tint = Color(0xFF223142),
+                            contentDescription = null
+                        )
+
+                        Spacer(
+                            modifier = Modifier.size(width = 10.sdp, height = 1.sdp)
+                        )
+
+                        Text(
+                            text = "5600.00",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                lineHeight = 18.4.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF203657),
+                                textAlign = TextAlign.Right,
+                            )
+                        )
+
+                    }
+
+                    Spacer(
+                        modifier = Modifier.size(width = 20.sdp, height = 1.sdp)
+                    )
+
+                    Row {
+
+                        Icon(
+                            painterResource(id = R.drawable.ic_options_arrow_out),
+                            modifier = Modifier.size(width = 18.sdp, height = 12.sdp),
+                            tint = Color(0xFFFF4E57),
+                            contentDescription = null
+                        )
+
+                        Spacer(
+                            modifier = Modifier.size(width = 10.sdp, height = 1.sdp)
+                        )
+
+
+                        Text(
+                            text = "-5600.00",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                lineHeight = 18.4.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFFFF4E57),
+                                textAlign = TextAlign.Right,
+                            )
+                        )
+
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.sdp, vertical = 5.sdp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val selectedBoxIndex = remember { mutableStateOf(-1) }
+
+                    Row() {
+                        Box(modifier = Modifier
+                            .padding(6.dp)
+                            .background(
+                                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(
+                                    0xFFE7EEFC
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { selectedBoxIndex.value = 0 }) {
+                            Text(
+                                text = "All", modifier = Modifier.padding(6.dp), style = TextStyle(
+                                    if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
+                                    fontSize = 12.sp
+                                )
                             )
                         }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(0.3f)
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Top
-                        ) {
-                            Image(
-                                painter =
-                                if (showBalance.value)
-                                    painterResource(id = R.drawable.ic_password_visible_off)
-                                else painterResource(id = R.drawable.ic_password_visible),
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .align(Top)
-                                    .clickable {
-                                        showBalance.value = !showBalance.value
-                                    },
-                                contentDescription = ""
+                        Box(modifier = Modifier
+                            .padding(6.dp)
+                            .background(
+                                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(
+                                    0xFFE7EEFC
+                                ),
+                                shape = RoundedCornerShape(8.dp)
                             )
-                            Spacer(modifier = Modifier.width(20.dp))
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_option_icon),
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .align(Top),
-                                contentDescription = ""
+                            .clickable { selectedBoxIndex.value = 1 }) {
+                            Text(
+                                text = "Income", modifier = Modifier.padding(6.dp), style = TextStyle(
+                                    if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
+                                    fontSize = 12.sp
+                                )
                             )
                         }
+                        Box(modifier = Modifier
+                            .padding(6.dp)
+                            .background(
+                                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(
+                                    0xFFE7EEFC
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { selectedBoxIndex.value = 2 }) {
+                            Text(
+                                text = "Expenditure",
+                                modifier = Modifier.padding(6.dp),
+                                style = TextStyle(
+                                    if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
+                                    fontSize = 12.sp
+                                )
+                            )
+                        }
+                    }
 
+                    Box() {
+                        Text(
+                            text = "More"
+                        )
+                    }
+
+                    Box() {
+                        Icon(
+                            painterResource(R.drawable.ic_transfers),
+                            tint = Color(0xFF223142),
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 10.sdp)
+                        )
                     }
 
                 }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .background(color = Color(0xFF203657)),
-                    verticalArrangement = Arrangement.Center
+                LazyColumn(
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Column(
-                        Modifier
-                            .padding(horizontal = 22.dp)
-                            .pointerInput(Unit) {
-                                detectTapGestures {
+                    recentData?.groupBy { it.trn_date }?.forEach { (date, itemList) ->
+                        item {
+                            DateHeader(date)
+                        }
+                        items(itemList.size) { item ->
+                            CardsItem(itemList[item])
+                        }
+                    }
+                }
 
-                                    touchPoint = it
-                                    balancePopup.value = !balancePopup.value
+
+            }
+
+
+        }) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(0xFFF3F7FA))
+        ) {
+            Surface(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
+                    .fillMaxWidth()
+                    .weight(0.25f),
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = Color(0xFF203657).copy(alpha = 0.9f)),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 22.dp, end = 12.dp)
+
+                        ) {
+
+                            Row(
+                                modifier = Modifier.weight(0.7f),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_business_icon),
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .align(Top)
+                                        .clickable {
+                                            selectCompanyState.value = !selectCompanyState.value
+                                        },
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                                Column(
+                                    modifier = Modifier
+                                        .wrapContentHeight()
+                                        .padding(start = 5.dp)
+                                ) {
+                                    Text(
+                                        text = userDetails.customerName,
+                                        style = TextStyle(color = Color.White, fontSize = 14.sp),
+                                        modifier = Modifier
+                                            .padding(start = 3.dp)
+                                            .widthIn(max = 140.dp)
+                                            .wrapContentWidth(align = Alignment.Start),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.semire), style = TextStyle(
+                                            color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
+                                        )
+                                    )
                                 }
 
-                            },
-                        verticalArrangement = Arrangement.Center
-
-                    ) {
-                        val annotatedString = buildAnnotatedString {
-                            withStyle(style = SpanStyle(Color.White.copy(0.5f), fontSize = 14.sp)) {
-                                append(stringResource(R.string.total_accounts))
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_business_expand),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .align(Top)
+                                        .clickable {
+                                            selectCompanyState.value = !selectCompanyState.value
+                                        },
+                                    contentDescription = ""
+                                )
                             }
-                            withStyle(style = SpanStyle(Color.White, fontSize = 14.sp)) {
-                                append(customerBalanceType.value.name)
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(0.3f)
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Top
+                            ) {
+                                Image(
+                                    painter =
+                                    if (showBalance.value)
+                                        painterResource(id = R.drawable.ic_password_visible_off)
+                                    else painterResource(id = R.drawable.ic_password_visible),
+                                    modifier = Modifier
+                                        .size(22.dp)
+                                        .align(Top)
+                                        .clickable {
+                                            showBalance.value = !showBalance.value
+                                        },
+                                    contentDescription = ""
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_option_icon),
+                                    modifier = Modifier
+                                        .size(22.dp)
+                                        .align(Top),
+                                    contentDescription = ""
+                                )
                             }
-                        }
 
-                        Row() {
-                            Text(
-                                text = annotatedString,
-                                modifier = Modifier
-                                    .align(Bottom)
-                                    .padding(end = 8.dp, top = 3.dp)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_business_expand),
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .align(Bottom),
-                                contentDescription = ""
-                            )
-
-                        }
-                        Row() {
-                            Text(
-                                text = balance.value,
-                                modifier = Modifier.align(Top),
-                                style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold),
-                                color = Color.White
-                            )
-
-                            Text(
-                                text = stringResource(R.string.text_currency_type),
-                                modifier = Modifier
-                                    .padding(end = 22.dp)
-                                    .padding(3.dp)
-                                    .align(Bottom),
-                                style = TextStyle(fontSize = 24.sp),
-                                color = Color.White
-                            )
                         }
 
                     }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = Color(0xFF203657)),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            Modifier
+                                .padding(horizontal = 22.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures {
+
+                                        touchPoint = it
+                                        balancePopup.value = !balancePopup.value
+                                    }
+
+                                },
+                            verticalArrangement = Arrangement.Center
+
+                        ) {
+                            val annotatedString = buildAnnotatedString {
+                                withStyle(style = SpanStyle(Color.White.copy(0.5f), fontSize = 14.sp)) {
+                                    append(stringResource(R.string.total_accounts))
+                                }
+                                withStyle(style = SpanStyle(Color.White, fontSize = 14.sp)) {
+                                    append(customerBalanceType.value.name)
+                                }
+                            }
+
+                            Row() {
+                                Text(
+                                    text = annotatedString,
+                                    modifier = Modifier
+                                        .align(Bottom)
+                                        .padding(end = 8.dp, top = 3.dp)
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_business_expand),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .align(Bottom),
+                                    contentDescription = ""
+                                )
+
+                            }
+                            Row() {
+                                Text(
+                                    text = balance.value,
+                                    modifier = Modifier.align(Top),
+                                    style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold),
+                                    color = Color.White
+                                )
+
+                                Text(
+                                    text = stringResource(R.string.text_currency_type),
+                                    modifier = Modifier
+                                        .padding(end = 22.dp)
+                                        .padding(3.dp)
+                                        .align(Bottom),
+                                    style = TextStyle(fontSize = 24.sp),
+                                    color = Color.White
+                                )
+                            }
+
+                        }
+                    }
+
                 }
 
             }
 
+            Column(
+                modifier = Modifier
+                    .weight(0.75f)
+                    .padding(horizontal = 5.dp)
+            ) {
+                CardMenuContent()
+
+                TabLayoutMenu(navController)
+
+            }
+
+
         }
 
-        Column(
-            modifier = Modifier
-                .weight(0.75f)
-                .padding(horizontal = 5.dp)
-        ) {
-            CardMenuContent()
-
-            TabLayoutMenu(navController)
-
-        }
 
 
     }
+
+
 
     SelectCompanyBottomSheet(selectCompanyState)
 
@@ -310,7 +553,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
 
 
     //handle API Responce
-    accountBalance.value?.let {
+    accountBalance?.let {
         when (it) {
             is DataState.Loading -> {
 
@@ -338,6 +581,153 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
 
     }
 
+
+    //handle API Responce
+    recentOps?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                try {
+                    val data = it.data as GetRecentOps
+
+                    data.forEach{
+//                        dates.apply {
+//                            clear()
+//                            add(it.trn_date)
+//                        }
+
+                        recentData.apply {
+                            clear()
+                            add(it)
+                        }
+                    }
+
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+
+    }
+
+
+}
+@Composable
+fun DateHeader(date: String) {
+    Text(
+        text = date,
+        style = Typography().body2.copy(fontWeight = FontWeight.Bold),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
+    )
+}
+
+@Composable
+private fun CardsItem(data: GetRecentOpsItem) {
+
+    Card(
+        modifier = Modifier
+            .padding(vertical = 5.sdp, horizontal = 5.sdp)
+            .fillMaxWidth()
+            .clickable {
+
+            },
+        elevation = 1.dp,
+        backgroundColor = Color(0xFFE7EEFC),
+        shape = RoundedCornerShape(corner = CornerSize(12.dp))
+    ) {
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.sdp, vertical = 5.sdp),
+
+            ) {
+
+
+            Column(
+                Modifier.fillMaxWidth()
+            ) {
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Text(
+                        "PHARMASCOPE LIMITED",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            lineHeight = 18.4.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
+                        modifier = Modifier.padding(vertical = 5.sdp)
+                    )
+
+
+                    Text(
+                        "${data.trn_date}",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF203657),
+                            textAlign = TextAlign.Right,
+                        ),
+                        modifier = Modifier.padding(vertical = 5.sdp)
+                    )
+                }
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Text(
+                        "LIABILITY COMPANY",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            lineHeight = 18.4.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
+
+                        )
+
+                    Text(
+                        "${data.trn_time}",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            lineHeight = 16.1.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF859DB5),
+                        ),
+
+                        )
+                }
+
+
+            }
+
+        }
+
+
+    }
 
 }
 
@@ -445,9 +835,8 @@ private fun fetchUserDetails(): LoginVerifyResponse {
     return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
-@Preview(device = Devices.PIXEL_4)
+@Preview(device = Devices.PIXEL_4, showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-//SimpleTabRow()
     MenuScreen(rememberNavController())
 }

@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class LoginAsanRequest(
     @SerializedName("phoneNumber")
-    val phoneNumber: Int,
+    val phoneNumber: String,
     @SerializedName("userId")
-    val userId: Int,
+    val userId: String,
     @SerializedName("channel")
     val channel: String
 

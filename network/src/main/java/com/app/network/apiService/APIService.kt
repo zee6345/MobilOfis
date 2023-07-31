@@ -15,6 +15,7 @@ import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.GetNewCards
+import com.app.network.data.responseModels.GetRecentOps
 import com.app.network.data.responseModels.GetTrusts
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
@@ -40,9 +41,8 @@ interface APIService {
     ): Call<LoginVerifyResponse>
 
 
-
     @POST("auth/asan")
-    suspend fun loginAsan(@Body loginAsanRequest: LoginAsanRequest): LoginAsanResponse
+    fun loginAsan(@Body loginAsanRequest: LoginAsanRequest): Call<LoginAsanResponse>
 
     @POST("auth/changepassword")
     suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): ChangePasswordResponse
@@ -86,13 +86,13 @@ interface APIService {
 
 
 
-
     @GET("customers/{customerId}/accounts/blocksbyiban/{iban}")
     fun getAccountBlockByIBAN(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int,
         @Path("iban") iban: String
     ): Call<ResponseBody>
+
 
     @GET("brcards/get-old-business-cards-by-cif/{customerId}")
     fun getOldBusinessCards(
@@ -120,5 +120,12 @@ interface APIService {
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
     ):Call<GetTrusts>
+
+
+    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
+    fun getRecentOps(
+        @Header("Auth_token") token: String,
+        @Path("customerId") customerId: Int
+    ):Call<GetRecentOps>
 
 }

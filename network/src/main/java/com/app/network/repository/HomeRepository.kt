@@ -6,6 +6,7 @@ import com.app.network.data.responseModels.GetCustomerBalance
 import com.app.network.data.responseModels.GetLoans
 import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
+import com.app.network.data.responseModels.GetRecentOps
 import com.app.network.data.responseModels.GetTrusts
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
@@ -53,6 +54,10 @@ class HomeRepository: BaseRetrofitClient() {
 
     fun getTrusts(token: String, customerId: Int):Call<GetTrusts>{
         return apiService.getTrusts(token, customerId)
+    }
+
+    fun getRecentOps(token: String, customerId: Int):Call<GetRecentOps>{
+        return apiService.getRecentOps(token, customerId)
     }
 
 

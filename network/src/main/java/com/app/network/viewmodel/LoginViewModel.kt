@@ -2,6 +2,7 @@ package com.app.network.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.network.data.DataState
 import com.app.network.data.callModels.ChangePasswordRequest
 import com.app.network.data.callModels.LoginAsanRequest
@@ -13,6 +14,7 @@ import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
+import com.app.network.helper.Error
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.repository.LoginRepository
@@ -38,7 +40,9 @@ class LoginViewModel : ViewModel() {
     val data: MutableStateFlow<DataState<Any>?> get() = _data
 
 
-    val loginAsan = MutableLiveData<LoginAsanResponse>()
+    private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
+    val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
+
     val changePassword = MutableLiveData<ChangePasswordResponse>()
     val changePasswordVerification = MutableLiveData<VerifyChangePasswordResponse>()
 
@@ -63,7 +67,7 @@ class LoginViewModel : ViewModel() {
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        handleException(t)
+                        _data.value = DataState.Error(Error.handleException(t))
                     }
 
                 })
@@ -105,7 +109,10 @@ class LoginViewModel : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.sendLoginVerificationRequest(MainApp.session[Keys.KEY_TOKEN]!!, loginVerificationRequest)
+            repository.sendLoginVerificationRequest(
+                MainApp.session[Keys.KEY_TOKEN]!!,
+                loginVerificationRequest
+            )
                 .enqueue(object : Callback<LoginVerifyResponse> {
                     override fun onResponse(
                         call: Call<LoginVerifyResponse>,
@@ -119,24 +126,35 @@ class LoginViewModel : ViewModel() {
                     }
 
                     override fun onFailure(call: Call<LoginVerifyResponse>, t: Throwable) {
-                        handleException(t)
+                        _data.value = DataState.Error(Error.handleException(t))
                     }
 
                 })
         }
     }
 
-    fun loginAsan(loginAsanRequest: LoginAsanRequest) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val post = repository.sendLoginAsanRequest(loginAsanRequest)
-                withContext(Dispatchers.Main) {
-                    loginAsan.value = post
+    fun asanLogin(loginAsanRequest: LoginAsanRequest) {
+        _asanLogin.value = DataState.Loading
+
+        viewModelScope.launch {
+            repository.sendLoginAsanRequest(loginAsanRequest).enqueue(object :Callback<LoginAsanResponse>{
+                override fun onResponse(
+                    call: Call<LoginAsanResponse>,
+                    response: Response<LoginAsanResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null){
+                        _asanLogin.value = DataState.Success(response.body()!!)
+                    } else{
+                        _asanLogin.value = DataState.Error(response.errorBody()!!.string())
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // Handle error here, maybe update a separate error LiveData
-            }
+
+                override fun onFailure(call: Call<LoginAsanResponse>, t: Throwable) {
+                    _asanLogin.value = DataState.Error(Error.handleException(t))
+                }
+
+            })
+
         }
     }
 
@@ -188,10 +206,12 @@ class LoginViewModel : ViewModel() {
                         // HTTP 401 Unauthorized: Invalid credentials
                         _data.value = DataState.Error("Unauthorized: Invalid credentials")
                     }
+
                     403 -> {
                         // HTTP 403 Forbidden: Access denied
                         _data.value = DataState.Error("Forbidden: Access denied")
                     }
+
                     404 -> {
                         // HTTP 404 Not Found: Requested resource not found
                         _data.value = DataState.Error("Not Found: Requested resource not found")
