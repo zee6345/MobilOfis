@@ -89,7 +89,7 @@ fun LoanInfoOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                        color = Color(0xFF223142)
+                        color = Color(R.color.background_card_blue)
                     )
                 )
             }
@@ -104,7 +104,7 @@ fun LoanInfoOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
                 style =  TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    color = Color(0xFF223142)
+                    color = Color(R.color.background_card_blue)
                 )
             )
 

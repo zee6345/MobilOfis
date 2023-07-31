@@ -154,7 +154,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = stringResource(R.string.block_number), style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF859DB5),
+                                    color = Color(R.color.grey_text) ,
 
                                     )
                             )
@@ -163,7 +163,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = blockNumber.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
+                                    color = Color(R.color.background_card_blue),
 
                                     )
                             )
@@ -184,7 +184,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = stringResource(R.string.blocked_amount), style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF859DB5),
+                                    color = Color(R.color.grey_text),
 
                                     )
                             )
@@ -193,7 +193,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = blockedAmount.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
+                                    color = Color(R.color.background_card_blue),
 
                                     )
                             )
@@ -213,7 +213,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = stringResource(R.string.block_date), style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF859DB5),
+                                    color = Color(R.color.grey_text),
 
                                     )
                             )
@@ -222,7 +222,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = blockDate.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
+                                    color = Color(R.color.background_card_blue),
 
                                     )
                             )
@@ -243,7 +243,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF859DB5),
+                                    color = Color(R.color.grey_text),
 
                                     )
                             )
@@ -252,7 +252,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel
                                 text = blockReason.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
+                                    color = Color(R.color.background_card_blue),
 
                                     )
                             )

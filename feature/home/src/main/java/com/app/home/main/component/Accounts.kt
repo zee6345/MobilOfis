@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.home.R
 import com.app.home.main.account.navigation.accountDetailsRoute
 import com.app.network.data.DataState
 import com.app.network.data.responseModels.GetAccounts
@@ -162,7 +163,7 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
                 Text(
                     text = obj.BRANCH_NAME,
                     style = TextStyle(fontSize = 14.sp),
-                    color = Color(0xFF223142),
+                    color = Color(R.color.background_card_blue),
                     modifier = Modifier
                         .padding(vertical = 5.dp)
                 )
@@ -179,7 +180,7 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
                         text = obj.IBAN,
                         modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
                         style = TextStyle(fontSize = 11.sp),
-                        color = Color(0xFF859DB5)
+                        color = Color(R.color.grey_text)
                     )
                 }
             }
@@ -191,7 +192,7 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
                 style = TextStyle(
                     fontSize = 14.sp,
                     textAlign = TextAlign.End,
-                    color = Color(0xFF223142)
+                    color = Color(R.color.background_card_blue)
                 )
             )
         }

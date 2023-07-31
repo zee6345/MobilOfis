@@ -110,7 +110,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
             ) {
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                        if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(0xFFE7EEFC),
                         shape = RoundedCornerShape(size = 6.dp)
                     )
                     .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -126,7 +126,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
                         style = TextStyle(
                             fontSize = 12.sp,
                             color = if (selectedBoxIndex.value == 0) Color.White else Color(
-                                0xFF223142
+                                R.color.background_card_blue
                             )
                         )
                     )
@@ -136,7 +136,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                        if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(0xFFE7EEFC),
                         shape = RoundedCornerShape(size = 6.dp)
                     )
                     .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -150,7 +150,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
                         stringResource(R.string.tin_based), style = TextStyle(
                             fontSize = 12.sp,
                             color = if (selectedBoxIndex.value == 1) Color.White else Color(
-                                0xFF223142
+                                R.color.background_card_blue
                             )
                         )
                     )
@@ -286,7 +286,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                 Text(
                     text = obj.nickName,
                     style = TextStyle(fontSize = 14.sp),
-                    color = Color(0xFF223142),
+                    color = Color(R.color.background_card_blue),
                     modifier = Modifier
                         .padding(vertical = 5.dp)
                         .fillMaxWidth()
@@ -305,7 +305,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                     Text(
                         text = obj.EncryptedPan,
                         style = TextStyle(fontSize = 14.sp),
-                        color = Color(0xFF223142),
+                        color = Color(R.color.background_card_blue),
                         modifier = Modifier.padding(start = 4.dp)
                     )
 
@@ -326,7 +326,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                         Text(
 
                             text = "${obj.AdditionNumb}", style = TextStyle(
-                                fontSize = 14.sp, color = Color(0xFF859DB5)
+                                fontSize = 14.sp, color = Color(R.color.grey_text)
                             )
 
                         )
@@ -337,7 +337,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
             Text(
                 text = if (obj.Balance == null) "0.00" else "${obj.Balance}",
                 style = TextStyle(fontSize = 14.sp),
-                color = Color(0xFF223142)
+                color = Color(R.color.background_card_blue)
             )
         }
 
@@ -351,7 +351,6 @@ private fun FilterView(filter: CardFilters) {
         modifier = Modifier
             .padding(vertical = 5.dp)
             .clickable {
-
             },
         elevation = 1.dp,
         backgroundColor = Color.White,

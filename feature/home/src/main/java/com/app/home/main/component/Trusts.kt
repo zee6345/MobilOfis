@@ -190,7 +190,7 @@ private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
 
                 Text(
                     obj.IBAN,
-                    style = TextStyle(fontSize = 12.sp, color = Color(0xFF859DB5))
+                    style = TextStyle(fontSize = 12.sp, color = Color(R.color.grey_text))
                 )
             }
 
@@ -202,7 +202,7 @@ private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
                     text = obj.BALANCE,
                     style = TextStyle(
                         fontSize = 14.sp,
-                        color = Color(0xFF223142),
+                        color = Color(R.color.background_card_blue),
                         textAlign = TextAlign.Right
                     ),
                     modifier = Modifier
@@ -214,7 +214,7 @@ private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
                     text = "${obj.INTEREST_RATIO} %",
                     style = TextStyle(
                         fontSize = 14.sp,
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Right
                     ),
                     modifier = Modifier
@@ -280,7 +280,7 @@ private fun Filters() {
     ) {
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -288,7 +288,7 @@ private fun Filters() {
             Text(
                 stringResource(R.string.current_deposits), style = TextStyle(
                     fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
+                    color = if (selectedBoxIndex.value == 0) Color.White else Color(R.color.background_card_blue)
                 )
             )
         }
@@ -296,7 +296,7 @@ private fun Filters() {
 
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -304,7 +304,7 @@ private fun Filters() {
             Text(
                 stringResource(R.string.closed_deposits), style = TextStyle(
                     fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
+                    color = if (selectedBoxIndex.value == 1) Color.White else Color(R.color.background_card_blue)
                 )
             )
         }
