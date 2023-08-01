@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.home.R
 
 @Composable
 fun FingerPrintConfirBottomSheetScreen() {
@@ -90,7 +91,7 @@ fun FingerPrintModalBottomSheet(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
-                        .background(Color(0xFFE7EEFC), RoundedCornerShape(12.dp))
+                        .background(Color(R.color.border_grey), RoundedCornerShape(12.dp))
                 ) {
                     Text(
                         "Then", modifier = Modifier.padding(vertical = 10.dp), style = TextStyle(

@@ -128,7 +128,7 @@ fun WelcomePinScreen(navController: NavController) {
                     Image(
                         painter = painterResource(id = R.drawable.exit_icon),
                         contentDescription = "",
-                        colorFilter = ColorFilter.tint(Color(0xFF223142)),
+                        colorFilter = ColorFilter.tint(Color(com.app.home.R.color.background_card_blue)),
                         modifier = Modifier
                             .size(35.dp)
                             .align(Alignment.CenterVertically)

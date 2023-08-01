@@ -85,7 +85,7 @@ fun BottomSheetItem(iconRes: Int, title: String) {
     Row(
         modifier = Modifier
             .padding(start = 18.dp)
-            .dashedBorder(3.dp, Color(0xFFE7EEFC))
+            .dashedBorder(3.dp, Color(com.app.home.R.color.border_grey))
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
     ) {

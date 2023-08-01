@@ -120,8 +120,8 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(0xFFE7EEFC),
-                        unfocusedLabelColor = Color(0xFF859DB5),
+                        unfocusedBorderColor = Color(R.color.border_grey),
+                        unfocusedLabelColor = Color(R.color.grey_text),
                         focusedLabelColor = Color(0xFF223142),
                     ),
                     singleLine = true
@@ -133,7 +133,7 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                         .width(2.sdp)
                         .height(1.sdp)
                         .background(
-                            color = Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 10.sdp)
+                            color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
                         )
                         .align(Alignment.CenterVertically)
                 )
@@ -156,8 +156,8 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>){
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(0xFFE7EEFC),
-                        unfocusedLabelColor = Color(0xFF859DB5),
+                        unfocusedBorderColor = Color(R.color.border_grey),
+                        unfocusedLabelColor = Color(R.color.grey_text),
                         focusedLabelColor = Color(0xFF223142),
                     ),
                     singleLine = true

@@ -341,7 +341,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                             checkedThumbColor = Color.White,
                             checkedTrackColor = Color(0xFF1DD580),
                             uncheckedThumbColor = Color.White,
-                            uncheckedTrackColor = Color(0xFFE7EEFC),
+                            uncheckedTrackColor = Color(R.color.border_grey),
 
                             )
                     )

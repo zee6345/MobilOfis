@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import com.app.transfer.components.AccountMenuModel
 import com.app.transfer.components.CurrencyModel
 import com.app.transfer.components.DateMenuModel
+import com.app.transfer.R
 import com.app.transfer.components.StatusModel
 import com.app.transfer.components.TypeModel
 
@@ -76,7 +77,7 @@ object DataClassTransfer {
         )
     val topMenuList = listOf(
         MainCardTransfer(
-            title = "Signature\n" + "Waiting", color = Color(0xff2CCAD3), number = 3
+            title = "Signature\n" + "Waiting", color = Color(R.color.blueColor), number = 3
         ),
         MainCardTransfer(
             title = "Execution\n" + "done", color = Color(0xff26D978), number = 3

@@ -183,7 +183,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color(0xFFE7EEFC), // Change the background color here
+                            backgroundColor = Color(com.app.home.R.color.border_grey), // Change the background color here
                             contentColor = Color(0xFF203657) // Change the text color here if needed
                         ),
                         modifier = Modifier

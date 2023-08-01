@@ -130,7 +130,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                     Icon(
                         painterResource(id = R.drawable.ic_options_up),
                         modifier = Modifier.size(width = 24.sdp, height = 24.sdp),
-                        tint = Color(0xFF223142),
+                        tint = Color(R.color.background_card_blue),
                         contentDescription = ""
                     )
                 }
@@ -160,7 +160,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         Icon(
                             painterResource(id = R.drawable.ic_options_arrow_in),
                             modifier = Modifier.size(width = 18.sdp, height = 12.sdp),
-                            tint = Color(0xFF223142),
+                            tint = Color(R.color.background_card_blue),
                             contentDescription = null
                         )
 
@@ -228,15 +228,15 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         Box(modifier = Modifier
                             .padding(6.dp)
                             .background(
-                                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(
-                                    0xFFE7EEFC
+                                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(
+                                    R.color.border_grey
                                 ),
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable { selectedBoxIndex.value = 0 }) {
                             Text(
                                 text = "All", modifier = Modifier.padding(6.dp), style = TextStyle(
-                                    if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
+                                    if (selectedBoxIndex.value == 0) Color.White else Color(R.color.background_card_blue),
                                     fontSize = 12.sp
                                 )
                             )
@@ -244,15 +244,15 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         Box(modifier = Modifier
                             .padding(6.dp)
                             .background(
-                                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(
-                                    0xFFE7EEFC
+                                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(
+                                    R.color.border_grey
                                 ),
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable { selectedBoxIndex.value = 1 }) {
                             Text(
                                 text = "Income", modifier = Modifier.padding(6.dp), style = TextStyle(
-                                    if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
+                                    if (selectedBoxIndex.value == 1) Color.White else Color(R.color.background_card_blue),
                                     fontSize = 12.sp
                                 )
                             )
@@ -260,8 +260,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                         Box(modifier = Modifier
                             .padding(6.dp)
                             .background(
-                                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(
-                                    0xFFE7EEFC
+                                if (selectedBoxIndex.value == 2) Color(R.color.background_card_blue) else Color(
+                                    R.color.border_grey
                                 ),
                                 shape = RoundedCornerShape(8.dp)
                             )
@@ -270,7 +270,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                                 text = "Expenditure",
                                 modifier = Modifier.padding(6.dp),
                                 style = TextStyle(
-                                    if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
+                                    if (selectedBoxIndex.value == 2) Color.White else Color(R.color.background_card_blue),
                                     fontSize = 12.sp
                                 )
                             )
@@ -286,7 +286,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                     Box() {
                         Icon(
                             painterResource(R.drawable.ic_transfers),
-                            tint = Color(0xFF223142),
+                            tint = Color(R.color.background_card_blue),
                             contentDescription = null,
                             modifier = Modifier.padding(end = 10.sdp)
                         )
@@ -644,7 +644,7 @@ private fun CardsItem(data: GetRecentOpsItem) {
 
             },
         elevation = 1.dp,
-        backgroundColor = Color(0xFFE7EEFC),
+        backgroundColor = Color(R.color.border_grey),
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
     ) {
 
@@ -672,7 +672,7 @@ private fun CardsItem(data: GetRecentOpsItem) {
                             lineHeight = 18.4.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         ),
                         modifier = Modifier.padding(vertical = 5.sdp)
                     )
@@ -703,7 +703,7 @@ private fun CardsItem(data: GetRecentOpsItem) {
                             lineHeight = 18.4.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         ),
 
                         )
@@ -715,7 +715,7 @@ private fun CardsItem(data: GetRecentOpsItem) {
                             lineHeight = 16.1.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         ),
 
                         )

@@ -197,7 +197,7 @@ fun RecentOpsSheet(selectCompanyState: MutableState<Boolean>) {
                         .padding(6.dp)
                         .background(
                             if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(
-                                0xFFE7EEFC
+                                R.color.border_grey
                             ),
                             shape = RoundedCornerShape(8.dp)
                         )
@@ -213,7 +213,7 @@ fun RecentOpsSheet(selectCompanyState: MutableState<Boolean>) {
                         .padding(6.dp)
                         .background(
                             if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(
-                                0xFFE7EEFC
+                                R.color.border_grey
                             ),
                             shape = RoundedCornerShape(8.dp)
                         )
@@ -229,7 +229,7 @@ fun RecentOpsSheet(selectCompanyState: MutableState<Boolean>) {
                         .padding(6.dp)
                         .background(
                             if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(
-                                0xFFE7EEFC
+                                R.color.border_grey
                             ),
                             shape = RoundedCornerShape(8.dp)
                         )
@@ -294,7 +294,7 @@ private fun CardsItem() {
 
             },
         elevation = 1.dp,
-        backgroundColor = Color(0xFFE7EEFC),
+        backgroundColor = Color(R.color.border_grey),
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
     ) {
 
@@ -365,7 +365,7 @@ private fun CardsItem() {
                             lineHeight = 16.1.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(com.app.adjustment.R.color.grey_text),
                         ),
 
                         )
