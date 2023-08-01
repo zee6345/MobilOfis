@@ -122,7 +122,7 @@ fun UserProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState(), enabled = true)
-            .background(color = Color(0xFFF3F7FA))
+            .background(color = Color(R.color.border_light_grey))
     ) {
         Surface(
             modifier = Modifier
@@ -187,7 +187,7 @@ fun UserProfileScreen(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -202,7 +202,7 @@ fun UserProfileScreen(
                                     text = stringResource(R.string.source_of_origin), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
 
                                         )
                                 )
@@ -231,7 +231,7 @@ fun UserProfileScreen(
                                     text = stringResource(R.string.document_no), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
                                     )
                                 )
 
@@ -258,7 +258,7 @@ fun UserProfileScreen(
                                     text = stringResource(R.string.father_s_name), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
                                     )
                                 )
 
@@ -281,7 +281,7 @@ fun UserProfileScreen(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -295,7 +295,7 @@ fun UserProfileScreen(
                                     text = stringResource(R.string.login), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
                                     )
                                 )
 
@@ -317,7 +317,7 @@ fun UserProfileScreen(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -332,7 +332,7 @@ fun UserProfileScreen(
                                     text = stringResource(R.string.mobile_number_for_sms), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
 
                                         )
                                 )
@@ -364,7 +364,7 @@ fun UserProfileScreen(
                                     style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
                                     )
                                 )
 
@@ -390,7 +390,7 @@ fun UserProfileScreen(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -404,7 +404,7 @@ fun UserProfileScreen(
                                     text = stringResource(R.string.e_mail), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        color = Color(0xFF859DB5),
+                                        color = Color(R.color.grey_text),
                                     )
                                 )
 
@@ -426,7 +426,7 @@ fun UserProfileScreen(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -438,7 +438,7 @@ fun UserProfileScreen(
                                 text = stringResource(R.string.language), style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF859DB5),
+                                    color = Color(R.color.grey_text),
                                 )
                             )
 
@@ -452,7 +452,7 @@ fun UserProfileScreen(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -464,7 +464,7 @@ fun UserProfileScreen(
                                 text = stringResource(R.string.google_authenticator), style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF859DB5),
+                                    color = Color(R.color.grey_text),
                                 )
                             )
 
@@ -521,7 +521,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 0 }) {
@@ -535,7 +535,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 1 }) {
@@ -549,7 +549,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 2 }) {

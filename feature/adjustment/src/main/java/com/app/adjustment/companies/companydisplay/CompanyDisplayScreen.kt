@@ -41,7 +41,7 @@ fun CompanyDisplay(navController: NavController) {
             .verticalScroll(
                 rememberScrollState(), enabled = true
             )
-            .background(color = Color(0xFFF3F7FA))
+            .background(color = Color(R.color.border_light_grey))
     ) {
         Surface(
             modifier = Modifier

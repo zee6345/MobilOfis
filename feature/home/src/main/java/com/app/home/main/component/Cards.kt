@@ -110,7 +110,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
             ) {
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(0xFFE7EEFC),
+                        if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(R.color.border_grey),
                         shape = RoundedCornerShape(size = 6.dp)
                     )
                     .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -136,7 +136,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(0xFFE7EEFC),
+                        if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(R.color.border_grey),
                         shape = RoundedCornerShape(size = 6.dp)
                     )
                     .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -395,7 +395,7 @@ private fun FilterView(filter: CardFilters) {
 //    ) {
 //        Box(modifier = Modifier
 //            .background(
-//                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+//                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(R.color.border_grey),
 //                shape = RoundedCornerShape(size = 6.dp)
 //            )
 //            .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -412,7 +412,7 @@ private fun FilterView(filter: CardFilters) {
 //
 //        Box(modifier = Modifier
 //            .background(
-//                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+//                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(R.color.border_grey),
 //                shape = RoundedCornerShape(size = 6.dp)
 //            )
 //            .padding(vertical = 5.sdp, horizontal = 10.sdp)

@@ -94,7 +94,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 modifier = Modifier
                     .fillMaxWidth()
                     .dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
+                        3.dp, Color(R.color.border_grey)
                     ),
                 horizontalArrangement = Arrangement.Start
 
@@ -128,7 +128,7 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 modifier = Modifier
                     .fillMaxWidth()
                     .dashedBorder(
-                        2.dp, Color(0xFFE7EEFC)
+                        2.dp, Color(R.color.border_grey)
                     ),
                 horizontalArrangement = Arrangement.Start
             ) {

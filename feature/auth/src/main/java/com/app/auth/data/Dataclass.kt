@@ -151,7 +151,7 @@ object DataProvider {
         CardMenu(
             title = "Signature\n" +
                     "Waiting",
-            color = Color(0xff2CCAD3),
+            color = Color(R.color.blueColor),
             number = 3
         ),
         CardMenu(

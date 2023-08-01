@@ -84,7 +84,7 @@ fun EasySignatureLoginScreen() {
                     .height(6.dp)
                     .weight(1f)
                     .background(
-                        if (selectedBoxIndex.value >= 0) Color(0xFF223142) else Color(0xFFCCD6DE),
+                        if (selectedBoxIndex.value >= 0) Color(R.color.background_card_blue) else Color(0xFFCCD6DE),
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable { selectedBoxIndex.value = 0 }) {
@@ -95,7 +95,7 @@ fun EasySignatureLoginScreen() {
                     .height(6.dp)
                     .weight(1f)
                     .background(
-                        if (selectedBoxIndex.value >= 1) Color(0xFF223142) else Color(0xFFCCD6DE),
+                        if (selectedBoxIndex.value >= 1) Color(R.color.background_card_blue) else Color(0xFFCCD6DE),
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable { selectedBoxIndex.value = 1 }) {
@@ -106,7 +106,7 @@ fun EasySignatureLoginScreen() {
                     .height(6.dp)
                     .weight(1f)
                     .background(
-                        if (selectedBoxIndex.value >= 2) Color(0xFF223142) else Color(0xFFCCD6DE),
+                        if (selectedBoxIndex.value >= 2) Color(R.color.background_card_blue) else Color(0xFFCCD6DE),
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable { selectedBoxIndex.value = 2 }) {}
@@ -128,10 +128,10 @@ fun EasySignatureLoginScreen() {
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
-                        focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(0xFFE7EEFC),
-                        unfocusedLabelColor = Color(0xFF859DB5),
-                        focusedLabelColor = Color(0xFF223142),
+                        focusedBorderColor = Color(R.color.background_card_blue),
+                        unfocusedBorderColor = Color(com.app.home.R.color.border_grey),
+                        unfocusedLabelColor = Color(com.app.adjustment.R.color.grey_text),
+                        focusedLabelColor = Color(R.color.background_card_blue),
                     ),
                     singleLine = true
                 )
@@ -153,10 +153,10 @@ fun EasySignatureLoginScreen() {
                         .padding(top = 12.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
-                        focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(0xFFE7EEFC),
-                        unfocusedLabelColor = Color(0xFF859DB5),
-                        focusedLabelColor = Color(0xFF223142)
+                        focusedBorderColor = Color(R.color.background_card_blue),
+                        unfocusedBorderColor = Color(com.app.home.R.color.border_grey),
+                        unfocusedLabelColor = Color(com.app.adjustment.R.color.grey_text),
+                        focusedLabelColor = Color(R.color.background_card_blue)
                     ),
                     singleLine = true
                 )
@@ -204,7 +204,7 @@ fun EasySignatureLoginScreen() {
                             Row(
                                 modifier = Modifier
                                     .dashedBorder(
-                                        3.dp, Color(0xFFE7EEFC)
+                                        3.dp, Color(com.app.home.R.color.border_grey)
                                     )
                                     .height(80.dp)
                                     .fillMaxWidth(),
@@ -229,7 +229,7 @@ fun EasySignatureLoginScreen() {
                             Text(
                                 modifier = Modifier
                                     .dashedBorder(
-                                        3.dp, Color(0xFFE7EEFC)
+                                        3.dp, Color(com.app.home.R.color.border_grey)
                                     )
                                     .padding(horizontal = 12.dp , vertical = 22.dp),
                                 text = "Please accept the query sent to your phone. Compare the checking code of the survey to the same code as the following code.",
@@ -241,7 +241,7 @@ fun EasySignatureLoginScreen() {
                                     .fillMaxWidth(),
                                 text = "Check code",
                                 style = TextStyle(
-                                    color = Color(0xFF859DB5),
+                                    color = Color(com.app.adjustment.R.color.grey_text),
                                     fontSize = 14.sp,
                                     textAlign = TextAlign.Center
                                 )
@@ -297,7 +297,7 @@ private fun ScrollableButtons(selectedBoxIndex: MutableState<Int>) {
                 onClick = { },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFE7EEFC), // Change the background color here
+                    backgroundColor = Color(com.app.home.R.color.border_grey), // Change the background color here
                     contentColor = Color(0xFF203657) // Change the text color here if needed
                 ),
                 modifier = Modifier

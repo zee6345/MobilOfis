@@ -94,7 +94,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                     .fillMaxWidth()
                     .height(56.dp)
                     .border(
-                        border = BorderStroke(2.dp, Color(0xFFE7EEFC)),
+                        border = BorderStroke(2.dp, Color(R.color.border_grey)),
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(color = Color(0xFFFFFFFF)),
@@ -105,7 +105,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .dashedBorder(
-                            3.dp, Color(0xFFE7EEFC)
+                            3.dp, Color(R.color.border_grey)
                         )
                         .padding(
                             horizontal = 10.dp,
@@ -143,7 +143,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                     .fillMaxWidth()
                     .padding(vertical = 10.dp)
                     .border(
-                        border = BorderStroke(2.dp, Color(0xFFE7EEFC)),
+                        border = BorderStroke(2.dp, Color(R.color.border_grey)),
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(color = Color(0xFFFFFFFF)),
@@ -153,7 +153,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .dashedBorder(3.dp, Color(R.color.border_grey))
                         .padding(horizontal = 10.dp),
                     horizontalArrangement = Arrangement.Start
                 ) {
@@ -171,7 +171,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .fillMaxWidth()
                         ) {
                             Text(
@@ -185,7 +185,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .fillMaxWidth()
                         ) {
                             Text(
@@ -199,7 +199,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                                .dashedBorder(3.dp, Color(R.color.border_grey))
                                 .fillMaxWidth()
                         ) {
                             Text(

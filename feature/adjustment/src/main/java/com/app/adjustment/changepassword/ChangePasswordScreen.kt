@@ -53,7 +53,7 @@ fun ForgetPasswordScreen(navController: NavController) {
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
                 .fillMaxWidth()
                 .weight(0.1f),
-            color = Color(0xFF203657),
+            color = Color(R.color.blue_01),
         ) {
             Row(
                 modifier = Modifier
@@ -101,7 +101,7 @@ fun ForgetPasswordScreen(navController: NavController) {
                     onClick = { },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFFE7EEFC), // Change the background color here
+                        backgroundColor = Color(R.color.border_grey), // Change the background color here
                         contentColor = Color(0xFF203657) // Change the text color here if needed
                     ),
                     modifier = Modifier
@@ -154,14 +154,14 @@ fun TextFieldWithEndDrawable(hint: String) {
         onValueChange = { textState.value = it },
         label = {
             Text(
-                text = hint, style = TextStyle(fontSize = 14.sp, color = Color(0xFF859DB5))
+                text = hint, style = TextStyle(fontSize = 14.sp, color = Color(R.color.grey_text))
             )
         },
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp)
             .background(Color.Transparent)
-            .border(1.dp, Color(0xFFE7EEFC), shape = RoundedCornerShape(12.dp))
+            .border(1.dp, Color(R.color.border_grey), shape = RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp)),
         colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White),
         trailingIcon = {

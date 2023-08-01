@@ -152,7 +152,7 @@ fun StatusMenuItem(menuItem:StatusModel){
                     .fillMaxWidth()
                     .height(1.sdp)
                     .background(
-                        color = Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 10.sdp)
+                        color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
                     )
                     .align(Alignment.CenterVertically)
             )

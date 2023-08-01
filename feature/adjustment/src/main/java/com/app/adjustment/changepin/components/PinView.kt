@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import com.app.adjustment.R
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -73,7 +74,7 @@ private fun CharPinView(
     }
 
     val borderStrokeWidth = if (index <= text.length - 1) 6.dp else 1.dp
-    val borderColor = if (index <= text.length - 1) Color(0xFF223142) else Color(0xFFE7EEFC)
+    val borderColor = if (index <= text.length - 1) Color(0xFF223142) else Color(R.color.border_grey)
 
     Box(
         modifier = Modifier

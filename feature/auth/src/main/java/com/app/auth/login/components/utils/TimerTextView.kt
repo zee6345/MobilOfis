@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.auth.R
 import java.util.concurrent.TimeUnit
 
 @Composable
@@ -44,7 +45,7 @@ fun TimerTextView() {
     Text(
         text = formattedTime,
         modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
-        color = Color(0xFF223142),
+        color = Color(R.color.background_card_blue),
         style = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight(500),

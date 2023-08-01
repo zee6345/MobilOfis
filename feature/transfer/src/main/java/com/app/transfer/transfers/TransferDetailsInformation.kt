@@ -167,7 +167,7 @@ private fun MainContentSource(navController: NavController) {
                     modifier = Modifier.padding(vertical = 5.sdp),
                     text = stringResource(R.string.details),
                     style = TextStyle(
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Center
                     )
 
@@ -200,7 +200,7 @@ private fun MainContentSource(navController: NavController) {
                     text = stringResource(R.string.history_and_notes),
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Center
                     )
                 )

@@ -44,7 +44,7 @@ fun ExchangeRatesScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF3F7FA)),
+            .background(color = Color(R.color.border_light_grey)),
     ) {
         Surface(
             modifier = Modifier
@@ -99,7 +99,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                             .fillMaxWidth()
                             .align(CenterHorizontally)
                             .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
+                                3.dp, Color(R.color.border_grey)
                             )
                             .padding(horizontal = 12.dp, vertical = 12.dp),
                         text = stringResource(R.string._17_10_2022),
@@ -109,7 +109,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
+                                3.dp, Color(R.color.border_grey)
                             )
                             .padding(end = 12.dp)
                             .fillMaxWidth(),
@@ -120,7 +120,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                             modifier = Modifier
                                 .weight(0.7f)
                                 .rightVerticalDashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
+                                    3.dp, Color(R.color.border_grey)
                                 )
                         ) {
                             Text(
@@ -136,7 +136,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                             modifier = Modifier
                                 .weight(0.3f)
                                 .dashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
+                                    3.dp, Color(R.color.border_grey)
                                 )
                                 .padding(vertical = 12.dp),
                             text = stringResource(R.string.central_bank),
@@ -148,7 +148,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
+                                3.dp, Color(R.color.border_grey)
                             )
                             .padding(end = 12.dp)
                             .fillMaxWidth(),
@@ -159,7 +159,7 @@ fun ExchangeRatesScreen(navController: NavController) {
                             modifier = Modifier
                                 .weight(0.7f)
                                 .rightVerticalDashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
+                                    3.dp, Color(R.color.border_grey)
                                 )
                         ) {
                             Row(
@@ -248,7 +248,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
     Row(
         modifier = Modifier
             .dashedBorder(
-                3.dp, Color(0xFFE7EEFC)
+                3.dp, Color(R.color.border_grey)
             )
             .padding(end = 12.dp)
             .fillMaxWidth(),
@@ -259,7 +259,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
             modifier = Modifier
                 .weight(0.7f)
                 .rightVerticalDashedBorder(
-                    3.dp, Color(0xFFE7EEFC)
+                    3.dp, Color(R.color.border_grey)
                 )
         ) {
             Row(

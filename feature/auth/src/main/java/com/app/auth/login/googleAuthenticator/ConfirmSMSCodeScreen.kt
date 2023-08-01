@@ -74,7 +74,7 @@ fun ConfirmSMSCodeScreen() {
                         Text(
                             text = "Copy the code shown here and enter it in the Google Authenticator app",
                             style = TextStyle(fontSize = 16.sp),
-                            color = Color(0xff223142),
+                            color = Color(R.color.background_card_blue),
                             modifier = Modifier
                                 .padding(horizontal = 22.dp)
                                 .padding(top = 22.dp)
@@ -88,7 +88,7 @@ fun ConfirmSMSCodeScreen() {
                             )
                             .border(
                                 width = 1.dp,
-                                color = Color(0xFFE7EEFC),
+                                color = Color(com.app.home.R.color.border_grey),
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable {}) {
@@ -110,7 +110,7 @@ fun ConfirmSMSCodeScreen() {
                                         .padding(horizontal = 12.dp)
                                         .horizontalScroll(scrollState),
                                     style = TextStyle(
-                                        Color(0xFF223142), fontSize = 16.sp
+                                        Color(R.color.background_card_blue), fontSize = 16.sp
 
                                     )
                                 )
@@ -138,7 +138,7 @@ fun ConfirmSMSCodeScreen() {
                         Text(
                             text = "After the new line containing the 6-digit code is added in the Google Authenticator app, please enter it and click \"Confirm\".\n\nEnter the Google code",
                             style = TextStyle(fontSize = 16.sp),
-                            color = Color(0xff223142),
+                            color = Color(R.color.background_card_blue),
                             modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp)
 
                         )
