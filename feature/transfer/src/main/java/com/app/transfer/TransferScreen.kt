@@ -231,13 +231,13 @@ fun TransactionHistory(navController: NavController) {
                     Box(
                         Modifier
                             .background(
-                                Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
+                                Color(R.color.border_grey), shape = RoundedCornerShape(size = 6.dp)
                             )
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
                             text = stringResource(R.string.anipay_non_budget), style = TextStyle(
-                                color = Color(0xFF859DB5),
+                                color = Color(R.color.grey_text),
                                 fontSize = 12.sp
 
                             )
@@ -251,13 +251,13 @@ fun TransactionHistory(navController: NavController) {
                     Box(
                         Modifier
                             .background(
-                                Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 6.dp)
+                                Color(R.color.border_grey), shape = RoundedCornerShape(size = 6.dp)
                             )
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
                             text = stringResource(R.string._18_24), style = TextStyle(
-                                color = Color(0xFF859DB5),
+                                color = Color(R.color.grey_text),
                                 fontSize = 12.sp
 
                             )

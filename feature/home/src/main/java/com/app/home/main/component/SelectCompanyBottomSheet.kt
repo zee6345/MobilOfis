@@ -75,7 +75,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                 modifier = Modifier.fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = Color(0xFF223142)
+                color = Color(com.app.home.R.color.background_card_blue)
             )
 
             Row(
@@ -93,7 +93,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                        color = Color(0xFF223142),
+                        color = Color(com.app.home.R.color.background_card_blue),
                         fontSize = 15.sp
                     )
                 }
@@ -116,7 +116,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                        color = Color(0xFF223142),
+                        color = Color(com.app.home.R.color.background_card_blue),
                         fontSize = 15.sp
                     )
                 }
@@ -139,7 +139,7 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Medium,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                        color = Color(0xFF223142),
+                        color = Color(com.app.home.R.color.background_card_blue),
                         fontSize = 15.sp
                     )
                 }
@@ -153,6 +153,6 @@ fun SelectCompanyBottomSheet(selectCompanyState: MutableState<Boolean>) {
 
 @Preview
 @Composable
-fun display() {
+private fun display() {
     SelectCompanyBottomSheet()
 }

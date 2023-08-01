@@ -84,7 +84,7 @@ fun ActivateGoogleAuthenticatorScreen() {
                     Text(
                         text = "Please download the Google Authenticator app.",
                         style = TextStyle(fontSize = 16.sp),
-                        color = Color(0xff223142),
+                        color = Color(R.color.background_card_blue),
                         modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp)
 
                     )

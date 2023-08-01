@@ -24,13 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.auth.R
 
 
 @Composable
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpCount: Int,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -74,23 +75,23 @@ private fun CharView(
         modifier = Modifier
             .width(40.dp)
             .border(
-                width = 1.dp, color = Color(0xFFE7EEFC), shape = RoundedCornerShape(8.dp)
+                width = 1.dp, color = Color(com.app.home.R.color.border_grey), shape = RoundedCornerShape(8.dp)
             )
             .padding(2.dp)
             .background(color = Color.White),
         text = char,
         style = MaterialTheme.typography.h4,
         color = if (isFocused) {
-            Color(0xFF223142)
+            Color(R.color.background_card_blue)
         } else {
-            Color(0xFF223142)
+            Color(R.color.background_card_blue)
         },
         textAlign = TextAlign.Center
     )
 }
 
 @Composable
-fun OtpView(onValueChange:(String)->Unit) {
+fun OtpView(viewCount:Int, onValueChange: (String) -> Unit) {
     val focusRequester = remember { FocusRequester() }
     Surface(
         modifier = Modifier
@@ -110,6 +111,7 @@ fun OtpView(onValueChange:(String)->Unit) {
         }
 
         OtpTextField(
+            otpCount= viewCount,
             otpText = otpValue,
             onOtpTextChange = { value, _ ->
                 otpValue = value
@@ -122,7 +124,7 @@ fun OtpView(onValueChange:(String)->Unit) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun OtpPreview() {
-    OtpView(){
+    OtpView(6) {
 
     }
 //    Abc()

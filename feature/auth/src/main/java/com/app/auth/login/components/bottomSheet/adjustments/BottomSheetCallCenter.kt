@@ -66,7 +66,7 @@ fun BottomSheetCallCenter(showModalBottomSheet: MutableState<Boolean>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp), border = BorderStroke(
-                    1.dp, Color(0xFFE7EEFC)
+                    1.dp, Color(com.app.home.R.color.border_grey)
                 ), shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -84,7 +84,7 @@ fun BottomSheetCallCenter(showModalBottomSheet: MutableState<Boolean>) {
                     )
                     androidx.compose.material.Text(
                         text = "Call center",
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        style = TextStyle(color = Color(R.color.background_card_blue), fontSize = 14.sp),
                         modifier = Modifier
                             .padding(vertical = 12.dp, horizontal = 12.dp)
                             .align(CenterVertically)
@@ -99,7 +99,7 @@ fun BottomSheetCallCenter(showModalBottomSheet: MutableState<Boolean>) {
                     .fillMaxWidth()
                     .padding(top = 10.dp, bottom = 12.dp),
                 border = BorderStroke(
-                    1.dp, Color(0xFFE7EEFC)
+                    1.dp, Color(com.app.home.R.color.border_grey)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -121,27 +121,27 @@ fun BottomSheetCallCenter(showModalBottomSheet: MutableState<Boolean>) {
                     Column(modifier = Modifier.padding(top = 8.dp, start = 22.dp)) {
                         androidx.compose.material.Text(
                             text = "(077) 434-07-77",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                            style = TextStyle(color = Color(R.color.background_card_blue), fontSize = 14.sp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .dashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
+                                    3.dp, Color(com.app.home.R.color.border_grey)
                                 )
                                 .padding(vertical = 12.dp)
                         )
                         androidx.compose.material.Text(
                             text = "(077) 434-17-77",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                            style = TextStyle(color = Color(R.color.background_card_blue), fontSize = 14.sp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .dashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
+                                    3.dp, Color(com.app.home.R.color.border_grey)
                                 )
                                 .padding(vertical = 12.dp)
                         )
                         androidx.compose.material.Text(
                             text = "(077) 406-07-77",
-                            style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                            style = TextStyle(color = Color(R.color.background_card_blue), fontSize = 14.sp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 12.dp)

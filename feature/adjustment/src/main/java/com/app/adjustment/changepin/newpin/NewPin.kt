@@ -1,5 +1,6 @@
 package com.app.adjustment.changepin.newpin
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,16 +41,25 @@ import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.changepin.confirmpin.navigation.adjustmentToConfirmPin
 import com.app.adjustment.changepin.currentpin.PinInputView
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
+import com.app.network.utils.Message
+
+
+
 
 
 @Composable
 fun NewPin(navController: NavController) {
 
+    val context: Context = LocalContext.current
+    var enteredPin by remember { mutableStateOf("") }
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF3F7FA))
+            .background(color = Color(R.color.border_light_grey))
     ) {
         Surface(
             modifier = Modifier
@@ -100,12 +111,18 @@ fun NewPin(navController: NavController) {
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            var enteredPin by remember { mutableStateOf("") }
+
             PinInputView(navController, length = 5) { pin ->
                 enteredPin = pin
 
                 if (pin.isNotEmpty() && pin.length == 5) {
+
+                    MainApp.session.put(Keys.KEY_PIN, pin)
+
                     navController.navigate(adjustmentToConfirmPin)
+
+                } else {
+                    Message.showMessage(context, "Pin must be 5 digit!")
                 }
 
             }

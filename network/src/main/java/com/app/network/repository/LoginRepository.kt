@@ -10,27 +10,25 @@ import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
 import com.app.network.retrofitClient.BaseRetrofitClient
+import retrofit2.Call
+
 
 class LoginRepository: BaseRetrofitClient() {
 
-    suspend fun sendLoginRequestGoogleAuth(loginRequest: LoginRequest): LoginResponse {
-        return apiServiceAuthInterceptor.loginWithUserName(loginRequest)
+    fun sendLoginRequestGoogleAuth(loginRequest: LoginRequest): Call<LoginResponse> {
+        return apiService.loginWithUserName(loginRequest)
     }
 
-    suspend fun sendLoginVerificationRequest(loginVerificationRequest: LoginVerificationRequest): LoginVerifyResponse {
-        return apiService.loginVerification(loginVerificationRequest)
+    fun sendLoginVerificationRequest(token:String, loginVerificationRequest: LoginVerificationRequest): Call<LoginVerifyResponse> {
+        return apiService.loginVerification(token, loginVerificationRequest)
     }
 
-    suspend fun sendLoginAsanRequest(loginAsanRequest: LoginAsanRequest): LoginAsanResponse {
+    fun sendLoginAsanRequest(loginAsanRequest: LoginAsanRequest): Call<LoginAsanResponse> {
         return apiService.loginAsan(loginAsanRequest)
     }
 
-   suspend fun changePasswordRequest(changePasswordRequest: ChangePasswordRequest): ChangePasswordResponse {
-       return apiService.changePassword(changePasswordRequest)
-    }
 
-    suspend fun changePasswordVerify(verifyChangePasswordRequest: VerifyChangePasswordRequest): VerifyChangePasswordResponse {
-        return apiService.changePasswordVerify(verifyChangePasswordRequest)
-    }
 }

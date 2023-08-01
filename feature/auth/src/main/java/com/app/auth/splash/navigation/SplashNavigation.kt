@@ -8,6 +8,7 @@ import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.pin.navigation.pinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.auth.splash.SplashScreen
+import com.app.home.navigation.homeScreenRoute
 import com.app.network.helper.MainApp
 import kotlinx.coroutines.delay
 
@@ -50,6 +51,10 @@ fun NavGraphBuilder.splashScreen(
             navController.navigate(route = loginNavigationRoute) {
                 popUpTo(splashNavigationRoute) { inclusive = true }
             }
+
+//            navController.navigate(route = homeScreenRoute) {
+//                popUpTo(splashNavigationRoute) { inclusive = true }
+//            }
 
         }
     }

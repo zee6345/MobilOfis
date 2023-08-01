@@ -1,12 +1,14 @@
 package com.app.auth.pin
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.login.navigation.loginNavigationRoute
+import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.network.utils.Message
 import com.app.home.navigation.homeScreenRoute
 import com.app.network.data.responseModels.LoginVerifyResponse
@@ -44,7 +49,8 @@ fun WelcomePinScreen(navController: NavController) {
     val context = LocalContext.current
 
 
-    fetchUserDetails(username)
+    val userDetails = MainApp.session.fetchUserDetails()
+    username.value = userDetails.userName
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -88,6 +94,7 @@ fun WelcomePinScreen(navController: NavController) {
 
                 PinInputView(navController, length = 5) { pin ->
                     enteredPin = pin
+
                     if (pin.isNotEmpty() && pin.length == 5) {
                         val finalPin = MainApp.session[Keys.KEY_USER_PIN]
                         if(finalPin.equals(pin)){
@@ -95,7 +102,6 @@ fun WelcomePinScreen(navController: NavController) {
                         } else {
                             Message.showMessage(context, "Wrong pin entered!")
                         }
-
                     }
                 }
 
@@ -109,12 +115,20 @@ fun WelcomePinScreen(navController: NavController) {
                     modifier = Modifier.padding(vertical = 8.dp) // Replace with your desired modifier
                 )
                 Row(
-                    modifier = Modifier.padding(top = 5.dp, bottom = 17.dp)
+                    modifier = Modifier
+                        .padding(top = 5.dp, bottom = 17.dp)
+                        .clickable {
+
+                            navController.navigate(loginNavigationRoute){
+                                    popUpTo(loginNavigationRoute) { inclusive = true }
+                            }
+
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.exit_icon),
                         contentDescription = "",
-                        colorFilter = ColorFilter.tint(Color(0xFF223142)),
+                        colorFilter = ColorFilter.tint(Color(com.app.home.R.color.background_card_blue)),
                         modifier = Modifier
                             .size(35.dp)
                             .align(Alignment.CenterVertically)
@@ -138,13 +152,6 @@ fun WelcomePinScreen(navController: NavController) {
     }
 }
 
-private fun fetchUserDetails(username: MutableState<String>) {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    val loginVerify = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-    loginVerify.let {
-        username.value = it.userName
-    }
-}
 
 @Preview(device = Devices.PIXEL_4)
 @Composable

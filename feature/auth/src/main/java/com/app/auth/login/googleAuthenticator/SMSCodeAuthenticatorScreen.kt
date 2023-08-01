@@ -80,7 +80,7 @@ fun SMSCodeAuthenticatorScreen() {
                     Text(
                         text = "Please confirm the start of the activation process of Google Authenticator through the SMS code sent to your mobile number",
                         style = TextStyle(fontSize = 16.sp),
-                        color = Color(0xff223142),
+                        color = Color(R.color.background_card_blue),
                         modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp)
 
                     )

@@ -61,7 +61,7 @@ fun AboutBankBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                 modifier = Modifier
                     .padding(top = 12.dp, start = 18.dp)
                     .dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
+                        3.dp, Color(com.app.home.R.color.border_grey)
                     )
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
@@ -86,7 +86,7 @@ fun AboutBankBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                 modifier = Modifier
                     .padding(start = 18.dp)
                     .dashedBorder(
-                        3.dp, Color(0xFFE7EEFC)
+                        3.dp, Color(com.app.home.R.color.border_grey)
                     )
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)

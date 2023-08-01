@@ -1,177 +1,253 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetLoans
+import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
+import com.app.network.data.responseModels.GetRecentOps
+import com.app.network.data.responseModels.GetTrusts
+import com.app.network.helper.Error.handleException
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
 import com.app.network.repository.HomeRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class HomeViewModel : ViewModel() {
 
     private val repository: HomeRepository = HomeRepository()
 
-    private val _data = MutableStateFlow<DataState<Any>?>(null)
-    val data: MutableStateFlow<DataState<Any>?> get() = _data
+    private val _accountsData = MutableStateFlow<DataState<Any>?>(null)
+    val accountsData: MutableStateFlow<DataState<Any>?> get() = _accountsData
 
-    fun getAccounts(token: String, customerId: Int) {
-        _data.value = DataState.Loading
+    private val _oldBusinessCardsData = MutableStateFlow<DataState<Any>?>(null)
+    val oldBusinessCards: MutableStateFlow<DataState<Any>?> get() = _oldBusinessCardsData
+
+    private val _newBusinessCardsData = MutableStateFlow<DataState<Any>?>(null)
+    val newBusinessCards: MutableStateFlow<DataState<Any>?> get() = _newBusinessCardsData
+
+    private val _accountBalance = MutableStateFlow<DataState<Any>?>(null)
+    val accountBalance: MutableStateFlow<DataState<Any>?> get() = _accountBalance
+
+    private val _customerLoans = MutableStateFlow<DataState<Any>?>(null)
+    val customerLoans: MutableStateFlow<DataState<Any>?> get() = _customerLoans
+
+    private val _customerTrusts = MutableStateFlow<DataState<Any>?>(null)
+    val customerTrusts: MutableStateFlow<DataState<Any>?> get() = _customerTrusts
+
+    private val _recentOps = MutableStateFlow<DataState<Any>?>(null)
+    val recentOps: MutableStateFlow<DataState<Any>?> get() = _recentOps
+
+    fun getAccounts(customerId: Int) {
+
+        _accountsData.value = DataState.Loading
 
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val post = async { repository.getAccounts(token, customerId) }
-                withContext(Dispatchers.Main) {
-                    _data.value = DataState.Success(post.await())
-                }
-            } catch (e: Exception) {
-                _data.value = DataState.Error(e.message.toString())
-            }
+
+            repository.getAccounts(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetAccounts> {
+                    override fun onResponse(
+                        call: Call<GetAccounts>,
+                        response: Response<GetAccounts>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _accountsData.value = DataState.Success(response.body()!!)
+                        } else {
+                            _accountsData.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetAccounts>, t: Throwable) {
+                        _accountsData.value = DataState.Error(handleException(t))
+                    }
+
+                })
         }
     }
 
-//    fun getLastLogin(token:String){
-//        _lastLoginResponse.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try{
-//
-//                // for reference its response data model is LastLoginTime
-//                val post = async { repository.getLastLogin(token) }
-//                withContext(Dispatchers.Main){
-//                    _lastLoginResponse.value = DataState.Success(post.await())
-//                }
-//            } catch (e:Exception){
-//                e.printStackTrace()
-//                _lastLoginResponse.value = DataState.Error(e.message.toString())
-//            }
-//        }
-//    }
+    fun getLoans(customerId: Int) {
 
-    //    fun getUserInfo(token: String,customerNo: String){
-//        _userInfo.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.getUserInfo(token,customerNo) }
-//                withContext(Dispatchers.Main){
-//                    _userInfo.value = DataState.Success(post.await())
-//                }
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-//
-//    fun getBalance(token: String,customerId: String){
-//        _userBalance.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.getUserBalance(token,customerId) }
-//                withContext(Dispatchers.Main){
-//                    _userBalance.value = DataState.Success(post.await())
-//                }
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-//
-//    fun setUserNickName(token: String,accountNickNameRequest: AccountNickNameRequest){
-//        _setAccountNickNameResponse.value = DataState.Loading
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.setUserNickName(token,accountNickNameRequest) }
-//                withContext(Dispatchers.Main){
-//                    _setAccountNickNameResponse.value = DataState.Success(post.await())
-//                }
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//        }
-//    }
+        _customerLoans.value = DataState.Loading
 
-    fun getAccountBlockByIBAN(token: String, customerId: Int, IBAN: String) {
-        _data.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getAccountBlockByIban(token, customerId, IBAN)
+
+            repository.getLoans(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetLoans> {
+                    override fun onResponse(
+                        call: Call<GetLoans>,
+                        response: Response<GetLoans>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _customerLoans.value = DataState.Success(response.body()!!)
+                        } else {
+                            _customerLoans.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetLoans>, t: Throwable) {
+                        _customerLoans.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
+
+
+    fun getTrusts(customerId: Int) {
+
+        _customerTrusts.value = DataState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            repository.getTrusts(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetTrusts> {
+                    override fun onResponse(
+                        call: Call<GetTrusts>,
+                        response: Response<GetTrusts>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _customerTrusts.value = DataState.Success(response.body()!!)
+                        } else {
+                            _customerTrusts.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetTrusts>, t: Throwable) {
+                        _customerTrusts.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
+
+    fun getBalance(customerId: Int){
+        _accountBalance.value = DataState.Loading
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.getUserBalance(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetCustomerBalance> {
+                    override fun onResponse(
+                        call: Call<GetCustomerBalance>,
+                        response: Response<GetCustomerBalance>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _accountBalance.value = DataState.Success(response.body()!!)
+                        } else {
+                            _accountBalance.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetCustomerBalance>, t: Throwable) {
+                        _accountBalance.value = DataState.Error(t.message.toString())
+                    }
+                })
+        }
+    }
+
+    fun getAccountBlockByIBAN(customerId: Int, IBAN: String) {
+        _accountsData.value = DataState.Loading
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.getAccountBlockByIban(MainApp.session[Keys.KEY_TOKEN]!!, customerId, IBAN)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _data.value = DataState.Success(response.body()!!)
+                            _accountsData.value = DataState.Success(response.body()!!)
                         } else {
-                            _data.value = DataState.Error(response.errorBody()!!.string())
+                            _accountsData.value = DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        _data.value = DataState.Error(t.message.toString())
+                        _accountsData.value = DataState.Error(t.message.toString())
                     }
                 })
-
-//            try {
-//                val post = async { repository.getAccountBlockByIban(token, customerId, IBAN) }
-//                withContext(Dispatchers.Main) {
-//                    _data.value = DataState.Success(post.await())
-//                }
-//            } catch (e: Exception) {
-//                _data.value = DataState.Error(e.message.toString())
-//            }
         }
     }
 
     fun getOldBusinessCards(customerId: Int) {
-        _data.value = DataState.Loading
+        _oldBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getOldBusinessCards(customerId).enqueue(object : Callback<GetOldCards> {
+            repository.getOldBusinessCards(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object : Callback<GetOldCards> {
                 override fun onResponse(
                     call: Call<GetOldCards>,
                     response: Response<GetOldCards>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        _data.value = DataState.Success(response.body()!!)
+                        _oldBusinessCardsData.value = DataState.Success(response.body()!!)
                     } else {
-                        _data.value = DataState.Error(response.errorBody()!!.string())
+                        _oldBusinessCardsData.value = DataState.Error(response.errorBody()!!.string())
                     }
                 }
 
                 override fun onFailure(call: Call<GetOldCards>, t: Throwable) {
-                    _data.value = DataState.Error(t.message.toString())
-
+                    _oldBusinessCardsData.value = DataState.Error(handleException(t))
                 }
             })
         }
     }
 
     fun getNewBusinessCards(customerId: Int) {
-        _data.value = DataState.Loading
+        _newBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getNewBusinessCards(customerId).enqueue(object : Callback<ResponseBody> {
+            repository.getNewBusinessCards(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object : Callback<GetNewCards> {
                 override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
+                    call: Call<GetNewCards>,
+                    response: Response<GetNewCards>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        _data.value = DataState.Success(response.body()!!)
+                        _newBusinessCardsData.value = DataState.Success(response.body()!!)
                     } else {
-                        _data.value = DataState.Error(response.errorBody()!!.string())
+                        _newBusinessCardsData.value = DataState.Error(response.errorBody()!!.string())
                     }
                 }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    _data.value = DataState.Error(t.message.toString())
+                override fun onFailure(call: Call<GetNewCards>, t: Throwable) {
+                    _newBusinessCardsData.value = DataState.Error(handleException(t))
                 }
             })
         }
     }
+
+    fun getRecentOps(customerId: Int){
+        _recentOps.value = DataState.Loading
+
+        viewModelScope.launch {
+            repository.getRecentOps(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object :Callback<GetRecentOps>{
+                override fun onResponse(
+                    call: Call<GetRecentOps>,
+                    response: Response<GetRecentOps>
+                ) {
+                    if (response.isSuccessful && response.body() != null){
+                        _recentOps.value = DataState.Success(response.body()!!)
+                    } else {
+                        _recentOps.value = DataState.Error(response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<GetRecentOps>, t: Throwable) {
+                    _recentOps.value = DataState.Error(handleException(t))
+                }
+
+            })
+        }
+    }
+
 
 
 }

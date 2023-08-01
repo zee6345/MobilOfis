@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,17 +23,20 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -48,97 +52,199 @@ import com.app.home.data.CardFilters
 import com.app.home.data.CardsListData
 
 import com.app.home.data.DataProvider
+
 import com.app.home.main.cards.navigation.homeToCardDetails
 import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetAccounts
+import com.app.network.data.responseModels.GetNewCards
 import com.app.network.data.responseModels.GetOldCards
 
 import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.data.responseModels.MainCard
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
 
 
+val cardsList =  mutableListOf<MainCard>()
+
 @Composable
 fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
 
-    val userDetails = fetchUserDetails()
-    val homeData by rememberUpdatedState(viewModel.data.collectAsState())
+    val context = LocalContext.current
+    val userDetails = MainApp.session.fetchUserDetails()
 
-    LaunchedEffect(key1 = true) {
-        viewModel.getOldBusinessCards(userDetails.customerNo)
-//        viewModel.getNewBusinessCards(userDetails.customerNo)
-    }
+    val oldBusinessCards by viewModel.oldBusinessCards.collectAsState()
+    val newBusinessCards by viewModel.newBusinessCards.collectAsState()
 
-
-    val cardsList = remember { DataProvider.cardsList }
+    val selectedBoxIndex = remember { mutableStateOf(0) }
+//    val cardsList = remember { mutableListOf<MainCard>() }
     val cardFilters = remember { DataProvider.filtersList }
+    val isLoading = remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.padding(horizontal = 5.sdp, vertical = 5.sdp)
-    ) {
+    LaunchedEffect(Unit) {
+        viewModel.getOldBusinessCards(userDetails.customerNo)
+    }
 
-
-        Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
-
-        Filters()
-
-
-        LazyRow(
-            contentPadding = PaddingValues(vertical = 5.dp)
+    if (isLoading.value) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            items(items = cardFilters, itemContent = {
-                Row {
-                    FilterView(filter = it)
-                    Box(modifier = Modifier.padding(end = 5.sdp))
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    } else {
+
+        Column(
+            modifier = Modifier.padding(horizontal = 5.sdp, vertical = 5.sdp)
+        ) {
+
+
+            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Box(modifier = Modifier
+                    .background(
+                        if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(R.color.border_grey),
+                        shape = RoundedCornerShape(size = 6.dp)
+                    )
+                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                    .clickable {
+                        selectedBoxIndex.value = 0
+
+
+                        viewModel.getOldBusinessCards(userDetails.customerNo)
+
+                    }) {
+                    Text(
+                        stringResource(R.string.in_the_name_of_a_physical_person),
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = if (selectedBoxIndex.value == 0) Color.White else Color(
+                                R.color.background_card_blue
+                            )
+                        )
+                    )
                 }
 
-            })
-        }
 
-        val lazyListState = rememberLazyListState()
-        LaunchedEffect(lazyListState) {
-            lazyListState.scrollToItem(0) // Optional: Scroll to an initial position when the list is first displayed
-        }
 
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 1.dp),
-            state = lazyListState,
-        ) {
-            items(items = cardsList, itemContent = {
-                CardsListItem(obj = it) {
-                    navController.navigate(homeToCardDetails)
+                Box(modifier = Modifier
+                    .background(
+                        if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(R.color.border_grey),
+                        shape = RoundedCornerShape(size = 6.dp)
+                    )
+                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                    .clickable {
+                        selectedBoxIndex.value = 1
+
+                        viewModel.getNewBusinessCards(userDetails.customerNo)
+
+                    }) {
+                    Text(
+                        stringResource(R.string.tin_based), style = TextStyle(
+                            fontSize = 12.sp,
+                            color = if (selectedBoxIndex.value == 1) Color.White else Color(
+                                R.color.background_card_blue
+                            )
+                        )
+                    )
                 }
-            })
+
+            }
+
+
+            LazyRow(
+                contentPadding = PaddingValues(vertical = 5.dp)
+            ) {
+                items(items = cardFilters, itemContent = {
+                    Row {
+                        FilterView(filter = it)
+                        Box(modifier = Modifier.padding(end = 5.sdp))
+                    }
+
+                })
+            }
+
+            val lazyListState = rememberLazyListState()
+            LaunchedEffect(lazyListState) {
+                lazyListState.scrollToItem(0) // Optional: Scroll to an initial position when the list is first displayed
+            }
+
+
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 1.dp),
+                state = lazyListState,
+            ) {
+                items(items = cardsList, itemContent = {
+                    CardsListItem(obj = it) {
+                        navController.navigate(homeToCardDetails)
+                    }
+                })
+            }
+
         }
 
     }
 
 
 
-    homeData.value?.let {
+    oldBusinessCards?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                val cards = it.data as GetOldCards
+
+                isLoading.value = false
+
+                if (cards.oldBusinessCards.MainCards != null) {
+
+                    cardsList.apply {
+                        clear()
+                        addAll(cards.oldBusinessCards.MainCards)
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    newBusinessCards?.let {
         when (it) {
             is DataState.Loading -> {
 
             }
 
             is DataState.Error -> {
-
+                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
-                val cards = it.data as GetOldCards
+                try {
+                    val cards = it.data as GetNewCards
+                    cardsList.apply {
+                        clear()
+//                        addAll(cards.newBusinessCards.MainCards)
+                    }
 
 
-                cards.oldBusinessCards.MainCards.forEach {
-                    Log.e("mTAG", "CardsList: ${it.nickName}" )
-                    Log.e("mTAG", "CardsList: ${it.Currency}" )
-                    Log.e("mTAG", "CardsList: ${it.EncryptedPan}" )
-                    Log.e("mTAG", "CardsList: ${it.AdditionNumb}" )
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
 
             }
         }
@@ -149,7 +255,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
 
 @Composable
-fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
+fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
@@ -169,7 +275,7 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
-                painter = painterResource(id = obj.icon),
+                painter = painterResource(id = R.drawable.ic_master_card),
                 contentDescription = "",
                 modifier = Modifier.size(width = 36.dp, height = 24.dp)
             )
@@ -182,9 +288,9 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     .padding(end = 8.dp, top = 5.dp)
             ) {
                 Text(
-                    text = obj.title,
+                    text = obj.nickName,
                     style = TextStyle(fontSize = 14.sp),
-                    color = Color(0xFF223142),
+                    color = Color(R.color.background_card_blue),
                     modifier = Modifier
                         .padding(vertical = 5.dp)
                         .fillMaxWidth()
@@ -195,15 +301,15 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = obj.cardIcon),
+                        painter = painterResource(id = R.drawable.ic_master_card_icon),
                         contentDescription = "",
                         modifier = Modifier.size(width = 30.dp, height = 20.dp)
                     )
 
                     Text(
-                        text = obj.cardTitle,
+                        text = obj.EncryptedPan,
                         style = TextStyle(fontSize = 14.sp),
-                        color = Color(0xFF223142),
+                        color = Color(R.color.background_card_blue),
                         modifier = Modifier.padding(start = 4.dp)
                     )
 
@@ -223,8 +329,8 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
                     ) {
                         Text(
 
-                            text = obj.cardInc, style = TextStyle(
-                                fontSize = 14.sp, color = Color(0xFF859DB5)
+                            text = "${obj.AdditionNumb}", style = TextStyle(
+                                fontSize = 14.sp, color = Color(R.color.grey_text)
                             )
 
                         )
@@ -233,9 +339,9 @@ fun CardsListItem(obj: CardsListData, onCardClick: () -> Unit) {
             }
 
             Text(
-                text = obj.cardAmount,
+                text = if (obj.Balance == null) "0.00" else "${obj.Balance}",
                 style = TextStyle(fontSize = 14.sp),
-                color = Color(0xFF223142)
+                color = Color(R.color.background_card_blue)
             )
         }
 
@@ -249,7 +355,6 @@ private fun FilterView(filter: CardFilters) {
         modifier = Modifier
             .padding(vertical = 5.dp)
             .clickable {
-
             },
         elevation = 1.dp,
         backgroundColor = Color.White,
@@ -282,54 +387,51 @@ private fun FilterView(filter: CardFilters) {
 }
 
 
-@Composable
-private fun Filters() {
+//@Composable
+//private fun Filters() {
+//
+////    val selectedBoxIndex = remember { mutableStateOf(-1) }
+////    val selectedBoxIndex = remember { mutableStateOf(0) }
+//
+//    Row(
+//        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+//        verticalAlignment = Alignment.Top,
+//    ) {
+//        Box(modifier = Modifier
+//            .background(
+//                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(R.color.border_grey),
+//                shape = RoundedCornerShape(size = 6.dp)
+//            )
+//            .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//            .clickable { selectedBoxIndex.value = 0 }) {
+//            Text(
+//                stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
+//                    fontSize = 12.sp,
+//                    color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
+//                )
+//            )
+//        }
+//
+//
+//
+//        Box(modifier = Modifier
+//            .background(
+//                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(R.color.border_grey),
+//                shape = RoundedCornerShape(size = 6.dp)
+//            )
+//            .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//            .clickable { selectedBoxIndex.value = 1 }) {
+//            Text(
+//                stringResource(R.string.tin_based), style = TextStyle(
+//                    fontSize = 12.sp,
+//                    color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
+//                )
+//            )
+//        }
+//
+//    }
+//}
 
-    val selectedBoxIndex = remember { mutableStateOf(-1) }
-
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Box(modifier = Modifier
-            .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
-                shape = RoundedCornerShape(size = 6.dp)
-            )
-            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 0 }) {
-            Text(
-                stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
-                    fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
-                )
-            )
-        }
-
-
-
-        Box(modifier = Modifier
-            .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
-                shape = RoundedCornerShape(size = 6.dp)
-            )
-            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 1 }) {
-            Text(
-                stringResource(R.string.tin_based), style = TextStyle(
-                    fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
-                )
-            )
-        }
-
-    }
-}
-
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-}
 
 
 @Preview(device = Devices.PIXEL_4)

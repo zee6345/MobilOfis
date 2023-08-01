@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.app.home.R
 import com.app.network.data.DataState
 import kotlinx.coroutines.launch
 
@@ -32,10 +33,10 @@ data class TabItem(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabLayoutMenu(navController: NavController, homeData: State<DataState<Any>?>) {
+fun TabLayoutMenu(navController: NavController) {
 
     val tabs = listOf(
-        TabItem(title = "Account", screen = { AccountList(navController, homeData) }),
+        TabItem(title = "Account", screen = { AccountList(navController) }),
         TabItem(title = "Cards", screen = { CardsList(navController) }),
         TabItem(title = "Loan", screen = { LoansList(navController) }),
         TabItem(title = "Trust", screen = { TrustsList(navController) })
@@ -64,7 +65,7 @@ fun TabLayoutMenu(navController: NavController, homeData: State<DataState<Any>?>
                     selected = index == pagerState.currentPage,
                     text = { Text(text = item.title, fontSize = 12.sp) },
                     selectedContentColor = Color(0xFF203657),
-                    unselectedContentColor = Color(0xFF859DB5),
+                    unselectedContentColor = Color(R.color.grey_text),
                     onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
                 )
             }

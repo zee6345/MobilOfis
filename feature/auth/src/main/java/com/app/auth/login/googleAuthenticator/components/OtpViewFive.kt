@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.auth.R
 
 
 @Composable
@@ -73,16 +74,16 @@ private fun CharView(
         modifier = Modifier
             .width(45.dp).height(60.dp)
             .border(
-                width = 1.dp, color = Color(0xFFE7EEFC), shape = RoundedCornerShape(8.dp)
+                width = 1.dp, color = Color(R.color.border_grey), shape = RoundedCornerShape(8.dp)
             )
             .padding(2.dp)
             .background(color = Color.White),
         text = char,
         style = MaterialTheme.typography.h4,
         color = if (isFocused) {
-            Color(0xFF223142)
+            Color(R.color.background_card_blue)
         } else {
-            Color(0xFF223142)
+            Color(R.color.background_card_blue)
         },
         textAlign = TextAlign.Center
     )

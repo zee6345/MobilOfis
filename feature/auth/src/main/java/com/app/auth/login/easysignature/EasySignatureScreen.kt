@@ -70,7 +70,7 @@ fun EasySignatureScreen() {
                     Row(
                         modifier = Modifier
                             .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
+                                3.dp, Color(R.color.border_grey)
                             )
                             .height(80.dp)
                             .fillMaxWidth(),
@@ -95,7 +95,7 @@ fun EasySignatureScreen() {
                     Text(
                         modifier = Modifier
                             .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
+                                3.dp, Color(R.color.border_grey)
                             )
                             .padding(horizontal = 12.dp , vertical = 22.dp),
                         text = "Please accept the query sent to your phone. Compare the checking code of the survey to the same code as the following code.",
@@ -107,7 +107,7 @@ fun EasySignatureScreen() {
                             .fillMaxWidth(),
                         text = "Check code",
                         style = TextStyle(
-                            color = Color(0xFF859DB5),
+                            color = Color(com.app.adjustment.R.color.grey_text),
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center
                         )

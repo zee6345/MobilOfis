@@ -55,7 +55,7 @@ fun AdjustmentsScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF3F7FA))
+            .background(color = Color(R.color.border_light_grey))
     ) {
         Surface(
             modifier = Modifier
@@ -373,7 +373,7 @@ fun Switch() {
             checkedThumbColor = Color.White,
             checkedTrackColor = Color(0xFF1DD580),
             uncheckedThumbColor = Color.White,
-            uncheckedTrackColor = Color(0xFFE7EEFC),
+            uncheckedTrackColor = Color(R.color.border_grey),
 
             )
     )
@@ -389,7 +389,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 0 }) {
@@ -403,7 +403,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 1 }) {
@@ -417,7 +417,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 2 }) {

@@ -23,6 +23,9 @@ import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCom
 import com.app.adjustment.exchangerate.ExchangeRatesScreen
 import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
 import com.app.adjustment.navigation.securityScreen
+
+import com.app.adjustment.otp.OtpVerifyScreen
+import com.app.adjustment.otp.navigation.changePasswordToOTP
 import com.app.adjustment.security.SecurityScreen
 import com.app.adjustment.userprofile.UserProfileScreen
 import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
@@ -131,6 +134,10 @@ fun NavigationGraph(navController: NavHostController) {
             adjustmentToConfirmPin,
         ) {
             RepeatPin(navController)
+        }
+
+        composable(changePasswordToOTP){
+            OtpVerifyScreen(navController)
         }
 
 

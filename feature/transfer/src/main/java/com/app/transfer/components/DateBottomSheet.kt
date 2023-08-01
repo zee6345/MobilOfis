@@ -108,7 +108,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                     .padding(top = 2.sdp),
                 fontWeight = FontWeight.Normal,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                color = Color(0xFF859DB5),
+                color = Color(R.color.grey_text),
                 fontSize = 12.sp
             )
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
@@ -123,7 +123,7 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                         .width(10.sdp)
                         .height(1.sdp)
                         .background(
-                            color = Color(0xFFE7EEFC), shape = RoundedCornerShape(size = 10.sdp)
+                            color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
                         )
                         .align(Alignment.CenterVertically)
                 )

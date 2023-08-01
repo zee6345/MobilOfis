@@ -8,49 +8,49 @@ import com.app.home.main.component.CardMenu
 
 object DataProvider {
 
-        val accountList = listOf(
-            AccountListData(
-                title = "Current account in head office",
-                description = "AZ63BRES0038019440023915603",
-            ),
-            AccountListData(
-                title = "Current account in head office",
-                description = "AZ63BRES0038019440023915603",
-            ),
-            AccountListData(
-                title = "Current account in head office",
-                description = "AZ63BRES0038019440023915603",
-            ),
-            AccountListData(
-                title = "Current account in head office",
-                description = "AZ63BRES0038019440023915603",
-            ),
-            AccountListData(
-                title = "Current account in head office",
-                description = "AZ63BRES0038019440023915603",
-            ),
-        )
+//        val accountList = listOf(
+//            AccountListData(
+//                title = "Current account in head office",
+//                description = "AZ63BRES0038019440023915603",
+//            ),
+//            AccountListData(
+//                title = "Current account in head office",
+//                description = "AZ63BRES0038019440023915603",
+//            ),
+//            AccountListData(
+//                title = "Current account in head office",
+//                description = "AZ63BRES0038019440023915603",
+//            ),
+//            AccountListData(
+//                title = "Current account in head office",
+//                description = "AZ63BRES0038019440023915603",
+//            ),
+//            AccountListData(
+//                title = "Current account in head office",
+//                description = "AZ63BRES0038019440023915603",
+//            ),
+//        )
 
-        val cardsList = listOf(
-            CardsListData(
-                icon = R.drawable.ic_master_card,
-                title = "Master Card Business Plus",
-                cardIcon = R.drawable.ic_master_card_icon,
-                cardTitle = "•••• 8339",
-                cardInc = "+2",
-                cardAmount = "1560.23 $"
-            ),
-            CardsListData(
-                icon = R.drawable.ic_visa_business,
-                title = "Visa Business",
-                cardIcon = R.drawable.ic_visa_icon,
-                cardTitle = "•••• 7443",
-                cardInc = "+1",
-                cardAmount = "1560.23 $"
-            ),
-
-            )
+//        val cardsList = listOf(
+//            CardsListData(
+//                icon = R.drawable.ic_master_card,
+//                title = "Master Card Business Plus",
+//                cardIcon = R.drawable.ic_master_card_icon,
+//                cardTitle = "•••• 8339",
+//                cardInc = "+2",
+//                cardAmount = "1560.23 $"
+//            ),
+//            CardsListData(
+//                icon = R.drawable.ic_visa_business,
+//                title = "Visa Business",
+//                cardIcon = R.drawable.ic_visa_icon,
+//                cardTitle = "•••• 7443",
+//                cardInc = "+1",
+//                cardAmount = "1560.23 $"
+//            ),
 //
+//            )
+
         val filtersList = listOf(
             CardFilters(
                 "Account name and IBAN",
@@ -148,7 +148,7 @@ object DataProvider {
             CardMenu(
                 title = "Signature\n" +
                         "Waiting",
-                color = Color(0xff2CCAD3),
+                color = Color(R.color.blueColor),
                 number = 3
             ),
             CardMenu(

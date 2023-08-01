@@ -1,8 +1,6 @@
 package com.app.auth.login
 
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -38,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,18 +46,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.login.components.alertdialog.CallTopAlertDialog
-import com.app.auth.login.components.alertdialog.ShowProgressDialog
+import com.app.adjustment.components.CallTopAlertDialog
+import com.app.adjustment.components.ShowProgressDialog
 import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
+import com.app.auth.login.otp.otpScreen
+
 import com.app.network.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.responseModels.LoginResponse
-import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
@@ -76,9 +75,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+    val isPswdVisible = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val loginData by viewModel.data.collectAsState()
+    val asanLogin by viewModel.asanLogin.collectAsState()
 
     BottomSheetScaffold(
         sheetPeekHeight = 50.sdp,
@@ -118,10 +119,22 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     )
                 )
 
-                BottomSheetItems(R.drawable.ic_location, stringResource(R.string.branches_and_atms), true)
+                BottomSheetItems(
+                    R.drawable.ic_location,
+                    stringResource(R.string.branches_and_atms),
+                    true
+                )
                 BottomSheetItems(R.drawable.ic_tariff, stringResource(R.string.tariffs), true)
-                BottomSheetItems(R.drawable.ic_whatsapp_support, stringResource(R.string.whatsapp_support), true)
-                BottomSheetItems(R.drawable.ic_call_support, stringResource(R.string.call_center), true)
+                BottomSheetItems(
+                    R.drawable.ic_whatsapp_support,
+                    stringResource(R.string.whatsapp_support),
+                    true
+                )
+                BottomSheetItems(
+                    R.drawable.ic_call_support,
+                    stringResource(R.string.call_center),
+                    true
+                )
 
                 Row(
                     modifier = Modifier
@@ -202,13 +215,17 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         )
                     }, trailingIcon = {
                         if (userErrorCheck)
-                            Icon(Icons.Filled.Info, stringResource(R.string.error), tint = Color.Red)
+                            Icon(
+                                Icons.Filled.Info,
+                                stringResource(R.string.error),
+                                tint = Color.Red
+                            )
                     }, colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
-                        focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(0xFFE7EEFC),
-                        unfocusedLabelColor = Color(0xFF859DB5),
-                        focusedLabelColor = Color(0xFF223142),
+                        focusedBorderColor = Color(R.color.background_card_blue),
+                        unfocusedBorderColor = Color(com.app.home.R.color.border_grey),
+                        unfocusedLabelColor = Color(com.app.adjustment.R.color.grey_text),
+                        focusedLabelColor = Color(R.color.background_card_blue),
                     ),
                     singleLine = true
                 )
@@ -216,7 +233,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 OutlinedTextField(
                     value = paswdState.value,
                     onValueChange = { paswdState.value = it },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (isPswdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     label = {
                         Text(
@@ -227,17 +244,36 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         )
                     }, trailingIcon = {
                         if (pswdErrorCheck)
-                            Icon(Icons.Filled.Info, stringResource(id = R.string.error), tint = Color.Red)
+                            Icon(
+                                Icons.Filled.Info,
+                                stringResource(id = R.string.error),
+                                tint = Color.Red
+                            )
+
+                        if (isPswdVisible.value) {
+                            Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible),
+                                "",
+                                modifier = Modifier.clickable {
+                                    isPswdVisible.value = false
+                                })
+                        } else {
+                            Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible_off),
+                                "",
+                                modifier = Modifier.clickable {
+                                    isPswdVisible.value = true
+                                })
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
-                        focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(0xFFE7EEFC),
-                        unfocusedLabelColor = Color(0xFF859DB5),
-                        focusedLabelColor = Color(0xFF223142)
+                        focusedBorderColor = Color(R.color.background_card_blue),
+                        unfocusedBorderColor = Color(com.app.home.R.color.border_grey),
+                        unfocusedLabelColor = Color(com.app.adjustment.R.color.grey_text),
+                        focusedLabelColor = Color(R.color.background_card_blue)
                     ),
                     singleLine = true
                 )
@@ -278,12 +314,29 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 Button(
                     onClick = {
-
-//                        navController.navigate(otpNavigationRoute)
-
                         when (selected) {
                             0 -> {
-                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT).show()
+                                if (usernameState.value.isNotEmpty()) {
+                                    userErrorCheck = false
+                                    if (paswdState.value.isNotEmpty()) {
+                                        pswdErrorCheck = false
+
+                                        //handle success
+                                        viewModel.loginWithUserName(
+                                            LoginRequest(
+                                                userName = usernameState.value,
+                                                password = paswdState.value,
+                                                authType = "OTP",
+                                                channel = "INT"
+                                            )
+                                        )
+
+                                    } else {
+                                        pswdErrorCheck = !pswdErrorCheck
+                                    }
+                                } else {
+                                    userErrorCheck = !userErrorCheck
+                                }
                             }
 
                             1 -> {
@@ -313,10 +366,29 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                             }
 
                             2 -> {
-                                Toast.makeText(context, "Coming soon!", Toast.LENGTH_SHORT).show()
+//                                if (usernameState.value.isNotEmpty()) {
+//                                    userErrorCheck = false
+//                                    if (paswdState.value.isNotEmpty()) {
+//                                        pswdErrorCheck = false
+//
+//                                        //handle success
+//                                        viewModel.asanLogin(
+//                                            LoginAsanRequest(
+//                                                phoneNumber = usernameState.value,
+//                                                userId = paswdState.value,
+//                                                channel = "INT"
+//                                            )
+//                                        )
+//
+//                                    } else {
+//                                        pswdErrorCheck = !pswdErrorCheck
+//                                    }
+//                                } else {
+//                                    userErrorCheck = !userErrorCheck
+//                                }
+                                Message.showMessage(context, "Coming soon!")
                             }
                         }
-
 
 
                     },
@@ -327,7 +399,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 ) {
                     Text(
-                        stringResource(R.string.login), modifier = Modifier.padding(vertical = 12.dp), color = Color.White
+                        stringResource(R.string.login),
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        color = Color.White
                     )
                 }
 
@@ -374,7 +448,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, stringResource(R.string.failed_to_login))
+                isLoading.value = false
+                val msg = it.errorMessage.ifEmpty {
+                    stringResource(R.string.failed_to_login)
+                }
+                Message.showMessage(context, msg)
             }
 
             is DataState.Success -> {
@@ -385,7 +463,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                     LaunchedEffect(Unit) {
                         //route to OTP
-                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
+//                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
+                        otpScreen.userName = usernameState.value
+                        otpScreen.loginType = selected
+
                         navController.navigate(otpNavigationRoute)
 
                     }
@@ -395,6 +476,27 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             }
         }
     }
+
+
+//    asanLogin?.let {
+//        when (it) {
+//            is DataState.Loading -> {
+//                isLoading.value = true
+//                if (isLoading.value) {
+//                    ShowProgressDialog(isLoading)
+//                }
+//            }
+//
+//            is DataState.Error -> {
+//
+//                Message.showMessage(context, it.errorMessage)
+//            }
+//
+//            is DataState.Success -> {
+//
+//            }
+//        }
+//    }
 
 
 }
@@ -469,7 +571,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 private fun BottomSheetItems(iconRes: Int, title: String, showBorder: Boolean) {
 
     val borderModify = Modifier
-        .dashedBorder(3.sdp, Color(0xFFE7EEFC))
+        .dashedBorder(3.sdp, Color(com.app.home.R.color.border_grey))
         .fillMaxWidth()
     val nonBorderModify = Modifier.fillMaxWidth()
 
@@ -509,13 +611,15 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(com.app.home.R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 0 }) {
             androidx.compose.material.Text(
-                text = stringResource(R.string.az), modifier = Modifier.padding(6.dp), style = TextStyle(
-                    if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
+                text = stringResource(R.string.az),
+                modifier = Modifier.padding(6.dp),
+                style = TextStyle(
+                    if (selectedBoxIndex.value == 0) Color.White else Color(R.color.background_card_blue),
                     fontSize = 12.sp
                 )
             )
@@ -523,13 +627,15 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(com.app.home.R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 1 }) {
             androidx.compose.material.Text(
-                text = stringResource(R.string.en), modifier = Modifier.padding(6.dp), style = TextStyle(
-                    if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
+                text = stringResource(R.string.en),
+                modifier = Modifier.padding(6.dp),
+                style = TextStyle(
+                    if (selectedBoxIndex.value == 1) Color.White else Color(R.color.background_card_blue),
                     fontSize = 12.sp
                 )
             )
@@ -537,13 +643,15 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(0xFFE7EEFC),
+                if (selectedBoxIndex.value == 2) Color(R.color.background_card_blue) else Color(com.app.home.R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 2 }) {
             androidx.compose.material.Text(
-                text = stringResource(R.string.ru), modifier = Modifier.padding(6.dp), style = TextStyle(
-                    if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
+                text = stringResource(R.string.ru),
+                modifier = Modifier.padding(6.dp),
+                style = TextStyle(
+                    if (selectedBoxIndex.value == 2) Color.White else Color(R.color.background_card_blue),
                     fontSize = 12.sp
                 )
             )

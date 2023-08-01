@@ -50,10 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.account.details.Blockages
 import com.app.home.main.account.details.MainInformation
-import com.app.network.data.responseModels.GetAccountsItem
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
+
 
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -67,7 +64,8 @@ private const val TAG = "AccountInformation"
 
 
 @Composable
-fun AccountInformation(navController: NavController,
+fun AccountInformation(
+    navController: NavController,
 //                       arguments: Bundle?
 ) {
 
@@ -185,7 +183,7 @@ private fun MainContent(navController: NavController) {
                     modifier = Modifier.padding(vertical = 5.sdp),
                     text = stringResource(id = R.string.main_information),
                     style = TextStyle(
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Center
                     )
 
@@ -218,7 +216,7 @@ private fun MainContent(navController: NavController) {
                     text = stringResource(id = R.string.blockages),
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Center
                     )
                 )
@@ -229,7 +227,6 @@ private fun MainContent(navController: NavController) {
             modifier = Modifier,
             state = pagerState,
             pageSpacing = 0.dp,
-
             userScrollEnabled = true,
             reverseLayout = false,
             contentPadding = PaddingValues(0.dp),

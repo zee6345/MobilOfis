@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import com.app.auth.login.LoginScreen
 import com.app.auth.login.otp.OtpScreen
 
+
 const val loginNavigationRoute = "login"
 const val otpNavigationRoute="otp"
 

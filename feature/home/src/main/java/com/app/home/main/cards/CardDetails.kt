@@ -49,12 +49,17 @@ import com.app.home.R
 import com.app.home.data.CardFilters
 import com.app.home.data.DataProvider
 import com.app.home.main.cards.components.BusinessCardOptionsSheet
+import com.app.home.main.component.cardsList
 import com.app.home.main.component.dashedBorder
+import com.app.network.data.responseModels.MainCard
 import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
 fun CardDetails(navController: NavController) {
+
+
+    val data = cardsList[0]
 
     Column(
         modifier = Modifier
@@ -113,27 +118,31 @@ fun CardDetails(navController: NavController) {
 //                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    MainContent(navController)
+                    MainContent(navController, data)
                 }
 
-                item {
-                    Text(
-                        text = stringResource(R.string.additional_cards),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-                    )
+                if (data.AdditionCards.isNotEmpty() && data.AdditionCards != null) {
 
-                }
+                    item {
+                        Text(
+                            text = stringResource(R.string.additional_cards),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                        )
 
-                item {
-                    CardDetailsFilters(navController)
-                }
+                    }
 
-                item {
+                    item {
+                        CardDetailsFilters(navController)
+                    }
 
-                    repeat(2) {
-                        AdditionalCards(navController)
+                    item {
+
+                        repeat(2) {
+                            AdditionalCards(navController)
+                        }
+
                     }
 
                 }
@@ -145,7 +154,7 @@ fun CardDetails(navController: NavController) {
 }
 
 @Composable
-private fun MainContent(navController: NavController) {
+private fun MainContent(navController: NavController, data: MainCard) {
 
     val businessCardOptions = rememberSaveable { mutableStateOf(false) }
 
@@ -164,7 +173,7 @@ private fun MainContent(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -183,7 +192,8 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = stringResource(R.string.business_plus), style = TextStyle(
+                        text = if (data.nickName == null) "${data.Name}" else "${data.nickName}",
+                        style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -207,7 +217,7 @@ private fun MainContent(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -228,7 +238,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = stringResource(R.string.text_account_id), style = TextStyle(
+                        text = "${data.Pan}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -242,7 +252,7 @@ private fun MainContent(navController: NavController) {
                     Text(
                         text = stringResource(R.string.additional_card), style = TextStyle(
                             fontSize = 14.sp,
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             fontFamily = FontFamily(
                                 Font(R.font.roboto_medium),
 
@@ -255,7 +265,7 @@ private fun MainContent(navController: NavController) {
                     )
 
                     Text(
-                        text = stringResource(R.string._2), style = TextStyle(
+                        text = "${data.AdditionNumb}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_medium))
                         )
@@ -270,7 +280,7 @@ private fun MainContent(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -283,15 +293,15 @@ private fun MainContent(navController: NavController) {
                         text = stringResource(R.string.user), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
                     Text(
-                        text = stringResource(R.string.elchin_huseynov), style = TextStyle(
+                        text = "${data.CardHolder}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -302,7 +312,7 @@ private fun MainContent(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -315,15 +325,15 @@ private fun MainContent(navController: NavController) {
                         text = stringResource(R.string.card_account_iban), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
                     Text(
-                        text = stringResource(R.string.az78bres00380394400262924501), style = TextStyle(
+                        text = "${data.Iban}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -340,14 +350,13 @@ private fun MainContent(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    ,
+                    .dashedBorder(3.dp, Color(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -357,17 +366,17 @@ private fun MainContent(navController: NavController) {
                         text = stringResource(R.string.status), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
 
                             )
                     )
 
                     Text(
-                        text = stringResource(R.string.active), style = TextStyle(
+                        text = "${data.CardStat}", style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -384,12 +393,12 @@ private fun MainContent(navController: NavController) {
                         text = stringResource(R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
                     Text(
-                        text = stringResource(R.string._31_03_2023), style = TextStyle(
+                        text = "${data.ExpDate}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = Color(0xFF7B61FF),
@@ -404,15 +413,14 @@ private fun MainContent(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                    ,
+                    .dashedBorder(3.dp, Color(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
                         .fillMaxWidth()
-                        .rightVerticalDashedBorder(3.dp, Color(0xFFE7EEFC))
+                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
 
                 ) {
@@ -421,16 +429,16 @@ private fun MainContent(navController: NavController) {
                         text = stringResource(id = R.string.balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
 
                             )
                     )
 
                     Text(
-                        text = "2500.00", style = TextStyle(
+                        text = "${data.Balance}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -446,16 +454,16 @@ private fun MainContent(navController: NavController) {
                         text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
                     Text(
-                        text = stringResource(R.string.azn), style = TextStyle(
+                        text = "${data.Currency}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
-                            )
+                            color = Color(R.color.background_card_blue),
+                        )
                     )
                 }
             }
@@ -541,7 +549,7 @@ private fun AdditionalCards(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
+                    .dashedBorder(3.dp, Color(R.color.grey_text))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -594,7 +602,7 @@ private fun AdditionalCards(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -631,7 +639,7 @@ private fun AdditionalCards(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -644,7 +652,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string.user), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
@@ -652,7 +660,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string.elchin_huseynov), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -666,7 +674,7 @@ private fun AdditionalCards(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFCAD5ED))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -681,7 +689,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string.status), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
 
                             )
                     )
@@ -691,7 +699,7 @@ private fun AdditionalCards(navController: NavController) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -707,7 +715,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
@@ -715,7 +723,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string.azn), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
                         )
                     )
                 }
@@ -731,7 +739,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                         )
                     )
 
@@ -739,7 +747,7 @@ private fun AdditionalCards(navController: NavController) {
                         text = stringResource(id = R.string._31_03_2023), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(0xFF223142),
+                            color = Color(R.color.background_card_blue),
 
 
                             )

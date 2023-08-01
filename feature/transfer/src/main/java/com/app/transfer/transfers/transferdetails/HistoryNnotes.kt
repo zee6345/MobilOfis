@@ -65,7 +65,7 @@ fun HistoryNnotes(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded1 = !expanded1
@@ -117,7 +117,7 @@ fun HistoryNnotes(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded2 = !expanded2
@@ -177,7 +177,7 @@ private fun CardInfo1(navController: NavController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                .dashedBorder(3.dp, Color(R.color.border_grey))
                 .padding(horizontal = 10.sdp, vertical = 8.sdp)
                 .clickable {
                     expanded = !expanded
@@ -231,7 +231,7 @@ private fun CardInfo2(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded = !expanded
@@ -255,7 +255,7 @@ private fun CardInfo2(navController: NavController) {
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Right,
 
                         )
@@ -267,7 +267,7 @@ private fun CardInfo2(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded = !expanded
@@ -317,7 +317,7 @@ private fun CardInfo2(navController: NavController) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             textAlign = TextAlign.Right,
 
                             )
@@ -331,7 +331,7 @@ private fun CardInfo2(navController: NavController) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             textAlign = TextAlign.Right,
 
                             )
@@ -368,7 +368,7 @@ private fun CardInfo3(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded = !expanded
@@ -392,7 +392,7 @@ private fun CardInfo3(navController: NavController) {
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Right,
 
                         )
@@ -404,7 +404,7 @@ private fun CardInfo3(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded = !expanded
@@ -454,7 +454,7 @@ private fun CardInfo3(navController: NavController) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             textAlign = TextAlign.Right,
 
                             )
@@ -468,7 +468,7 @@ private fun CardInfo3(navController: NavController) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             textAlign = TextAlign.Right,
 
                             )
@@ -501,7 +501,7 @@ private fun CardInfo4(navController: NavController) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                .dashedBorder(3.dp, Color(R.color.border_grey))
                 .padding(horizontal = 10.sdp, vertical = 8.sdp)
                 .clickable {
                     expanded = !expanded
@@ -556,7 +556,7 @@ private fun CardInfo5(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded = !expanded
@@ -580,7 +580,7 @@ private fun CardInfo5(navController: NavController) {
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF859DB5),
+                        color = Color(R.color.grey_text),
                         textAlign = TextAlign.Right,
 
                         )
@@ -592,7 +592,7 @@ private fun CardInfo5(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
+                    .dashedBorder(3.dp, Color(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
                     .clickable {
                         expanded = !expanded
@@ -640,7 +640,7 @@ private fun CardInfo5(navController: NavController) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             textAlign = TextAlign.Right,
 
                             )
@@ -654,7 +654,7 @@ private fun CardInfo5(navController: NavController) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF859DB5),
+                            color = Color(R.color.grey_text),
                             textAlign = TextAlign.Right,
 
                             )
