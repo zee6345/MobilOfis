@@ -43,7 +43,8 @@ class LoginViewModel : ViewModel() {
     private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
-    val changePassword = MutableLiveData<ChangePasswordResponse>()
+
+
     val changePasswordVerification = MutableLiveData<VerifyChangePasswordResponse>()
 
     fun loginWithUserName(loginRequest: LoginRequest) {
@@ -158,72 +159,21 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun changePassword(changePasswordRequest: ChangePasswordRequest) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val post = repository.changePasswordRequest(changePasswordRequest)
-                withContext(Dispatchers.Main) {
-                    changePassword.value = post
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // Handle error here, maybe update a separate error LiveData
-            }
-        }
-    }
 
-    fun changePasswordVerification(verifyChangePasswordRequest: VerifyChangePasswordRequest) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val post = repository.changePasswordVerify(verifyChangePasswordRequest)
-                withContext(Dispatchers.Main) {
-                    changePasswordVerification.value = post
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // Handle error here, maybe update a separate error LiveData
-            }
-        }
-    }
 
-    private fun handleException(throwable: Throwable) {
-        when (throwable) {
-            is ConnectException -> {
-                _data.value = DataState.Error("no internet connection")
-            }
+//    fun changePasswordVerification(verifyChangePasswordRequest: VerifyChangePasswordRequest) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                val post = repository.changePasswordVerify(verifyChangePasswordRequest)
+//                withContext(Dispatchers.Main) {
+//                    changePasswordVerification.value = post
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                // Handle error here, maybe update a separate error LiveData
+//            }
+//        }
+//    }
 
-            is SocketTimeoutException -> {
-                _data.value = DataState.Error("connection timeout")
-            }
-
-            is UnknownHostException -> {
-                _data.value = DataState.Error("failed to reached network")
-            }
-
-            is HttpException -> {
-                when (throwable.code()) {
-                    401 -> {
-                        // HTTP 401 Unauthorized: Invalid credentials
-                        _data.value = DataState.Error("Unauthorized: Invalid credentials")
-                    }
-
-                    403 -> {
-                        // HTTP 403 Forbidden: Access denied
-                        _data.value = DataState.Error("Forbidden: Access denied")
-                    }
-
-                    404 -> {
-                        // HTTP 404 Not Found: Requested resource not found
-                        _data.value = DataState.Error("Not Found: Requested resource not found")
-                    }
-                    // Add more cases for other HTTP error codes if needed
-                    else -> {
-                        // Handle other HTTP error codes with a generic message
-                        _data.value = DataState.Error("Failed to connect to server")
-                    }
-                }
-            }
-        }
-    }
 
 }

@@ -49,7 +49,8 @@ fun WelcomePinScreen(navController: NavController) {
     val context = LocalContext.current
 
 
-    fetchUserDetails(username)
+    val userDetails = MainApp.session.fetchUserDetails()
+    username.value = userDetails.userName
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -93,6 +94,7 @@ fun WelcomePinScreen(navController: NavController) {
 
                 PinInputView(navController, length = 5) { pin ->
                     enteredPin = pin
+
                     if (pin.isNotEmpty() && pin.length == 5) {
                         val finalPin = MainApp.session[Keys.KEY_USER_PIN]
                         if(finalPin.equals(pin)){
@@ -100,7 +102,6 @@ fun WelcomePinScreen(navController: NavController) {
                         } else {
                             Message.showMessage(context, "Wrong pin entered!")
                         }
-
                     }
                 }
 
@@ -151,13 +152,6 @@ fun WelcomePinScreen(navController: NavController) {
     }
 }
 
-private fun fetchUserDetails(username: MutableState<String>) {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    val loginVerify = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-    loginVerify.let {
-        username.value = it.userName
-    }
-}
 
 @Preview(device = Devices.PIXEL_4)
 @Composable

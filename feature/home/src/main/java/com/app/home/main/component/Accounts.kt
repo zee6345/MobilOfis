@@ -62,25 +62,25 @@ data class AccountListData(
 @Composable
 fun AccountList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     val context = LocalContext.current
-    val userDetails = fetchUserDetails()
+    val userDetails = MainApp.session.fetchUserDetails()
     val homeData by rememberUpdatedState(viewModel.accountsData.collectAsState())
     val cardsList = remember { mutableListOf<GetAccountsItem>() }
     val isLoading = remember { mutableStateOf(false) }
 
 
-    LaunchedEffect(Unit ){
+    LaunchedEffect(Unit) {
         //fetch accounts list
         viewModel.getAccounts(
             userDetails.customerNo
         )
     }
 
-    if (isLoading.value){
+    if (isLoading.value) {
 
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
 
@@ -101,7 +101,6 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = viewMod
             })
         }
     }
-
 
 
     /**
@@ -197,12 +196,6 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
             )
         }
     }
-}
-
-
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
 

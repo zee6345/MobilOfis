@@ -37,7 +37,7 @@ import com.app.adjustment.R
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun PinChangeSheet(navController: NavController) {
+fun PassChangeSheet(navController: NavController) {
     val aboutBankState = rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -57,12 +57,12 @@ fun PinChangeSheet(navController: NavController) {
         )
     }
 
-    PinChangedBottomSheet(aboutBankState, navController)
+    PassChangedBottomSheet(aboutBankState, navController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: NavController) {
+fun PassChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: NavController) {
     if (aboutBankState.value) ModalBottomSheet(
         onDismissRequest = { aboutBankState.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
@@ -91,7 +91,7 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
                         style = TextStyle(color = Color.White, fontSize = 24.sp)
                     )
                     Text(
-                        text ="PIN has been changed",
+                        text ="Password changed",
                         style = TextStyle(color = Color.White, fontSize = 16.sp)
                     )
 
@@ -132,6 +132,6 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
 
 @Preview
 @Composable
-private fun PreViewPinSheet() {
-    PinChangeSheet(rememberNavController())
+private fun PreViewPassSheet() {
+    PassChangeSheet(rememberNavController())
 }

@@ -30,11 +30,5 @@ class LoginRepository: BaseRetrofitClient() {
         return apiService.loginAsan(loginAsanRequest)
     }
 
-   suspend fun changePasswordRequest(changePasswordRequest: ChangePasswordRequest): ChangePasswordResponse {
-       return apiService.changePassword(changePasswordRequest)
-    }
 
-    suspend fun changePasswordVerify(verifyChangePasswordRequest: VerifyChangePasswordRequest): VerifyChangePasswordResponse {
-        return apiService.changePasswordVerify(verifyChangePasswordRequest)
-    }
 }

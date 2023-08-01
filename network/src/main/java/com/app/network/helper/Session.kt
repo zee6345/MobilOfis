@@ -3,6 +3,7 @@ package com.app.network.helper
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import com.app.network.data.responseModels.LoginVerifyResponse
 
 class Session private constructor(context: Context) {
     init {
@@ -112,6 +113,11 @@ class Session private constructor(context: Context) {
         return Base64.decode(encodedNonce, Base64.NO_WRAP)
     }
 
+    fun fetchUserDetails(): LoginVerifyResponse {
+        val str = MainApp.session[Keys.KEY_USER_DETAILS]
+        return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+    }
+
     companion object {
         const val BLANK_STRING_KEY = ""
         const val WRONG_PAIR = "Key-Value pair cannot be blank or null"
@@ -127,5 +133,6 @@ class Session private constructor(context: Context) {
             }
             return INSTANCE
         }
+
     }
 }

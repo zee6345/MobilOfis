@@ -72,7 +72,7 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = viewModel
 
     val customerLoans by viewModel.customerLoans.collectAsState()
     val context: Context = LocalContext.current
-    val userDetails = fetchUserDetails()
+    val userDetails = MainApp.session.fetchUserDetails()
 
 //    val loansList = remember { mutableListOf<GetLoansItem>() }
     val cardFilters = remember { DataProvider.filtersLoanList }
@@ -339,11 +339,6 @@ private fun Filters() {
         }
 
     }
-}
-
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
 @Preview(device = Devices.PIXEL_4)

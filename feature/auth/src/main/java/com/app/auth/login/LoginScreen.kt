@@ -1,8 +1,6 @@
 package com.app.auth.login
 
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -48,21 +46,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.login.components.alertdialog.CallTopAlertDialog
-import com.app.auth.login.components.alertdialog.ShowProgressDialog
+import com.app.adjustment.components.CallTopAlertDialog
+import com.app.adjustment.components.ShowProgressDialog
 import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
-import com.app.auth.login.otp.OtpScreen
 import com.app.auth.login.otp.otpScreen
+
 import com.app.network.utils.Message
 import com.app.network.data.DataState
-import com.app.network.data.callModels.LoginAsanRequest
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.responseModels.LoginResponse
-import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
@@ -371,26 +366,27 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                             }
 
                             2 -> {
-                                if (usernameState.value.isNotEmpty()) {
-                                    userErrorCheck = false
-                                    if (paswdState.value.isNotEmpty()) {
-                                        pswdErrorCheck = false
-
-                                        //handle success
-                                        viewModel.asanLogin(
-                                            LoginAsanRequest(
-                                                phoneNumber = usernameState.value,
-                                                userId = paswdState.value,
-                                                channel = "INT"
-                                            )
-                                        )
-
-                                    } else {
-                                        pswdErrorCheck = !pswdErrorCheck
-                                    }
-                                } else {
-                                    userErrorCheck = !userErrorCheck
-                                }
+//                                if (usernameState.value.isNotEmpty()) {
+//                                    userErrorCheck = false
+//                                    if (paswdState.value.isNotEmpty()) {
+//                                        pswdErrorCheck = false
+//
+//                                        //handle success
+//                                        viewModel.asanLogin(
+//                                            LoginAsanRequest(
+//                                                phoneNumber = usernameState.value,
+//                                                userId = paswdState.value,
+//                                                channel = "INT"
+//                                            )
+//                                        )
+//
+//                                    } else {
+//                                        pswdErrorCheck = !pswdErrorCheck
+//                                    }
+//                                } else {
+//                                    userErrorCheck = !userErrorCheck
+//                                }
+                                Message.showMessage(context, "Coming soon!")
                             }
                         }
 
@@ -452,6 +448,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             }
 
             is DataState.Error -> {
+                isLoading.value = false
                 val msg = it.errorMessage.ifEmpty {
                     stringResource(R.string.failed_to_login)
                 }
@@ -481,25 +478,25 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     }
 
 
-    asanLogin?.let {
-        when (it) {
-            is DataState.Loading -> {
-                isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                }
-            }
-
-            is DataState.Error -> {
-
-                Message.showMessage(context, it.errorMessage)
-            }
-
-            is DataState.Success -> {
-
-            }
-        }
-    }
+//    asanLogin?.let {
+//        when (it) {
+//            is DataState.Loading -> {
+//                isLoading.value = true
+//                if (isLoading.value) {
+//                    ShowProgressDialog(isLoading)
+//                }
+//            }
+//
+//            is DataState.Error -> {
+//
+//                Message.showMessage(context, it.errorMessage)
+//            }
+//
+//            is DataState.Success -> {
+//
+//            }
+//        }
+//    }
 
 
 }

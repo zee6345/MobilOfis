@@ -74,7 +74,7 @@ val cardsList =  mutableListOf<MainCard>()
 fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
 
     val context = LocalContext.current
-    val userDetails = fetchUserDetails()
+    val userDetails = MainApp.session.fetchUserDetails()
 
     val oldBusinessCards by viewModel.oldBusinessCards.collectAsState()
     val newBusinessCards by viewModel.newBusinessCards.collectAsState()
@@ -210,9 +210,13 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel
 
                 isLoading.value = false
 
-                cardsList.apply {
-                    clear()
-                    addAll(cards.oldBusinessCards.MainCards)
+                if (cards.oldBusinessCards.MainCards != null) {
+
+                    cardsList.apply {
+                        clear()
+                        addAll(cards.oldBusinessCards.MainCards)
+                    }
+
                 }
 
             }
@@ -428,10 +432,6 @@ private fun FilterView(filter: CardFilters) {
 //    }
 //}
 
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-}
 
 
 @Preview(device = Devices.PIXEL_4)

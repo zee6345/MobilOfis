@@ -1,5 +1,6 @@
 package com.app.adjustment.exchangerate
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,7 +10,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -20,6 +26,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,11 +43,34 @@ import com.app.adjustment.R
 
 import com.app.adjustment.components.dashedBorder
 import com.app.adjustment.data.DataProvider
-import com.app.adjustment.data.ExchangeRatesModel
+import com.app.network.data.DataState
+import com.app.network.data.responseModels.GetExchangeRates
+import com.app.network.data.responseModels.GetExchangeRatesItem
+import com.app.network.utils.Message
+import com.app.network.viewmodel.AdjustmentViewModel
 
 
 @Composable
-fun ExchangeRatesScreen(navController: NavController) {
+fun ExchangeRatesScreen(
+    navController: NavController,
+    viewModel: AdjustmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    val context: Context = LocalContext.current
+    val exchangeList by viewModel.exchangeRates.collectAsState()
+    val coroutine = rememberCoroutineScope()
+    val isLoading = remember { mutableStateOf(false) }
+    val exchangeData = remember { mutableListOf<GetExchangeRatesItem>() }
+    val date = remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.getExchangeRates()
+    }
+
+
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,6 +107,7 @@ fun ExchangeRatesScreen(navController: NavController) {
 
             }
         }
+
         Column(
             modifier = Modifier
                 .weight(0.9f)
@@ -84,125 +115,184 @@ fun ExchangeRatesScreen(navController: NavController) {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 22.dp),
-                backgroundColor = Color.White
-            ) {
 
-                Column {
+            if (isLoading.value){
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            } else{
 
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(CenterHorizontally)
-                            .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
-                            )
-                            .padding(horizontal = 12.dp, vertical = 12.dp),
-                        text = stringResource(R.string._17_10_2022),
-                        style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Center)
-                    )
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 22.dp),
+                    backgroundColor = Color.White
+                ) {
 
-                    Row(
-                        modifier = Modifier
-                            .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
-                            )
-                            .padding(end = 12.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(0.7f)
-                                .rightVerticalDashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
-                                )
-                        ) {
+
+                        Column {
+
                             Text(
                                 modifier = Modifier
-                                    .padding(vertical = 12.dp)
-                                    .fillMaxWidth(),
-                                text = stringResource(R.string.bank_republic),
-                                style = TextStyle(fontSize = 14.sp, textAlign = TextAlign.Center)
+                                    .fillMaxWidth()
+                                    .align(CenterHorizontally)
+                                    .dashedBorder(
+                                        3.dp, Color(0xFFE7EEFC)
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                                text = "${date.value}",
+                                style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Center)
                             )
-                        }
 
-                        Text(
-                            modifier = Modifier
-                                .weight(0.3f)
-                                .dashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
-                                )
-                                .padding(vertical = 12.dp),
-                            text = stringResource(R.string.central_bank),
-                            style = TextStyle(fontSize = 14.sp, textAlign = TextAlign.Center)
-                        )
-
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .dashedBorder(
-                                3.dp, Color(0xFFE7EEFC)
-                            )
-                            .padding(end = 12.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(0.7f)
-                                .rightVerticalDashedBorder(
-                                    3.dp, Color(0xFFE7EEFC)
-                                )
-                        ) {
                             Row(
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .dashedBorder(
+                                        3.dp, Color(0xFFE7EEFC)
+                                    )
+                                    .padding(end = 12.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
-                                Spacer(
-                                    modifier = Modifier.padding(vertical = 12.dp),
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .weight(0.7f)
+                                        .rightVerticalDashedBorder(
+                                            3.dp, Color(0xFFE7EEFC)
+                                        )
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(vertical = 12.dp)
+                                            .fillMaxWidth(),
+                                        text = stringResource(R.string.bank_republic),
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    )
+                                }
+
                                 Text(
-                                    modifier = Modifier.padding(vertical = 12.dp),
-                                    text = stringResource(R.string.purchase),
+                                    modifier = Modifier
+                                        .weight(0.3f)
+                                        .dashedBorder(
+                                            3.dp, Color(0xFFE7EEFC)
+                                        )
+                                        .padding(vertical = 12.dp),
+                                    text = stringResource(R.string.central_bank),
                                     style = TextStyle(
                                         fontSize = 14.sp,
-                                        textAlign = TextAlign.Center,
-                                        color = Color(0xFF015CD1)
+                                        textAlign = TextAlign.Center
                                     )
                                 )
-                                Text(
-                                    modifier = Modifier.padding(vertical = 12.dp),
-                                    text = stringResource(R.string.sale),
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        textAlign = TextAlign.Center,
-                                        color = Color(0xFF015CD1)
-                                    )
-                                )
+
                             }
 
+                            Row(
+                                modifier = Modifier
+                                    .dashedBorder(
+                                        3.dp, Color(0xFFE7EEFC)
+                                    )
+                                    .padding(end = 12.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(0.7f)
+                                        .rightVerticalDashedBorder(
+                                            3.dp, Color(0xFFE7EEFC)
+                                        )
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceEvenly,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Spacer(
+                                            modifier = Modifier.padding(vertical = 12.dp),
+                                        )
+                                        Text(
+                                            modifier = Modifier.padding(vertical = 12.dp),
+                                            text = stringResource(R.string.purchase),
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                textAlign = TextAlign.Center,
+                                                color = Color(0xFF015CD1)
+                                            )
+                                        )
+                                        Text(
+                                            modifier = Modifier.padding(vertical = 12.dp),
+                                            text = stringResource(R.string.sale),
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                textAlign = TextAlign.Center,
+                                                color = Color(0xFF015CD1)
+                                            )
+                                        )
+                                    }
 
+
+                                }
+                                Spacer(modifier = Modifier.weight(0.3f))
+                            }
+
+                            ExchangeRatesList(exchangeData)
                         }
-                        Spacer(modifier = Modifier.weight(0.3f))
+
+
                     }
-                    ExchangeRatesList()
                 }
 
 
-            }
+
+
+
+
 
 
         }
 
     }
+
+
+
+    exchangeList?.let {
+
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
+
+                val data = it.data as GetExchangeRates
+
+                if (data != null) {
+                    exchangeData.apply {
+                        clear()
+                        date.value = data[0].ratedate
+                        addAll(data)
+                    }
+                }
+
+            }
+        }
+
+    }
+
+
 }
 
 fun Modifier.rightVerticalDashedBorder(strokeWidth: Dp, color: Color) = composed(factory = {
@@ -228,22 +318,22 @@ fun Modifier.rightVerticalDashedBorder(strokeWidth: Dp, color: Color) = composed
 })
 
 
-
-
 @Composable
-fun ExchangeRatesList() {
-    val exchangeList = remember { DataProvider.exchangeList }
-    LazyColumn(
-//        contentPadding = PaddingValues()
-    ) {
-        items(items = exchangeList, itemContent = {
-            ExchangeRatesListItem(list = it)
+fun ExchangeRatesList(exchangeData: MutableList<GetExchangeRatesItem>) {
+//    val exchangeList = remember { DataProvider.exchangeList }
+    LazyColumn {
+        items(items = exchangeData, itemContent = {
+            ExchangeRatesListItem(data = it)
         })
     }
 }
 
 @Composable
-fun ExchangeRatesListItem(list: ExchangeRatesModel) {
+fun ExchangeRatesListItem(data: GetExchangeRatesItem) {
+
+    val purchaseRateIcon = if (data.buyTrend == 0) R.drawable.ic_rectangle else if(data.buyTrend == 1) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+    val sellRateIcon = if (data.sellTrend == 0) R.drawable.ic_rectangle else if(data.sellTrend == 1) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+    val cbRateIcon = if (data.cbTrend == 0) R.drawable.ic_rectangle else if(data.cbTrend == 1) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
 
     Row(
         modifier = Modifier
@@ -271,7 +361,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
                     modifier = Modifier
                         .padding(vertical = 12.dp)
                         .weight(1f),
-                    text = list.country_name,
+                    text = "${data.ccy}",
                     style = TextStyle(
                         fontSize = 16.sp, textAlign = TextAlign.Center, color = Color(0xFF015CD1)
                     )
@@ -279,7 +369,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
 
                 Row(modifier = Modifier.weight(1f)) {
                     Image(
-                        painter = painterResource(id = list.purchase_icon),
+                        painter = painterResource(purchaseRateIcon),
                         modifier = Modifier
                             .align(CenterVertically)
                             .padding(top = 5.dp),
@@ -288,7 +378,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
 
                     Text(
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
-                        text = list.purchase_rate,
+                        text = "${data.buyrate}",
                         style = TextStyle(
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center,
@@ -298,7 +388,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
                 }
                 Row(modifier = Modifier.weight(1f)) {
                     Image(
-                        painter = painterResource(id = list.sale_icon),
+                        painter = painterResource(sellRateIcon),
                         modifier = Modifier
                             .align(CenterVertically)
                             .padding(top = 5.dp),
@@ -306,7 +396,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
                     )
                     Text(
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 7.dp),
-                        text = list.sale_rate,
+                        text = "${data.sellrate}",
                         style = TextStyle(
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center,
@@ -331,7 +421,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
             )
             Row(modifier = Modifier.weight(0.7f)) {
                 Image(
-                    painter = painterResource(id = list.bank_icon),
+                    painter = painterResource(cbRateIcon),
                     modifier = Modifier
                         .align(CenterVertically)
                         .padding(top = 5.dp),
@@ -339,8 +429,7 @@ fun ExchangeRatesListItem(list: ExchangeRatesModel) {
                 )
                 Text(
                     modifier = Modifier.padding(vertical = 12.dp, horizontal = 7.dp),
-//                    .weight(0.3f),
-                    text = list.bank_rate, style = TextStyle(
+                    text = "${data.cbrate}", style = TextStyle(
                         fontSize = 14.sp, textAlign = TextAlign.Center, color = Color(0xFF223142)
                     )
                 )

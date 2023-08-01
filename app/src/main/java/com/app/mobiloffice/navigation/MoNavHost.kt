@@ -12,6 +12,7 @@ import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCom
 import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRate
 import com.app.adjustment.navigation.adjustmentScreen
 import com.app.adjustment.navigation.securitySCreen
+import com.app.adjustment.otp.navigation.changePasswordToOTP
 import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
 import com.app.auth.login.navigation.loginScreen
 import com.app.auth.login.navigation.otpScreen
@@ -66,6 +67,7 @@ fun MoNavHost(
         adjustmentToNewPin(navController)
         adjustmentToConfirmPin(navController)
         adjustmentToExchangeRate(navController)
+        changePasswordToOTP(navController)
     }
 }
 

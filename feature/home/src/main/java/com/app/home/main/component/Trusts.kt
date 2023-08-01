@@ -71,7 +71,7 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = viewMode
 
     val customerTrusts by viewModel.customerTrusts.collectAsState()
     val context: Context = LocalContext.current
-    val userDetails = fetchUserDetails()
+    val userDetails = MainApp.session.fetchUserDetails()
 
     val isLoading = remember { mutableStateOf(false) }
 //    val cardsList = remember { mutableListOf<GetTrustsItem>() }
@@ -310,11 +310,6 @@ private fun Filters() {
         }
 
     }
-}
-
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 }
 
 @Preview(device = Devices.PIXEL_4)

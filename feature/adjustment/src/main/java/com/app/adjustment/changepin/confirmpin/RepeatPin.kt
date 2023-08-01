@@ -1,5 +1,6 @@
 package com.app.adjustment.changepin.confirmpin
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
@@ -33,14 +36,24 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.changepin.currentpin.PinInputView
+import com.app.adjustment.components.PinChangedBottomSheet
+import com.app.adjustment.navigation.adjustmentScreen
+import com.app.network.helper.Keys
+import com.app.network.helper.MainApp
+import com.app.network.utils.Message
 
 
 @Composable
 fun RepeatPin(navController: NavController) {
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color(0xFFF3F7FA))
+    var enteredPin by remember { mutableStateOf("") }
+    val context: Context = LocalContext.current
+    val pinChanged = rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA))
     ) {
         Surface(
             modifier = Modifier
@@ -73,21 +86,38 @@ fun RepeatPin(navController: NavController) {
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            var enteredPin by remember { mutableStateOf("") }
+
             PinInputView(navController, length = 5) { pin ->
                 enteredPin = pin
 
                 if (pin.isNotEmpty() && pin.length == 5) {
+                    val firstPin = MainApp.session[Keys.KEY_PIN]
+
+                    if (pin == firstPin) {
+
+                        //store new pin
+                        MainApp.session.put(Keys.KEY_USER_PIN, pin)
+
+                        pinChanged.value = true
 
 
+
+                    } else {
+                        Message.showMessage(context, "Pin not matched")
+                    }
+
+                } else {
+                    Message.showMessage(context, "Pin must be 5 digit!")
                 }
 
-//                Log.e("mTAG", "RepeatPin: $pin" )
+
             }
 
         }
 
     }
+
+    PinChangedBottomSheet(pinChanged, navController)
 
 }
 

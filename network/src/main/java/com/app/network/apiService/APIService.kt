@@ -9,6 +9,7 @@ import com.app.network.data.callModels.VerifyChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetCustomerBalance
+import com.app.network.data.responseModels.GetExchangeRates
 import com.app.network.data.responseModels.GetLoans
 import com.app.network.data.responseModels.GetOldCards
 import com.app.network.data.responseModels.LoginAsanResponse
@@ -46,10 +47,16 @@ interface APIService {
     fun loginAsan(@Body loginAsanRequest: LoginAsanRequest): Call<LoginAsanResponse>
 
     @POST("auth/changepassword")
-    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): ChangePasswordResponse
+    fun changePassword(
+        @Header("Auth_token") token: String,
+        @Body changePasswordRequest: ChangePasswordRequest
+    ): Call<ChangePasswordResponse>
 
     @POST("auth/changepassword/verify")
-    suspend fun changePasswordVerify(verifyChangePasswordRequest: VerifyChangePasswordRequest): VerifyChangePasswordResponse
+    fun changePasswordVerify(
+        @Header("Auth_token") token: String,
+        @Body verifyChangePasswordRequest: VerifyChangePasswordRequest
+    ): Call<VerifyChangePasswordResponse>
 
     // Main
 
@@ -85,8 +92,6 @@ interface APIService {
     ): Call<GetUserProfile>
 
 
-
-
     @GET("customers/{customerId}/accounts/blocksbyiban/{iban}")
     fun getAccountBlockByIBAN(
         @Header("Auth_token") token: String,
@@ -99,34 +104,46 @@ interface APIService {
     fun getOldBusinessCards(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ):Call<GetOldCards>
+    ): Call<GetOldCards>
 
 
     @GET("brcards/get-new-business-cards-by-cif/{customerId}")
     fun getNewBusinessCards(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ):Call<GetNewCards>
+    ): Call<GetNewCards>
 
 
     @GET("credit/{customerId}")
     fun getLoans(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ):Call<GetLoans>
+    ): Call<GetLoans>
 
 
     @GET("customers/{customerId}/timedeposits")
     fun getTrusts(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ):Call<GetTrusts>
+    ): Call<GetTrusts>
 
 
     @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
     fun getRecentOps(
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
-    ):Call<GetRecentOps>
+    ): Call<GetRecentOps>
+
+    @POST("auth/totp-register/disable")
+    fun disable2FA(
+        @Header("Auth_token") token: String,
+    ): Call<ResponseBody>
+
+
+
+    @GET("exchange/exchange/listrates")
+    fun getExchangeList(
+        @Header("Auth_token") token:String
+    ):Call<GetExchangeRates>
 
 }

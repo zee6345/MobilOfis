@@ -26,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +56,7 @@ import com.app.network.helper.MainApp.Companion.context
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 
 lateinit var lang: MutableState<String>
@@ -67,9 +69,10 @@ fun UserProfileScreen(
 ) {
 
     val userProfileInfo by viewModel.userInfo.collectAsState()
+    val userDisable2FA by viewModel.disable2FA.collectAsState()
+    val userInfo = MainApp.session.fetchUserDetails()
 
-    val userInfo = fetchUserDetails()
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(Unit) {
         //fetch accounts list
         viewModel.getUserInfo(
             userInfo.customerNo.toString()
@@ -86,36 +89,9 @@ fun UserProfileScreen(
     val TOTPEnabled = remember { mutableStateOf("") }
     val TOTPChangeDate = remember { mutableStateOf("") }
     val nonOtpEnabled = remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
-    userProfileInfo?.let {
-        when (it) {
-            is DataState.Loading -> {
 
-            }
-
-            is DataState.Error -> {
-                Message.showMessage(context, "Failed to Get UserInfo")
-            }
-
-            is DataState.Success -> {
-                val userAccounts = it.data as GetUserProfile
-                userAccounts.apply {
-
-                        userName.value = this.userName
-                        customerName.value = this.customerName
-                        customerLastName.value = this.customerLastName
-                        customerFatherName.value = this.customerAtaAdi
-                        lang.value = this.lang
-                        phoneNumber.value = this.phoneNumber
-                        email.value = "${this.email}"
-                        TOTPEnabled.value = this.TOTPEnabled
-                        TOTPChangeDate.value = this.TOTPChangeDate
-                        nonOtpEnabled.value = this.nonOtpEnabled
-
-                }
-            }
-        }
-    }
 
 
     Column(
@@ -199,7 +175,8 @@ fun UserProfileScreen(
 
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
-                                    text = stringResource(R.string.source_of_origin), style = TextStyle(
+                                    text = stringResource(R.string.source_of_origin),
+                                    style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF859DB5),
@@ -211,7 +188,8 @@ fun UserProfileScreen(
 
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
-                                    text = stringResource(R.string.internet_office), style = TextStyle(
+                                    text = stringResource(R.string.internet_office),
+                                    style = TextStyle(
 
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -255,7 +233,8 @@ fun UserProfileScreen(
 
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
-                                    text = stringResource(R.string.father_s_name), style = TextStyle(
+                                    text = stringResource(R.string.father_s_name),
+                                    style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF859DB5),
@@ -329,7 +308,8 @@ fun UserProfileScreen(
                             ) {
 
                                 Text(
-                                    text = stringResource(R.string.mobile_number_for_sms), style = TextStyle(
+                                    text = stringResource(R.string.mobile_number_for_sms),
+                                    style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF859DB5),
@@ -411,7 +391,7 @@ fun UserProfileScreen(
                                 Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
 
                                 Text(
-                                    text = stringResource(R.string.text_email), style = TextStyle(
+                                    text = email.value, style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF223142),
@@ -443,7 +423,7 @@ fun UserProfileScreen(
                             )
 
 
-                            ThreeBoxComponent()
+                            ThreeBoxComponent(lang.value)
 
 
                         }
@@ -461,7 +441,8 @@ fun UserProfileScreen(
                         ) {
 
                             Text(
-                                text = stringResource(R.string.google_authenticator), style = TextStyle(
+                                text = stringResource(R.string.google_authenticator),
+                                style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = Color(0xFF859DB5),
@@ -476,10 +457,17 @@ fun UserProfileScreen(
                                         shape = RoundedCornerShape(size = 6.dp)
                                     )
                                     .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 5.dp)
+                                    .clickable {
+                                        coroutineScope.launch {
+                                            viewModel.disable2FA()
+                                        }
+                                    }
 
                             ) {
                                 Text(
-                                    text = stringResource(R.string.activate),
+                                    text = if (TOTPEnabled.value == null) stringResource(R.string.activate) else stringResource(
+                                        R.string.deactivate
+                                    ),
                                     style = TextStyle(
 
                                         fontWeight = FontWeight(500),
@@ -508,14 +496,68 @@ fun UserProfileScreen(
         }
 
     }
+
+
+
+
+    userProfileInfo?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, "Failed to Get UserInfo")
+            }
+
+            is DataState.Success -> {
+                val userAccounts = it.data as GetUserProfile
+                userAccounts.apply {
+
+                    userName.value = this.userName
+                    customerName.value = this.customerName
+                    customerLastName.value = this.customerLastName
+                    customerFatherName.value = this.customerAtaAdi
+                    lang.value = this.lang
+                    phoneNumber.value = this.phoneNumber
+                    email.value = "${this.email}"
+                    TOTPEnabled.value = this.TOTPEnabled
+                    TOTPChangeDate.value = this.TOTPChangeDate
+                    nonOtpEnabled.value = this.nonOtpEnabled
+
+                }
+            }
+        }
+    }
+
+    userDisable2FA?.let {
+        when(it){
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+
+            }
+
+            is DataState.Success ->{
+
+            }
+        }
+    }
+
 }
 
 
-
-
 @Composable
-private fun ThreeBoxComponent() {
+private fun ThreeBoxComponent(value: String) {
     val selectedBoxIndex = remember { mutableStateOf(-1) }
+
+    when (value) {
+        "AZ" -> selectedBoxIndex.value = 0
+        "EN" -> selectedBoxIndex.value = 1
+        "RU" -> selectedBoxIndex.value = 2
+    }
 
     Row() {
         Box(modifier = Modifier
@@ -524,7 +566,9 @@ private fun ThreeBoxComponent() {
                 if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(0xFFE7EEFC),
                 shape = RoundedCornerShape(8.dp)
             )
-            .clickable { selectedBoxIndex.value = 0 }) {
+            .clickable {
+//                selectedBoxIndex.value = 0
+            }) {
             Text(
                 text = "AZ", modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142),
@@ -538,7 +582,9 @@ private fun ThreeBoxComponent() {
                 if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(0xFFE7EEFC),
                 shape = RoundedCornerShape(8.dp)
             )
-            .clickable { selectedBoxIndex.value = 1 }) {
+            .clickable {
+//                selectedBoxIndex.value = 1
+            }) {
             Text(
                 text = "EN", modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142),
@@ -552,7 +598,9 @@ private fun ThreeBoxComponent() {
                 if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(0xFFE7EEFC),
                 shape = RoundedCornerShape(8.dp)
             )
-            .clickable { selectedBoxIndex.value = 2 }) {
+            .clickable {
+//                selectedBoxIndex.value = 2
+            }) {
             Text(
                 text = "RU", modifier = Modifier.padding(6.dp), style = TextStyle(
                     if (selectedBoxIndex.value == 2) Color.White else Color(0xFF223142),
@@ -563,11 +611,6 @@ private fun ThreeBoxComponent() {
     }
 }
 
-
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-}
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true)
 @Composable

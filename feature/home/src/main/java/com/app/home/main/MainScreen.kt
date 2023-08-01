@@ -90,7 +90,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     val recentData = mutableListOf<GetRecentOpsItem>()
 
     val context = LocalContext.current
-    val userDetails = fetchUserDetails()
+    val userDetails = MainApp.session.fetchUserDetails()
 
     LaunchedEffect(key1 = true) {
         viewModel.getBalance(userDetails.customerNo)
@@ -297,7 +297,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                 LazyColumn(
                     contentPadding = PaddingValues(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     recentData?.groupBy { it.trn_date }?.forEach { (date, itemList) ->
                         item {
@@ -830,10 +830,7 @@ enum class Balance{
     AFTER_EXECUTION
 }
 
-private fun fetchUserDetails(): LoginVerifyResponse {
-    val str = MainApp.session[Keys.KEY_USER_DETAILS]
-    return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-}
+
 
 @Preview(device = Devices.PIXEL_4, showBackground = true, showSystemUi = true)
 @Composable
