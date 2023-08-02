@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -67,7 +68,7 @@ private const val TAG = "MenuScreen"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     val selectCompanyState = rememberSaveable { mutableStateOf(false) }
     val showBalance = rememberSaveable { mutableStateOf(false) }
@@ -90,9 +91,12 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     val recentData = mutableListOf<GetRecentOpsItem>()
 
     val context = LocalContext.current
-    val userDetails = MainApp.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+//    val userDetails = viewModel.session.fetchUserDetails()
 
-    LaunchedEffect(key1 = true) {
+
+    LaunchedEffect(Unit) {
         viewModel.getBalance(userDetails.customerNo)
         viewModel.getRecentOps(userDetails.customerNo)
     }

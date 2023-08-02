@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -42,10 +44,11 @@ import com.app.auth.pin.navigation.successfulRegistration
 import com.app.network.utils.Message
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.viewmodel.LoginViewModel
 
 
 @Composable
-fun RepeatPin(navController: NavController) {
+fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hiltViewModel()) {
 
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     var enteredPin by remember { mutableStateOf("") }
@@ -108,7 +111,7 @@ fun RepeatPin(navController: NavController) {
 
                 if (pin.isNotEmpty() && pin.length == 5) {
 
-                    val firstPin = MainApp.session[Keys.KEY_PIN]
+                    val firstPin = loginViewModel.session[Keys.KEY_PIN]
                     if (firstPin.equals(pin)){
 
                         enteredPin = pin
@@ -116,7 +119,7 @@ fun RepeatPin(navController: NavController) {
                         showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
 
                     } else{
-                        MainApp.session.delete(Keys.KEY_PIN)
+                        loginViewModel.session.delete(Keys.KEY_PIN)
                         Message.showMessage(context, "Pin not matched")
 
                     }
@@ -129,15 +132,15 @@ fun RepeatPin(navController: NavController) {
     }
 
     FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, onClickThen = {
-        MainApp.session.delete(Keys.KEY_PIN)
-        MainApp.session.put(Keys.KEY_USER_PIN, enteredPin)
+        loginViewModel.session.delete(Keys.KEY_PIN)
+        loginViewModel.session.put(Keys.KEY_USER_PIN, enteredPin)
 
         navController.navigate(successfulRegistration)
 
     }, onClickYes = {
 
-        MainApp.session.delete(Keys.KEY_PIN)
-        MainApp.session.put(Keys.KEY_USER_PIN, enteredPin)
+        loginViewModel.session.delete(Keys.KEY_PIN)
+        loginViewModel.session.put(Keys.KEY_USER_PIN, enteredPin)
 
         navController.navigate(successfulRegistration)
 

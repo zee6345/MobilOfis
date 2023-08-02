@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -71,10 +72,12 @@ import ir.kaaveh.sdpcompose.sdp
 val cardsList =  mutableListOf<MainCard>()
 
 @Composable
-fun CardsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
-    val userDetails = MainApp.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+//    val userDetails = MainApp.session.fetchUserDetails()
 
     val oldBusinessCards by viewModel.oldBusinessCards.collectAsState()
     val newBusinessCards by viewModel.newBusinessCards.collectAsState()

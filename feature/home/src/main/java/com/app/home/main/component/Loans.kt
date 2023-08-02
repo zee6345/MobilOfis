@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -68,11 +69,13 @@ import ir.kaaveh.sdpcompose.sdp
 val loansList =  mutableListOf<GetLoansItem>()
 
 @Composable
-fun LoansList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     val customerLoans by viewModel.customerLoans.collectAsState()
     val context: Context = LocalContext.current
-    val userDetails = MainApp.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+//    val userDetails = MainApp.session.fetchUserDetails()
 
 //    val loansList = remember { mutableListOf<GetLoansItem>() }
     val cardFilters = remember { DataProvider.filtersLoanList }

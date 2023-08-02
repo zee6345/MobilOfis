@@ -3,6 +3,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -62,5 +63,11 @@ dependencies {
     implementation(Network.OKHTTP)
     implementation(Network.LIFECYCLEVIEWMODEL)
     implementation(Network.HTTP_LOGGIN)
+
+
+    //Hilt
+    implementation (Hilt.android)
+    kapt (Hilt.compiler)
+    implementation(Hilt.hilt_compose)
 
 }

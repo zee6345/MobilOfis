@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.exchangerate.rightVerticalDashedBorder
@@ -37,16 +38,18 @@ import com.app.network.data.responseModels.GetAccountsItem
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.viewmodel.LoginViewModel
 
 
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun MainInformation(navController: NavController) {
+fun MainInformation(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
+
 
     val mainInfoOptions = rememberSaveable { mutableStateOf(false) }
 
-    val str = MainApp.session[Keys.KEY_MAIN_INFO]
+    val str = viewModel.session[Keys.KEY_MAIN_INFO]
     val data = Converter.fromJson(str!!, GetAccountsItem::class.java)
 
 

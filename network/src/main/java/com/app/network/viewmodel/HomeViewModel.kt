@@ -13,7 +13,9 @@ import com.app.network.data.responseModels.GetTrusts
 import com.app.network.helper.Error.handleException
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.helper.Session
 import com.app.network.repository.HomeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,15 +23,16 @@ import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.HttpException
 import retrofit2.Response
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repository: HomeRepository,
+    private val _session: Session
+) : ViewModel() {
 
-    private val repository: HomeRepository = HomeRepository()
+    val session get() = _session
 
     private val _accountsData = MutableStateFlow<DataState<Any>?>(null)
     val accountsData: MutableStateFlow<DataState<Any>?> get() = _accountsData
@@ -58,7 +61,7 @@ class HomeViewModel : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.getAccounts(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+            repository.getAccounts(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetAccounts> {
                     override fun onResponse(
                         call: Call<GetAccounts>,
@@ -85,7 +88,7 @@ class HomeViewModel : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.getLoans(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+            repository.getLoans(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetLoans> {
                     override fun onResponse(
                         call: Call<GetLoans>,
@@ -113,7 +116,7 @@ class HomeViewModel : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.getTrusts(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+            repository.getTrusts(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetTrusts> {
                     override fun onResponse(
                         call: Call<GetTrusts>,
@@ -134,10 +137,10 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getBalance(customerId: Int){
+    fun getBalance(customerId: Int) {
         _accountBalance.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getUserBalance(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+            repository.getUserBalance(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetCustomerBalance> {
                     override fun onResponse(
                         call: Call<GetCustomerBalance>,
@@ -160,7 +163,7 @@ class HomeViewModel : ViewModel() {
     fun getAccountBlockByIBAN(customerId: Int, IBAN: String) {
         _accountsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getAccountBlockByIban(MainApp.session[Keys.KEY_TOKEN]!!, customerId, IBAN)
+            repository.getAccountBlockByIban(session[Keys.KEY_TOKEN]!!, customerId, IBAN)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -183,71 +186,75 @@ class HomeViewModel : ViewModel() {
     fun getOldBusinessCards(customerId: Int) {
         _oldBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getOldBusinessCards(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object : Callback<GetOldCards> {
-                override fun onResponse(
-                    call: Call<GetOldCards>,
-                    response: Response<GetOldCards>
-                ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        _oldBusinessCardsData.value = DataState.Success(response.body()!!)
-                    } else {
-                        _oldBusinessCardsData.value = DataState.Error(response.errorBody()!!.string())
+            repository.getOldBusinessCards(session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetOldCards> {
+                    override fun onResponse(
+                        call: Call<GetOldCards>,
+                        response: Response<GetOldCards>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _oldBusinessCardsData.value = DataState.Success(response.body()!!)
+                        } else {
+                            _oldBusinessCardsData.value =
+                                DataState.Error(response.errorBody()!!.string())
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<GetOldCards>, t: Throwable) {
-                    _oldBusinessCardsData.value = DataState.Error(handleException(t))
-                }
-            })
+                    override fun onFailure(call: Call<GetOldCards>, t: Throwable) {
+                        _oldBusinessCardsData.value = DataState.Error(handleException(t))
+                    }
+                })
         }
     }
 
     fun getNewBusinessCards(customerId: Int) {
         _newBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getNewBusinessCards(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object : Callback<GetNewCards> {
-                override fun onResponse(
-                    call: Call<GetNewCards>,
-                    response: Response<GetNewCards>
-                ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        _newBusinessCardsData.value = DataState.Success(response.body()!!)
-                    } else {
-                        _newBusinessCardsData.value = DataState.Error(response.errorBody()!!.string())
+            repository.getNewBusinessCards(session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetNewCards> {
+                    override fun onResponse(
+                        call: Call<GetNewCards>,
+                        response: Response<GetNewCards>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _newBusinessCardsData.value = DataState.Success(response.body()!!)
+                        } else {
+                            _newBusinessCardsData.value =
+                                DataState.Error(response.errorBody()!!.string())
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<GetNewCards>, t: Throwable) {
-                    _newBusinessCardsData.value = DataState.Error(handleException(t))
-                }
-            })
+                    override fun onFailure(call: Call<GetNewCards>, t: Throwable) {
+                        _newBusinessCardsData.value = DataState.Error(handleException(t))
+                    }
+                })
         }
     }
 
-    fun getRecentOps(customerId: Int){
+    fun getRecentOps(customerId: Int) {
         _recentOps.value = DataState.Loading
 
         viewModelScope.launch {
-            repository.getRecentOps(MainApp.session[Keys.KEY_TOKEN]!!, customerId).enqueue(object :Callback<GetRecentOps>{
-                override fun onResponse(
-                    call: Call<GetRecentOps>,
-                    response: Response<GetRecentOps>
-                ) {
-                    if (response.isSuccessful && response.body() != null){
-                        _recentOps.value = DataState.Success(response.body()!!)
-                    } else {
-                        _recentOps.value = DataState.Error(response.errorBody()!!.string())
+            repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId)
+                .enqueue(object : Callback<GetRecentOps> {
+                    override fun onResponse(
+                        call: Call<GetRecentOps>,
+                        response: Response<GetRecentOps>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _recentOps.value = DataState.Success(response.body()!!)
+                        } else {
+                            _recentOps.value = DataState.Error(response.errorBody()!!.string())
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<GetRecentOps>, t: Throwable) {
-                    _recentOps.value = DataState.Error(handleException(t))
-                }
+                    override fun onFailure(call: Call<GetRecentOps>, t: Throwable) {
+                        _recentOps.value = DataState.Error(handleException(t))
+                    }
 
-            })
+                })
         }
     }
-
 
 
 }

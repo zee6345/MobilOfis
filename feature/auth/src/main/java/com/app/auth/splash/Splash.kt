@@ -43,11 +43,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import dagger.hilt.android.AndroidEntryPoint
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
 
 @OptIn(ExperimentalAnimationApi::class)
+
 @Composable
 fun SplashScreen(navController: NavController) {
 

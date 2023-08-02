@@ -3,26 +3,15 @@ package com.app.network.helper
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
-import com.app.network.data.responseModels.LoginVerifyResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class Session private constructor(context: Context) {
+@Singleton
+class Session @Inject constructor(@ApplicationContext context: Context) {
     init {
         try {
-
-//            MasterKey masterKey = new MasterKey.Builder(context)
-//                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-//                    .setRequestStrongBoxBacked(true)
-//                    .build();
-
-//            SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
-//                    context,
-//                    ENC_PREFERENCE,
-//                    masterKey,
-//                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//            );
-            val sharedPreferences =
-                context.getSharedPreferences(ENC_PREFERENCE, Context.MODE_PRIVATE)
+            val sharedPreferences = context.getSharedPreferences(ENC_PREFERENCE, Context.MODE_PRIVATE)
 
             // use the shared preferences and editor as you normally would
             editor = sharedPreferences.edit()
@@ -113,10 +102,10 @@ class Session private constructor(context: Context) {
         return Base64.decode(encodedNonce, Base64.NO_WRAP)
     }
 
-    fun fetchUserDetails(): LoginVerifyResponse {
-        val str = MainApp.session[Keys.KEY_USER_DETAILS]
-        return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-    }
+//    fun fetchUserDetails(session:Session): LoginVerifyResponse {
+//        val str = session[Keys.KEY_USER_DETAILS]
+//        return Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+//    }
 
     companion object {
         const val BLANK_STRING_KEY = ""
@@ -126,13 +115,13 @@ class Session private constructor(context: Context) {
         private var editor: SharedPreferences.Editor? = null
         private var savedSession: SharedPreferences? = null
 
-        fun with(context: Context): Session? {
-            if (INSTANCE == null) {
-//            INSTANCE = new Session(MainApp.Companion.getContext());
-                INSTANCE = Session(context)
-            }
-            return INSTANCE
-        }
+//        fun with(context: Context): Session? {
+//            if (INSTANCE == null) {
+////            INSTANCE = new Session(MainApp.Companion.getContext());
+//                INSTANCE = Session(context)
+//            }
+//            return INSTANCE
+//        }
 
     }
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -65,7 +67,7 @@ object otpScreen {
 }
 
 @Composable
-fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+fun OtpScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     val otpValue = remember { mutableStateOf("") }
@@ -73,6 +75,8 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
     val loginData by viewModel.data.collectAsState()
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
+
+
 
     //set initial value for OTP view
     when (loginType) {
@@ -183,7 +187,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color(com.app.home.R.color.border_grey), // Change the background color here
+                            backgroundColor = colorResource(com.app.home.R.color.border_grey), // Change the background color here
                             contentColor = Color(0xFF203657) // Change the text color here if needed
                         ),
                         modifier = Modifier
@@ -265,7 +269,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
 
                 //on error remove keys
 //                MainApp.session.delete(Keys.KEY_USERNAME)
-                MainApp.session.delete(Keys.KEY_TOKEN)
+                viewModel.session.delete(Keys.KEY_TOKEN)
 
             }
 
@@ -280,11 +284,11 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = viewMode
 
                     //cache login verify response
                     val strJson = Converter.toJson(loginVerifyResponse)
-                    MainApp.session.put(Keys.KEY_USER_DETAILS, strJson)
+                    viewModel.session.put(Keys.KEY_USER_DETAILS, strJson)
 
 
                     //check if pin already set
-                    val pin = MainApp.session[Keys.KEY_USER_PIN]
+                    val pin = viewModel.session[Keys.KEY_USER_PIN]
                     //route to OTP
                     LaunchedEffect(Unit) {
                         if (pin.isNullOrEmpty()) {

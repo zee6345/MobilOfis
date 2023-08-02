@@ -12,17 +12,25 @@ import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import com.app.network.helper.Error
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.helper.Session
 import com.app.network.repository.AdjustmentRepository
+import com.app.network.repository.LoginRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class AdjustmentViewModel : ViewModel() {
+@HiltViewModel
+class AdjustmentViewModel @Inject constructor(
+    private val repository: AdjustmentRepository,
+    private val _session: Session
+) : ViewModel() {
 
-    private val repository: AdjustmentRepository = AdjustmentRepository()
+    val session get() = _session
 
     private val _userInfo = MutableStateFlow<DataState<Any>?>(null)
     val userInfo: MutableStateFlow<DataState<Any>?> get() = _userInfo
@@ -45,7 +53,7 @@ class AdjustmentViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            repository.getUserInfo(MainApp.session[Keys.KEY_TOKEN]!!, customerId)
+            repository.getUserInfo(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetUserProfile> {
                     override fun onResponse(
                         call: Call<GetUserProfile>,
@@ -72,7 +80,7 @@ class AdjustmentViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            repository.disable2FA(MainApp.session[Keys.KEY_TOKEN]!!)
+            repository.disable2FA(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -98,7 +106,7 @@ class AdjustmentViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            repository.getExchangeList(MainApp.session[Keys.KEY_TOKEN]!!)
+            repository.getExchangeList(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<GetExchangeRates> {
                     override fun onResponse(
                         call: Call<GetExchangeRates>,
@@ -107,7 +115,8 @@ class AdjustmentViewModel : ViewModel() {
                         if (response.isSuccessful && response.body() != null) {
                             _exchangeRates.value = DataState.Success(response.body()!!)
                         } else {
-                            _exchangeRates.value = DataState.Success(response.errorBody()!!.string())
+                            _exchangeRates.value =
+                                DataState.Success(response.errorBody()!!.string())
                         }
                     }
 
@@ -122,12 +131,15 @@ class AdjustmentViewModel : ViewModel() {
     fun changePassword(changePasswordRequest: ChangePasswordRequest) {
         _changePassword.value = DataState.Loading
         viewModelScope.launch {
-            repository.changePasswordRequest(MainApp.session[Keys.KEY_TOKEN]!!, changePasswordRequest).enqueue(object :Callback<ChangePasswordResponse>{
+            repository.changePasswordRequest(
+                session[Keys.KEY_TOKEN]!!,
+                changePasswordRequest
+            ).enqueue(object : Callback<ChangePasswordResponse> {
                 override fun onResponse(
                     call: Call<ChangePasswordResponse>,
                     response: Response<ChangePasswordResponse>
                 ) {
-                    if (response.isSuccessful && response.body() != null){
+                    if (response.isSuccessful && response.body() != null) {
                         _changePassword.value = DataState.Success(response.body()!!)
                     } else {
                         _changePassword.value = DataState.Error(response.errorBody()!!.string())
@@ -146,15 +158,19 @@ class AdjustmentViewModel : ViewModel() {
     fun verifyChangePassword(verifyChangePasswordRequest: VerifyChangePasswordRequest) {
         _verifyChangePassword.value = DataState.Loading
         viewModelScope.launch {
-            repository.changePasswordVerify(MainApp.session[Keys.KEY_TOKEN]!!, verifyChangePasswordRequest).enqueue(object :Callback<VerifyChangePasswordResponse>{
+            repository.changePasswordVerify(
+                session[Keys.KEY_TOKEN]!!,
+                verifyChangePasswordRequest
+            ).enqueue(object : Callback<VerifyChangePasswordResponse> {
                 override fun onResponse(
                     call: Call<VerifyChangePasswordResponse>,
                     response: Response<VerifyChangePasswordResponse>
                 ) {
-                    if (response.isSuccessful && response.body() != null){
+                    if (response.isSuccessful && response.body() != null) {
                         _verifyChangePassword.value = DataState.Success(response.body()!!)
                     } else {
-                        _verifyChangePassword.value = DataState.Error(response.errorBody()!!.string())
+                        _verifyChangePassword.value =
+                            DataState.Error(response.errorBody()!!.string())
                     }
                 }
 

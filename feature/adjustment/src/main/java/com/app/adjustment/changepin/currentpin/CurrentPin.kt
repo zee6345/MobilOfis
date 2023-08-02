@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -46,10 +47,11 @@ import com.app.adjustment.changepin.newpin.navigation.adjustmentToNewPin
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
+import com.app.network.viewmodel.LoginViewModel
 
 
 @Composable
-fun CurrentPin(navController: NavController) {
+fun CurrentPin(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
 
     val context: Context = LocalContext.current
 
@@ -110,7 +112,7 @@ fun CurrentPin(navController: NavController) {
             PinInputView(navController, length = 5) { pin ->
                 enteredPin = pin
 
-                val oldPin = MainApp.session[Keys.KEY_USER_PIN]
+                val oldPin = viewModel.session[Keys.KEY_USER_PIN]
 
                 if (pin.isNotEmpty() && pin.length == 5) {
                     if (pin == oldPin){

@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -53,7 +54,7 @@ import com.app.network.viewmodel.AdjustmentViewModel
 @Composable
 fun ExchangeRatesScreen(
     navController: NavController,
-    viewModel: AdjustmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: AdjustmentViewModel = hiltViewModel()
 ) {
 
     val context: Context = LocalContext.current

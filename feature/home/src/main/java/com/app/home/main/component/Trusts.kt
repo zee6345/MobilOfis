@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
@@ -67,11 +68,13 @@ import ir.kaaveh.sdpcompose.sdp
 val trustsList =  mutableListOf<GetTrustsItem>()
 
 @Composable
-fun TrustsList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     val customerTrusts by viewModel.customerTrusts.collectAsState()
     val context: Context = LocalContext.current
-    val userDetails = MainApp.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+//    val userDetails = MainApp.session.fetchUserDetails()
 
     val isLoading = remember { mutableStateOf(false) }
 //    val cardsList = remember { mutableListOf<GetTrustsItem>() }

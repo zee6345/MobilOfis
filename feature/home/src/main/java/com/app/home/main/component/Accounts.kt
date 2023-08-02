@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -60,9 +61,12 @@ data class AccountListData(
 )
 
 @Composable
-fun AccountList(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    val userDetails = MainApp.session.fetchUserDetails()
+
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+//    val userDetails = MainApp.session.fetchUserDetails()
     val homeData by rememberUpdatedState(viewModel.accountsData.collectAsState())
     val cardsList = remember { mutableListOf<GetAccountsItem>() }
     val isLoading = remember { mutableStateOf(false) }
@@ -96,7 +100,7 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = viewMod
 
             items(items = cardsList, itemContent = {
 
-                AccountListItem(obj = it, navController)
+                AccountListItem(obj = it, navController, viewModel)
 
             })
         }
@@ -134,14 +138,14 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = viewMod
 }
 
 @Composable
-fun AccountListItem(obj: GetAccountsItem, navController: NavController) {
+fun AccountListItem(obj: GetAccountsItem, navController: NavController, viewModel: HomeViewModel) {
 
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
             .fillMaxWidth()
             .clickable {
-                MainApp.session.put(Keys.KEY_MAIN_INFO, Converter.toJson(obj))
+                viewModel.session.put(Keys.KEY_MAIN_INFO, Converter.toJson(obj))
                 navController.navigate(accountDetailsRoute)
             },
         elevation = 1.dp,

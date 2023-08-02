@@ -25,9 +25,9 @@ fun NavGraphBuilder.splashScreen(
 
         LaunchedEffect(Unit) {
             delay(4000) // 5000 milliseconds = 5 seconds delay
-
-            val token = MainApp.session["token"]
-            val pin = MainApp.session["finalPin"]
+//
+//            val token = MainApp.session["token"]
+//            val pin = MainApp.session["finalPin"]
 
 //            if (pin.isNullOrEmpty()) {
 //                if (!token.isNullOrEmpty()) {

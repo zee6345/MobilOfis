@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -44,13 +45,11 @@ import com.app.adjustment.changepin.currentpin.PinInputView
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
-
-
-
+import com.app.network.viewmodel.LoginViewModel
 
 
 @Composable
-fun NewPin(navController: NavController) {
+fun NewPin(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
 
     val context: Context = LocalContext.current
     var enteredPin by remember { mutableStateOf("") }
@@ -117,7 +116,7 @@ fun NewPin(navController: NavController) {
 
                 if (pin.isNotEmpty() && pin.length == 5) {
 
-                    MainApp.session.put(Keys.KEY_PIN, pin)
+                    viewModel.session.put(Keys.KEY_PIN, pin)
 
                     navController.navigate(adjustmentToConfirmPin)
 

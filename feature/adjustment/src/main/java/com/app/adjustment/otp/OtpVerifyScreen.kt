@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -48,7 +49,10 @@ import com.app.adjustment.otp.components.OtpView
 import com.app.adjustment.otp.otpScreen.loginType
 import com.app.network.data.DataState
 import com.app.network.data.callModels.VerifyChangePasswordRequest
+import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
@@ -59,7 +63,7 @@ object otpScreen {
 }
 
 @Composable
-fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel = viewModel()) {
+fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     val otpValue = remember { mutableStateOf("") }
@@ -67,7 +71,9 @@ fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel
     val changePswdVerify by viewModel.changePassword.collectAsState()
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
-    val userDetails = MainApp.session.fetchUserDetails()
+
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
     val passChanged = rememberSaveable { mutableStateOf(false) }
 

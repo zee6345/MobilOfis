@@ -1,5 +1,6 @@
 package com.app.network.repository
 
+import com.app.network.apiService.APIService
 import com.app.network.data.callModels.AccountNickNameRequest
 import com.app.network.data.responseModels.GetAccounts
 import com.app.network.data.responseModels.GetCustomerBalance
@@ -13,8 +14,9 @@ import com.app.network.helper.MainApp
 import com.app.network.retrofitClient.BaseRetrofitClient
 import okhttp3.ResponseBody
 import retrofit2.Call
+import javax.inject.Inject
 
-class HomeRepository: BaseRetrofitClient() {
+class HomeRepository @Inject constructor(private val apiService: APIService)  {
 
     fun getAccounts(token: String, customerId: Int): Call<GetAccounts> {
         return apiService.getAccounts(token, customerId)

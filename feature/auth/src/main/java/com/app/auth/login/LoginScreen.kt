@@ -42,22 +42,21 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.auth.R
 import com.app.adjustment.components.CallTopAlertDialog
 import com.app.adjustment.components.ShowProgressDialog
+import com.app.auth.R
 import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
-
-import com.app.network.utils.Message
 import com.app.network.data.DataState
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.responseModels.LoginResponse
+import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
@@ -65,7 +64,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
     val (selected, setSelected) = remember { mutableStateOf(0) }
     val usernameState = remember { mutableStateOf("") }
@@ -222,10 +221,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                             )
                     }, colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
-                        focusedBorderColor = Color(R.color.background_card_blue),
-                        unfocusedBorderColor = Color(com.app.home.R.color.border_grey),
-                        unfocusedLabelColor = Color(com.app.adjustment.R.color.grey_text),
-                        focusedLabelColor = Color(R.color.background_card_blue),
+                        focusedBorderColor = colorResource(R.color.background_card_blue),
+                        unfocusedBorderColor = colorResource(com.app.home.R.color.border_grey),
+                        unfocusedLabelColor = colorResource(com.app.adjustment.R.color.grey_text),
+                        focusedLabelColor = colorResource(R.color.background_card_blue),
                     ),
                     singleLine = true
                 )
@@ -611,7 +610,9 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(com.app.home.R.color.border_grey),
+                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(
+                    com.app.home.R.color.border_grey
+                ),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 0 }) {
@@ -627,7 +628,9 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(com.app.home.R.color.border_grey),
+                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(
+                    com.app.home.R.color.border_grey
+                ),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 1 }) {
@@ -643,7 +646,9 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 2) Color(R.color.background_card_blue) else Color(com.app.home.R.color.border_grey),
+                if (selectedBoxIndex.value == 2) Color(R.color.background_card_blue) else Color(
+                    com.app.home.R.color.border_grey
+                ),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 2 }) {

@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -82,4 +83,9 @@ dependencies {
     implementation (Compose.compose_constraints)
 
 //    implementation (Compose.compose_pager)
+
+    //Hilt
+    implementation (Hilt.android)
+    kapt (Hilt.compiler)
+    implementation(Hilt.hilt_compose)
 }

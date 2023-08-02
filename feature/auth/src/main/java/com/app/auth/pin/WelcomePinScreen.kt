@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
@@ -39,17 +40,20 @@ import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
+import com.app.network.viewmodel.LoginViewModel
 
 private const val TAG = "WelcomePinScreen"
 
 @Composable
-fun WelcomePinScreen(navController: NavController) {
+fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
     var enteredPin by remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
     val context = LocalContext.current
 
 
-    val userDetails = MainApp.session.fetchUserDetails()
+//    val userDetails = MainApp.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
     username.value = userDetails.userName
 
 
@@ -96,7 +100,7 @@ fun WelcomePinScreen(navController: NavController) {
                     enteredPin = pin
 
                     if (pin.isNotEmpty() && pin.length == 5) {
-                        val finalPin = MainApp.session[Keys.KEY_USER_PIN]
+                        val finalPin = viewModel.session[Keys.KEY_USER_PIN]
                         if(finalPin.equals(pin)){
                             navController.navigate(homeScreenRoute)
                         } else {
@@ -119,8 +123,8 @@ fun WelcomePinScreen(navController: NavController) {
                         .padding(top = 5.dp, bottom = 17.dp)
                         .clickable {
 
-                            navController.navigate(loginNavigationRoute){
-                                    popUpTo(loginNavigationRoute) { inclusive = true }
+                            navController.navigate(loginNavigationRoute) {
+                                popUpTo(loginNavigationRoute) { inclusive = true }
                             }
 
                         }

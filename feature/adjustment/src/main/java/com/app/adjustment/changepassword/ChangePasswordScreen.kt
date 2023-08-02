@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -56,6 +57,9 @@ import com.app.adjustment.components.ShowProgressDialog
 import com.app.network.data.DataState
 import com.app.network.data.callModels.ChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
+import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
@@ -65,8 +69,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun ForgetPasswordScreen(
     navController: NavController,
-    viewModel: AdjustmentViewModel = viewModel()
+    viewModel: AdjustmentViewModel = hiltViewModel()
 ) {
+
 
     val currentPassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
@@ -82,7 +87,9 @@ fun ForgetPasswordScreen(
 
     val changePassword by viewModel.changePassword.collectAsState()
     val coroutine = rememberCoroutineScope()
-    val userDetails = MainApp.session.fetchUserDetails()
+//    val userDetails = viewModel.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails =  Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
 
 

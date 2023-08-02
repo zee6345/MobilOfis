@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -49,11 +50,11 @@ import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun Blockages(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
     val homeData by viewModel.accountsData.collectAsState()
     val context = LocalContext.current
 
-    val str = MainApp.session[Keys.KEY_MAIN_INFO]
+    val str = viewModel.session[Keys.KEY_MAIN_INFO]
     val data = Converter.fromJson(str!!, GetAccountsItem::class.java)
 
     val blockNumber = remember { mutableStateOf("") }

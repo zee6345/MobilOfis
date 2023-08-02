@@ -1,5 +1,6 @@
 package com.app.network.repository
 
+import com.app.network.apiService.APIService
 import com.app.network.data.callModels.ChangePasswordRequest
 import com.app.network.data.callModels.VerifyChangePasswordRequest
 import com.app.network.data.responseModels.ChangePasswordResponse
@@ -9,8 +10,9 @@ import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import com.app.network.retrofitClient.BaseRetrofitClient
 import okhttp3.ResponseBody
 import retrofit2.Call
+import javax.inject.Inject
 
-class AdjustmentRepository : BaseRetrofitClient(){
+class AdjustmentRepository @Inject constructor(private val apiService: APIService) {
 
    fun getUserInfo(token: String, customerId: String): Call<GetUserProfile> {
         return apiService.getUserInfo(token,customerId)

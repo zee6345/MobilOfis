@@ -1,5 +1,6 @@
 package com.app.adjustment.userprofile
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -42,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -52,7 +55,7 @@ import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
-import com.app.network.helper.MainApp.Companion.context
+
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -65,12 +68,16 @@ lateinit var lang: MutableState<String>
 @Composable
 fun UserProfileScreen(
     navController: NavController,
-    viewModel: AdjustmentViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: AdjustmentViewModel = hiltViewModel()
 ) {
 
     val userProfileInfo by viewModel.userInfo.collectAsState()
     val userDisable2FA by viewModel.disable2FA.collectAsState()
-    val userInfo = MainApp.session.fetchUserDetails()
+//    val userInfo = viewModel.session.fetchUserDetails()
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userInfo = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+
+    val context:Context = LocalContext.current
 
     LaunchedEffect(Unit) {
         //fetch accounts list

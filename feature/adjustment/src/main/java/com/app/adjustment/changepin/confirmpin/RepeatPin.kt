@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -41,10 +42,11 @@ import com.app.adjustment.navigation.adjustmentScreen
 import com.app.network.helper.Keys
 import com.app.network.helper.MainApp
 import com.app.network.utils.Message
+import com.app.network.viewmodel.LoginViewModel
 
 
 @Composable
-fun RepeatPin(navController: NavController) {
+fun RepeatPin(navController: NavController, viewModel:LoginViewModel = hiltViewModel()) {
 
     var enteredPin by remember { mutableStateOf("") }
     val context: Context = LocalContext.current
@@ -91,12 +93,12 @@ fun RepeatPin(navController: NavController) {
                 enteredPin = pin
 
                 if (pin.isNotEmpty() && pin.length == 5) {
-                    val firstPin = MainApp.session[Keys.KEY_PIN]
+                    val firstPin = viewModel.session[Keys.KEY_PIN]
 
                     if (pin == firstPin) {
 
                         //store new pin
-                        MainApp.session.put(Keys.KEY_USER_PIN, pin)
+                        viewModel.session.put(Keys.KEY_USER_PIN, pin)
 
                         pinChanged.value = true
 

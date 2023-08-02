@@ -98,4 +98,5 @@ dependencies {
     //Hilt
     implementation (Hilt.android)
     kapt (Hilt.compiler)
+    implementation(Hilt.hilt_compose)
 }

@@ -6,8 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.app.mobiloffice.ui.MoApp
 import com.app.mobiloffice.ui.theme.MobilOfficeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var _context: Context

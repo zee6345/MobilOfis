@@ -4,37 +4,34 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.network.data.DataState
-import com.app.network.data.callModels.ChangePasswordRequest
 import com.app.network.data.callModels.LoginAsanRequest
 import com.app.network.data.callModels.LoginRequest
 import com.app.network.data.callModels.LoginVerificationRequest
-import com.app.network.data.callModels.VerifyChangePasswordRequest
-import com.app.network.data.responseModels.ChangePasswordResponse
 import com.app.network.data.responseModels.LoginAsanResponse
 import com.app.network.data.responseModels.LoginResponse
 import com.app.network.data.responseModels.LoginVerifyResponse
 import com.app.network.data.responseModels.VerifyChangePasswordResponse
 import com.app.network.helper.Error
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
+import com.app.network.helper.Session
 import com.app.network.repository.LoginRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.HttpException
 import retrofit2.Response
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val repository: LoginRepository,
+    private val _session: Session
+) : ViewModel() {
 
-    private val repository: LoginRepository = LoginRepository()
+    val session get() = _session
 
     private val _data = MutableStateFlow<DataState<Any>?>(null)
     val data: MutableStateFlow<DataState<Any>?> get() = _data
@@ -44,8 +41,8 @@ class LoginViewModel : ViewModel() {
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
 
-
     val changePasswordVerification = MutableLiveData<VerifyChangePasswordResponse>()
+
 
     fun loginWithUserName(loginRequest: LoginRequest) {
         _data.value = DataState.Loading
@@ -111,7 +108,7 @@ class LoginViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
 
             repository.sendLoginVerificationRequest(
-                MainApp.session[Keys.KEY_TOKEN]!!,
+                session[Keys.KEY_TOKEN]!!,
                 loginVerificationRequest
             )
                 .enqueue(object : Callback<LoginVerifyResponse> {
@@ -138,27 +135,27 @@ class LoginViewModel : ViewModel() {
         _asanLogin.value = DataState.Loading
 
         viewModelScope.launch {
-            repository.sendLoginAsanRequest(loginAsanRequest).enqueue(object :Callback<LoginAsanResponse>{
-                override fun onResponse(
-                    call: Call<LoginAsanResponse>,
-                    response: Response<LoginAsanResponse>
-                ) {
-                    if (response.isSuccessful && response.body() != null){
-                        _asanLogin.value = DataState.Success(response.body()!!)
-                    } else{
-                        _asanLogin.value = DataState.Error(response.errorBody()!!.string())
+            repository.sendLoginAsanRequest(loginAsanRequest)
+                .enqueue(object : Callback<LoginAsanResponse> {
+                    override fun onResponse(
+                        call: Call<LoginAsanResponse>,
+                        response: Response<LoginAsanResponse>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _asanLogin.value = DataState.Success(response.body()!!)
+                        } else {
+                            _asanLogin.value = DataState.Error(response.errorBody()!!.string())
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<LoginAsanResponse>, t: Throwable) {
-                    _asanLogin.value = DataState.Error(Error.handleException(t))
-                }
+                    override fun onFailure(call: Call<LoginAsanResponse>, t: Throwable) {
+                        _asanLogin.value = DataState.Error(Error.handleException(t))
+                    }
 
-            })
+                })
 
         }
     }
-
 
 
 //    fun changePasswordVerification(verifyChangePasswordRequest: VerifyChangePasswordRequest) {
