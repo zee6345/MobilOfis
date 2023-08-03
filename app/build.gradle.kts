@@ -69,7 +69,7 @@ dependencies {
         }
     }
 
-    implementation (project (":core:designsystem"))
+    implementation (project (":uikit"))
     implementation (project (":feature:auth" ))
     implementation (project (":feature:adjustment" ))
     implementation (project (":feature:home" ))

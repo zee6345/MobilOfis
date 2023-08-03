@@ -43,10 +43,9 @@ import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 
 import com.app.adjustment.components.dashedBorder
-import com.app.adjustment.data.DataProvider
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetExchangeRates
-import com.app.network.data.responseModels.GetExchangeRatesItem
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetExchangeRates
+import com.app.network.models.responseModels.GetExchangeRatesItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 

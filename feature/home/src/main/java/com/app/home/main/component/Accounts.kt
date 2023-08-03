@@ -39,19 +39,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.account.navigation.accountDetailsRoute
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetAccounts
-import com.app.network.data.responseModels.GetAccountsItem
-import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetAccounts
+import com.app.network.models.responseModels.GetAccountsItem
+import com.app.network.models.responseModels.LoginVerifyResponse
 
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 

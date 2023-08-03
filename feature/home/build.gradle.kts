@@ -54,7 +54,7 @@ dependencies {
     implementation(Kotlin.coreKtx)
     implementation(Others.appCompat)
     implementation(Others.material)
-    implementation(project(mapOf("path" to ":network")))
+    implementation(project(mapOf("path" to ":data")))
     testImplementation(UnitTest.junit)
     androidTestImplementation(UnitTest.JUNIT_TEST)
     androidTestImplementation(UnitTest.Espresso)

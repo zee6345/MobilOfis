@@ -1,7 +1,6 @@
 package com.app.home.main.component
 
 import android.content.Context
-import android.text.method.TextKeyListener.clear
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,18 +48,13 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.data.CardFilters
 import com.app.home.data.DataProvider
-import com.app.home.data.TrustsData
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.home.main.trust.navigation.homeToTrustDepositDetails
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetLoans
-import com.app.network.data.responseModels.GetLoansItem
-import com.app.network.data.responseModels.GetTrusts
-import com.app.network.data.responseModels.GetTrustsItem
-import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetTrusts
+import com.app.network.models.responseModels.GetTrustsItem
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp

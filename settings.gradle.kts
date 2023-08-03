@@ -18,8 +18,9 @@ dependencyResolutionManagement {
 rootProject.name = "Mobil Office"
 include(":app")
 include(":feature:auth")
-include(":core:designsystem")
+//include(":core:designsystem")
+include(":uikit")
 include(":feature:home")
 include(":feature:adjustment")
 include(":feature:transfer")
-include(":network")
+include(":data")

@@ -51,7 +51,7 @@ import com.app.home.data.DataProvider
 import com.app.home.main.cards.components.BusinessCardOptionsSheet
 import com.app.home.main.component.cardsList
 import com.app.home.main.component.dashedBorder
-import com.app.network.data.responseModels.MainCard
+import com.app.network.models.responseModels.MainCard
 import ir.kaaveh.sdpcompose.sdp
 
 

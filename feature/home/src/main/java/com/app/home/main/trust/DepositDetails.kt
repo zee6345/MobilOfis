@@ -40,7 +40,7 @@ import com.app.adjustment.exchangerate.rightVerticalDashedBorder
 import com.app.home.R
 import com.app.home.main.component.dashedBorder
 import com.app.home.main.component.trustsList
-import com.app.network.data.responseModels.GetTrustsItem
+import com.app.network.models.responseModels.GetTrustsItem
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable

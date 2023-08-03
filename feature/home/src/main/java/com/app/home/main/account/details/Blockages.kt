@@ -2,13 +2,10 @@ package com.app.home.main.account.details
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -19,11 +16,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -32,19 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-
 import com.app.home.R
-
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetAccountsItem
-import com.app.network.data.responseModels.GetLoans
-import com.app.network.data.responseModels.GetLoansItem
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -155,7 +146,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = stringResource(R.string.block_number), style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.grey_text) ,
+                                    color = colorResource(R.color.grey_text),
 
                                     )
                             )
@@ -164,7 +155,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = blockNumber.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.background_card_blue),
+                                    color = colorResource(R.color.background_card_blue),
 
                                     )
                             )
@@ -185,7 +176,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = stringResource(R.string.blocked_amount), style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.grey_text),
+                                    color = colorResource(R.color.grey_text),
 
                                     )
                             )
@@ -194,7 +185,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = blockedAmount.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.background_card_blue),
+                                    color = colorResource(R.color.background_card_blue),
 
                                     )
                             )
@@ -214,7 +205,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = stringResource(R.string.block_date), style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.grey_text),
+                                    color = colorResource(R.color.grey_text),
 
                                     )
                             )
@@ -223,7 +214,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = blockDate.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.background_card_blue),
+                                    color = colorResource(R.color.background_card_blue),
 
                                     )
                             )
@@ -244,7 +235,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.grey_text),
+                                    color = colorResource(R.color.grey_text),
 
                                     )
                             )
@@ -253,7 +244,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                                 text = blockReason.value, style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(R.color.background_card_blue),
+                                    color = colorResource(R.color.background_card_blue),
 
                                     )
                             )

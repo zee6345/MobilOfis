@@ -37,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
@@ -50,12 +49,11 @@ import com.app.auth.login.otp.otpScreen.userName
 
 import com.app.auth.pin.navigation.pinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
-import com.app.network.data.DataState
-import com.app.network.data.callModels.LoginVerificationRequest
-import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.models.DataState
+import com.app.network.models.requestModels.LoginVerificationRequest
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -187,7 +185,7 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = hiltView
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(com.app.home.R.color.border_grey), // Change the background color here
+                            backgroundColor = colorResource(R.color.border_grey), // Change the background color here
                             contentColor = Color(0xFF203657) // Change the text color here if needed
                         ),
                         modifier = Modifier

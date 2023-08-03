@@ -49,12 +49,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.components.dashedBorder
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetUserProfile
-import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetUserProfile
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel

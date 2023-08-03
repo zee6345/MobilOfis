@@ -46,7 +46,7 @@ import com.app.home.R
 import com.app.home.main.component.dashedBorder
 import com.app.home.main.component.loansList
 import com.app.home.main.loan.components.LoanInfoOptionSheet
-import com.app.network.data.responseModels.GetLoansItem
+import com.app.network.models.responseModels.GetLoansItem
 
 import ir.kaaveh.sdpcompose.sdp
 

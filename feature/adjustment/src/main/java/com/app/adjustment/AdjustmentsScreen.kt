@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -55,7 +56,7 @@ fun AdjustmentsScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(R.color.border_light_grey))
+            .background(color = colorResource(R.color.border_light_grey))
     ) {
         Surface(
             modifier = Modifier
@@ -373,7 +374,7 @@ fun Switch() {
             checkedThumbColor = Color.White,
             checkedTrackColor = Color(0xFF1DD580),
             uncheckedThumbColor = Color.White,
-            uncheckedTrackColor = Color(R.color.border_grey),
+            uncheckedTrackColor = colorResource(R.color.border_grey),
 
             )
     )
@@ -389,7 +390,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(R.color.border_grey),
+                if (selectedBoxIndex.value == 0) Color(0xFF223142) else colorResource(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 0 }) {
@@ -403,7 +404,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(R.color.border_grey),
+                if (selectedBoxIndex.value == 1) Color(0xFF223142) else colorResource(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 1 }) {
@@ -417,7 +418,7 @@ private fun ThreeBoxComponent() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 2) Color(0xFF223142) else Color(R.color.border_grey),
+                if (selectedBoxIndex.value == 2) Color(0xFF223142) else colorResource(R.color.border_grey),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { selectedBoxIndex.value = 2 }) {

@@ -1,6 +1,7 @@
 package com.app.transfer
 
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +24,10 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -31,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -38,8 +44,12 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.network.models.DataState
+import com.app.network.utils.Message
+import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.components.AccountBottomSheet
 import com.app.transfer.components.AmountBottomSheet
 import com.app.transfer.components.CurrencyBottomSheet
@@ -60,7 +70,7 @@ lateinit var showAmountBottomSheet: MutableState<Boolean>
 lateinit var showCurrencyBottomSheet: MutableState<Boolean>
 
 @Composable
-fun TransferScreen(navController: NavController) {
+fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     showDateBottomSheet = rememberSaveable { mutableStateOf(false) }
     showFromAccountBottomSheet = rememberSaveable { mutableStateOf(false) }
@@ -68,6 +78,20 @@ fun TransferScreen(navController: NavController) {
     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+
+    val context: Context = LocalContext.current
+
+    val businessDates by viewModel.businessDate.collectAsState()
+    val accountsList by viewModel.accounts.collectAsState()
+    val transferCount by viewModel.transferCountSummary.collectAsState()
+    val transferList by viewModel.transferList.collectAsState()
+
+    LaunchedEffect(Unit) {
+//        viewModel.getBusinessDate()
+//        viewModel.getAccounts()
+        viewModel.getTransferCountSummary()
+//        viewModel.getTransferList()
+    }
 
     Column(
         modifier = Modifier
@@ -142,6 +166,72 @@ fun TransferScreen(navController: NavController) {
     TypeBottomSheet(showTypeBottomSheet)
     AmountBottomSheet(showAmountBottomSheet)
     CurrencyBottomSheet(showCurrencyBottomSheet)
+
+
+    businessDates?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+
+            }
+        }
+    }
+
+    accountsList?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+
+            }
+        }
+    }
+
+
+    transferCount?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+
+            }
+        }
+    }
+
+    transferList?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+
+            }
+        }
+    }
 
 }
 
@@ -231,13 +321,14 @@ fun TransactionHistory(navController: NavController) {
                     Box(
                         Modifier
                             .background(
-                                Color(R.color.border_grey), shape = RoundedCornerShape(size = 6.dp)
+                                colorResource(R.color.border_grey),
+                                shape = RoundedCornerShape(size = 6.dp)
                             )
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
                             text = stringResource(R.string.anipay_non_budget), style = TextStyle(
-                                color = Color(R.color.grey_text),
+                                color = colorResource(R.color.grey_text),
                                 fontSize = 12.sp
 
                             )
@@ -251,13 +342,14 @@ fun TransactionHistory(navController: NavController) {
                     Box(
                         Modifier
                             .background(
-                                Color(R.color.border_grey), shape = RoundedCornerShape(size = 6.dp)
+                                colorResource(R.color.border_grey),
+                                shape = RoundedCornerShape(size = 6.dp)
                             )
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
                             text = stringResource(R.string._18_24), style = TextStyle(
-                                color = Color(R.color.grey_text),
+                                color = colorResource(R.color.grey_text),
                                 fontSize = 12.sp
 
                             )

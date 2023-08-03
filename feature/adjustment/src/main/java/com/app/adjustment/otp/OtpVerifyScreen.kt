@@ -17,7 +17,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
@@ -47,13 +45,12 @@ import com.app.adjustment.components.ShowProgressDialog
 import com.app.adjustment.components.TimerTextView
 import com.app.adjustment.otp.components.OtpView
 import com.app.adjustment.otp.otpScreen.loginType
-import com.app.network.data.DataState
-import com.app.network.data.callModels.VerifyChangePasswordRequest
-import com.app.network.data.responseModels.LoginVerifyResponse
-import com.app.network.data.responseModels.VerifyChangePasswordResponse
+import com.app.network.models.DataState
+import com.app.network.models.requestModels.VerifyChangePasswordRequest
+import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.VerifyChangePasswordResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import ir.kaaveh.sdpcompose.sdp

@@ -1,6 +1,5 @@
 package com.app.home.main.component
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,14 +28,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -45,31 +43,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.data.CardFilters
-import com.app.home.data.CardsListData
-
 import com.app.home.data.DataProvider
-
 import com.app.home.main.cards.navigation.homeToCardDetails
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetNewCards
-import com.app.network.data.responseModels.GetOldCards
-
-import com.app.network.data.responseModels.LoginVerifyResponse
-import com.app.network.data.responseModels.MainCard
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetNewCards
+import com.app.network.models.responseModels.GetOldCards
+import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.MainCard
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp
 
 
-val cardsList =  mutableListOf<MainCard>()
+val cardsList = mutableListOf<MainCard>()
 
 @Composable
 fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -113,7 +105,9 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             ) {
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(R.color.border_grey),
+                        if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else Color(
+                            R.color.border_grey
+                        ),
                         shape = RoundedCornerShape(size = 6.dp)
                     )
                     .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -139,7 +133,9 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(R.color.border_grey),
+                        if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else Color(
+                            R.color.border_grey
+                        ),
                         shape = RoundedCornerShape(size = 6.dp)
                     )
                     .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -152,7 +148,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                     Text(
                         stringResource(R.string.tin_based), style = TextStyle(
                             fontSize = 12.sp,
-                            color = if (selectedBoxIndex.value == 1) Color.White else Color(
+                            color = if (selectedBoxIndex.value == 1) Color.White else colorResource(
                                 R.color.background_card_blue
                             )
                         )
@@ -293,7 +289,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                 Text(
                     text = obj.nickName,
                     style = TextStyle(fontSize = 14.sp),
-                    color = Color(R.color.background_card_blue),
+                    color = colorResource(R.color.background_card_blue),
                     modifier = Modifier
                         .padding(vertical = 5.dp)
                         .fillMaxWidth()
@@ -312,7 +308,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                     Text(
                         text = obj.EncryptedPan,
                         style = TextStyle(fontSize = 14.sp),
-                        color = Color(R.color.background_card_blue),
+                        color = colorResource(R.color.background_card_blue),
                         modifier = Modifier.padding(start = 4.dp)
                     )
 
@@ -333,7 +329,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                         Text(
 
                             text = "${obj.AdditionNumb}", style = TextStyle(
-                                fontSize = 14.sp, color = Color(R.color.grey_text)
+                                fontSize = 14.sp, color = colorResource(R.color.grey_text)
                             )
 
                         )
@@ -344,7 +340,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
             Text(
                 text = if (obj.Balance == null) "0.00" else "${obj.Balance}",
                 style = TextStyle(fontSize = 14.sp),
-                color = Color(R.color.background_card_blue)
+                color = colorResource(R.color.background_card_blue)
             )
         }
 
@@ -434,7 +430,6 @@ private fun FilterView(filter: CardFilters) {
 //
 //    }
 //}
-
 
 
 @Preview(device = Devices.PIXEL_4)

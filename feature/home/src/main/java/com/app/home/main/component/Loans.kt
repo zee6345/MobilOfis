@@ -44,7 +44,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
@@ -52,14 +51,13 @@ import com.app.home.data.CardFilters
 
 import com.app.home.data.DataProvider
 import com.app.home.main.loan.navigation.homeToLoanInformation
-import com.app.network.data.DataState
-import com.app.network.data.responseModels.GetLoans
-import com.app.network.data.responseModels.GetLoansItem
+import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetLoans
+import com.app.network.models.responseModels.GetLoansItem
 
-import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import ir.kaaveh.sdpcompose.sdp

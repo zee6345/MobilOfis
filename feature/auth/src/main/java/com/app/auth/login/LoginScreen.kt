@@ -53,9 +53,9 @@ import com.app.auth.login.components.bottomSheet.dashedBorder
 import com.app.auth.login.components.utils.TimerTextView
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
-import com.app.network.data.DataState
-import com.app.network.data.callModels.LoginRequest
-import com.app.network.data.responseModels.LoginResponse
+import com.app.network.models.DataState
+import com.app.network.models.requestModels.LoginRequest
+import com.app.network.models.responseModels.LoginResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -269,10 +269,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         .padding(top = 12.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.White,
-                        focusedBorderColor = Color(R.color.background_card_blue),
-                        unfocusedBorderColor = Color(com.app.home.R.color.border_grey),
-                        unfocusedLabelColor = Color(com.app.adjustment.R.color.grey_text),
-                        focusedLabelColor = Color(R.color.background_card_blue)
+                        focusedBorderColor = colorResource(R.color.background_card_blue),
+                        unfocusedBorderColor = colorResource(R.color.border_grey),
+                        unfocusedLabelColor = colorResource(R.color.grey_text),
+                        focusedLabelColor = colorResource(R.color.background_card_blue)
                     ),
                     singleLine = true
                 )
@@ -570,7 +570,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 private fun BottomSheetItems(iconRes: Int, title: String, showBorder: Boolean) {
 
     val borderModify = Modifier
-        .dashedBorder(3.sdp, Color(com.app.home.R.color.border_grey))
+        .dashedBorder(3.sdp, colorResource(R.color.border_grey))
         .fillMaxWidth()
     val nonBorderModify = Modifier.fillMaxWidth()
 
@@ -610,8 +610,8 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(
-                    com.app.home.R.color.border_grey
+                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
@@ -620,7 +620,7 @@ private fun LanguageOptions() {
                 text = stringResource(R.string.az),
                 modifier = Modifier.padding(6.dp),
                 style = TextStyle(
-                    if (selectedBoxIndex.value == 0) Color.White else Color(R.color.background_card_blue),
+                    if (selectedBoxIndex.value == 0) Color.White else colorResource(R.color.background_card_blue),
                     fontSize = 12.sp
                 )
             )
@@ -628,8 +628,8 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(
-                    com.app.home.R.color.border_grey
+                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
@@ -638,7 +638,7 @@ private fun LanguageOptions() {
                 text = stringResource(R.string.en),
                 modifier = Modifier.padding(6.dp),
                 style = TextStyle(
-                    if (selectedBoxIndex.value == 1) Color.White else Color(R.color.background_card_blue),
+                    if (selectedBoxIndex.value == 1) Color.White else colorResource(R.color.background_card_blue),
                     fontSize = 12.sp
                 )
             )
@@ -646,8 +646,8 @@ private fun LanguageOptions() {
         Box(modifier = Modifier
             .padding(6.dp)
             .background(
-                if (selectedBoxIndex.value == 2) Color(R.color.background_card_blue) else Color(
-                    com.app.home.R.color.border_grey
+                if (selectedBoxIndex.value == 2) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
@@ -656,7 +656,7 @@ private fun LanguageOptions() {
                 text = stringResource(R.string.ru),
                 modifier = Modifier.padding(6.dp),
                 style = TextStyle(
-                    if (selectedBoxIndex.value == 2) Color.White else Color(R.color.background_card_blue),
+                    if (selectedBoxIndex.value == 2) Color.White else colorResource(R.color.background_card_blue),
                     fontSize = 12.sp
                 )
             )

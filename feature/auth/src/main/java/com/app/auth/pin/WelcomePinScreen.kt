@@ -8,8 +8,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,14 +30,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.navigation.loginNavigationRoute
-import com.app.auth.pin.navigation.welcomePinScreen
-import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.network.utils.Message
 import com.app.home.navigation.homeScreenRoute
-import com.app.network.data.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
 
 private const val TAG = "WelcomePinScreen"

@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -74,8 +75,7 @@ private fun CharPinView(
     }
 
     val borderStrokeWidth = if (index <= text.length - 1) 6.dp else 1.dp
-    val borderColor = if (index <= text.length - 1) Color(R.color.background_card_blue) else Color(
-        com.app.home.R.color.border_grey)
+    val borderColor = if (index <= text.length - 1) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey)
 
     Box(
         modifier = Modifier

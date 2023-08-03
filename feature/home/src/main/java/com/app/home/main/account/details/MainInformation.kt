@@ -1,5 +1,6 @@
 package com.app.home.main.account.details
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -31,20 +33,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.exchangerate.rightVerticalDashedBorder
 import com.app.home.R
-
 import com.app.home.main.account.component.MainInfoBottomSheet
 import com.app.home.main.component.dashedBorder
-import com.app.network.data.responseModels.GetAccountsItem
+import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
-
-
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun MainInformation(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
+fun MainInformation(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
 
     val mainInfoOptions = rememberSaveable { mutableStateOf(false) }
@@ -67,7 +65,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -93,7 +91,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -107,7 +105,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(R.string.new_iban), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -117,7 +115,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -137,7 +135,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -150,7 +148,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(R.string.old_iban), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -158,7 +156,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = "${data.ORJ_IBAN}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -176,7 +174,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
 
@@ -188,13 +186,13 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                     Modifier.size(height = 21.dp, width = 21.dp)
                 )
 
-                Spacer(Modifier.size(width=5.dp, height=1.dp))
+                Spacer(Modifier.size(width = 5.dp, height = 1.dp))
 
                 Text(
                     text = "${data.ACCOUNT_TYPE}", style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                        color = Color(R.color.background_card_blue),
+                        color = colorResource(R.color.background_card_blue),
 
                         )
                 )
@@ -206,7 +204,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -216,7 +214,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(R.string.branch), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -225,7 +223,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = "${data.BRANCH_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -236,14 +234,13 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -253,7 +250,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(id = R.string.balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.border_grey),
+                            color = colorResource(R.color.border_grey),
 
                             )
                     )
@@ -263,7 +260,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -279,7 +276,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -287,7 +284,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = "${data.CCY_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -298,8 +295,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -315,7 +311,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(id = R.string.blocked), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -323,7 +319,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                     Text(
                         text = "${data.BLOCKSAMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
-                            color = Color(R.color.red_2)
+                            color = colorResource(R.color.red_2)
 
                         )
                     )
@@ -340,7 +336,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(id = R.string.free_balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -348,7 +344,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                     Text(
                         text = "${data.REAL_BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
-                            color = Color(R.color.red_2)
+                            color = colorResource(R.color.red_2)
 
                         )
                     )
@@ -359,13 +355,13 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey)),
+                    .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
                 ) {
@@ -374,7 +370,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(id = R.string.bank_execution), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -383,7 +379,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = "${data.WFA_AMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -400,7 +396,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = stringResource(id = R.string.after_execution), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -408,7 +404,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel= hil
                         text = "${data.LAST_BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
