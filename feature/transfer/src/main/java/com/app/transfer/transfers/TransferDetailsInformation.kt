@@ -42,13 +42,9 @@ import androidx.navigation.NavController
 import com.app.transfer.R
 import com.app.transfer.transfers.transferdetails.Details
 import com.app.transfer.transfers.transferdetails.HistoryNnotes
+import com.app.uikit.models.TabItem
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
-
-
-private data class TabItem(
-    val title: String, val screen: @Composable () -> Unit
-)
 
 @Composable
 fun TransferDetailsInformation(navController: NavController) {

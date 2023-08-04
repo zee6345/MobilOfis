@@ -1,6 +1,5 @@
 package com.app.auth.pin
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,17 +34,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.pin.components.CustomKeyboard
-import com.app.auth.pin.components.PinTextField
 import com.app.auth.pin.navigation.resetPinNavigationRoute
-import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.views.CustomKeyboard
+import com.app.uikit.views.PinTextField
 
 
 @Composable
-fun PinScreen(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
+fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
 
     Column(modifier = Modifier.fillMaxSize()) {

@@ -1,7 +1,6 @@
 plugins {
     id ("com.android.application")
     id ("org.jetbrains.kotlin.android")
-//    id ("kotlin-kapt")
     id ("com.google.dagger.hilt.android")
     id ("com.google.devtools.ksp")
     id ("kotlin-kapt")
@@ -37,8 +36,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true

@@ -17,21 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.app.uikit.data.DataProvider
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
-data class Task(val name: String,
-                val id:Int,
-    val amount:Double,
-    val status:String,
-    val paymentBy:String,
-    val timeSmall:String
-    )
-data class TaskDate(val date: String, val tasks: List<Task>)
+
+
+
 
 @Composable
 fun callTaskViews() {
-    val taskDates = remember { DataClassTransfer.taskDates }
+    val taskDates = remember { DataProvider.taskDates }
     LazyColumn {
         items(taskDates) { taskDate ->
             this@LazyColumn.item{

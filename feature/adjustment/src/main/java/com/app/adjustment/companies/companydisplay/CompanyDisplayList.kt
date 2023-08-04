@@ -23,15 +23,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 
-import com.app.adjustment.companies.companylist.CompanyListName
-import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
-import com.app.adjustment.data.DataProvider
 
+import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
+
+import com.app.uikit.models.CompanyListName
 
 
 @Composable
 fun CompanyDisplayList(navController: NavController) {
-    val companydisplayList = remember { DataProvider.companyList }
+    val companydisplayList = remember { com.app.uikit.data.DataProvider.companyList }
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
     ) {

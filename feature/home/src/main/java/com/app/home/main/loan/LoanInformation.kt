@@ -41,13 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.exchangerate.rightVerticalDashedBorder
 import com.app.home.R
-import com.app.home.main.component.dashedBorder
-import com.app.home.main.component.loansList
-import com.app.home.main.loan.components.LoanInfoOptionSheet
+import com.app.home.main.subviews.loansList
 import com.app.network.models.responseModels.GetLoansItem
-
+import com.app.uikit.borders.dashedBorder
+import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -917,7 +915,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
         }
     }
 
-    LoanInfoOptionSheet(loanInfoOptions)
+    com.app.uikit.bottomSheet.LoanInfoOptionSheet(loanInfoOptions)
 
 }
 

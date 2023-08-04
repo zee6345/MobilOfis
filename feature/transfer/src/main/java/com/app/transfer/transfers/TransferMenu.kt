@@ -20,17 +20,13 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.uikit.data.DataProvider
+import com.app.uikit.models.MainCardTransfer
 
-
-data class MainCardTransfer(
-    val title: String,
-    val color: Color,
-    val number: Int
-)
 
 @Composable
 fun TransferTopMenu() {
-    val menu = remember { DataClassTransfer.topMenuList }
+    val menu = remember { DataProvider.topMenuList }
     LazyRow(
     ) {
         items(items = menu, itemContent = {

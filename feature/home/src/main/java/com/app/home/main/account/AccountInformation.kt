@@ -50,18 +50,13 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.account.details.Blockages
 import com.app.home.main.account.details.MainInformation
+import com.app.uikit.models.TabItem
 
 
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
-
-data class TabItem(
-    val title: String, val screen: @Composable () -> Unit
-)
-
 private const val TAG = "AccountInformation"
-
 
 @Composable
 fun AccountInformation(

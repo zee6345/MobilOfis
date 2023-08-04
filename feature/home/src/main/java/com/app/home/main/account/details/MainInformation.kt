@@ -31,14 +31,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.exchangerate.rightVerticalDashedBorder
+
 import com.app.home.R
-import com.app.home.main.account.component.MainInfoBottomSheet
-import com.app.home.main.component.dashedBorder
+import com.app.uikit.bottomSheet.MainInfoBottomSheet
+
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.dashedBorder
+import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable

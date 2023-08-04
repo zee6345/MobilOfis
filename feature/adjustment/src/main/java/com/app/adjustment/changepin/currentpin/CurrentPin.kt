@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -41,13 +39,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.changepin.components.CustomKeyboard
-import com.app.adjustment.changepin.components.PinTextField
+//import com.app.uikit.CustomKeyboard
+//import com.app.uikit.PinTextField
 import com.app.adjustment.changepin.newpin.navigation.adjustmentToNewPin
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.views.CustomKeyboard
+import com.app.uikit.views.PinTextField
 
 
 @Composable

@@ -47,8 +47,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.transfer.R
-import com.app.transfer.components.dashedBorder
-import com.app.transfer.components.rightVerticalDashedBorder
+import com.app.uikit.borders.dashedBorder
+import com.app.uikit.borders.rightVerticalDashedBorder
+
 import ir.kaaveh.sdpcompose.sdp
 
 
@@ -100,8 +101,7 @@ private fun CardInfo1(navController: NavController) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, Color(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(

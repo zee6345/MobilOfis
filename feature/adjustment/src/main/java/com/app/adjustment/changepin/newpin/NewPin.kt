@@ -1,7 +1,6 @@
 package com.app.adjustment.changepin.newpin
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,7 +42,6 @@ import com.app.adjustment.R
 import com.app.adjustment.changepin.confirmpin.navigation.adjustmentToConfirmPin
 import com.app.adjustment.changepin.currentpin.PinInputView
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 

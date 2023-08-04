@@ -44,14 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.exchangerate.rightVerticalDashedBorder
 import com.app.home.R
-import com.app.home.data.CardFilters
-import com.app.home.data.DataProvider
-import com.app.home.main.cards.components.BusinessCardOptionsSheet
-import com.app.home.main.component.cardsList
-import com.app.home.main.component.dashedBorder
+import com.app.uikit.bottomSheet.BusinessCardOptionsSheet
+import com.app.home.main.subviews.cardsList
 import com.app.network.models.responseModels.MainCard
+import com.app.uikit.borders.dashedBorder
+import com.app.uikit.borders.rightVerticalDashedBorder
+import com.app.uikit.data.DataProvider
+import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
 
 

@@ -32,7 +32,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose  = true
@@ -46,8 +46,9 @@ dependencies {
 
 //    implementation (project (":core:designsystem"))
 //    implementation (project (":feature:auth" ))
-    implementation (project (":feature:adjustment" ))
-    implementation (project (":feature:transfer" ))
+    implementation (project (":feature:adjustment"))
+    implementation (project (":feature:transfer"))
+    implementation(project(mapOf("path" to ":uikit")))
 
 
 
@@ -55,6 +56,7 @@ dependencies {
     implementation(Others.appCompat)
     implementation(Others.material)
     implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":uikit")))
     testImplementation(UnitTest.junit)
     androidTestImplementation(UnitTest.JUNIT_TEST)
     androidTestImplementation(UnitTest.Espresso)

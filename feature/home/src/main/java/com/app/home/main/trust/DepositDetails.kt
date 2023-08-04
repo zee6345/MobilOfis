@@ -36,11 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.exchangerate.rightVerticalDashedBorder
+
 import com.app.home.R
-import com.app.home.main.component.dashedBorder
-import com.app.home.main.component.trustsList
+
+import com.app.home.main.subviews.trustsList
 import com.app.network.models.responseModels.GetTrustsItem
+import com.app.uikit.borders.dashedBorder
+import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable

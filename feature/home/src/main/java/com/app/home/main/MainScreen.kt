@@ -43,9 +43,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.component.CardMenuContent
-import com.app.home.main.component.SelectCompanyBottomSheet
-import com.app.home.main.component.TabLayoutMenu
+import com.app.home.main.subviews.CardMenuContent
+import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -542,7 +541,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
 
-    SelectCompanyBottomSheet(selectCompanyState, userDetails.customers){
+    com.app.uikit.bottomSheet.SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
         viewModel.setCustomerName(
             ChangeCompanyName(
                 it

@@ -27,12 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.adjustment.R
-import com.app.adjustment.data.DataProvider
+import com.app.uikit.data.DataProvider
+import com.app.uikit.models.CompanyListName
 
-
-data class CompanyListName(
-    val name: String,
-)
 
 @Composable
 fun CompanyList() {

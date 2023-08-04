@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grey_text">#859DB5</color>
+    <color name="background_card_blue">#223142</color>
+    <color name="blueColor">#2CCAD3</color>
+    <color name="black">#000000</color>
+    <color name="red">#F3646C</color>
+    <color name="border_grey">#E7EEFC</color>
+    <color name="border_light_grey">#F3F7FA</color>
+    <color name="blue_01">#FF203657</color>
+    <color name="blue">#015CD1</color>
+
+
+
+</resources>

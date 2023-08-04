@@ -52,7 +52,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.otp.navigation.changePasswordToOTP
-import com.app.adjustment.components.ShowProgressDialog
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.ChangePasswordRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
@@ -279,7 +279,7 @@ fun ForgetPasswordScreen(
             is DataState.Loading -> {
                 isLoading.value = true
                 if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
+                    com.app.uikit.dialogs.ShowProgressDialog(isLoading)
                 }
             }
 

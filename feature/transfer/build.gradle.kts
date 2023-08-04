@@ -29,7 +29,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     buildFeatures {
@@ -45,7 +45,7 @@ dependencies {
 //    implementation (project (":core:designsystem"))
 //    implementation (project (":feature:auth" ))
 //    implementation (project (":feature:adjustment" ))
-//    implementation (project (":feature:home" ))
+    implementation (project (":uikit" ))
 
 
     implementation(Kotlin.coreKtx)

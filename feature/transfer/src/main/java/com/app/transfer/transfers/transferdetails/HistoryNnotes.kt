@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.app.transfer.R
-import com.app.transfer.components.dashedBorder
+import com.app.uikit.borders.dashedBorder
+
+
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable

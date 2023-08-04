@@ -42,12 +42,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 
-import com.app.adjustment.components.dashedBorder
+import com.app.uikit.borders.dashedBorder
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetExchangeRates
 import com.app.network.models.responseModels.GetExchangeRatesItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
+import com.app.uikit.borders.rightVerticalDashedBorder
 
 
 @Composable
@@ -294,28 +295,6 @@ fun ExchangeRatesScreen(
 
 
 }
-
-fun Modifier.rightVerticalDashedBorder(strokeWidth: Dp, color: Color) = composed(factory = {
-    val density = LocalDensity.current
-    val strokeWidthPx = density.run { strokeWidth.toPx() }
-    this.then(Modifier.drawWithCache {
-        onDrawBehind {
-            val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-            val strokeWidthWithDensity = strokeWidthPx / density.density
-            val start = Offset(size.width, 0f)
-            val end = Offset(size.width, size.height)
-
-            // Draw the dashed line
-            drawLine(
-                color = color,
-                start = start,
-                end = end,
-                strokeWidth = strokeWidthWithDensity,
-                pathEffect = pathEffect
-            )
-        }
-    })
-})
 
 
 @Composable

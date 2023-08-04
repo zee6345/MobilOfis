@@ -42,11 +42,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
-import com.app.adjustment.components.AboutBankSheet
-import com.app.adjustment.components.ContactBottomSheet
-
+import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
 import com.app.adjustment.navigation.securityScreen
 import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
+import com.app.uikit.bottomSheet.AboutBankSheet
 
 
 @Composable
@@ -358,8 +357,10 @@ fun AdjustmentsScreen(navController: NavController) {
 
     }
 
-    AboutBankSheet(aboutBankState, navController)
-    ContactBottomSheet(contactState)
+    AboutBankSheet(aboutBankState, navController){
+        navController.navigate(adjustmentToExchangeRates)
+    }
+    com.app.uikit.bottomSheet.ContactBottomSheet(contactState)
 }
 
 

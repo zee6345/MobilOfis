@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.auth.R
 import com.app.auth.login.googleAuthenticator.components.OtpViewFive
-import com.app.auth.login.components.utils.TimerTextView
+import com.app.uikit.views.TimerTextView
 
 
 @Composable

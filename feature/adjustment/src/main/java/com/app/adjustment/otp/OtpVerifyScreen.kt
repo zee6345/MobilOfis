@@ -40,10 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.components.PassChangedBottomSheet
-import com.app.adjustment.components.ShowProgressDialog
-import com.app.adjustment.components.TimerTextView
-import com.app.adjustment.otp.components.OtpView
+import com.app.uikit.bottomSheet.PassChangedBottomSheet
+import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.views.TimerTextView
+import com.app.uikit.views.OtpView
 import com.app.adjustment.otp.otpScreen.loginType
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
@@ -130,7 +130,7 @@ fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel
 
 
             Column {
-                OtpView(otpCount.value) {
+                com.app.uikit.views.OtpView(otpCount.value) {
                     otpValue.value = it
                 }
 
@@ -151,7 +151,7 @@ fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel
                             )
                     ) {
 
-                        TimerTextView()
+                        com.app.uikit.views.TimerTextView()
 
                     }
 
@@ -325,7 +325,7 @@ fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel
             is DataState.Loading -> {
                 isLoading.value = true
                 if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
+                    com.app.uikit.dialogs.ShowProgressDialog(isLoading)
                 } else {
 
                 }
@@ -356,7 +356,7 @@ fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel
         }
     }
 
-    PassChangedBottomSheet(passChanged, navController)
+    com.app.uikit.bottomSheet.PassChangedBottomSheet(passChanged, navController)
 
 
 }

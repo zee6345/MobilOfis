@@ -45,12 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.components.CallTopAlertDialog
-import com.app.adjustment.components.ShowProgressDialog
+import com.app.uikit.dialogs.CallTopAlertDialog
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.auth.R
-import com.app.auth.login.components.bottomSheet.ForgetPasswordModalBottomSheet
-import com.app.auth.login.components.bottomSheet.dashedBorder
-import com.app.auth.login.components.utils.TimerTextView
+import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
+
+
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
 import com.app.network.models.DataState
@@ -58,6 +58,8 @@ import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.dashedBorder
+import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 

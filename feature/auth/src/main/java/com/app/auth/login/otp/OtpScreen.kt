@@ -40,10 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.adjustment.components.ShowProgressDialog
-import com.app.auth.login.components.utils.TimerTextView
+import com.app.uikit.dialogs.ShowProgressDialog
+
 import com.app.auth.login.navigation.loginNavigationRoute
-import com.app.adjustment.otp.components.OtpView
+import com.app.uikit.views.OtpView
 import com.app.adjustment.otp.otpScreen.loginType
 import com.app.auth.login.otp.otpScreen.userName
 
@@ -56,6 +56,7 @@ import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
 
 

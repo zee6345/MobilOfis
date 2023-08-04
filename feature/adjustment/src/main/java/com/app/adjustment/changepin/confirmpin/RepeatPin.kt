@@ -1,7 +1,6 @@
 package com.app.adjustment.changepin.confirmpin
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,10 +36,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.changepin.currentpin.PinInputView
-import com.app.adjustment.components.PinChangedBottomSheet
-import com.app.adjustment.navigation.adjustmentScreen
+import com.app.uikit.bottomSheet.PinChangedBottomSheet
 import com.app.network.helper.Keys
-import com.app.network.helper.MainApp
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 
@@ -119,7 +116,7 @@ fun RepeatPin(navController: NavController, viewModel:LoginViewModel = hiltViewM
 
     }
 
-    PinChangedBottomSheet(pinChanged, navController)
+    com.app.uikit.bottomSheet.PinChangedBottomSheet(pinChanged, navController)
 
 }
 

@@ -33,7 +33,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     buildFeatures {
@@ -46,15 +46,13 @@ android {
 
 dependencies {
 
-//    implementation (project (":core:designsystem"))
-//    implementation (project (":feature:auth" ))
-//    implementation (project (":feature:home" ))
-//    implementation (project (":feature:transfer" ))
+//    implementation (project (":uikit" ))
+    implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":uikit")))
 
     implementation(Kotlin.coreKtx)
     implementation(Others.appCompat)
     implementation(Others.material)
-    implementation(project(mapOf("path" to ":data")))
 
     testImplementation(UnitTest.junit)
     androidTestImplementation(UnitTest.JUNIT_TEST)
