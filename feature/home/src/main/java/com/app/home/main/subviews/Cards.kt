@@ -106,7 +106,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             ) {
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else Color(
+                        if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
                             R.color.border_grey
                         ),
                         shape = RoundedCornerShape(size = 6.dp)
@@ -123,7 +123,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                         stringResource(R.string.in_the_name_of_a_physical_person),
                         style = TextStyle(
                             fontSize = 12.sp,
-                            color = if (selectedBoxIndex.value == 0) Color.White else Color(
+                            color = if (selectedBoxIndex.value == 0) Color.White else colorResource(
                                 R.color.background_card_blue
                             )
                         )
@@ -134,7 +134,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
                 Box(modifier = Modifier
                     .background(
-                        if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else Color(
+                        if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
                             R.color.border_grey
                         ),
                         shape = RoundedCornerShape(size = 6.dp)

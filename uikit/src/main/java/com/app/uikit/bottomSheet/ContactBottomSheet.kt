@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -104,9 +105,6 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .dashedBorder(
-                            3.dp, Color(R.color.border_grey)
-                        )
                         .padding(
                             horizontal = 10.dp,
                             vertical = 10.dp
@@ -153,7 +151,6 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .dashedBorder(3.dp, Color(R.color.border_grey))
                         .padding(horizontal = 10.dp),
                     horizontalArrangement = Arrangement.Start
                 ) {
@@ -171,7 +168,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(R.color.border_grey))
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
                                 .fillMaxWidth()
                         ) {
                             Text(
@@ -185,7 +182,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(R.color.border_grey))
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
                                 .fillMaxWidth()
                         ) {
                             Text(
@@ -199,7 +196,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 12.dp)
-                                .dashedBorder(3.dp, Color(R.color.border_grey))
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
                                 .fillMaxWidth()
                         ) {
                             Text(

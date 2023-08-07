@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,7 +57,7 @@ fun NewPin(navController: NavController, viewModel: LoginViewModel= hiltViewMode
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(R.color.border_light_grey))
+            .background(color = colorResource(R.color.border_light_grey))
     ) {
         Surface(
             modifier = Modifier

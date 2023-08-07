@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -278,7 +279,7 @@ private fun Filters() {
     ) {
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 0) Color(R.color.background_card_blue) else Color(R.color.border_grey),
+                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -286,7 +287,7 @@ private fun Filters() {
             Text(
                 stringResource(R.string.current_deposits), style = TextStyle(
                     fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 0) Color.White else Color(R.color.background_card_blue)
+                    color = if (selectedBoxIndex.value == 0) Color.White else colorResource(R.color.background_card_blue)
                 )
             )
         }
@@ -294,7 +295,7 @@ private fun Filters() {
 
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 1) Color(R.color.background_card_blue) else Color(R.color.border_grey),
+                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
@@ -302,7 +303,7 @@ private fun Filters() {
             Text(
                 stringResource(R.string.closed_deposits), style = TextStyle(
                     fontSize = 12.sp,
-                    color = if (selectedBoxIndex.value == 1) Color.White else Color(R.color.background_card_blue)
+                    color = if (selectedBoxIndex.value == 1) Color.White else colorResource(R.color.background_card_blue)
                 )
             )
         }

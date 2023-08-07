@@ -116,7 +116,7 @@ fun RepeatPin(navController: NavController, viewModel:LoginViewModel = hiltViewM
 
     }
 
-    com.app.uikit.bottomSheet.PinChangedBottomSheet(pinChanged, navController)
+    PinChangedBottomSheet(pinChanged, navController)
 
 }
 
