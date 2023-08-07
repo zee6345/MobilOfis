@@ -158,19 +158,86 @@ interface APIService {
         @Header("Auth_token") token:String
     ):Call<ResponseBody>
 
-    @GET("bank/Accounts")
+    @GET("rest/customers/{customerId}/accounts")
     fun getAccounts(
-        @Header("Auth_token") token:String
+        @Header("Auth_token") token:String,
+        @Path("customerId") customerId:String
     ):Call<ResponseBody>
 
-    @GET("bank/transfer-count-summary")
+    @GET("transaction/transfer-count-summary")
     fun getTransferCountSummary(
-        @Header("Auth_token") token:String
+        @Header("Auth_token") token:String,
+        @Query("startdate") startDate: String,
+        @Query("enddate") endDate: String
+    ):Call<ResponseBody> // transfer count summary response
+
+    @GET("transaction/transfer-count-summary")
+    fun getTransferCountSummaryAccountStatus(
+        @Header("Auth_token") token:String,
+        @Query("startdate") startDate: String,
+        @Query("enddate") endDate: String,
+        @Query("account") account: String,
+        @Query("status") status: String
+    ):Call<ResponseBody> // transfer count summary response
+
+    @GET("transaction/transfer-count-summary")
+    fun getTransferCountSummaryFilter(
+        @Header("Auth_token") token:String,
+        @Query("startdate") startDate: String,
+        @Query("enddate") endDate: String,
+        @Query("filter") filter: String
+    ):Call<ResponseBody> // transfer count summary response
+
+    @GET("bank/transfer-list/{startDate}/{endDate}")
+    fun getTransferList(
+        @Header("Auth_token") token:String,
+        @Path("startDate") startDate: String,
+        @Path("endDate") endDate: String,
+        @Query("page") page: Int
+    ):Call<ResponseBody> // transfer list response
+
+    fun getTransferListFilter(
+        @Header("Auth_token") token:String,
+        @Path("startDate") startDate: String,
+        @Path("endDate") endDate: String,
+        @Query("page")page: Int,
+        @Query("filter") filter: String
+    ):Call<ResponseBody> // transfer list response
+
+    fun getTransferListFilterByAccount(
+        @Header("Auth_token") token:String,
+        @Path("startDate") startDate: String,
+        @Path("endDate") endDate: String,
+        @Query("page") page: Int,
+        @Query("account")account: String,
+        @Query("status")status: String
+    ):Call<ResponseBody> // transfer list response
+
+    @GET("exchange/exchange/listrates")
+    fun getExchangeListRates(
+    @Header("Auth_token") token:String
     ):Call<ResponseBody>
 
-    @GET("bank/transfer-list")
-    fun getTransferList(
-        @Header("Auth_token") token:String
+    @GET("moneytransfer/moneytransfer/bankcodes")
+    fun getBankCodes(
+        @Header("Auth_token")token: String
     ):Call<ResponseBody>
+
+    @GET("moneytransfer/moneytransfer/mtcountries")
+    fun getMTCountries(
+        @Header("Auth_token") token: String
+    ):Call<ResponseBody>
+
+    @GET("moneytransfer/moneytransfer/paymentsubject")
+    fun getPaymentSubject(
+        @Header("Auth_token") token: String
+    ):Call<ResponseBody>
+
+    @GET("moneytransfer/moneytransfer/paymenttype")
+    fun paymentType(@Header("Auth_token")token: String):Call<ResponseBody>
+
+    @GET("moneytransfer/moneytransfer/mttype")
+    fun mtType(@Header("Auth_token")token: String):Call<ResponseBody>
+
 
 }

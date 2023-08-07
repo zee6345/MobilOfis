@@ -48,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.network.models.DataState
+import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 //import com.app.uikit.bottomSheet.AccountBottomSheet
@@ -95,10 +96,25 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val transferList by viewModel.transferList.collectAsState()
 
     LaunchedEffect(Unit) {
-//        viewModel.getBusinessDate()
+        viewModel.getBusinessDate()
 //        viewModel.getAccounts()
-        viewModel.getTransferCountSummary()
+
 //        viewModel.getTransferList()
+        businessDates?.let {
+            when(it){
+                is DataState.Error ->{ }
+                is DataState.Loading -> {}
+                is DataState.Success -> {
+                    val dateEnd:String = it.data as String
+                    val dateStart = "01.01.2019"
+                    val page = 0
+                    viewModel.getTransferList(dateStart,dateEnd,page)
+                    viewModel.getTransferCountSummary(dateStart,dateEnd)
+                }
+            }
+        }
+
+
     }
 
     Column(
@@ -236,7 +252,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
 
             is DataState.Success -> {
-
+                val transferData = it.data as TransferListResponse
             }
         }
     }

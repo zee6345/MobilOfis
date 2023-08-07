@@ -69,12 +69,12 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.getAccounts(token)
     }
 
-    fun getTransferCountSummary(token: String): Call<ResponseBody> {
-        return apiService.getTransferCountSummary(token)
+    fun getTransferCountSummary(token: String,startDate: String,endDate: String): Call<ResponseBody> {
+        return apiService.getTransferCountSummary(token,startDate,endDate)
     }
 
-    fun getTransferList(token: String): Call<ResponseBody> {
-        return apiService.getTransferList(token)
+    fun getTransferList(token: String,startDate:String,endDate:String,page:Int): Call<ResponseBody> {
+        return apiService.getTransferList(token,startDate,endDate, page)
     }
 
 

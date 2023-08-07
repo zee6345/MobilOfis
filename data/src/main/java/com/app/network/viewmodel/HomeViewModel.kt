@@ -360,12 +360,12 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getTransferCountSummary() {
+    fun getTransferCountSummary(startDate:String,endDate:String) {
         _getTransferCountSummary.value = DataState.Loading
 
         viewModelScope.launch {
 
-            repository.getTransferCountSummary(session[Keys.KEY_TOKEN]!!)
+            repository.getTransferCountSummary(session[Keys.KEY_TOKEN]!!,startDate, endDate)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -388,12 +388,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getTransferList() {
+    fun getTransferList(dateStart: String, dateEnd: String, page: Int) {
         _getTransferList.value = DataState.Loading
 
         viewModelScope.launch {
 
-            repository.getTransferList(session[Keys.KEY_TOKEN]!!)
+            repository.getTransferList(session[Keys.KEY_TOKEN]!!,dateStart,dateEnd,page)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,

@@ -197,7 +197,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     oldBusinessCards?.let {
         when (it) {
             is DataState.Loading -> {
-                isLoading.value = true
+                    isLoading.value = true
             }
 
             is DataState.Error -> {
