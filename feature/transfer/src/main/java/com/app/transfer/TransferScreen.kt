@@ -1,6 +1,14 @@
 package com.app.transfer
 
 
+//import com.app.uikit.bottomSheet.AccountBottomSheet
+//import com.app.uikit.bottomSheet.AmountBottomSheet
+//import com.app.uikit.bottomSheet.CurrencyBottomSheet
+//import com.app.uikit.bottomSheet.DateBottomSheet
+//import com.app.uikit.bottomSheet.StatusBottomSheet
+//import com.app.uikit.bottomSheet.TypeBottomSheet
+//import com.app.uikit.views.FiltersTopRow
+//import com.app.uikit.views.ItemClickedCallback
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,14 +59,6 @@ import com.app.network.models.DataState
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
-//import com.app.uikit.bottomSheet.AccountBottomSheet
-//import com.app.uikit.bottomSheet.AmountBottomSheet
-//import com.app.uikit.bottomSheet.CurrencyBottomSheet
-//import com.app.uikit.bottomSheet.DateBottomSheet
-//import com.app.uikit.bottomSheet.StatusBottomSheet
-//import com.app.uikit.bottomSheet.TypeBottomSheet
-//import com.app.uikit.views.FiltersTopRow
-//import com.app.uikit.views.ItemClickedCallback
 import com.app.transfer.transfers.TransferTopMenu
 import com.app.transfer.transfers.navigation.transferToDetails
 import com.app.uikit.bottomSheet.AccountBottomSheet
@@ -97,24 +97,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     LaunchedEffect(Unit) {
         viewModel.getBusinessDate()
-//        viewModel.getAccounts()
-
-//        viewModel.getTransferList()
-        businessDates?.let {
-            when(it){
-                is DataState.Error ->{ }
-                is DataState.Loading -> {}
-                is DataState.Success -> {
-                    val dateEnd:String = it.data as String
-                    val dateStart = "01.01.2019"
-                    val page = 0
-                    viewModel.getTransferList(dateStart,dateEnd,page)
-                    viewModel.getTransferCountSummary(dateStart,dateEnd)
-                }
-            }
-        }
-
-
     }
 
     Column(
@@ -194,19 +176,27 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     businessDates?.let {
         when (it) {
-            is DataState.Loading -> {
-
-            }
-
             is DataState.Error -> {
                 Message.showMessage(context, it.errorMessage)
             }
 
+            is DataState.Loading -> {
+
+            }
+
             is DataState.Success -> {
 
+                val dateEnd: String = it.data as String
+                val dateStart = "01.01.2019"
+                val page = 0
+
+
+                viewModel.getTransferList(dateStart, dateEnd, page)
+                viewModel.getTransferCountSummary(dateStart, dateEnd)
             }
         }
     }
+
 
     accountsList?.let {
         when (it) {
@@ -253,6 +243,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Success -> {
                 val transferData = it.data as TransferListResponse
+
+
             }
         }
     }

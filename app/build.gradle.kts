@@ -86,6 +86,8 @@ dependencies {
     implementation (Compose.material3)
     implementation(Lifecycle.runtime)
     implementation(Compose.activity_compose)
+    implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":data")))
     androidTestImplementation (UnitTest.JUNIT_TEST)
     androidTestImplementation (UnitTest.Espresso)
 //    androidTestImplementation (Compose.junit4compose)

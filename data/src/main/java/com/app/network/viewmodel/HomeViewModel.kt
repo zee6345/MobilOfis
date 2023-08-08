@@ -15,6 +15,7 @@ import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -314,10 +315,9 @@ class HomeViewModel @Inject constructor(
                         response: Response<ResponseBody>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _businessDate.value = DataState.Success(response.body()!!)
+                            _businessDate.value = DataState.Success(response.body()!!.string())
                         } else {
-                            _businessDate.value =
-                                DataState.Error(response.errorBody()!!.string())
+                            _businessDate.value = DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
@@ -331,41 +331,41 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getAccounts() {
-        _getAccounts.value = DataState.Loading
+//    fun getAccounts(customerId: Int) {
+//        _getAccounts.value = DataState.Loading
+//
+//        viewModelScope.launch {
+//
+//            repository.getAccounts(session[Keys.KEY_TOKEN]!!, customerId)
+//                .enqueue(object : Callback<ResponseBody> {
+//                    override fun onResponse(
+//                        call: Call<ResponseBody>,
+//                        response: Response<ResponseBody>
+//                    ) {
+//                        if (response.isSuccessful && response.body() != null) {
+//                            _getAccounts.value = DataState.Success(response.body()!!)
+//                        } else {
+//                            _getAccounts.value =
+//                                DataState.Error(response.errorBody()!!.string())
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                        _getAccounts.value = DataState.Error(handleException(t))
+//                    }
+//
+//                })
+//
+//        }
+//    }
 
-        viewModelScope.launch {
 
-            repository.getAccounts(session[Keys.KEY_TOKEN]!!)
-                .enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if (response.isSuccessful && response.body() != null) {
-                            _getAccounts.value = DataState.Success(response.body()!!)
-                        } else {
-                            _getAccounts.value =
-                                DataState.Error(response.errorBody()!!.string())
-                        }
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        _getAccounts.value = DataState.Error(handleException(t))
-                    }
-
-                })
-
-        }
-    }
-
-
-    fun getTransferCountSummary(startDate:String,endDate:String) {
+    fun getTransferCountSummary(startDate: String, endDate: String) {
         _getTransferCountSummary.value = DataState.Loading
 
         viewModelScope.launch {
 
-            repository.getTransferCountSummary(session[Keys.KEY_TOKEN]!!,startDate, endDate)
+            repository.getTransferCountSummary(session[Keys.KEY_TOKEN]!!, startDate, endDate)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -393,11 +393,13 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            repository.getTransferList(session[Keys.KEY_TOKEN]!!,dateStart,dateEnd,page)
-                .enqueue(object : Callback<ResponseBody> {
+//            val strUrl = "bank/transfer-list/${dateStart}/${dateEnd}?page=${page}"
+
+            repository.getTransferList(session[Keys.KEY_TOKEN]!!, dateStart, dateEnd, page)
+                .enqueue(object : Callback<TransferListResponse> {
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                        call: Call<TransferListResponse>,
+                        response: Response<TransferListResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
                             _getTransferList.value = DataState.Success(response.body()!!)
@@ -407,7 +409,7 @@ class HomeViewModel @Inject constructor(
                         }
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<TransferListResponse>, t: Throwable) {
                         _getTransferList.value = DataState.Error(handleException(t))
                     }
 

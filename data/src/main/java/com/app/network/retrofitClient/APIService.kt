@@ -11,16 +11,18 @@ import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetExchangeRates
+import com.app.network.models.responseModels.GetLastLogin
 import com.app.network.models.responseModels.GetLoans
-import com.app.network.models.responseModels.GetOldCards
-import com.app.network.models.responseModels.LoginAsanResponse
-import com.app.network.models.responseModels.LoginResponse
-import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.GetNewCards
+import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserProfile
+import com.app.network.models.responseModels.LoginAsanResponse
+import com.app.network.models.responseModels.LoginResponse
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.VerifyChangePasswordResponse
+import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -29,6 +31,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 
 interface APIService {
@@ -66,9 +69,6 @@ interface APIService {
         @Path("customerId") customerId: Int
     ): Call<GetAccounts>
 
-
-
-
     @GET("customers/{customerId}/accounts/nickname")
     suspend fun setAccountNickName(
         @Header("Auth_token") token: String,
@@ -84,7 +84,9 @@ interface APIService {
 
 
     @GET("auth/getlastlogin")
-    suspend fun getLastLogin(@Header("auth_token") token: String): ResponseBody
+    fun getLastLogin(
+        @Header("Auth_token") token: String
+    ): Call<GetLastLogin>
 
 
     @GET("auth/getuserinfo")
@@ -143,101 +145,101 @@ interface APIService {
 
     @GET("exchange/exchange/listrates")
     fun getExchangeList(
-        @Header("Auth_token") token:String
-    ):Call<GetExchangeRates>
+        @Header("Auth_token") token: String
+    ): Call<GetExchangeRates>
 
     @POST("auth/setcustomer")
     fun setCompanyName(
-        @Header("Auth_token") token:String,
+        @Header("Auth_token") token: String,
         @Body chaneCompanyName: ChangeCompanyName
-    ):Call<LoginVerifyResponse>
+    ): Call<LoginVerifyResponse>
 
     //transfers
     @GET("bank/bussinessdate")
     fun getBusinessDate(
-        @Header("Auth_token") token:String
-    ):Call<ResponseBody>
-
-    @GET("rest/customers/{customerId}/accounts")
-    fun getAccounts(
-        @Header("Auth_token") token:String,
-        @Path("customerId") customerId:String
-    ):Call<ResponseBody>
+        @Header("Auth_token") token: String
+    ): Call<ResponseBody>
 
     @GET("transaction/transfer-count-summary")
     fun getTransferCountSummary(
-        @Header("Auth_token") token:String,
+        @Header("Auth_token") token: String,
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String
-    ):Call<ResponseBody> // transfer count summary response
+    ): Call<ResponseBody> // transfer count summary response
 
     @GET("transaction/transfer-count-summary")
     fun getTransferCountSummaryAccountStatus(
-        @Header("Auth_token") token:String,
+        @Header("Auth_token") token: String,
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String,
         @Query("account") account: String,
         @Query("status") status: String
-    ):Call<ResponseBody> // transfer count summary response
+    ): Call<ResponseBody> // transfer count summary response
 
     @GET("transaction/transfer-count-summary")
     fun getTransferCountSummaryFilter(
-        @Header("Auth_token") token:String,
+        @Header("Auth_token") token: String,
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String,
         @Query("filter") filter: String
-    ):Call<ResponseBody> // transfer count summary response
+    ): Call<ResponseBody> // transfer count summary response
 
-    @GET("bank/transfer-list/{startDate}/{endDate}")
+    @GET("transaction/transfer-list/{startDate}/{endDate}")
     fun getTransferList(
-        @Header("Auth_token") token:String,
+        @Header("Auth_token") token: String,
         @Path("startDate") startDate: String,
         @Path("endDate") endDate: String,
         @Query("page") page: Int
-    ):Call<ResponseBody> // transfer list response
+    ): Call<TransferListResponse> // transfer list response
+
+//    @GET()
+//    fun getTransferList(
+//        @Header("Auth_token") token: String,
+//        @Url url:String
+//    ): Call<ResponseBody> // transfer list response
 
     fun getTransferListFilter(
-        @Header("Auth_token") token:String,
-        @Path("startDate") startDate: String,
-        @Path("endDate") endDate: String,
-        @Query("page")page: Int,
-        @Query("filter") filter: String
-    ):Call<ResponseBody> // transfer list response
-
-    fun getTransferListFilterByAccount(
-        @Header("Auth_token") token:String,
+        @Header("Auth_token") token: String,
         @Path("startDate") startDate: String,
         @Path("endDate") endDate: String,
         @Query("page") page: Int,
-        @Query("account")account: String,
-        @Query("status")status: String
-    ):Call<ResponseBody> // transfer list response
+        @Query("filter") filter: String
+    ): Call<ResponseBody> // transfer list response
+
+    fun getTransferListFilterByAccount(
+        @Header("Auth_token") token: String,
+        @Path("startDate") startDate: String,
+        @Path("endDate") endDate: String,
+        @Query("page") page: Int,
+        @Query("account") account: String,
+        @Query("status") status: String
+    ): Call<ResponseBody> // transfer list response
 
     @GET("exchange/exchange/listrates")
     fun getExchangeListRates(
-    @Header("Auth_token") token:String
-    ):Call<ResponseBody>
+        @Header("Auth_token") token: String
+    ): Call<ResponseBody>
 
     @GET("moneytransfer/moneytransfer/bankcodes")
     fun getBankCodes(
-        @Header("Auth_token")token: String
-    ):Call<ResponseBody>
+        @Header("Auth_token") token: String
+    ): Call<ResponseBody>
 
     @GET("moneytransfer/moneytransfer/mtcountries")
     fun getMTCountries(
         @Header("Auth_token") token: String
-    ):Call<ResponseBody>
+    ): Call<ResponseBody>
 
     @GET("moneytransfer/moneytransfer/paymentsubject")
     fun getPaymentSubject(
         @Header("Auth_token") token: String
-    ):Call<ResponseBody>
+    ): Call<ResponseBody>
 
     @GET("moneytransfer/moneytransfer/paymenttype")
-    fun paymentType(@Header("Auth_token")token: String):Call<ResponseBody>
+    fun paymentType(@Header("Auth_token") token: String): Call<ResponseBody>
 
     @GET("moneytransfer/moneytransfer/mttype")
-    fun mtType(@Header("Auth_token")token: String):Call<ResponseBody>
+    fun mtType(@Header("Auth_token") token: String): Call<ResponseBody>
 
 
 }

@@ -11,8 +11,10 @@ import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val apiService: APIService)  {
@@ -21,9 +23,9 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.getAccounts(token, customerId)
     }
 
-    suspend fun getLastLogin(token:String):ResponseBody{
-        return apiService.getLastLogin(token)
-    }
+//    suspend fun getLastLogin(token:String):Response<String>{
+//        return apiService.getLastLogin(token)
+//    }
 
    fun getUserBalance(token: String, customerId: Int):Call<GetCustomerBalance> {
         return apiService.getBalance(token,customerId)
@@ -65,15 +67,16 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.getBusinessDate(token)
     }
 
-    fun getAccounts(token: String): Call<ResponseBody> {
-        return apiService.getAccounts(token)
-    }
 
     fun getTransferCountSummary(token: String,startDate: String,endDate: String): Call<ResponseBody> {
         return apiService.getTransferCountSummary(token,startDate,endDate)
     }
 
-    fun getTransferList(token: String,startDate:String,endDate:String,page:Int): Call<ResponseBody> {
+//    fun getTransferList(token: String,startDate:String,endDate:String,page:Int): Call<ResponseBody> {
+//        return apiService.getTransferList(token,startDate,endDate, page)
+//    }
+
+    fun getTransferList(token: String, startDate: String, endDate: String, page: Int): Call<TransferListResponse> {
         return apiService.getTransferList(token,startDate,endDate, page)
     }
 

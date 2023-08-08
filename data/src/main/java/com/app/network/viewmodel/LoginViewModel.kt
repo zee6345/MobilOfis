@@ -1,19 +1,18 @@
 package com.app.network.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.network.helper.Error
+import com.app.network.helper.Keys
+import com.app.network.helper.Session
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
+import com.app.network.models.responseModels.GetLastLogin
 import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.models.responseModels.VerifyChangePasswordResponse
-import com.app.network.helper.Error
-import com.app.network.helper.Keys
-import com.app.network.helper.Session
 import com.app.network.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -36,12 +35,11 @@ class LoginViewModel @Inject constructor(
     private val _data = MutableStateFlow<DataState<Any>?>(null)
     val data: MutableStateFlow<DataState<Any>?> get() = _data
 
-
     private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
-
-    val changePasswordVerification = MutableLiveData<VerifyChangePasswordResponse>()
+    private val _lastLogin = MutableStateFlow<DataState<Any>?>(null)
+    val lastLogin: MutableStateFlow<DataState<Any>?> get() = _lastLogin
 
 
     fun loginWithUserName(loginRequest: LoginRequest) {
@@ -71,35 +69,6 @@ class LoginViewModel @Inject constructor(
                 })
         }
     }
-
-//    fun loginWithUserName(loginRequest: LoginRequest) {
-//        _data.value = DataState.Loading
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = async { repository.sendLoginRequestGoogleAuth(loginRequest) }
-//                withContext(Dispatchers.Main) {
-//                    _data.value = DataState.Success(post.await())
-//                }
-//            } catch (e: SocketTimeoutException) {
-//                // Handle SocketTimeoutException
-//                withContext(Dispatchers.Main) {
-//                    _data.value = DataState.Error("Request timeout. Please check your internet connection.")
-//                }
-//            } catch (e: IOException) {
-//                // Handle other network-related exceptions
-//                withContext(Dispatchers.Main) {
-//                    _data.value = DataState.Error("Network error: ${e.message}")
-//                }
-//            } catch (e: HttpException) {
-//                // Handle HTTP error responses
-//                // ...
-//            } catch (e: Exception) {
-//                // Handle other generic exceptions
-//                // ...
-//            }
-//        }
-//    }
 
 
     fun loginAuthVerification(loginVerificationRequest: LoginVerificationRequest) {
@@ -158,19 +127,29 @@ class LoginViewModel @Inject constructor(
     }
 
 
-//    fun changePasswordVerification(verifyChangePasswordRequest: VerifyChangePasswordRequest) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val post = repository.changePasswordVerify(verifyChangePasswordRequest)
-//                withContext(Dispatchers.Main) {
-//                    changePasswordVerification.value = post
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                // Handle error here, maybe update a separate error LiveData
-//            }
-//        }
-//    }
+    fun lastLogin() {
+        _lastLogin.value = DataState.Loading
 
+        viewModelScope.launch {
+            repository.lastLogin(session[Keys.KEY_TOKEN]!!)
+                .enqueue(object : Callback<GetLastLogin> {
+                    override fun onResponse(
+                        call: Call<GetLastLogin>,
+                        response: Response<GetLastLogin>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _lastLogin.value = DataState.Success(response.body()!!)
+                        } else {
+                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetLastLogin>, t: Throwable) {
+                        _lastLogin.value = DataState.Error(Error.handleException(t))
+                    }
+
+                })
+        }
+    }
 
 }
