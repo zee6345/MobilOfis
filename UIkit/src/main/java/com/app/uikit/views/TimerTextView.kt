@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun TimerTextView() {
-    val remainingTime = remember { mutableStateOf(5 * 60 * 1000L) } // 5 minutes in milliseconds
+//    val remainingTime = remember { mutableStateOf(5 * 60 * 1000L) } // 5 minutes in milliseconds
+    val remainingTime = remember { mutableStateOf(30 * 1000L) } // 5 minutes in milliseconds
 
     LaunchedEffect(Unit) {
         object : CountDownTimer(remainingTime.value, 1000L) {

@@ -6,6 +6,7 @@ import com.app.network.models.requestModels.ChangePasswordRequest
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
+import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetAccounts
@@ -31,7 +32,6 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 
 interface APIService {
@@ -60,6 +60,13 @@ interface APIService {
         @Header("Auth_token") token: String,
         @Body verifyChangePasswordRequest: VerifyChangePasswordRequest
     ): Call<VerifyChangePasswordResponse>
+
+
+    @POST("auth/set-fav-customer")
+    fun setFavCustomer(
+        @Header("Auth_token") token: String,
+        @Body setFavCustomer: SetFavCustomer
+    ): Call<ResponseBody>
 
     // Main
 
@@ -143,6 +150,11 @@ interface APIService {
         @Header("Auth_token") token: String,
     ): Call<ResponseBody>
 
+    @POST("auth/totp-register/enable")
+    fun enable2FA(
+        @Header("Auth_token") token: String,
+    ): Call<ResponseBody>
+
     @GET("exchange/exchange/listrates")
     fun getExchangeList(
         @Header("Auth_token") token: String
@@ -192,11 +204,6 @@ interface APIService {
         @Query("page") page: Int
     ): Call<TransferListResponse> // transfer list response
 
-//    @GET()
-//    fun getTransferList(
-//        @Header("Auth_token") token: String,
-//        @Url url:String
-//    ): Call<ResponseBody> // transfer list response
 
     fun getTransferListFilter(
         @Header("Auth_token") token: String,

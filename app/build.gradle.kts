@@ -81,6 +81,7 @@ dependencies {
     implementation (Compose.activity_compose)
     implementation (platform(Compose.composeBom))
     implementation (Compose.composeUi)
+    implementation (Compose.composeAnimNavigation)
     implementation (Compose.graphUi)
     implementation (Compose.compose_tooling_preview)
     implementation (Compose.material3)

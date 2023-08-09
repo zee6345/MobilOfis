@@ -39,34 +39,36 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.auth.R
-import com.app.uikit.dialogs.ShowProgressDialog
-
-import com.app.auth.login.navigation.loginNavigationRoute
-import com.app.uikit.views.OtpView
 import com.app.adjustment.otp.otpScreen.loginType
+import com.app.auth.R
+import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.otp.otpScreen.userName
-
 import com.app.auth.pin.navigation.pinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.auth.utils.SharedModel
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.views.OtpView
 import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
 
 
 object otpScreen {
-    var loginType: Int? = null
+    //    var loginType: Int? = null
     var userName: String? = null
 }
 
 @Composable
-fun OtpScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
+fun OtpScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
 
     val context = LocalContext.current
     val otpValue = remember { mutableStateOf("") }
@@ -75,10 +77,8 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = hiltView
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
 
-
-
     //set initial value for OTP view
-    when (loginType) {
+    when (SharedModel.init().loginType.value) {
         0 -> otpCount.value = 5
         1 -> otpCount.value = 6
     }
@@ -208,7 +208,6 @@ fun OtpScreen(navController: NavController, viewModel: LoginViewModel = hiltView
 //                    navController.navigate(pinNavigationRoute)
                             if (otpValue.value.isNotEmpty()) {
                                 if (otpValue.value.length == otpCount.value) {
-
 
 
                                     viewModel.loginAuthVerification(

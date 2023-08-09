@@ -49,15 +49,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.uikit.borders.dashedBorder
+import com.app.adjustment.googleauth.userProfileToGoogleAuth
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetUserProfile
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
-
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
+import com.app.uikit.borders.dashedBorder
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -73,11 +73,12 @@ fun UserProfileScreen(
 
     val userProfileInfo by viewModel.userInfo.collectAsState()
     val userDisable2FA by viewModel.disable2FA.collectAsState()
-//    val userInfo = viewModel.session.fetchUserDetails()
+    val userEnable2FA by viewModel.enable2FA.collectAsState()
+
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userInfo = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
-    val context:Context = LocalContext.current
+    val context: Context = LocalContext.current
 
     LaunchedEffect(Unit) {
         //fetch accounts list
@@ -465,8 +466,14 @@ fun UserProfileScreen(
                                     )
                                     .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 5.dp)
                                     .clickable {
-                                        coroutineScope.launch {
-                                            viewModel.disable2FA()
+                                        if (TOTPEnabled.value == null) {
+                                            coroutineScope.launch {
+                                                viewModel.enable2FA()
+                                            }
+                                        } else {
+                                            coroutineScope.launch {
+                                                viewModel.disable2FA()
+                                            }
                                         }
                                     }
 
@@ -538,20 +545,39 @@ fun UserProfileScreen(
     }
 
     userDisable2FA?.let {
-        when(it){
+        when (it) {
             is DataState.Loading -> {
 
             }
 
             is DataState.Error -> {
-
+                Message.showMessage(context, it.errorMessage)
             }
 
-            is DataState.Success ->{
+            is DataState.Success -> {
 
             }
         }
     }
+
+    userEnable2FA?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate(userProfileToGoogleAuth)
+                }
+            }
+        }
+    }
+
 
 }
 
