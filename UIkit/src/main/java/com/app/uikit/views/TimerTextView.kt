@@ -1,6 +1,5 @@
 package com.app.uikit.views
 
-import android.os.CountDownTimer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,30 +12,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.delay
 
 @Composable
 fun TimerTextView() {
-//    val remainingTime = remember { mutableStateOf(5 * 60 * 1000L) } // 5 minutes in milliseconds
-    val remainingTime = remember { mutableStateOf(30 * 1000L) } // 5 minutes in milliseconds
+    val remainingTime = remember { mutableStateOf(30) } // 30 seconds
 
     LaunchedEffect(Unit) {
-        object : CountDownTimer(remainingTime.value, 1000L) {
-            override fun onTick(millisUntilFinished: Long) {
-                remainingTime.value = millisUntilFinished
-            }
+        while (true) {
+            delay(1000) // Delay for 1 second
 
-            override fun onFinish() {
-                // Timer finished, handle any necessary actions
+            if (remainingTime.value > 0) {
+                remainingTime.value -= 1
+            } else {
+                remainingTime.value = 30 // Reset remaining time to 30 seconds
             }
-        }.start()
+        }
     }
 
     val formattedTime = remember(remainingTime.value) {
         String.format(
             "%02d:%02d",
-            TimeUnit.MILLISECONDS.toMinutes(remainingTime.value),
-            TimeUnit.MILLISECONDS.toSeconds(remainingTime.value) % 60
+            remainingTime.value / 60,
+            remainingTime.value % 60
         )
     }
 
@@ -48,6 +46,6 @@ fun TimerTextView() {
             fontSize = 16.sp,
             fontWeight = FontWeight(500),
 
-        )
+            )
     )
 }
