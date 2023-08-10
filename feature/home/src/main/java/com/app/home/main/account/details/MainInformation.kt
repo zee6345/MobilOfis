@@ -252,7 +252,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                         text = stringResource(id = R.string.balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = colorResource(R.color.border_grey),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -303,7 +303,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 

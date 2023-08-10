@@ -15,6 +15,7 @@ import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,11 +65,11 @@ class HomeViewModel @Inject constructor(
     val businessDate: MutableStateFlow<DataState<Any>?> get() = _businessDate
 
 
-    private val _getAccounts = MutableStateFlow<DataState<Any>?>(null)
-    val accounts: MutableStateFlow<DataState<Any>?> get() = _getAccounts
+//    private val _getAccounts = MutableStateFlow<DataState<Any>?>(null)
+//    val getAccounts: MutableStateFlow<DataState<Any>?> get() = _getAccounts
 
     private val _getTransferCountSummary = MutableStateFlow<DataState<Any>?>(null)
-    val transferCountSummary: MutableStateFlow<DataState<Any>?> get() = _getTransferCountSummary
+    val getTransferCountSummary: MutableStateFlow<DataState<Any>?> get() = _getTransferCountSummary
 
     private val _getTransferList = MutableStateFlow<DataState<Any>?>(null)
     val transferList: MutableStateFlow<DataState<Any>?> get() = _getTransferList
@@ -366,10 +367,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
 
             repository.getTransferCountSummary(session[Keys.KEY_TOKEN]!!, startDate, endDate)
-                .enqueue(object : Callback<ResponseBody> {
+                .enqueue(object : Callback<TransferCountSummaryResponse> {
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                        call: Call<TransferCountSummaryResponse>,
+                        response: Response<TransferCountSummaryResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
                             _getTransferCountSummary.value = DataState.Success(response.body()!!)
@@ -379,7 +380,7 @@ class HomeViewModel @Inject constructor(
                         }
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<TransferCountSummaryResponse>, t: Throwable) {
                         _getTransferCountSummary.value = DataState.Error(handleException(t))
                     }
 

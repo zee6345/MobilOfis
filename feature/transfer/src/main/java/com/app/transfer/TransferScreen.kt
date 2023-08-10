@@ -53,6 +53,8 @@ import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
@@ -84,20 +86,28 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
-    val cardsList = remember { mutableListOf<GetAccountsItem>() }
+    val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
+    val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
 
     val context: Context = LocalContext.current
     val businessDates by viewModel.businessDate.collectAsState()
-    val accountsList by viewModel.accounts.collectAsState()
-    val transferCount by viewModel.transferCountSummary.collectAsState()
+    val accountsList by viewModel.accountsData.collectAsState()
+    val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
     val transferList by viewModel.transferList.collectAsState()
 
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
+//    val currentDate = System.currentTimeMillis()
+//    val formattedDate = SimpleDateFormat("dd.mm.yyyy").format(currentDate)
+    val dateStart = "01.01.2019"
+    val endDate = "01.01.2023"
+
 
     LaunchedEffect(Unit) {
         viewModel.getBusinessDate()
+        viewModel.getAccounts(userDetails.customerNo)
+        viewModel.getTransferCountSummary(dateStart, endDate)
     }
 
     Column(
@@ -154,7 +164,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             ) {
 
-            TopMenuItem()
+            TransferTopMenu(transferHeaderList)
 
             FilterListMenu()
 
@@ -168,11 +178,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
     DateBottomSheet(showDateBottomSheet)
-    AccountBottomSheet(showFromAccountBottomSheet, cardsList)
+    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList)
     StatusBottomSheet(showStatusBottomSheet)
     TypeBottomSheet(showTypeBottomSheet)
     AmountBottomSheet(showAmountBottomSheet)
     CurrencyBottomSheet(showCurrencyBottomSheet)
+
 
 
     businessDates?.let {
@@ -192,10 +203,10 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val page = 0
 
 
+//                viewModel.getTransferList(dateStart, dateEnd, page)
 
-                viewModel.getTransferList(dateStart, dateEnd, page)
-                viewModel.getTransferCountSummary(dateStart, dateEnd)
-                viewModel.getAccounts(userDetails.customerNo)
+
+
             }
         }
     }
@@ -214,9 +225,10 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             is DataState.Success -> {
                 val userAccounts = it.data as GetAccounts
 
-                cardsList.apply {
+
+                accountFilterList.apply {
                     clear()
-                    cardsList.addAll(userAccounts)
+                    accountFilterList.addAll(userAccounts)
                 }
 
             }
@@ -224,7 +236,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
 
-    transferCount?.let {
+    transferCountSummery?.let {
         when (it) {
             is DataState.Loading -> {
 
@@ -235,6 +247,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
 
             is DataState.Success -> {
+                val data = it.data as TransferCountSummaryResponse
+
+                transferHeaderList.apply {
+                    clear()
+                    addAll(data)
+                }
 
             }
         }
@@ -254,16 +272,21 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val transferData = it.data as TransferListResponse
 
 
+
             }
         }
     }
 
+
+
+
+
 }
 
-@Composable
-fun TopMenuItem() {
-    TransferTopMenu()
-}
+//@Composable
+//fun TopMenuItem() {
+//
+//}
 
 @Composable
 fun FilterListMenu() {

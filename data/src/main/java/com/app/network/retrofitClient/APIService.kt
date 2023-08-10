@@ -23,6 +23,7 @@ import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.VerifyChangePasswordResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -177,7 +178,7 @@ interface APIService {
         @Header("Auth_token") token: String,
         @Query("startdate") startDate: String,
         @Query("enddate") endDate: String
-    ): Call<ResponseBody> // transfer count summary response
+    ): Call<TransferCountSummaryResponse> // transfer count summary response
 
     @GET("transaction/transfer-count-summary")
     fun getTransferCountSummaryAccountStatus(
