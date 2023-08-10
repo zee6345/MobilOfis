@@ -45,20 +45,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.uikit.dialogs.CallTopAlertDialog
-import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.auth.R
-import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
-
-
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
+import com.app.auth.utils.SharedModel
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
+import com.app.uikit.dialogs.CallTopAlertDialog
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
@@ -466,7 +465,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         //route to OTP
 //                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
                         otpScreen.userName = usernameState.value
-                        otpScreen.loginType = selected
+//                        otpScreen.loginType = selected
+//                        sharedModel.loginType.value = selected
+                        SharedModel.init().loginType.value = selected
 
                         navController.navigate(otpNavigationRoute)
 

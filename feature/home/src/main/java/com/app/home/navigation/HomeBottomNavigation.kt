@@ -1,5 +1,6 @@
 package com.app.home.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,22 +9,24 @@ import com.app.adjustment.AdjustmentsScreen
 import com.app.adjustment.changepassword.ForgetPasswordScreen
 import com.app.adjustment.changepassword.navigation.securityToChangePassword
 import com.app.adjustment.changepin.confirmpin.RepeatPin
-
 import com.app.adjustment.changepin.confirmpin.navigation.adjustmentToConfirmPin
-
 import com.app.adjustment.changepin.currentpin.CurrentPin
 import com.app.adjustment.changepin.currentpin.navigation.adjustmentToCurrentPin
 import com.app.adjustment.changepin.newpin.NewPin
 import com.app.adjustment.changepin.newpin.navigation.adjustmentToNewPin
-
 import com.app.adjustment.companies.companydisplay.CompanyDisplay
 import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
 import com.app.adjustment.companies.companylist.Companies
 import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
 import com.app.adjustment.exchangerate.ExchangeRatesScreen
 import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
+import com.app.adjustment.googleauth.ActivateGoogleAuthenticatorScreen
+import com.app.adjustment.googleauth.ConfirmSMSCodeScreen
+import com.app.adjustment.googleauth.SMSCodeAuthenticatorScreen
+import com.app.adjustment.googleauth.googleAuthToOtpVerify
+import com.app.adjustment.googleauth.otpToConfirmGoogleAuthOtp
+import com.app.adjustment.googleauth.userProfileToGoogleAuth
 import com.app.adjustment.navigation.securityScreen
-
 import com.app.adjustment.otp.OtpVerifyScreen
 import com.app.adjustment.otp.navigation.changePasswordToOTP
 import com.app.adjustment.security.SecurityScreen
@@ -43,9 +46,11 @@ import com.app.transfer.TransferScreen
 import com.app.transfer.transfers.TransferDetailsInformation
 import com.app.transfer.transfers.navigation.transferToDetails
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavItem.Main.screen_route) {
+
 
         composable(BottomNavItem.Main.screen_route) {
             MenuScreen(navController)
@@ -67,15 +72,7 @@ fun NavigationGraph(navController: NavHostController) {
             SecurityScreen(navController)
         }
 
-        composable(
-//            route= "$accountDetailsRoute/{account}",
-            route= accountDetailsRoute,
-//            arguments = listOf(
-//                navArgument("account"){
-//                    type = NavType.StringType
-//                }
-//            )
-            ) {
+        composable(route = accountDetailsRoute) {
             AccountInformation(navController = navController)
         }
 
@@ -109,11 +106,11 @@ fun NavigationGraph(navController: NavHostController) {
             ForgetPasswordScreen(navController)
         }
 
-        composable(adjustmentToExchangeRates){
+        composable(adjustmentToExchangeRates) {
             ExchangeRatesScreen(navController)
         }
 
-        composable(adjustmentToExchangeRates){
+        composable(adjustmentToExchangeRates) {
             ExchangeRatesScreen(navController)
         }
 
@@ -136,8 +133,21 @@ fun NavigationGraph(navController: NavHostController) {
             RepeatPin(navController)
         }
 
-        composable(changePasswordToOTP){
+        composable(changePasswordToOTP) {
             OtpVerifyScreen(navController)
+        }
+
+
+        composable(userProfileToGoogleAuth) {
+            ActivateGoogleAuthenticatorScreen(navController)
+        }
+
+        composable(googleAuthToOtpVerify) {
+            SMSCodeAuthenticatorScreen(navController)
+        }
+
+        composable(otpToConfirmGoogleAuthOtp) {
+            ConfirmSMSCodeScreen(navController)
         }
 
 

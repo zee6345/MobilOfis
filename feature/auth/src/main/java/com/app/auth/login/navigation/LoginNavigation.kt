@@ -8,7 +8,7 @@ import com.app.auth.login.otp.OtpScreen
 
 
 const val loginNavigationRoute = "login"
-const val otpNavigationRoute="otp"
+const val otpNavigationRoute = "otp"
 
 fun NavGraphBuilder.loginScreen(
     navController: NavController

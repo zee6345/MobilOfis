@@ -79,6 +79,9 @@ dependencies {
 
     //Navigation
     implementation (Compose.composeNavigation)
+    implementation (Compose.composeAnimNavigation)
+
+
     implementation(Others.sdp_compose)
     //Constraint Layout
     implementation (Compose.compose_constraints)

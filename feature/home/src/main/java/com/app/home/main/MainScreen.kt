@@ -166,7 +166,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Icon(
                             painterResource(id = R.drawable.ic_options_arrow_in),
                             modifier = Modifier.size(width = 18.sdp, height = 12.sdp),
-                            tint = Color(R.color.background_card_blue),
+                            tint = colorResource(R.color.background_card_blue),
                             contentDescription = null
                         )
 
@@ -234,7 +234,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Box(modifier = Modifier
                             .padding(6.dp)
                             .background(
-                                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else Color(
+                                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
                                     R.color.border_grey
                                 ),
                                 shape = RoundedCornerShape(8.dp)
@@ -252,7 +252,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Box(modifier = Modifier
                             .padding(6.dp)
                             .background(
-                                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else Color(
+                                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
                                     R.color.border_grey
                                 ),
                                 shape = RoundedCornerShape(8.dp)
@@ -272,7 +272,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Box(modifier = Modifier
                             .padding(6.dp)
                             .background(
-                                if (selectedBoxIndex.value == 2) colorResource(R.color.background_card_blue) else Color(
+                                if (selectedBoxIndex.value == 2) colorResource(R.color.background_card_blue) else colorResource(
                                     R.color.border_grey
                                 ),
                                 shape = RoundedCornerShape(8.dp)
@@ -495,7 +495,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             }
                             Row() {
                                 Text(
-                                    text = balance.value,
+                                    text = if (showBalance.value) balance.value else "********",
                                     modifier = Modifier.align(Top),
                                     style = TextStyle(
                                         fontSize = 32.sp,

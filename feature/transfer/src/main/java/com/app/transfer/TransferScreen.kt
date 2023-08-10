@@ -1,6 +1,5 @@
 package com.app.transfer
 
-
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +28,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,18 +47,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.responseModels.GetAccounts
+import com.app.network.models.responseModels.GetAccountsItem
+import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
-//import com.app.uikit.bottomSheet.AccountBottomSheet
-//import com.app.uikit.bottomSheet.AmountBottomSheet
-//import com.app.uikit.bottomSheet.CurrencyBottomSheet
-//import com.app.uikit.bottomSheet.DateBottomSheet
-//import com.app.uikit.bottomSheet.StatusBottomSheet
-//import com.app.uikit.bottomSheet.TypeBottomSheet
-//import com.app.uikit.views.FiltersTopRow
-//import com.app.uikit.views.ItemClickedCallback
 import com.app.transfer.transfers.TransferTopMenu
 import com.app.transfer.transfers.navigation.transferToDetails
 import com.app.uikit.bottomSheet.AccountBottomSheet
@@ -87,34 +84,20 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val cardsList = remember { mutableListOf<GetAccountsItem>() }
 
     val context: Context = LocalContext.current
-
     val businessDates by viewModel.businessDate.collectAsState()
     val accountsList by viewModel.accounts.collectAsState()
     val transferCount by viewModel.transferCountSummary.collectAsState()
     val transferList by viewModel.transferList.collectAsState()
 
+    val str = viewModel.session[Keys.KEY_USER_DETAILS]
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+
+
     LaunchedEffect(Unit) {
         viewModel.getBusinessDate()
-//        viewModel.getAccounts()
-
-//        viewModel.getTransferList()
-        businessDates?.let {
-            when(it){
-                is DataState.Error ->{ }
-                is DataState.Loading -> {}
-                is DataState.Success -> {
-                    val dateEnd:String = it.data as String
-                    val dateStart = "01.01.2019"
-                    val page = 0
-                    viewModel.getTransferList(dateStart,dateEnd,page)
-                    viewModel.getTransferCountSummary(dateStart,dateEnd)
-                }
-            }
-        }
-
-
     }
 
     Column(
@@ -185,7 +168,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
     DateBottomSheet(showDateBottomSheet)
-    AccountBottomSheet(showFromAccountBottomSheet)
+    AccountBottomSheet(showFromAccountBottomSheet, cardsList)
     StatusBottomSheet(showStatusBottomSheet)
     TypeBottomSheet(showTypeBottomSheet)
     AmountBottomSheet(showAmountBottomSheet)
@@ -194,19 +177,29 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     businessDates?.let {
         when (it) {
-            is DataState.Loading -> {
-
-            }
-
             is DataState.Error -> {
                 Message.showMessage(context, it.errorMessage)
             }
 
+            is DataState.Loading -> {
+
+            }
+
             is DataState.Success -> {
 
+                val dateEnd: String = it.data as String
+                val dateStart = "01.01.2019"
+                val page = 0
+
+
+
+                viewModel.getTransferList(dateStart, dateEnd, page)
+                viewModel.getTransferCountSummary(dateStart, dateEnd)
+                viewModel.getAccounts(userDetails.customerNo)
             }
         }
     }
+
 
     accountsList?.let {
         when (it) {
@@ -219,6 +212,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
 
             is DataState.Success -> {
+                val userAccounts = it.data as GetAccounts
+
+                cardsList.apply {
+                    clear()
+                    cardsList.addAll(userAccounts)
+                }
 
             }
         }
@@ -253,6 +252,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Success -> {
                 val transferData = it.data as TransferListResponse
+
+
             }
         }
     }

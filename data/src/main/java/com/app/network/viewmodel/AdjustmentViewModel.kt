@@ -12,6 +12,7 @@ import com.app.network.models.responseModels.VerifyChangePasswordResponse
 import com.app.network.helper.Error
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
+import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.repository.AdjustmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,9 @@ class AdjustmentViewModel @Inject constructor(
     private val _disable2FA = MutableStateFlow<DataState<Any>?>(null)
     val disable2FA: MutableStateFlow<DataState<Any>?> get() = _disable2FA
 
+    private val _enable2FA = MutableStateFlow<DataState<Any>?>(null)
+    val enable2FA: MutableStateFlow<DataState<Any>?> get() = _enable2FA
+
     private val _exchangeRates = MutableStateFlow<DataState<Any>?>(null)
     val exchangeRates: MutableStateFlow<DataState<Any>?> get() = _exchangeRates
 
@@ -44,6 +48,10 @@ class AdjustmentViewModel @Inject constructor(
 
     private val _verifyChangePassword = MutableStateFlow<DataState<Any>?>(null)
     val verifyChangePassword: MutableStateFlow<DataState<Any>?> get() = _verifyChangePassword
+
+
+    private val _setFavCustomer = MutableStateFlow<DataState<Any>?>(null)
+    val setFavCustomer: MutableStateFlow<DataState<Any>?> get() = _setFavCustomer
 
 
     fun getUserInfo(customerId: String) {
@@ -93,6 +101,33 @@ class AdjustmentViewModel @Inject constructor(
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         _disable2FA.value = DataState.Error(Error.handleException(t))
+                    }
+
+                })
+        }
+    }
+
+
+    fun enable2FA() {
+        _enable2FA.value = DataState.Loading
+
+        viewModelScope.launch {
+
+            repository.enable2FA(session[Keys.KEY_TOKEN]!!)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _enable2FA.value = DataState.Success(response.body()!!)
+                        } else {
+                            _enable2FA.value = DataState.Success(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        _enable2FA.value = DataState.Error(Error.handleException(t))
                     }
 
                 })
@@ -174,6 +209,34 @@ class AdjustmentViewModel @Inject constructor(
 
                 override fun onFailure(call: Call<VerifyChangePasswordResponse>, t: Throwable) {
                     _verifyChangePassword.value = DataState.Error(Error.handleException(t))
+                }
+
+            })
+
+        }
+    }
+
+    fun setFavCustomer(favCustomer: SetFavCustomer) {
+        _setFavCustomer.value = DataState.Loading
+        viewModelScope.launch {
+            repository.setFavCustomer(
+                session[Keys.KEY_TOKEN]!!,
+                favCustomer
+            ).enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        _setFavCustomer.value = DataState.Success(response.body()!!)
+                    } else {
+                        _setFavCustomer.value =
+                            DataState.Error(response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    _setFavCustomer.value = DataState.Error(Error.handleException(t))
                 }
 
             })

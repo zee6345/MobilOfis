@@ -288,7 +288,7 @@ fun CardsListItem(obj: MainCard, onCardClick: () -> Unit) {
                     .padding(end = 8.dp, top = 5.dp)
             ) {
                 Text(
-                    text = obj.nickName,
+                    text = "${obj.nickName}",
                     style = TextStyle(fontSize = 14.sp),
                     color = colorResource(R.color.background_card_blue),
                     modifier = Modifier

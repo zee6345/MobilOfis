@@ -16,18 +16,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -37,9 +35,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.app.network.models.responseModels.GetAccountsItem
 import com.app.uikit.R
-import com.app.uikit.data.DataProvider
-import com.app.uikit.models.AccountMenuModel
+import com.app.uikit.borders.dashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 
@@ -64,18 +62,21 @@ fun AccountBottomSheet() {
         )
     }
 
-    AccountBottomSheet(showAccountBottomSheet)
+    AccountBottomSheet(showAccountBottomSheet, null)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
+fun AccountBottomSheet(
+    showAccountBottomSheet: MutableState<Boolean>,
+    accounts: MutableList<GetAccountsItem>?
+) {
     if (showAccountBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { showAccountBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
 
-    ) {
+        ) {
         Column(
             modifier = Modifier.padding(horizontal = 10.dp)
         ) {
@@ -101,26 +102,25 @@ fun AccountBottomSheet(showAccountBottomSheet: MutableState<Boolean>) {
             )
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
-            AccountTypeList()
+            AccountTypeList(accounts!!)
         }
     }
 }
 
 
-
 @Composable
-fun AccountTypeList() {
-    val menu = remember { DataProvider.AccountItems }
+fun AccountTypeList(accounts: MutableList<GetAccountsItem>) {
+//    val menu = remember { DataProvider.AccountItems }
     LazyColumn(
     ) {
-        items(items = menu, itemContent = {
-            AccountMenuItem(menuItem = it)
+        items(items = accounts, itemContent = {
+            AccountMenuItem(accountItem = it)
         })
     }
 }
 
 @Composable
-fun AccountMenuItem(menuItem: AccountMenuModel) {
+fun AccountMenuItem(accountItem: GetAccountsItem) {
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -130,10 +130,11 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .dashedBorder(1.dp, colorResource(id = R.color.border_light_grey))
                 .padding(vertical = 2.dp)
         ) {
             Text(
-                text = menuItem.title,
+                text = accountItem.IBAN,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,20 +143,20 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 color = Color(0xFF223142)
             )
-            if (menuItem.showIcon) {
-                Icon(
-                    painterResource(id = R.drawable.ic_blocked),
-                    contentDescription = stringResource(R.string.calender),
-                    modifier = Modifier
-                        .padding(horizontal = 2.sdp)
-                        .align(Alignment.CenterVertically)
-                )
-            } else {
-//                Log.e("error", "icon hide")
-            }
+//            if (menuItem.showIcon) {
+//                Icon(
+//                    painterResource(id = R.drawable.ic_blocked),
+//                    contentDescription = stringResource(R.string.calender),
+//                    modifier = Modifier
+//                        .padding(horizontal = 2.sdp)
+//                        .align(Alignment.CenterVertically)
+//                )
+//            } else {
+////                Log.e("error", "icon hide")
+//            }
         }
         Text(
-            text = menuItem.subTitle,
+            text = accountItem.BALANCE,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
@@ -165,21 +166,22 @@ fun AccountMenuItem(menuItem: AccountMenuModel) {
             color = Color(0xFF223142)
         )
         Spacer(modifier = Modifier.padding(top = 5.sdp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.sdp)
-                    .background(
-                        color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
-                    )
-                    .align(Alignment.CenterVertically)
-            )
-        }
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.Center,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(1.sdp)
+//                    .background(
+//                        color = Color(R.color.border_grey),
+//                        shape = RoundedCornerShape(size = 10.sdp)
+//                    )
+//                    .align(Alignment.CenterVertically)
+//            )
+//        }
         Spacer(modifier = Modifier.padding(top = 5.sdp))
     }
 }

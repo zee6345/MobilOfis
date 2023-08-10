@@ -1,11 +1,16 @@
 package com.app.auth.splash.navigation
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.auth.login.navigation.loginNavigationRoute
+import com.app.auth.pin.navigation.pinNavigationRoute
+import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.auth.splash.SplashScreen
+import com.app.home.navigation.homeScreenRoute
+import com.app.network.helper.Session
 import kotlinx.coroutines.delay
 
 
@@ -14,6 +19,9 @@ const val splashNavigationRoute = "splash"
 fun NavGraphBuilder.splashScreen(
     navController: NavController
 ) {
+
+
+
     composable(
         route = splashNavigationRoute,
     ) {
@@ -21,10 +29,12 @@ fun NavGraphBuilder.splashScreen(
 
         LaunchedEffect(Unit) {
             delay(4000) // 5000 milliseconds = 5 seconds delay
-//
-//            val token = MainApp.session["token"]
-//            val pin = MainApp.session["finalPin"]
 
+
+//            val session = Session()
+//            val token = session["token"]
+//            val pin = session["finalPin"]
+//
 //            if (pin.isNullOrEmpty()) {
 //                if (!token.isNullOrEmpty()) {
 //                    // If pin is empty and token is not empty, move to the welcome screen.
@@ -43,6 +53,7 @@ fun NavGraphBuilder.splashScreen(
 //                    popUpTo(splashNavigationRoute) { inclusive = true }
 //                }
 //            }
+
 
             navController.navigate(route = loginNavigationRoute) {
                 popUpTo(splashNavigationRoute) { inclusive = true }
