@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -59,6 +59,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.models.responseModels.transferModels.TransferListResponse
+import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.TransferTopMenu
@@ -79,11 +80,11 @@ private lateinit var showStatusBottomSheet: MutableState<Boolean>
 private lateinit var showTypeBottomSheet: MutableState<Boolean>
 private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
+private lateinit var startDateSelected: MutableState<String>
+private lateinit var endDateSelected: MutableState<String>
+//private lateinit var transferListResponse: MutableList<TransferListResponse>
 
-private lateinit var startDateSelected:MutableState<String>
-private lateinit var endDateSelected:MutableState<String>
-private lateinit var transferListResponse:MutableList<TransferListResponse>
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
@@ -93,12 +94,13 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
+    val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
     startDateSelected = rememberSaveable { mutableStateOf("01-01-2019") }
-    endDateSelected = rememberSaveable{ mutableStateOf("01-01-2023") }
-    transferListResponse = rememberSaveable { mutableStateListOf() }
+    endDateSelected = rememberSaveable { mutableStateOf("01-01-2023") }
 
 
     val context: Context = LocalContext.current
@@ -107,20 +109,20 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
     val transferList by viewModel.transferList.collectAsState()
 
-
+    //fetch data
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
 //    val currentDate = System.currentTimeMillis()
 //    val formattedDate = SimpleDateFormat("dd.mm.yyyy").format(currentDate)
-    val dateStart = "01.01.2019"
-    val endDate = "01.01.2023"
+//    val dateStart = "01.01.2019"
+//    val endDate = "01.01.2023"
 
 
     LaunchedEffect(Unit) {
         viewModel.getBusinessDate()
         viewModel.getAccounts(userDetails.customerNo)
-        viewModel.getTransferCountSummary(dateStart, endDate)
+        viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
         viewModel.getTransferList(startDateSelected.value, endDateSelected.value, 0)
     }
 
@@ -172,9 +174,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             modifier = Modifier
                 .weight(0.9f)
                 .padding(horizontal = 10.dp)
-                .verticalScroll(
-                    rememberScrollState(), enabled = true
-                ),
 
             ) {
 
@@ -182,9 +181,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             FilterListMenu()
 
-            repeat(5) {
-                TransactionHistory(navController)
+            LazyColumn(
+                Modifier.fillMaxWidth()
+            ){
+                items(items = transferListResponse, itemContent = {
+                    TransactionHistory(navController, it)
+                })
             }
+
+
 
 
         }
@@ -192,9 +197,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
     DateBottomSheet(showDateBottomSheet, onDateStartSelected = {
-         startDateSelected.value = it
+        startDateSelected.value = it
     }, onDateEndSelected = {
-        endDateSelected.value =it
+        endDateSelected.value = it
     })
     AccountBottomSheet(showFromAccountBottomSheet, accountFilterList)
     StatusBottomSheet(showStatusBottomSheet)
@@ -220,7 +225,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val dateStart = "01.01.2019"
                 val page = 0
 
-                endDateSelected.value =dateEnd
+                endDateSelected.value = dateEnd
 //
 //                viewModel.getTransferCountSummary(dateStart, dateEnd)
 //                viewModel.getAccounts(userDetails.customerNo)
@@ -288,17 +293,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             is DataState.Success -> {
                 val transferData = it.data as TransferListResponse
                 transferListResponse.apply {
-                    transferListResponse.clear()
-                    transferListResponse.addAll(listOf(transferData))
+                    clear()
+                    transferListResponse.addAll(transferData)
                 }
 
 
             }
         }
     }
-
-
-
 
 
 }
@@ -331,7 +333,65 @@ fun FilterListMenu() {
 }
 
 @Composable
-fun TransactionHistory(navController: NavController) {
+fun TransactionHistory(
+    navController: NavController,
+    transfer: TransferListResponseItem
+) {
+    var status = ""
+    var color: Color? = null
+
+    when (transfer.status) {
+        "PENDING_SIGNER" -> {
+            status = "For signing"
+            color = Color(0xff268ED9)
+        }
+
+        "CLOSED" -> {
+            status = "Executed"
+            color = Color(0xff26D978)
+        }
+
+        "PENDING_ALL" -> {
+            status = "Sign and confirmation"
+            color = Color(0xFFC74375)
+        }
+
+        "BANK_SUCCESS" -> {
+            status = "Sent to the bank"
+            color = Color(0xFFF48A1D)
+        }
+
+        "BANK_ERROR" -> {
+            status = "Not processed"
+            color = Color(0xff2CCAD3)
+        }
+
+        "DELETED" -> {
+            status = "Deleted"
+            color = Color(0xFFE91E63)
+        }
+
+        "BANK_REJECTED" -> {
+            status = "Rejected"
+            color = Color(0xFFE91E63)
+        }
+
+        "PENDING_APPROVER" -> {
+            status = "For confirmation"
+            color = Color(0xFFFF5722)
+        }
+
+        "EXPIRED" -> {
+            status = "Expired"
+            color = Color(0xFFF80658)
+        }
+
+        "SEND_TO_BANK" -> {
+            status = "In process"
+            color = Color(0xFFCDDC39)
+        }
+    }
+
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
@@ -360,14 +420,14 @@ fun TransactionHistory(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.garabag_revival_fund),
+                    text = "${transfer.benefName}",
                     style = TextStyle(
                         fontSize = 14.sp
                     )
 
                 )
                 Text(
-                    text = stringResource(R.string._999_000_000_00),
+                    text = "${transfer.amount}",
                     style = TextStyle(
                         fontSize = 14.sp
                     )
@@ -395,7 +455,7 @@ fun TransactionHistory(navController: NavController) {
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
-                            text = stringResource(R.string.anipay_non_budget), style = TextStyle(
+                            text = "${transfer.brTrnType}", style = TextStyle(
                                 color = colorResource(R.color.grey_text),
                                 fontSize = 12.sp
 
@@ -416,7 +476,7 @@ fun TransactionHistory(navController: NavController) {
                             .padding(vertical = 1.sdp, horizontal = 6.sdp)
                     ) {
                         Text(
-                            text = stringResource(R.string._18_24), style = TextStyle(
+                            text = "${transfer.trnDateTime}", style = TextStyle(
                                 color = colorResource(R.color.grey_text),
                                 fontSize = 12.sp
 
@@ -436,7 +496,7 @@ fun TransactionHistory(navController: NavController) {
                         .height(10.dp)
                         .drawBehind {
                             drawCircle(
-                                color = Color(0xFF0FBF1B), radius = 5.dp.toPx()
+                                color = color!!, radius = 5.dp.toPx()
                             )
                         }
                         .align(Alignment.CenterVertically)) {
@@ -447,7 +507,7 @@ fun TransactionHistory(navController: NavController) {
                     Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
                     Text(
-                        text = stringResource(R.string.execution_done),
+                        text = status,
                         style = TextStyle(
                             fontSize = 14.sp
                         )
@@ -469,5 +529,5 @@ fun TransactionHistory(navController: NavController) {
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun TransferScreenPreview() {
-    TransferScreen(rememberNavController())
+//    TransferScreen(rememberNavController())
 }

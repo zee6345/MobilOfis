@@ -67,7 +67,7 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem) {
 
         "DELETED" -> {
             status = "Deleted"
-            color = Color(0xff26D978)
+            color = Color(0xFFE91E63)
         }
 
         "BANK_REJECTED" -> {
@@ -82,7 +82,7 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem) {
 
         "EXPIRED" -> {
             status = "Expired"
-            color = Color(0xFFC74375)
+            color = Color(0xFFF80658)
         }
 
         "SEND_TO_BANK" -> {
