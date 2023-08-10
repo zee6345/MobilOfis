@@ -11,6 +11,7 @@ import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -68,7 +69,7 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
     }
 
 
-    fun getTransferCountSummary(token: String,startDate: String,endDate: String): Call<ResponseBody> {
+    fun getTransferCountSummary(token: String,startDate: String,endDate: String): Call<TransferCountSummaryResponse> {
         return apiService.getTransferCountSummary(token,startDate,endDate)
     }
 

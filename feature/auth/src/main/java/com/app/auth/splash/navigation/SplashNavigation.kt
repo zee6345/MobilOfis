@@ -1,16 +1,12 @@
 package com.app.auth.splash.navigation
 
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.auth.login.navigation.loginNavigationRoute
-import com.app.auth.pin.navigation.pinNavigationRoute
-import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.auth.splash.SplashScreen
 import com.app.home.navigation.homeScreenRoute
-import com.app.network.helper.Session
 import kotlinx.coroutines.delay
 
 
@@ -19,7 +15,6 @@ const val splashNavigationRoute = "splash"
 fun NavGraphBuilder.splashScreen(
     navController: NavController
 ) {
-
 
 
     composable(

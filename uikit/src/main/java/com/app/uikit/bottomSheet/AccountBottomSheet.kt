@@ -4,11 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.uikit.R
 import com.app.uikit.borders.dashedBorder
@@ -78,28 +78,37 @@ fun AccountBottomSheet(
 
         ) {
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp)
+//            modifier = Modifier.padding(horizontal = 10.dp)
         ) {
             Text(
                 text = stringResource(R.string.from_the_account),
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 10.dp),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
                 color = Color(0xFF223142)
             )
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
-            Text(
-                text = stringResource(R.string.all),
-                textAlign = TextAlign.Start,
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.sdp),
-                fontWeight = FontWeight.Normal,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                color = Color(0xFF223142)
-            )
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+            ){
+
+                Text(
+                    text = stringResource(R.string.all),
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp, horizontal = 20.dp),
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    color = Color(0xFF223142)
+                )
+            }
+
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
             AccountTypeList(accounts!!)
@@ -110,7 +119,6 @@ fun AccountBottomSheet(
 
 @Composable
 fun AccountTypeList(accounts: MutableList<GetAccountsItem>) {
-//    val menu = remember { DataProvider.AccountItems }
     LazyColumn(
     ) {
         items(items = accounts, itemContent = {
@@ -121,69 +129,44 @@ fun AccountTypeList(accounts: MutableList<GetAccountsItem>) {
 
 @Composable
 fun AccountMenuItem(accountItem: GetAccountsItem) {
+
     Column(
         modifier = Modifier
+            .fillMaxWidth()
             .background(Color.White)
-            .padding(horizontal = 10.dp)
+            .dashedBorder(3.dp, colorResource(R.color.border_grey))
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .dashedBorder(1.dp, colorResource(id = R.color.border_light_grey))
-                .padding(vertical = 2.dp)
-        ) {
-            Text(
-                text = accountItem.IBAN,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 3.sdp),
-                fontWeight = FontWeight.Bold,
+        Text(
+            text = accountItem.IBAN,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 2.dp),
+            style = TextStyle(
+                fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                color = Color(0xFF223142)
+                fontWeight = FontWeight(400),
+                color = Color(0xFF223142),
             )
-//            if (menuItem.showIcon) {
-//                Icon(
-//                    painterResource(id = R.drawable.ic_blocked),
-//                    contentDescription = stringResource(R.string.calender),
-//                    modifier = Modifier
-//                        .padding(horizontal = 2.sdp)
-//                        .align(Alignment.CenterVertically)
-//                )
-//            } else {
-////                Log.e("error", "icon hide")
-//            }
-        }
+
+
+        )
+
         Text(
             text = accountItem.BALANCE,
             textAlign = TextAlign.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 2.sdp),
-            fontWeight = FontWeight.Normal,
-            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-            color = Color(0xFF223142)
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 2.dp),
+            style = TextStyle(
+                fontSize = 14.sp,
+                lineHeight = 18.4.sp,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                fontWeight = FontWeight(400),
+                color = Color(0xFF203657),
+            )
         )
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.Center,
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(1.sdp)
-//                    .background(
-//                        color = Color(R.color.border_grey),
-//                        shape = RoundedCornerShape(size = 10.sdp)
-//                    )
-//                    .align(Alignment.CenterVertically)
-//            )
-//        }
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
     }
+
 }
 
 
