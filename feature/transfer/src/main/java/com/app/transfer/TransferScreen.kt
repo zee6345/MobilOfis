@@ -121,6 +121,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         viewModel.getBusinessDate()
         viewModel.getAccounts(userDetails.customerNo)
         viewModel.getTransferCountSummary(dateStart, endDate)
+        viewModel.getTransferList(startDateSelected.value, endDateSelected.value, 0)
     }
 
     Column(
@@ -195,7 +196,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }, onDateEndSelected = {
         endDateSelected.value =it
     })
-    AccountBottomSheet(showFromAccountBottomSheet, cardsList)
+    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList)
     StatusBottomSheet(showStatusBottomSheet)
     TypeBottomSheet(showTypeBottomSheet)
     AmountBottomSheet(showAmountBottomSheet)
@@ -273,7 +274,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
         }
     }
-    viewModel.getTransferList(startDateSelected.value, endDateSelected.value, 0)
+
     transferList?.let {
         when (it) {
             is DataState.Loading -> {
