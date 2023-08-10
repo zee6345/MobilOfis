@@ -3,7 +3,7 @@ object Android {
     const val appId = "com.app.mobiloffice"
     const val compileSdk = 33
     const val buildTools = "33.0.1"
-    const val minSdk = 24
+    const val minSdk = 26
     const val targetSdk = 33
     const val versionCode = 12
     const val versionName = "12.0.0"

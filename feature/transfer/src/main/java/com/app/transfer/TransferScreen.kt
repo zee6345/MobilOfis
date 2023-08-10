@@ -1,6 +1,8 @@
 package com.app.transfer
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -68,12 +71,16 @@ import com.app.uikit.views.FiltersTopRow
 import com.app.uikit.views.ItemClickedCallback
 import ir.kaaveh.sdpcompose.sdp
 
-lateinit var showDateBottomSheet: MutableState<Boolean>
-lateinit var showFromAccountBottomSheet: MutableState<Boolean>
-lateinit var showStatusBottomSheet: MutableState<Boolean>
-lateinit var showTypeBottomSheet: MutableState<Boolean>
-lateinit var showAmountBottomSheet: MutableState<Boolean>
-lateinit var showCurrencyBottomSheet: MutableState<Boolean>
+private lateinit var showDateBottomSheet: MutableState<Boolean>
+private lateinit var showFromAccountBottomSheet: MutableState<Boolean>
+private lateinit var showStatusBottomSheet: MutableState<Boolean>
+private lateinit var showTypeBottomSheet: MutableState<Boolean>
+private lateinit var showAmountBottomSheet: MutableState<Boolean>
+private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
+
+private lateinit var startDateSelected:MutableState<String>
+private lateinit var endDateSelected:MutableState<String>
+private lateinit var transferListResponse:MutableList<TransferListResponse>
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -86,11 +93,17 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
     val cardsList = remember { mutableListOf<GetAccountsItem>() }
 
+    startDateSelected = rememberSaveable { mutableStateOf("01-01-2019") }
+    endDateSelected = rememberSaveable{ mutableStateOf("01-01-2023") }
+    transferListResponse = rememberSaveable { mutableStateListOf() }
+
+
     val context: Context = LocalContext.current
     val businessDates by viewModel.businessDate.collectAsState()
     val accountsList by viewModel.accounts.collectAsState()
     val transferCount by viewModel.transferCountSummary.collectAsState()
     val transferList by viewModel.transferList.collectAsState()
+
 
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
@@ -167,7 +180,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     }
 
-    DateBottomSheet(showDateBottomSheet)
+    DateBottomSheet(showDateBottomSheet, onDateStartSelected = {
+         startDateSelected.value = it
+    }, onDateEndSelected = {
+        endDateSelected.value =it
+    })
     AccountBottomSheet(showFromAccountBottomSheet, cardsList)
     StatusBottomSheet(showStatusBottomSheet)
     TypeBottomSheet(showTypeBottomSheet)
@@ -191,11 +208,10 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val dateStart = "01.01.2019"
                 val page = 0
 
-
-
-                viewModel.getTransferList(dateStart, dateEnd, page)
-                viewModel.getTransferCountSummary(dateStart, dateEnd)
-                viewModel.getAccounts(userDetails.customerNo)
+                endDateSelected.value =dateEnd
+//
+//                viewModel.getTransferCountSummary(dateStart, dateEnd)
+//                viewModel.getAccounts(userDetails.customerNo)
             }
         }
     }
@@ -239,7 +255,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
         }
     }
-
+    viewModel.getTransferList(startDateSelected.value, endDateSelected.value, 0)
     transferList?.let {
         when (it) {
             is DataState.Loading -> {
@@ -252,7 +268,10 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Success -> {
                 val transferData = it.data as TransferListResponse
-
+                transferListResponse.apply {
+                    transferListResponse.clear()
+                    transferListResponse.addAll(listOf(transferData))
+                }
 
             }
         }

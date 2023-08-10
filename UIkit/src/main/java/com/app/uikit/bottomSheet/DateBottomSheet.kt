@@ -1,6 +1,9 @@
 package com.app.uikit.bottomSheet
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,9 +53,17 @@ import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 
+lateinit var datePickerEndBottomSheet: MutableState<Boolean>
+lateinit var datePickerStartBottomSheet: MutableState<Boolean>
+
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateBottomSheet() {
     val showDateBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
+
+
+
 
     Column(
         modifier = Modifier
@@ -70,13 +81,20 @@ fun DateBottomSheet() {
         )
     }
 
-    DateBottomSheet(showDateBottomSheetSheet)
+    DateBottomSheet(showDateBottomSheetSheet, onDateEndSelected = {}, onDateStartSelected = {})
+
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
+fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>,
+                    onDateStartSelected: (String) -> Unit,
+                    onDateEndSelected:(String) -> Unit) {
+
+    datePickerStartBottomSheet = rememberSaveable { mutableStateOf(false) }
+    datePickerEndBottomSheet = rememberSaveable { mutableStateOf(false) }
+
     if (showDateBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showDateBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 12.sdp, topEnd = 12.sdp),
@@ -117,17 +135,18 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ItemsCardRow(stringResource(R.string._18_11_2021))
+                ItemsCardRow(stringResource(R.string._18_11_2021), 1)
                 Box(
                     modifier = Modifier
                         .width(10.sdp)
                         .height(1.sdp)
                         .background(
-                            color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
+                            color = Color(R.color.border_grey),
+                            shape = RoundedCornerShape(size = 10.sdp)
                         )
                         .align(Alignment.CenterVertically)
                 )
-                ItemsCardRow(stringResource(R.string._14_11_2021))
+                ItemsCardRow(stringResource(R.string._14_11_2021), 2)
             }
 
             Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
@@ -164,6 +183,17 @@ fun DateBottomSheet(showDateBottomSheet: MutableState<Boolean>) {
 
 
             Spacer(modifier = Modifier.size(height = 15.dp, width = 1.dp))
+        }
+    }
+
+    if (datePickerStartBottomSheet.value) {
+        DatePicker() {
+            onDateStartSelected(it)
+        }
+    }
+    if (datePickerEndBottomSheet.value) {
+        DatePicker() {
+            onDateEndSelected(it)
         }
     }
 }
@@ -212,10 +242,17 @@ fun DateMenuItem(menuItem: DateMenuModel) {
 }
 
 @Composable
-fun ItemsCardRow(text: String) {
+fun ItemsCardRow(text: String, condition: Int) {
     Card(
         modifier = Modifier
-            .padding(2.dp),
+            .padding(2.dp)
+            .clickable {
+                if (condition == 1) {
+                    datePickerStartBottomSheet.value = !datePickerStartBottomSheet.value
+                } else {
+                    datePickerEndBottomSheet.value = !datePickerStartBottomSheet.value
+                }
+            },
         shape = RoundedCornerShape(5.dp)
     ) {
         Row(

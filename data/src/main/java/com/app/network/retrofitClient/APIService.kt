@@ -211,7 +211,7 @@ interface APIService {
         @Path("endDate") endDate: String,
         @Query("page") page: Int,
         @Query("filter") filter: String
-    ): Call<ResponseBody> // transfer list response
+    ): Call<TransferListResponse> // transfer list response
 
     fun getTransferListFilterByAccount(
         @Header("Auth_token") token: String,
