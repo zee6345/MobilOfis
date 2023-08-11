@@ -37,8 +37,10 @@ import com.app.auth.R
 import com.app.auth.pin.navigation.resetPinNavigationRoute
 import com.app.network.helper.Keys
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.views.CustomKeyboard
 import com.app.uikit.views.PinTextField
+import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
@@ -46,6 +48,7 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
 
 
     Column(modifier = Modifier.fillMaxSize()) {
+
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -53,20 +56,43 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp)
 
-            ) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(12.dp),
-                    text = stringResource(R.string.do_you_want_to_set_a_pin),
-                    style = TextStyle(color = Color.White, fontSize = 22.sp)
-                )
+
+            Column(Modifier.fillMaxSize()) {
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.1f)
+
+                ) {
+
+
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
+                    )
+
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.2f)
+                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 5.sdp)
+                        .background(color = Color(0xFF203657))
+                ) {
+
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart),
+                        text = stringResource(R.string.do_you_want_to_set_a_pin),
+                        style = TextStyle(color = Color.White, fontSize = 22.sp)
+                    )
+                }
+
             }
+
         }
 
         Column(

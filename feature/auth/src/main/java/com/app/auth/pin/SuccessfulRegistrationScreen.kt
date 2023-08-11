@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.uikit.borders.CurvedBottomBox
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -43,6 +44,9 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
             .fillMaxSize()
             .background(color = Color.White)
     ) {
+
+
+
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -50,47 +54,71 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp),
-                contentAlignment = Alignment.BottomStart
-            ) {
-                Column() {
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 32.dp, start = 18.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
-                    ) {
 
-                        Image(
-                            painter = painterResource(id = R.drawable.success_icon),
-                            modifier = Modifier
-                                .align(Alignment.Top)
-                                .padding(top = 6.dp)
-                                .size(30.dp),
-                            contentDescription = ""
-                        )
-                        Column() {
-                            Text(
-                                text = stringResource(R.string.successful_registration),
-                                style = TextStyle(color = Color.White, fontSize = 24.sp)
-                            )
-                            Text(
-                                text = stringResource(R.string.pin_set),
-                                style = TextStyle(color = Color.White, fontSize = 16.sp)
-                            )
-                        }
 
-                    }
+            Column(Modifier.fillMaxSize()) {
 
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.1f)
+
+                ) {
+
+
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
+                    )
 
                 }
 
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.2f)
+                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 10.sdp)
+                        .background(color = Color(0xFF203657))
+                ) {
+
+                    Column() {
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 32.dp, start = 18.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                        ) {
+
+                            Image(
+                                painter = painterResource(id = R.drawable.success_icon),
+                                modifier = Modifier
+                                    .align(Alignment.Top)
+                                    .padding(top = 6.dp)
+                                    .size(30.dp),
+                                contentDescription = ""
+                            )
+                            Column() {
+                                Text(
+                                    text = stringResource(R.string.successful_registration),
+                                    style = TextStyle(color = Color.White, fontSize = 24.sp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.pin_set),
+                                    style = TextStyle(color = Color.White, fontSize = 16.sp)
+                                )
+                            }
+
+                        }
+
+
+                    }
+                }
 
             }
+
         }
+
+
         Column(
             modifier = Modifier
                 .weight(0.8f)

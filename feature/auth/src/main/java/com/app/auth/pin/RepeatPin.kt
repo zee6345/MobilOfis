@@ -1,6 +1,7 @@
 package com.app.auth.pin
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,8 @@ import com.app.auth.pin.navigation.successfulRegistration
 import com.app.network.utils.Message
 import com.app.network.helper.Keys
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.CurvedBottomBox
+import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
@@ -53,6 +56,7 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hilt
     val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()) {
+
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -60,40 +64,64 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hilt
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp)
 
-            ) {
 
-                Row(
+            Column(Modifier.fillMaxSize()) {
+
+                Box(
                     Modifier
-                        .align(Alignment.BottomStart)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize()
+                        .weight(0.1f)
 
                 ) {
 
-                    Image(
-                        painterResource(id = R.drawable.ic_back_arrow),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 25.dp)
-                            .clickable { navController.popBackStack() }
-                    )
 
-                    Text(
-                        modifier = Modifier
-                            .padding(12.dp),
-                        text = stringResource(com.app.auth.R.string.repeat_pin),
-                        style = TextStyle(color = Color.White, fontSize = 22.sp)
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
                     )
 
                 }
 
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.2f)
+                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 10.sdp)
+                        .background(color = Color(0xFF203657))
+                ) {
+
+                    Row(
+                        Modifier
+                            .align(Alignment.CenterStart)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+
+                        Image(
+                            painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(width = 32.dp, height = 25.dp)
+                                .clickable { navController.popBackStack() }
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 12.sdp),
+                            text = stringResource(com.app.auth.R.string.repeat_pin),
+                            style = TextStyle(color = Color.White, fontSize = 22.sp)
+                        )
+
+                    }
+                }
+
             }
+
         }
+
+
         Column(
             modifier = Modifier
                 .weight(0.8f)

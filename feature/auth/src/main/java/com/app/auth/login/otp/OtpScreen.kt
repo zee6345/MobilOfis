@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,6 +52,7 @@ import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.views.OtpView
 import com.app.uikit.views.TimerTextView
@@ -60,7 +60,6 @@ import ir.kaaveh.sdpcompose.sdp
 
 
 object otpScreen {
-    //    var loginType: Int? = null
     var userName: String? = null
 }
 
@@ -77,8 +76,10 @@ fun OtpScreen(
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
 
+    val loginType = SharedModel.init().loginType.value
+
     //set initial value for OTP view
-    when (SharedModel.init().loginType.value) {
+    when (loginType) {
         0 -> otpCount.value = 5
         1 -> otpCount.value = 6
     }
@@ -89,6 +90,7 @@ fun OtpScreen(
             .fillMaxSize()
             .background(Color(0xFFF3F7FA))
     ) {
+
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -96,31 +98,60 @@ fun OtpScreen(
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp)
-            ) {
-                Column(
-                    modifier = Modifier.align(Alignment.BottomStart)
+
+
+            Column(Modifier.fillMaxSize()) {
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.1f)
+
                 ) {
-                    Text(
-                        text = stringResource(R.string.enter_otp_code), style = TextStyle(
-                            color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.SemiBold
-                        ),
-                        modifier = Modifier.padding(vertical = 10.sdp)
+
+
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
                     )
-                    Text(
-                        text = if (loginType == 0) stringResource(R.string.text_send_otp) else if (loginType == 1) stringResource(
-                            R.string.text_auth_otp
-                        ) else "",
-                        style = TextStyle(
-                            color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.SemiBold
+
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.2f)
+                        .padding(start = 20.sdp, end = 20.sdp, top = 5.sdp, bottom = 10.sdp)
+                        .background(color = Color(0xFF203657))
+                ) {
+
+                    Column(
+                        modifier = Modifier.align(Alignment.BottomStart)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.enter_otp_code),
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            modifier = Modifier.padding(bottom = 5.sdp)
                         )
-                    )
+                        Text(
+                            text = if (loginType == 0) stringResource(R.string.text_send_otp) else if (loginType == 1) stringResource(
+                                R.string.text_auth_otp
+                            ) else "",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
+                    }
                 }
 
             }
+
         }
 
         Column(

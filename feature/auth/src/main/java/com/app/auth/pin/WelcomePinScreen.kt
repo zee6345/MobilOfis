@@ -1,6 +1,7 @@
 package com.app.auth.pin
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,11 +37,13 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.CurvedBottomBox
+import ir.kaaveh.sdpcompose.sdp
 
 private const val TAG = "WelcomePinScreen"
 
 @Composable
-fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
+fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     var enteredPin by remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -53,6 +56,7 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel= hi
 
 
     Column(modifier = Modifier.fillMaxSize()) {
+
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -60,22 +64,46 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel= hi
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp)
 
-            ) {
 
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(12.dp),
-                    text = stringResource(id = R.string.text_welcome) + ",\n${username.value}",
-                    style = TextStyle(color = Color.White, fontSize = 22.sp)
-                )
+            Column(Modifier.fillMaxSize()) {
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.1f)
+
+                ) {
+
+
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
+                    )
+
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.2f)
+                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 10.sdp)
+                        .background(color = Color(0xFF203657))
+                ) {
+
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            ,
+                        text = stringResource(id = R.string.text_welcome) + ",\n${username.value}",
+                        style = TextStyle(color = Color.White, fontSize = 22.sp)
+                    )
+                }
+
             }
+
         }
+
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -96,7 +124,7 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel= hi
 
                     if (pin.isNotEmpty() && pin.length == 5) {
                         val finalPin = viewModel.session[Keys.KEY_USER_PIN]
-                        if(finalPin.equals(pin)){
+                        if (finalPin.equals(pin)) {
                             navController.navigate(homeScreenRoute)
                         } else {
                             Message.showMessage(context, "Wrong pin entered!")

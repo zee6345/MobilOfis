@@ -2,27 +2,27 @@
 <resources>
 
 
-    <string name="mobile_office">Mobile Office</string>
-    <string name="information_and_content">information And Content</string>
+    <string name="mobile_office">Mobil Ofis</string>
+    <string name="information_and_content">Information and Content</string>
     <string name="branches_and_atms">Branches and ATMs</string>
     <string name="tariffs">Tariffs</string>
     <string name="whatsapp_support">WhatsApp support</string>
     <string name="call_center">Call Center</string>
     <string name="application_language">Application Language</string>
-    <string name="mobile_office_welcome">Mobile Office\nWelcome</string>
+    <string name="mobile_office_welcome">Welcome to \nMobil Ofis!</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="username">Username</string>
     <string name="error">Error</string>
     <string name="user_id">User ID</string>
     <string name="password">Password</string>
-    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="forgot_your_password"> Forgot password?</string>
     <string name="coming_soon">Coming soon!</string>
-    <string name="login">Login</string>
+    <string name="login">Log in</string>
     <string name="attention">Attention!</string>
     <string name="demo_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.</string>
     <string name="failed_to_login">Failed to login!</string>
     <string name="google">Google</string>
-    <string name="easy_signature">Easy Signature</string>
+    <string name="easy_signature">Asan İmza</string>
     <string name="az">AZ</string>
     <string name="en">EN</string>
     <string name="ru">RU</string>

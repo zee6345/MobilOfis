@@ -1,9 +1,11 @@
 package com.app.auth.login
 
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +28,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +44,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,6 +64,8 @@ import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.CallTopAlertDialog
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.views.TimerTextView
+import androidx.compose.ui.graphics.drawscope.rotate
+import com.app.uikit.borders.CurvedBottomBox
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
@@ -84,6 +91,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     BottomSheetScaffold(
         sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        sheetElevation = 20.sdp,
+
         sheetContent = {
 
             Column(Modifier.fillMaxWidth()) {
@@ -179,17 +188,42 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     .weight(0.2f),
                 color = Color(0xFF203657),
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(20.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.BottomStart),
-                        text = stringResource(R.string.mobile_office_welcome),
-                        style = TextStyle(color = Color.White, fontSize = 29.sp)
-                    )
+
+
+                Column(Modifier.fillMaxSize()) {
+
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .weight(0.1f)
+
+                    ) {
+
+
+                        CurvedBottomBox(
+                            color = Color(0xff334b66),
+                            curveHeight = 30.dp
+                        )
+
+                    }
+
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .weight(0.2f)
+                            .padding(horizontal = 20.sdp, vertical = 15.sdp)
+                            .background(color = Color(0xFF203657))
+                    ) {
+
+                        Text(
+                            modifier = Modifier.align(Alignment.BottomStart),
+                            text = stringResource(R.string.mobile_office_welcome),
+                            style = TextStyle(color = Color.White, fontSize = 29.sp)
+                        )
+                    }
+
                 }
+
             }
 
             Column(
@@ -521,8 +555,11 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
             selected = selected == 0,
             onClick = { setSelected(0) },
             modifier = Modifier
-                .background(color = if (selected == 0) Color(0xFF203657) else Color(0xFFF3F7FA))
-                .clip(shape = RoundedCornerShape(16.dp))
+                .background(
+                    color = if (selected == 0) Color(0xFF203657) else Color(0xFFF3F7FA),
+                    shape = RoundedCornerShape(10.dp)
+                )
+
         ) {
 
             Text(
@@ -540,8 +577,10 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
             selected = selected == 1,
             onClick = { setSelected(1) },
             modifier = Modifier
-                .background(color = if (selected == 1) Color(0xFF203657) else Color(0xFFF3F7FA))
-                .clip(shape = RoundedCornerShape(10.dp))
+                .background(
+                    color = if (selected == 1) Color(0xFF203657) else Color(0xFFF3F7FA),
+                    shape = RoundedCornerShape(10.dp)
+                )
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
@@ -555,8 +594,10 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
             selected = selected == 2,
             onClick = { setSelected(2) },
             modifier = Modifier
-                .background(color = if (selected == 2) Color(0xFF203657) else Color(0xFFF3F7FA))
-                .clip(shape = RoundedCornerShape(10.dp))
+                .background(
+                    color = if (selected == 2) Color(0xFF203657) else Color(0xFFF3F7FA),
+                    shape = RoundedCornerShape(10.dp)
+                )
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
@@ -588,7 +629,7 @@ private fun BottomSheetItems(iconRes: Int, title: String, showBorder: Boolean) {
             androidx.compose.material3.Icon(
                 painter = painterResource(id = iconRes),
                 modifier = Modifier
-                    .height(32.dp)
+                    .height(28.dp)
                     .width(32.dp)
                     .align(Alignment.CenterVertically),
                 contentDescription = ""
@@ -666,6 +707,9 @@ private fun LanguageOptions() {
         }
     }
 }
+
+
+
 
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)

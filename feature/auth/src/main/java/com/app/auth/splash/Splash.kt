@@ -14,7 +14,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,9 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,7 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,12 +40,90 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import dagger.hilt.android.AndroidEntryPoint
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
+//
+//@Composable
+//fun SplashScreen(navController: NavController) {
+//
+//    var isVisible by remember { mutableStateOf(false) }
+//
+//    LaunchedEffect(Unit) {
+//        delay(300)
+//        isVisible = !isVisible
+//
+//    }
+//
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(colorResource(id = R.color.white)),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//
+//
+//        AnimatedVisibility(
+//            visible = isVisible,
+//            enter = fadeIn(
+//                // customize with tween AnimationSpec
+//                animationSpec = tween(
+//                    durationMillis = 3000,
+//                    delayMillis = 300,
+//                    easing = LinearOutSlowInEasing
+//                )
+//            ),
+//            // you can also add animationSpec in fadeOut if need be.
+//            exit = fadeOut() + shrinkHorizontally(),
+//
+//            ) {
+//            Image(
+//                painter = painterResource(id = R.drawable.ic_logo),
+//                contentDescription = "",
+//                modifier = Modifier
+//                    .wrapContentHeight()
+//                    .wrapContentWidth()
+//            )
+//        }
+//
+////        AnimatedView()
+//
+//        AnimatedVisibility(
+//            visible = isVisible,
+//            enter = slideInVertically(
+//                // customize with tween AnimationSpec
+//                initialOffsetY = { it }, // Start off screen and slide in from its current position
+//                animationSpec = tween(
+//                    durationMillis = 3000,
+//                    delayMillis = 200,
+//                    easing = LinearOutSlowInEasing
+//                )
+//            ),
+//            exit = fadeOut() + shrinkVertically()
+//        ) {
+//            Text(
+//                text = stringResource(R.string.mobile_office),
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 20.sp
+//            )
+//        }
+//
+//
+//
+//    }
+//    Box(modifier = Modifier.fillMaxWidth()) {
+//        Image(
+//            painter = painterResource(id = R.drawable.ic_logo_footer), contentDescription = "",
+//            modifier = Modifier
+//                .align(Alignment.BottomCenter)
+//                .padding(20.sdp)
+//        )
+//    }
+//
+//}
 
-@OptIn(ExperimentalAnimationApi::class)
+
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -58,24 +133,22 @@ fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(300)
         isVisible = !isVisible
-
     }
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+            .fillMaxSize()
+            .background(colorResource(id = R.color.white)),
+        verticalArrangement = Arrangement.Center, // Change this to Center
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
         AnimatedVisibility(
             visible = isVisible,
             enter = fadeIn(
                 // customize with tween AnimationSpec
                 animationSpec = tween(
                     durationMillis = 3000,
-                    delayMillis = 200,
+                    delayMillis = 500,
                     easing = LinearOutSlowInEasing
                 )
             ),
@@ -92,33 +165,34 @@ fun SplashScreen(navController: NavController) {
             )
         }
 
-//        AnimatedView()
-
         AnimatedVisibility(
             visible = isVisible,
-            enter = fadeIn(
+            enter = slideInVertically(
                 // customize with tween AnimationSpec
+                initialOffsetY = { it }, // Start off screen and slide in from its current position
                 animationSpec = tween(
                     durationMillis = 3000,
                     delayMillis = 200,
                     easing = LinearOutSlowInEasing
                 )
             ),
-            // you can also add animationSpec in fadeOut if need be.
-            exit = fadeOut() + shrinkVertically(),
-
-            ) {
+            // This exit animation will also move the text downwards as it fades out
+            exit = fadeOut() + slideOutVertically(
+                targetOffsetY = { it }, // Slide out downwards off the screen
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = FastOutLinearInEasing
+                )
+            )
+        ) {
             Text(
                 text = stringResource(R.string.mobile_office),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
         }
-
-
-
-
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.ic_logo_footer), contentDescription = "",
@@ -127,7 +201,6 @@ fun SplashScreen(navController: NavController) {
                 .padding(20.sdp)
         )
     }
-
 }
 
 

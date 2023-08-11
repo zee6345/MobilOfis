@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -62,22 +61,22 @@ fun ForgetPasswordModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) 
                     .padding(horizontal = 12.dp),
                 fontWeight = FontWeight.Bold
             )
-            androidx.compose.material.Button(
+            Button(
                 onClick = {
                     showModalBottomSheet.value = !showModalBottomSheet.value
                 },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),// Optional: To override other button colors
-
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 26.dp)
+                    .padding(start = 20.dp, end = 20.dp)
                     .background(Color(0xFF203657), RoundedCornerShape(8.dp))
 
             ) {
-                androidx.compose.material.Text(
+                Text(
                     "Close it", modifier = Modifier.padding(vertical = 12.dp), color = Color.White
                 )
             }
+
 
         }
     }
