@@ -9,6 +9,7 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
+import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
@@ -79,6 +80,10 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
 
     fun getTransferList(token: String, startDate: String, endDate: String, page: Int): Call<TransferListResponse> {
         return apiService.getTransferList(token,startDate,endDate, page)
+    }
+
+    fun getTransactionDetails(token: String, ibankRef:String):Call<GetTransactionDetails>{
+        return apiService.transactionDetails(token, ibankRef)
     }
 
 

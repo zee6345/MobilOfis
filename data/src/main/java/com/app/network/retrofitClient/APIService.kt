@@ -17,6 +17,7 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
+import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserProfile
 import com.app.network.models.responseModels.LoginAsanResponse
@@ -248,6 +249,13 @@ interface APIService {
 
     @GET("moneytransfer/moneytransfer/mttype")
     fun mtType(@Header("Auth_token") token: String): Call<ResponseBody>
+
+
+    @GET("transaction/getransactionbyibankref/{ibankRef}")
+    fun transactionDetails(
+        @Header("Auth_token") token: String,
+        @Path("ibankRef") ibankRef:String
+    ):Call<GetTransactionDetails>
 
 
 }

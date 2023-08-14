@@ -1,7 +1,6 @@
 package com.app.auth.login
 
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,9 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -44,7 +41,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,7 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
-import com.app.auth.utils.SharedModel
+import com.app.uikit.utils.SharedModel
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.responseModels.LoginResponse
@@ -64,7 +60,6 @@ import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.CallTopAlertDialog
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.views.TimerTextView
-import androidx.compose.ui.graphics.drawscope.rotate
 import com.app.uikit.borders.CurvedBottomBox
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay

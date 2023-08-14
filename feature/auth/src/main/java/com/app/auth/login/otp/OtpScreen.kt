@@ -38,13 +38,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.adjustment.otp.otpScreen.loginType
 import com.app.auth.R
 import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.otp.otpScreen.userName
 import com.app.auth.pin.navigation.pinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
-import com.app.auth.utils.SharedModel
+import com.app.uikit.utils.SharedModel
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState

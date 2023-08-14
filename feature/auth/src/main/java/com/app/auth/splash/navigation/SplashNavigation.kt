@@ -50,13 +50,13 @@ fun NavGraphBuilder.splashScreen(
 //            }
 
 
-            navController.navigate(route = loginNavigationRoute) {
-                popUpTo(splashNavigationRoute) { inclusive = true }
-            }
-
-//            navController.navigate(route = homeScreenRoute) {
+//            navController.navigate(route = loginNavigationRoute) {
 //                popUpTo(splashNavigationRoute) { inclusive = true }
 //            }
+
+            navController.navigate(route = homeScreenRoute) {
+                popUpTo(splashNavigationRoute) { inclusive = true }
+            }
 
         }
     }

@@ -70,6 +70,7 @@ import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.bottomSheet.DateBottomSheet
 import com.app.uikit.bottomSheet.StatusBottomSheet
 import com.app.uikit.bottomSheet.TypeBottomSheet
+import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.FiltersTopRow
 import com.app.uikit.views.ItemClickedCallback
 import ir.kaaveh.sdpcompose.sdp
@@ -398,7 +399,11 @@ fun TransactionHistory(
             .fillMaxWidth()
             .padding(vertical = 5.sdp)
             .clickable {
+
+                SharedModel.init().ibankRef.value = transfer.ibankRef
+
                 navController.navigate(transferToDetails)
+
             },
         backgroundColor = Color.White
     ) {

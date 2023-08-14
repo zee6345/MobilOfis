@@ -3,7 +3,16 @@ package com.app.auth.pin
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
@@ -31,11 +40,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.navigation.loginNavigationRoute
-import com.app.network.utils.Message
 import com.app.home.navigation.homeScreenRoute
-import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
+import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import ir.kaaveh.sdpcompose.sdp
@@ -87,14 +96,13 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                     Modifier
                         .fillMaxSize()
                         .weight(0.2f)
-                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 10.sdp)
+                        .padding(start = 20.sdp, end = 20.sdp, top = 5.sdp, bottom = 10.sdp)
                         .background(color = Color(0xFF203657))
                 ) {
 
                     Text(
                         modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            ,
+                            .align(Alignment.BottomStart),
                         text = stringResource(id = R.string.text_welcome) + ",\n${username.value}",
                         style = TextStyle(color = Color.White, fontSize = 22.sp)
                     )

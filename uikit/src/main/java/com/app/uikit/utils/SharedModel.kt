@@ -1,12 +1,14 @@
-package com.app.auth.utils
+package com.app.uikit.utils
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.network.models.responseModels.GetTransactionDetails
 
 class SharedModel:ViewModel() {
 
     val loginType = mutableStateOf(0)
+    val ibankRef = mutableStateOf("")
+
 
     companion object {
         private val instance: SharedModel by lazy { SharedModel() }
