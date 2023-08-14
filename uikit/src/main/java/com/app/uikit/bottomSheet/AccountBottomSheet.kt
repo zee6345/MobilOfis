@@ -1,6 +1,7 @@
 package com.app.uikit.bottomSheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,14 +63,17 @@ fun AccountBottomSheet() {
         )
     }
 
-    AccountBottomSheet(showAccountBottomSheet, null)
+    AccountBottomSheet(showAccountBottomSheet, null) {
+
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountBottomSheet(
     showAccountBottomSheet: MutableState<Boolean>,
-    accounts: MutableList<GetAccountsItem>?
+    accounts: MutableList<GetAccountsItem>?,
+    onAccountClick: (accountItem: GetAccountsItem) -> Unit
 ) {
     if (showAccountBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
@@ -77,9 +81,7 @@ fun AccountBottomSheet(
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
 
         ) {
-        Column(
-//            modifier = Modifier.padding(horizontal = 10.dp)
-        ) {
+        Column {
             Text(
                 text = stringResource(R.string.from_the_account),
                 textAlign = TextAlign.Center,
@@ -95,7 +97,7 @@ fun AccountBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .dashedBorder(3.dp, colorResource(R.color.border_grey))
-            ){
+            ) {
 
                 Text(
                     text = stringResource(R.string.all),
@@ -111,30 +113,33 @@ fun AccountBottomSheet(
 
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
-            AccountTypeList(accounts!!)
+            LazyColumn(
+            ) {
+                items(items = accounts!!, itemContent = {
+                    AccountMenuItem(accountItem = it) { account ->
+                        onAccountClick(account)
+                    }
+                })
+            }
         }
     }
 }
 
 
 @Composable
-fun AccountTypeList(accounts: MutableList<GetAccountsItem>) {
-    LazyColumn(
-    ) {
-        items(items = accounts, itemContent = {
-            AccountMenuItem(accountItem = it)
-        })
-    }
-}
-
-@Composable
-fun AccountMenuItem(accountItem: GetAccountsItem) {
+fun AccountMenuItem(
+    accountItem: GetAccountsItem,
+    onAccountClick: (accountItem: GetAccountsItem) -> Unit
+) {
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
             .dashedBorder(3.dp, colorResource(R.color.border_grey))
+            .clickable {
+                onAccountClick(accountItem)
+            }
     ) {
 
         Text(

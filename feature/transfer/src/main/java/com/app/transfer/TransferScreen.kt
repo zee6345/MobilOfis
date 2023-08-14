@@ -212,9 +212,23 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }, onDateEndSelected = {
         endDateSelected.value = it
     })
-    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList)
+
+    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList){
+        //on account click
+        showFromAccountBottomSheet.value = false
+
+
+    }
+
     StatusBottomSheet(showStatusBottomSheet)
-    TypeBottomSheet(showTypeBottomSheet)
+
+    TypeBottomSheet(showTypeBottomSheet){
+        //on type click
+        showTypeBottomSheet.value = false
+
+
+    }
+
     AmountBottomSheet(showAmountBottomSheet)
     CurrencyBottomSheet(showCurrencyBottomSheet)
 
