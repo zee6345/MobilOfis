@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -54,8 +56,11 @@ import com.app.network.models.responseModels.GetCustomerBalanceItem
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
+import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
+import com.app.transfer.transfers.TransferTopMenu
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -81,34 +86,35 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
     var isBottomSheetExpanded by remember { mutableStateOf(false) }
+    val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val coroutineScope = rememberCoroutineScope()
-
     val accountBalance by viewModel.accountBalance.collectAsState()
     val recentOps by viewModel.recentOps.collectAsState()
     val setCustomerName by viewModel.setCustomerName.collectAsState()
+    val recentData = remember { mutableListOf<GetRecentOpsItem>() }
+    val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
+    val startDateSelected = remember { mutableStateOf("01-01-2019") }
+    val endDateSelected = remember { mutableStateOf("01-01-2023") }
 
-    val recentData = mutableListOf<GetRecentOpsItem>()
 
     val context = LocalContext.current
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-//    val userDetails = viewModel.session.fetchUserDetails()
 
     //default name
     customerName.value = userDetails.customerName
 
-
     LaunchedEffect(Unit) {
+        viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
         viewModel.getBalance(userDetails.customerNo)
         viewModel.getRecentOps(userDetails.customerNo)
     }
 
 
 
-
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        sheetPeekHeight = 40.sdp,
+        sheetPeekHeight = if (!recentData.isNullOrEmpty()) 40.sdp else 0.sdp,
         modifier = Modifier.padding(bottom = 40.sdp),
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetContent = {
@@ -527,7 +533,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     .weight(0.75f)
                     .padding(horizontal = 5.dp)
             ) {
-                CardMenuContent()
+
+                TransferTopMenu(transferHeaderList)
 
                 TabLayoutMenu(navController)
 
@@ -682,6 +689,28 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
         }
 
+    }
+
+    transferCountSummery?.let {
+        when (it) {
+            is DataState.Loading -> {
+
+            }
+
+            is DataState.Error -> {
+                Message.showMessage(context, it.errorMessage)
+            }
+
+            is DataState.Success -> {
+                val data = it.data as TransferCountSummaryResponse
+
+                transferHeaderList.apply {
+                    clear()
+                    addAll(data)
+                }
+
+            }
+        }
     }
 
 

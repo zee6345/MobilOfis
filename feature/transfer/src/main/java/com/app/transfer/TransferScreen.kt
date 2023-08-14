@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,10 +22,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -85,7 +89,6 @@ private lateinit var startDateSelected: MutableState<String>
 private lateinit var endDateSelected: MutableState<String>
 //private lateinit var transferListResponse: MutableList<TransferListResponse>
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
@@ -95,6 +98,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showTypeBottomSheet = rememberSaveable { mutableStateOf(false) }
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+
+    val isLoading = remember { mutableStateOf(false) }
 
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
@@ -130,9 +135,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(
-                rememberScrollState(), enabled = true
-            )
             .background(color = Color(0xFFF3F7FA))
     ) {
 
@@ -176,23 +178,31 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 .weight(0.9f)
                 .padding(horizontal = 10.dp)
 
-            ) {
+        ) {
 
-            TransferTopMenu(transferHeaderList)
+            if (isLoading.value) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            } else {
 
-            FilterListMenu()
+                TransferTopMenu(transferHeaderList)
 
-            LazyColumn(
-                Modifier.fillMaxWidth()
-            ){
-                items(items = transferListResponse, itemContent = {
-                    TransactionHistory(navController, it)
-                })
+                FilterListMenu()
+
+                LazyColumn(
+
+                ) {
+                    items(items = transferListResponse, itemContent = {
+                        TransactionHistory(navController, it)
+                    })
+                }
+
+                Box(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
             }
-
-
-
-
         }
 
     }
@@ -221,19 +231,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
 
             is DataState.Success -> {
-
                 val dateEnd: String = it.data as String
-                val dateStart = "01.01.2019"
-                val page = 0
-
                 endDateSelected.value = dateEnd
-//
-//                viewModel.getTransferCountSummary(dateStart, dateEnd)
-//                viewModel.getAccounts(userDetails.customerNo)
             }
         }
     }
-
 
     accountsList?.let {
         when (it) {
@@ -249,7 +251,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val userAccounts = it.data as GetAccounts
 
 
-                accountFilterList.apply {
+                accountFilterList?.apply {
                     clear()
                     accountFilterList.addAll(userAccounts)
                 }
@@ -257,7 +259,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
         }
     }
-
 
     transferCountSummery?.let {
         when (it) {
@@ -284,18 +285,21 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     transferList?.let {
         when (it) {
             is DataState.Loading -> {
-
+                isLoading.value = true
             }
 
             is DataState.Error -> {
+                isLoading.value = false
                 Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
+                isLoading.value = false
+
                 val transferData = it.data as TransferListResponse
-                transferListResponse.apply {
+                transferListResponse?.apply {
                     clear()
-                    transferListResponse.addAll(transferData)
+                    addAll(transferData)
                 }
 
 
@@ -305,11 +309,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
 
 }
-
-//@Composable
-//fun TopMenuItem() {
-//
-//}
 
 @Composable
 fun FilterListMenu() {
@@ -523,11 +522,7 @@ fun TransactionHistory(
 
 
             }
-
-
         }
-
-
     }
 }
 

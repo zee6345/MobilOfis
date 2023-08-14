@@ -74,9 +74,6 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val context: Context = LocalContext.current
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-//    val userDetails = MainApp.session.fetchUserDetails()
-
-//    val loansList = remember { mutableListOf<GetLoansItem>() }
     val cardFilters = remember { DataProvider.filtersLoanList }
     val isLoading = remember { mutableStateOf(false) }
 

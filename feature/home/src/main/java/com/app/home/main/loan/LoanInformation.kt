@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -49,7 +50,7 @@ import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun LoanInformationDetails(navController: NavController){
+fun LoanInformationDetails(navController: NavController) {
 
     val data = loansList[0]
 
@@ -107,33 +108,10 @@ fun LoanInformationDetails(navController: NavController){
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 50.sdp),
-//                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
                     MainContent(navController, data)
                 }
-
-//                item {
-//                    Text(
-//                        text = "Additional cards",
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-//                    )
-//
-//                }
-
-//                item {
-//                    CardDetailsFilters(navController)
-//                }
-//
-//                item {
-//
-//                    repeat(2) {
-//                        AdditionalCards(navController)
-//                    }
-//
-//                }
             }
 
         }
@@ -161,7 +139,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -169,7 +147,8 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
 
                 Text(
-                    text = if (data.nickName == null) "${data.CREDIT_NAME}" else "${data.nickName}", style = TextStyle(
+                    text = if (data.nickName == null) "${data.CREDIT_NAME}" else "${data.nickName}",
+                    style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
@@ -190,7 +169,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -205,7 +184,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.n_of_the_loan_agreement), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -215,7 +194,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -231,7 +210,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -239,7 +218,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.CCY_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -250,7 +229,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -265,13 +244,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(id = R.string.status), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
 
                     var color: Color? = null
-                    var status:String ?= null
+                    var status: String? = null
 
                     when (data.STATUS) {
                         "Gecikmədə deyil" -> {
@@ -293,7 +272,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Box(
                             modifier = Modifier
                                 .padding(2.dp)
@@ -314,7 +293,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                             text = "$status", style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = Color(R.color.background_card_blue),
+                                color = colorResource(R.color.background_card_blue),
 
                                 )
                         )
@@ -330,15 +309,14 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
                         .fillMaxWidth()
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
 
                 ) {
@@ -347,7 +325,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.next_payment_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -357,7 +335,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -373,7 +351,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.next_payment_fee), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -381,7 +359,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.NEXT_PAYMENT_AMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -392,13 +370,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey)),
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -408,7 +386,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.paid_total_months), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -418,7 +396,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -432,10 +410,11 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                 ) {
 
                     Text(
-                        text = stringResource(R.string.remaining_principal_amount), style = TextStyle(
+                        text = stringResource(R.string.remaining_principal_amount),
+                        style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -443,7 +422,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.MAIN_BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -455,7 +434,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -469,7 +448,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(id = R.string.branch), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -477,7 +456,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.BRANCH_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -493,14 +472,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -510,7 +488,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.loan_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -520,7 +498,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -537,7 +515,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.interest_rate), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -545,7 +523,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.INT_RATE} %", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -557,14 +535,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -574,7 +551,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.credit_issuance_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -584,7 +561,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -601,7 +578,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(id = R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -609,7 +586,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.END_DATE}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -627,7 +604,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -640,7 +617,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.payment_account), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -648,7 +625,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.PAYMENT_ACCOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -665,24 +642,24 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
                 ) {
 
                     Text(
-                        text = stringResource(R.string.balance_in_payment_account), style = TextStyle(
+                        text = stringResource(R.string.balance_in_payment_account),
+                        style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -692,7 +669,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -700,7 +677,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
                 ) {
@@ -709,7 +686,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = stringResource(R.string.total_interest_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -717,7 +694,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.CUR_INT_AMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -728,14 +705,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -745,7 +721,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "Amount of interest paid", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -754,7 +730,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.CUR_INT_AMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -770,7 +746,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "Current interest amount", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -778,7 +754,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "${data.CUR_INT_AMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -789,14 +765,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -806,7 +781,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "Number of days left on next payment date", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -816,7 +791,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -833,7 +808,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "Total overdue amount", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -841,7 +816,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "0", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -853,14 +828,13 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
-                    ,
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -870,7 +844,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "Number of days delayed", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -880,7 +854,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -896,7 +870,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "Calculated fines", style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -904,7 +878,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                         text = "0.00", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -921,6 +895,6 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
 
 @Preview
 @Composable
-fun PreviewLoadInformation(){
+fun PreviewLoadInformation() {
     LoanInformationDetails(navController = rememberNavController())
 }
