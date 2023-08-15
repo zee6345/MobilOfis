@@ -37,9 +37,9 @@ class BaseRetrofitClient @Inject constructor(private val session: Session) {
 
     private val httpClient by lazy {
         OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
@@ -49,7 +49,7 @@ class BaseRetrofitClient @Inject constructor(private val session: Session) {
 
     private val authIntercept = Interceptor { chain ->
         val request = chain.request()
-        var response: Response? = null
+        var response: Response?
 
         try {
             response = chain.proceed(request)

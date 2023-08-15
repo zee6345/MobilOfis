@@ -37,7 +37,7 @@ fun TransferTopMenu(transferHeaderList: MutableList<TransferCountSummaryResponse
 @Composable
 fun TransferMenuItemView(menu: TransferCountSummaryResponseItem) {
     var status = ""
-    var color: Color? = null
+    var color = Color(0xff268ED9)
 
     when (menu.status) {
         "PENDING_SIGNER" -> {
@@ -109,7 +109,7 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem) {
                     .padding(16.dp)
                     .drawBehind {
                         drawCircle(
-                            color = color!!, radius = 12.dp.toPx()
+                            color = color, radius = 12.dp.toPx()
                         )
                     }, fontSize = 14.sp, color = Color.White
             )

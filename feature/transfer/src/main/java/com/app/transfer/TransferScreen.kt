@@ -352,7 +352,7 @@ fun TransactionHistory(
     transfer: TransferListResponseItem
 ) {
     var status = ""
-    var color: Color? = null
+    var color = Color(0xff268ED9)
 
     when (transfer.status) {
         "PENDING_SIGNER" -> {
@@ -514,7 +514,7 @@ fun TransactionHistory(
                         .height(10.dp)
                         .drawBehind {
                             drawCircle(
-                                color = color!!, radius = 5.dp.toPx()
+                                color = color, radius = 5.dp.toPx()
                             )
                         }
                         .align(Alignment.CenterVertically)) {
