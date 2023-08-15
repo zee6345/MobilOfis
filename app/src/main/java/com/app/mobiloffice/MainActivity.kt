@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         val timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
-                viewModel.lastLogin()
+//                viewModel.lastLogin()
             }
         }, 0, 30000)
 

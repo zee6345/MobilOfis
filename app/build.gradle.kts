@@ -102,4 +102,7 @@ dependencies {
     implementation (Hilt.android)
     kapt (Hilt.compiler)
     implementation(Hilt.hilt_compose)
+
+    implementation ("com.bugfender.sdk:android:3.+")
+
 }
