@@ -1,6 +1,7 @@
 package com.app.uikit.bottomSheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,7 +55,6 @@ fun CurrencyBottomSheet() {
     ) {
 
 
-
         ClickableText(modifier = Modifier.padding(5.dp),
             text = AnnotatedString(text = "Show Status BottomSheet"),
 //                    color = Color(0xFF203657),
@@ -65,11 +65,17 @@ fun CurrencyBottomSheet() {
         )
     }
 
-    CurrencyBottomSheet(showCurrencyBottomSheet)
+    CurrencyBottomSheet(showCurrencyBottomSheet) {
+
+    }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
+fun CurrencyBottomSheet(
+    showCurrencyBottomSheet: MutableState<Boolean>,
+    onCurrencyClick: (String) -> Unit
+) {
     if (showCurrencyBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { showCurrencyBottomSheet.value = false },
@@ -80,8 +86,9 @@ fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
                 .padding(3.dp)
                 .padding(horizontal = 10.dp)
         ) {
-            Row(modifier = Modifier.fillMaxWidth()
-                ,Arrangement.Center) {
+            Row(
+                modifier = Modifier.fillMaxWidth(), Arrangement.Center
+            ) {
                 Text(
                     text = stringResource(R.string.currency),
                     modifier = Modifier
@@ -91,30 +98,36 @@ fun CurrencyBottomSheet(showCurrencyBottomSheet: MutableState<Boolean>){
                     color = Color(0xFF223142)
                 )
             }
-            CurrencyList()
+
+
+            val menu = remember { DataProvider.currencyModelList }
+            LazyColumn(
+            ) {
+                items(items = menu, itemContent = {
+                    CurrencyMenuItem(menuItem = it) { currency ->
+                        onCurrencyClick(currency)
+                    }
+                })
+            }
+
         }
     }
 }
 
 
-
 @Composable
-fun CurrencyList() {
-    val menu = remember { DataProvider.currencyModelList }
-    LazyColumn(
-    ) {
-        items(items = menu, itemContent = {
-            CurrencyMenuItem(menuItem = it)
-        })
-    }
-}
-
-@Composable
-fun CurrencyMenuItem(menuItem: CurrencyModel){
+fun CurrencyMenuItem(menuItem: CurrencyModel, onCurrencyClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .background(Color.White)
             .padding(horizontal = 10.dp)
+            .clickable {
+                val data = if (menuItem.equals("ALL")) {
+                    ""
+                } else menuItem.title
+
+                onCurrencyClick(data)
+            }
     ) {
         Text(
             text = menuItem.title,
@@ -137,7 +150,8 @@ fun CurrencyMenuItem(menuItem: CurrencyModel){
                     .fillMaxWidth()
                     .height(1.sdp)
                     .background(
-                        color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
+                        color = Color(R.color.border_grey),
+                        shape = RoundedCornerShape(size = 10.sdp)
                     )
                     .align(Alignment.CenterVertically)
             )

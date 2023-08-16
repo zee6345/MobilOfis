@@ -1,5 +1,6 @@
 package com.app.transfer.transfers
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,19 +24,23 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 
 
 @Composable
-fun TransferTopMenu(transferHeaderList: MutableList<TransferCountSummaryResponseItem>) {
-//    val menu = remember { DataProvider.topMenuList }
+fun TransferTopMenu(
+    transferHeaderList: MutableList<TransferCountSummaryResponseItem>,
+    onFilterClick: (String) -> Unit
+) {
     LazyRow(
     ) {
         items(items = transferHeaderList, itemContent = {
-            TransferMenuItemView(menu = it)
+            TransferMenuItemView(menu = it) { status ->
+                onFilterClick(status)
+            }
             Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
         })
     }
 }
 
 @Composable
-fun TransferMenuItemView(menu: TransferCountSummaryResponseItem) {
+fun TransferMenuItemView(menu: TransferCountSummaryResponseItem, onFilterClick: (String) -> Unit) {
     var status = ""
     var color = Color(0xff268ED9)
 
@@ -93,16 +98,18 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem) {
 
 
     Card(
-        modifier = Modifier
-            .padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
+        modifier = Modifier.padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
     ) {
-        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(
+            Modifier.clickable { onFilterClick(status) },
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             Text(
                 text = status,
                 modifier = Modifier
                     .padding(horizontal = 7.dp)
                     .align(Alignment.CenterVertically),
-                fontSize = 14.sp
+                fontSize = 12.sp
             )
             Text(
                 text = "${menu.count}", modifier = Modifier

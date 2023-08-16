@@ -64,7 +64,9 @@ fun TypeBottomSheet() {
         )
     }
 
-    StatusBottomSheet(showAccountBottomSheet)
+    StatusBottomSheet(showAccountBottomSheet){
+
+    }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,6 +109,7 @@ fun TypeBottomSheet(showStatusBottomSheet: MutableState<Boolean>, onTypeClick:(m
 }
 
 data class TypeModel(
+    val prefix:String,
     val title: String
 )
 
@@ -123,7 +126,7 @@ fun TypeMenuItem(menuItem: TypeModel, onTypeClick:(menuItem:TypeModel)->Unit){
             }
     ) {
             Text(
-                text = menuItem.title,
+                text = "${menuItem.prefix} ${menuItem.title}"  ,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()

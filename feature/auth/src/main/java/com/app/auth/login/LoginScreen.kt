@@ -4,7 +4,6 @@ package com.app.auth.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -49,18 +48,18 @@ import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
-import com.app.uikit.utils.SharedModel
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.CallTopAlertDialog
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.TimerTextView
-import com.app.uikit.borders.CurvedBottomBox
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
@@ -84,7 +83,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val asanLogin by viewModel.asanLogin.collectAsState()
 
     BottomSheetScaffold(
+        scaffoldState = rememberBottomSheetScaffoldState(),
         sheetPeekHeight = 50.sdp,
+
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetElevation = 20.sdp,
 
@@ -104,7 +105,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             .width(50.sdp)
                             .height(4.sdp)
                             .background(
-                                color = Color(0xFFEDEEFB), shape = RoundedCornerShape(size = 10.sdp)
+                                color = Color(0xFFEDEEFB),
+                                shape = RoundedCornerShape(size = 10.sdp)
                             )
                             .align(Alignment.CenterVertically)
                     )
@@ -167,7 +169,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 }
 
             }
-
 
         }) {
 
@@ -492,10 +493,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
                     LaunchedEffect(Unit) {
                         //route to OTP
-//                        MainApp.session.put(Keys.KEY_USERNAME, usernameState.value)
                         otpScreen.userName = usernameState.value
-//                        otpScreen.loginType = selected
-//                        sharedModel.loginType.value = selected
                         SharedModel.init().loginType.value = selected
 
                         navController.navigate(otpNavigationRoute)
@@ -702,9 +700,6 @@ private fun LanguageOptions() {
         }
     }
 }
-
-
-
 
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)

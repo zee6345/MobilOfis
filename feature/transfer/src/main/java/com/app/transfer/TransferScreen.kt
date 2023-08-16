@@ -1,13 +1,10 @@
 package com.app.transfer
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,10 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
@@ -100,6 +94,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
     val isLoading = remember { mutableStateOf(false) }
+
+    val filterByStatus = remember { mutableStateOf("") }
+    val filterByType = remember { mutableStateOf("") }
+    val filterByAccount = remember { mutableStateOf("") }
+    val filterByAmount = remember { mutableStateOf("") }
+    val filterByCurrency = remember { mutableStateOf("") }
 
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
@@ -177,7 +177,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             modifier = Modifier
                 .weight(0.9f)
                 .padding(horizontal = 10.dp)
-
         ) {
 
             if (isLoading.value) {
@@ -189,16 +188,37 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 }
             } else {
 
-                TransferTopMenu(transferHeaderList)
-
-                FilterListMenu()
 
                 LazyColumn(
 
                 ) {
-                    items(items = transferListResponse, itemContent = {
+
+
+                    val filter = transferListResponse.filter {
+                        it.status.contains(filterByStatus.value, true)
+                    }.filter {
+                        it.brTrnType.contains(filterByType.value, true)
+                    }.filter {
+                        it.customerAccount.contains(filterByAccount.value, true)
+                    }.filter {
+                        it.currency.contains(filterByCurrency.value, true)
+                    }
+
+
+                    item{
+                        TransferTopMenu(transferHeaderList) { filter ->
+                            filterByStatus.value = filter
+                        }
+                    }
+
+                    item{
+                        FilterListMenu()
+                    }
+
+                    items(items = filter, itemContent = {
                         TransactionHistory(navController, it)
                     })
+
                 }
 
                 Box(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
@@ -213,24 +233,31 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         endDateSelected.value = it
     })
 
-    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList){
+    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList) {
         //on account click
         showFromAccountBottomSheet.value = false
 
-
+        filterByAccount.value = it.ACCOUNT_NO
     }
 
-    StatusBottomSheet(showStatusBottomSheet)
+    StatusBottomSheet(showStatusBottomSheet){
+        showStatusBottomSheet.value = false
 
-    TypeBottomSheet(showTypeBottomSheet){
+        filterByStatus.value = it
+    }
+
+    TypeBottomSheet(showTypeBottomSheet) {
         //on type click
         showTypeBottomSheet.value = false
 
-
+        filterByType.value = it.prefix
     }
 
     AmountBottomSheet(showAmountBottomSheet)
-    CurrencyBottomSheet(showCurrencyBottomSheet)
+
+    CurrencyBottomSheet(showCurrencyBottomSheet){
+        filterByCurrency.value = it
+    }
 
 
 

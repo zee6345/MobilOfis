@@ -1,6 +1,7 @@
 package com.app.uikit.bottomSheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,17 +64,23 @@ fun StatusBottomSheet() {
         )
     }
 
-    StatusBottomSheet(showAccountBottomSheet)
+    StatusBottomSheet(showAccountBottomSheet){
+
+    }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatusBottomSheet(showStatusBottomSheet:MutableState<Boolean>){
+fun StatusBottomSheet(
+    showStatusBottomSheet: MutableState<Boolean>,
+    onStatusClick: (String) -> Unit
+) {
     if (showStatusBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { showStatusBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
 
-    ) {
+        ) {
         Column(
             modifier = Modifier
 
@@ -90,7 +97,17 @@ fun StatusBottomSheet(showStatusBottomSheet:MutableState<Boolean>){
                 color = Color(0xFF223142)
             )
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
-            StatusList()
+
+
+            val menu = remember { DataProvider.StatusList }
+            LazyColumn(
+            ) {
+                items(items = menu, itemContent = {
+                    StatusMenuItem(menuItem = it) { filter ->
+                        onStatusClick(filter)
+                    }
+                })
+            }
         }
     }
 }
@@ -100,22 +117,13 @@ data class StatusModel(
     val title: String
 )
 
-@Composable
-fun StatusList() {
-    val menu = remember { DataProvider.StatusList }
-    LazyColumn(
-    ) {
-        items(items = menu, itemContent = {
-            StatusMenuItem(menuItem = it)
-        })
-    }
-}
 
 @Composable
-fun StatusMenuItem(menuItem: StatusModel){
+fun StatusMenuItem(menuItem: StatusModel, onStatusClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .background(Color.White)
+            .clickable { onStatusClick(menuItem.title) }
             .padding(horizontal = 10.dp)
     ) {
         Row(
@@ -126,7 +134,7 @@ fun StatusMenuItem(menuItem: StatusModel){
             Icon(
                 painterResource(id = R.drawable.ic_circle),
                 contentDescription = "circle",
-                tint =menuItem.color,
+                tint = menuItem.color,
                 modifier = Modifier
                     .padding(horizontal = 5.sdp)
                     .align(Alignment.CenterVertically)
@@ -152,7 +160,8 @@ fun StatusMenuItem(menuItem: StatusModel){
                     .fillMaxWidth()
                     .height(1.sdp)
                     .background(
-                        color = Color(R.color.border_grey), shape = RoundedCornerShape(size = 10.sdp)
+                        color = Color(R.color.border_grey),
+                        shape = RoundedCornerShape(size = 10.sdp)
                     )
                     .align(Alignment.CenterVertically)
             )

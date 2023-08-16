@@ -241,12 +241,12 @@ object DataProvider {
         )
 
     val TypeModelList = listOf(
-        TypeModel("IM - To my own account within the bank"),
-        TypeModel("IT - To another account within the bank"),
-        TypeModel("FX - Currency exchange"),
-        TypeModel("AZ - AZIPS"),
-        TypeModel("XO - XOHKS"),
-        TypeModel("XT - Budget - DXA"),
+        TypeModel("IM", " - To my own account within the bank"),
+        TypeModel("IT", " - To another account within the bank"),
+        TypeModel("FX", " - Currency exchange"),
+        TypeModel("AZ", " - AZIPS"),
+        TypeModel("XO", " - XOHKS"),
+        TypeModel("XT", " - Budget - DXA"),
     )
 
     val StatusList = listOf(

@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-//import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
 import com.app.uikit.R
 import com.app.uikit.borders.dashedBorder
 

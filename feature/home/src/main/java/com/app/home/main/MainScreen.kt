@@ -1,15 +1,15 @@
 package com.app.home.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.subviews.CardMenuContent
+import com.app.home.main.subviews.AccountListItem
 import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -96,6 +96,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val startDateSelected = remember { mutableStateOf("01-01-2019") }
     val endDateSelected = remember { mutableStateOf("01-01-2023") }
 
+    val coroutine = rememberCoroutineScope()
+
 
     val context = LocalContext.current
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
@@ -104,13 +106,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     //default name
     customerName.value = userDetails.customerName
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit){
         viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
         viewModel.getBalance(userDetails.customerNo)
         viewModel.getRecentOps(userDetails.customerNo)
     }
-
-
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -319,14 +319,27 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    recentData?.groupBy { it.trn_date }?.forEach { (date, itemList) ->
-                        item {
-                            DateHeader(date)
-                        }
-                        items(itemList.size) { item ->
-                            CardsItem(itemList[item])
-                        }
-                    }
+
+//                    items(items = cardsList, itemContent = {
+//
+//                        AccountListItem(obj = it, navController, viewModel)
+//
+//                    })
+
+//                    recentData.groupBy { it.trn_date }?.forEach()
+
+                    items(items = recentData, itemContent = {
+                        CardsItem(it)
+                    })
+
+//                    recentData?.groupBy { it.trn_date }?.forEach { (date, itemList) ->
+//                        item {
+//                            DateHeader(date)
+//                        }
+//                        items(itemList.size) { item ->
+//                            CardsItem(itemList[item])
+//                        }
+//                    }
                 }
 
 
@@ -395,7 +408,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        text = stringResource(R.string.semire), style = TextStyle(
+                                        text = "${userDetails.userName}", style = TextStyle(
                                             color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
                                         )
                                     )
@@ -501,7 +514,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             }
                             Row() {
                                 Text(
-                                    text = if (showBalance.value) balance.value else "********",
+                                    text = if (showBalance.value) "****" else balance.value,
                                     modifier = Modifier.align(Top),
                                     style = TextStyle(
                                         fontSize = 32.sp,
@@ -510,15 +523,17 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     color = Color.White
                                 )
 
-                                Text(
-                                    text = stringResource(R.string.text_currency_type),
-                                    modifier = Modifier
-                                        .padding(end = 22.dp)
-                                        .padding(3.dp)
-                                        .align(Bottom),
-                                    style = TextStyle(fontSize = 24.sp),
-                                    color = Color.White
-                                )
+                                if (!showBalance.value) {
+                                    Text(
+                                        text = stringResource(R.string.text_currency_type),
+                                        modifier = Modifier
+                                            .padding(end = 22.dp)
+                                            .padding(3.dp)
+                                            .align(Bottom),
+                                        style = TextStyle(fontSize = 24.sp),
+                                        color = Color.White
+                                    )
+                                }
                             }
 
                         }
@@ -534,7 +549,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     .padding(horizontal = 5.dp)
             ) {
 
-                TransferTopMenu(transferHeaderList)
+                TransferTopMenu(transferHeaderList){
+
+                }
 
                 TabLayoutMenu(navController)
 
@@ -549,11 +566,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
     com.app.uikit.bottomSheet.SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-        viewModel.setCustomerName(
-            ChangeCompanyName(
-                it
-            )
-        )
+        viewModel.setCustomerName(ChangeCompanyName(it))
+
+        coroutine.launch {
+            //refresh api
+            viewModel.getRecentOps(userDetails.customerNo)
+        }
+
     }
 
     DropDownPopup(balancePopup, density, touchPoint, screenHeightDp) {
@@ -627,26 +646,18 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
                 try {
                     val data = it.data as GetRecentOps
-
                     data.forEach {
-//                        dates.apply {
-//                            clear()
-//                            add(it.trn_date)
-//                        }
-
                         recentData.apply {
                             clear()
                             add(it)
                         }
                     }
-
-
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

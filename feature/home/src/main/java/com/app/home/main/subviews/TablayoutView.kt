@@ -33,10 +33,10 @@ import kotlinx.coroutines.launch
 fun TabLayoutMenu(navController: NavController) {
 
     val tabs = listOf(
-        TabItem(title = "Account", screen = { AccountList(navController) }),
+        TabItem(title = "Accounts", screen = { AccountList(navController) }),
         TabItem(title = "Cards", screen = { CardsList(navController) }),
-        TabItem(title = "Loan", screen = { LoansList(navController) }),
-        TabItem(title = "Trust", screen = { TrustsList(navController) })
+        TabItem(title = "Loans", screen = { LoansList(navController) }),
+        TabItem(title = "Deposits", screen = { TrustsList(navController) })
     )
 
     val pagerState = rememberPagerState(
