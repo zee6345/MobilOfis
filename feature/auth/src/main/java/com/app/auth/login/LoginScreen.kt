@@ -1,6 +1,7 @@
 package com.app.auth.login
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -46,9 +47,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
+import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.utils.Message
@@ -78,6 +83,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val isLoading = remember { mutableStateOf(false) }
     val isPswdVisible = remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val pin = viewModel.session[Keys.KEY_USER_PIN]
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
@@ -85,10 +91,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     BottomSheetScaffold(
         scaffoldState = rememberBottomSheetScaffoldState(),
         sheetPeekHeight = 50.sdp,
-
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetElevation = 20.sdp,
-
         sheetContent = {
 
             Column(Modifier.fillMaxWidth()) {
@@ -172,6 +176,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
         }) {
 
+        //main content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -223,219 +228,263 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             }
 
             Column(
-                modifier = Modifier
-                    .weight(0.7f)
-                    .padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.weight(0.7f),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
-
-                LoginTabsRow(selected, setSelected)
-
-                OutlinedTextField(
-                    value = usernameState.value,
-                    modifier = Modifier.fillMaxWidth(),
-                    onValueChange = { usernameState.value = it },
-                    label = {
-                        Text(
-                            text = if (selected == 2) stringResource(R.string.mobile_number) else stringResource(
-                                R.string.username
-                            ),
-                            fontSize = 14.sp
-                        )
-                    }, trailingIcon = {
-                        if (userErrorCheck)
-                            Icon(
-                                Icons.Filled.Info,
-                                stringResource(R.string.error),
-                                tint = Color.Red
-                            )
-                    }, colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.White,
-                        focusedBorderColor = colorResource(R.color.background_card_blue),
-                        unfocusedBorderColor = colorResource(com.app.home.R.color.border_grey),
-                        unfocusedLabelColor = colorResource(com.app.adjustment.R.color.grey_text),
-                        focusedLabelColor = colorResource(R.color.background_card_blue),
-                    ),
-                    singleLine = true
-                )
-
-                OutlinedTextField(
-                    value = paswdState.value,
-                    onValueChange = { paswdState.value = it },
-                    visualTransformation = if (isPswdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    label = {
-                        Text(
-                            text = if (selected == 2) stringResource(R.string.user_id) else stringResource(
-                                R.string.password
-                            ),
-                            fontSize = 14.sp
-                        )
-                    }, trailingIcon = {
-                        if (pswdErrorCheck)
-                            Icon(
-                                Icons.Filled.Info,
-                                stringResource(id = R.string.error),
-                                tint = Color.Red
-                            )
-
-                        if (isPswdVisible.value) {
-                            Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible),
-                                "",
-                                modifier = Modifier.clickable {
-                                    isPswdVisible.value = false
-                                })
-                        } else {
-                            Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible_off),
-                                "",
-                                modifier = Modifier.clickable {
-                                    isPswdVisible.value = true
-                                })
-                        }
-
-                    },
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.White,
-                        focusedBorderColor = colorResource(R.color.background_card_blue),
-                        unfocusedBorderColor = colorResource(R.color.border_grey),
-                        unfocusedLabelColor = colorResource(R.color.grey_text),
-                        focusedLabelColor = colorResource(R.color.background_card_blue)
-                    ),
-                    singleLine = true
-                )
+                        .padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                if (selected != 2) {
-                    Row(
+                    LoginTabsRow(selected, setSelected)
+
+                    OutlinedTextField(
+                        value = usernameState.value,
+                        modifier = Modifier.fillMaxWidth(),
+                        onValueChange = { usernameState.value = it },
+                        label = {
+                            Text(
+                                text = if (selected == 2) stringResource(R.string.mobile_number) else stringResource(
+                                    R.string.username
+                                ),
+                                fontSize = 14.sp
+                            )
+                        }, trailingIcon = {
+                            if (userErrorCheck)
+                                Icon(
+                                    Icons.Filled.Info,
+                                    stringResource(R.string.error),
+                                    tint = Color.Red
+                                )
+                        }, colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Color.White,
+                            focusedBorderColor = colorResource(R.color.background_card_blue),
+                            unfocusedBorderColor = colorResource(com.app.home.R.color.border_grey),
+                            unfocusedLabelColor = colorResource(com.app.adjustment.R.color.grey_text),
+                            focusedLabelColor = colorResource(R.color.background_card_blue),
+                        ),
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
+                        value = paswdState.value,
+                        onValueChange = { paswdState.value = it },
+                        visualTransformation = if (isPswdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        label = {
+                            Text(
+                                text = if (selected == 2) stringResource(R.string.user_id) else stringResource(
+                                    R.string.password
+                                ),
+                                fontSize = 14.sp
+                            )
+                        }, trailingIcon = {
+                            if (pswdErrorCheck)
+                                Icon(
+                                    Icons.Filled.Info,
+                                    stringResource(id = R.string.error),
+                                    tint = Color.Red
+                                )
+
+                            if (isPswdVisible.value) {
+                                Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible),
+                                    "",
+                                    modifier = Modifier.clickable {
+                                        isPswdVisible.value = false
+                                    })
+                            } else {
+                                Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible_off),
+                                    "",
+                                    modifier = Modifier.clickable {
+                                        isPswdVisible.value = true
+                                    })
+                            }
+
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp, bottom = 17.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Box(
+                            .padding(top = 12.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = Color.White,
+                            focusedBorderColor = colorResource(R.color.background_card_blue),
+                            unfocusedBorderColor = colorResource(R.color.border_grey),
+                            unfocusedLabelColor = colorResource(R.color.grey_text),
+                            focusedLabelColor = colorResource(R.color.background_card_blue)
+                        ),
+                        singleLine = true
+                    )
+
+
+                    if (selected != 2) {
+                        Row(
                             modifier = Modifier
-                                .clip(
-                                    shape = RoundedCornerShape(15.dp),
-                                )
-                                .background(
-                                    color = Color(0xFFE7F0F9),
-                                )
+                                .fillMaxWidth()
+                                .padding(top = 12.dp, bottom = 17.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(
+                                        shape = RoundedCornerShape(15.dp),
+                                    )
+                                    .background(
+                                        color = Color(0xFFE7F0F9),
+                                    )
+                            ) {
 
-                            TimerTextView()
+                                TimerTextView()
 
+                            }
+
+                            ClickableText(modifier = Modifier.padding(5.dp),
+                                text = AnnotatedString(text = stringResource(R.string.forgot_your_password)),
+                                onClick = {
+                                    showForgetPassBottomSheetSheet.value =
+                                        !showForgetPassBottomSheetSheet.value
+                                })
                         }
 
-                        ClickableText(modifier = Modifier.padding(5.dp),
-                            text = AnnotatedString(text = stringResource(R.string.forgot_your_password)),
-                            onClick = {
-                                showForgetPassBottomSheetSheet.value =
-                                    !showForgetPassBottomSheetSheet.value
-                            })
+                    } else {
+                        Spacer(modifier = Modifier.padding(top = 10.sdp))
                     }
 
-                } else {
-                    Spacer(modifier = Modifier.padding(top = 10.sdp))
+                    Button(
+                        onClick = {
+                            when (selected) {
+                                0 -> {
+                                    if (usernameState.value.isNotEmpty()) {
+                                        userErrorCheck = false
+                                        if (paswdState.value.isNotEmpty()) {
+                                            pswdErrorCheck = false
+
+                                            //handle success
+                                            viewModel.loginWithUserName(
+                                                LoginRequest(
+                                                    userName = usernameState.value,
+                                                    password = paswdState.value,
+                                                    authType = "OTP",
+                                                    channel = "INT"
+                                                )
+                                            )
+
+                                        } else {
+                                            pswdErrorCheck = !pswdErrorCheck
+                                        }
+                                    } else {
+                                        userErrorCheck = !userErrorCheck
+                                    }
+                                }
+
+                                1 -> {
+
+                                    if (usernameState.value.isNotEmpty()) {
+                                        userErrorCheck = false
+                                        if (paswdState.value.isNotEmpty()) {
+                                            pswdErrorCheck = false
+
+                                            //handle success
+                                            viewModel.loginWithUserName(
+                                                LoginRequest(
+                                                    userName = usernameState.value,
+                                                    password = paswdState.value,
+                                                    authType = "TOTP",
+                                                    channel = "INT"
+                                                )
+                                            )
+
+                                        } else {
+                                            pswdErrorCheck = !pswdErrorCheck
+                                        }
+                                    } else {
+                                        userErrorCheck = !userErrorCheck
+                                    }
+
+                                }
+
+                                2 -> {
+                                    if (usernameState.value.isNotEmpty()) {
+                                        userErrorCheck = false
+                                        if (paswdState.value.isNotEmpty()) {
+                                            pswdErrorCheck = false
+
+                                            //handle success
+                                            viewModel.asanLogin(
+                                                LoginAsanRequest(
+                                                    phoneNumber = usernameState.value,
+                                                    userId = paswdState.value,
+                                                    channel = "INT"
+                                                )
+                                            )
+
+                                        } else {
+                                            pswdErrorCheck = !pswdErrorCheck
+                                        }
+                                    } else {
+                                        userErrorCheck = !userErrorCheck
+                                    }
+
+                                }
+                            }
+
+
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFF203657), RoundedCornerShape(8.dp))
+                    ) {
+                        Text(
+                            stringResource(R.string.login),
+                            modifier = Modifier.padding(vertical = 12.dp),
+                            color = Color.White
+                        )
+                    }
+
                 }
 
-                Button(
-                    onClick = {
-                        when (selected) {
-                            0 -> {
-                                if (usernameState.value.isNotEmpty()) {
-                                    userErrorCheck = false
-                                    if (paswdState.value.isNotEmpty()) {
-                                        pswdErrorCheck = false
 
-                                        //handle success
-                                        viewModel.loginWithUserName(
-                                            LoginRequest(
-                                                userName = usernameState.value,
-                                                password = paswdState.value,
-                                                authType = "OTP",
-                                                channel = "INT"
-                                            )
-                                        )
+                if (!pin.isNullOrEmpty()) {
+                    Column {
 
-                                    } else {
-                                        pswdErrorCheck = !pswdErrorCheck
-                                    }
-                                } else {
-                                    userErrorCheck = !userErrorCheck
-                                }
-                            }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xffD1D4D9))
+                                .height(1.sdp)
+                        ) {
 
-                            1 -> {
-
-                                if (usernameState.value.isNotEmpty()) {
-                                    userErrorCheck = false
-                                    if (paswdState.value.isNotEmpty()) {
-                                        pswdErrorCheck = false
-
-                                        //handle success
-                                        viewModel.loginWithUserName(
-                                            LoginRequest(
-                                                userName = usernameState.value,
-                                                password = paswdState.value,
-                                                authType = "TOTP",
-                                                channel = "INT"
-                                            )
-                                        )
-
-                                    } else {
-                                        pswdErrorCheck = !pswdErrorCheck
-                                    }
-                                } else {
-                                    userErrorCheck = !userErrorCheck
-                                }
-
-                            }
-
-                            2 -> {
-//                                if (usernameState.value.isNotEmpty()) {
-//                                    userErrorCheck = false
-//                                    if (paswdState.value.isNotEmpty()) {
-//                                        pswdErrorCheck = false
-//
-//                                        //handle success
-//                                        viewModel.asanLogin(
-//                                            LoginAsanRequest(
-//                                                phoneNumber = usernameState.value,
-//                                                userId = paswdState.value,
-//                                                channel = "INT"
-//                                            )
-//                                        )
-//
-//                                    } else {
-//                                        pswdErrorCheck = !pswdErrorCheck
-//                                    }
-//                                } else {
-//                                    userErrorCheck = !userErrorCheck
-//                                }
-                                Message.showMessage(context, "Coming soon!")
-                            }
                         }
 
+                        Spacer(modifier = Modifier.size(height = 20.sdp, width = 1.sdp))
 
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF203657), RoundedCornerShape(8.dp))
-
-                ) {
-                    Text(
-                        stringResource(R.string.login),
-                        modifier = Modifier.padding(vertical = 12.dp),
-                        color = Color.White
-                    )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 60.sdp),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            Row(
+                                Modifier .clickable {
+                                    navController.navigate(welcomePinScreen){
+//                                        popUpTo(loginNavigationRoute){
+//                                            inclusive = true
+//                                        }
+                                    }
+                                }
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_login_pin),
+                                    contentDescription = ""
+                                )
+                                Text(text = "Login with PIN code")
+                            }
+                        }
+                    }
                 }
-
-
             }
 
 
@@ -486,10 +535,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             }
 
             is DataState.Success -> {
+                isLoading.value = false
+
                 val loginResponse = it.data as LoginResponse
                 loginResponse?.apply {
-                    isLoading.value = false
-
 
                     LaunchedEffect(Unit) {
                         //route to OTP
@@ -507,25 +556,28 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     }
 
 
-//    asanLogin?.let {
-//        when (it) {
-//            is DataState.Loading -> {
-//                isLoading.value = true
-//                if (isLoading.value) {
-//                    ShowProgressDialog(isLoading)
-//                }
-//            }
-//
-//            is DataState.Error -> {
-//
-//                Message.showMessage(context, it.errorMessage)
-//            }
-//
-//            is DataState.Success -> {
-//
-//            }
-//        }
-//    }
+    asanLogin?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                }
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+                val msg = it.errorMessage.ifEmpty {
+                    stringResource(R.string.failed_to_login)
+                }
+                Message.showMessage(context, msg)
+            }
+
+            is DataState.Success -> {
+
+            }
+        }
+    }
 
 
 }

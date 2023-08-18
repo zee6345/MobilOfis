@@ -51,7 +51,6 @@ import com.app.transfer.transfers.navigation.transferToDetails
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavItem.Main.screen_route) {
 
-
         composable(BottomNavItem.Main.screen_route) {
             MenuScreen(navController)
         }
@@ -136,7 +135,6 @@ fun NavigationGraph(navController: NavHostController) {
         composable(changePasswordToOTP) {
             OtpVerifyScreen(navController)
         }
-
 
         composable(userProfileToGoogleAuth) {
             ActivateGoogleAuthenticatorScreen(navController)

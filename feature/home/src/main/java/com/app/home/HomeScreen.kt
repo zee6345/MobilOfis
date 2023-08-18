@@ -1,11 +1,18 @@
 package com.app.home
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +26,7 @@ import com.app.home.navigation.NavigationGraph
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreenView(navController: NavController) {
+
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigation(navController = navController) }
@@ -33,9 +41,7 @@ fun BottomNavigation(navController: NavController) {
     val items = listOf(
         BottomNavItem.Main,
         BottomNavItem.Transfers,
-        BottomNavItem.Adjustments,
-
-        )
+        BottomNavItem.Adjustments,)
     BottomNavigation(
         backgroundColor = Color.White,
         contentColor = Color.Black

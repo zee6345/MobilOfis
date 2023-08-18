@@ -140,7 +140,8 @@ class LoginViewModel @Inject constructor(
                         if (response.isSuccessful && response.body() != null) {
                             _lastLogin.value = DataState.Success(response.body()!!)
                         } else {
-                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
+//                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
+                            _lastLogin.value = DataState.Error(response.code().toString())
                         }
                     }
 

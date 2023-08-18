@@ -1,7 +1,7 @@
 package com.app.transfer
 
 import android.content.Context
-import android.util.Log
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -58,7 +59,6 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponseItem
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.TransferTopMenu
 import com.app.transfer.transfers.navigation.transferToDetails
@@ -72,6 +72,9 @@ import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.FiltersTopRow
 import com.app.uikit.views.ItemClickedCallback
 import ir.kaaveh.sdpcompose.sdp
+
+
+const val SESSION = "SESSION_EVENTS"
 
 private lateinit var showDateBottomSheet: MutableState<Boolean>
 private lateinit var showFromAccountBottomSheet: MutableState<Boolean>
@@ -193,31 +196,35 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                 ) {
 
-
-                    val filter = transferListResponse.filter {
-                        it.status.contains(filterByStatus.value, true)
-                    }.filter {
-                        it.brTrnType.contains(filterByType.value, true)
-                    }.filter {
-                        it.customerAccount.contains(filterByAccount.value, true)
-                    }.filter {
-                        it.currency.contains(filterByCurrency.value, true)
-                    }
+                    transferListResponse?.let {
 
 
-                    item{
-                        TransferTopMenu(transferHeaderList) { filter ->
-                            filterByStatus.value = filter
+                        val filter = transferListResponse.filter {
+                            it?.status!!.contains(filterByStatus.value, true)
+                        }.filter {
+                            it?.brTrnType!!.contains(filterByType.value, true)
+                        }.filter {
+                            it?.customerAccount!!.contains(filterByAccount.value, true)
                         }
-                    }
+//                            .filter {
+//                            it?.currency!!.contains(filterByCurrency.value, true)
+//                        }
 
-                    item{
-                        FilterListMenu()
-                    }
+                        item {
+                            TransferTopMenu(transferHeaderList) { filter ->
+                                filterByStatus.value = filter
+                            }
+                        }
 
-                    items(items = filter, itemContent = {
-                        TransactionHistory(navController, it)
-                    })
+                        item {
+                            FilterListMenu()
+                        }
+
+                        items(items = filter, itemContent = {
+                            TransactionHistory(navController, it)
+                        })
+
+                    }
 
                 }
 
@@ -240,7 +247,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByAccount.value = it.ACCOUNT_NO
     }
 
-    StatusBottomSheet(showStatusBottomSheet){
+    StatusBottomSheet(showStatusBottomSheet) {
         showStatusBottomSheet.value = false
 
         filterByStatus.value = it
@@ -255,7 +262,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     AmountBottomSheet(showAmountBottomSheet)
 
-    CurrencyBottomSheet(showCurrencyBottomSheet){
+    CurrencyBottomSheet(showCurrencyBottomSheet) {
         filterByCurrency.value = it
     }
 
@@ -264,7 +271,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     businessDates?.let {
         when (it) {
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Loading -> {
@@ -285,7 +292,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -308,7 +315,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -331,7 +338,24 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Error -> {
                 isLoading.value = false
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
+                val data = it.errorMessage
+                if (data == "401") {
+
+
+//                    // In your sending code
+//                    val intent = Intent()
+//                    intent.action = SESSION
+//                    intent.putExtra("data", "expire")
+//                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+
+
+                } else {
+
+                }
+//                val error = Converter.fromJson(data, ErrorResponse::class.java)
+//                if (error.code.equals(""))
+
             }
 
             is DataState.Success -> {

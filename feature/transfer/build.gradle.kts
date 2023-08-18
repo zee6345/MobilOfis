@@ -42,8 +42,8 @@ android {
 
 dependencies {
 
-//    implementation (project (":core:designsystem"))
-//    implementation (project (":feature:auth" ))
+
+
 //    implementation (project (":feature:adjustment" ))
     implementation (project (":uikit" ))
 

@@ -112,7 +112,7 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 
             is DataState.Error -> {
                 isLoading.value = false
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {

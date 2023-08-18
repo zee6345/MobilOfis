@@ -104,5 +104,6 @@ dependencies {
     implementation(Hilt.hilt_compose)
 
     implementation ("com.bugfender.sdk:android:3.+")
+    implementation ("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
 
 }

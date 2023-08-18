@@ -136,7 +136,7 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
                 isLoading.value = false
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {

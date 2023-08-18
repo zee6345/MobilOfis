@@ -616,7 +616,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
+
             }
 
             is DataState.Success -> {
@@ -675,7 +676,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
+
             }
 
             is DataState.Success -> {
@@ -709,7 +711,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {

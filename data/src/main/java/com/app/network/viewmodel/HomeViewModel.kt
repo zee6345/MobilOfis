@@ -376,7 +376,8 @@ class HomeViewModel @Inject constructor(
                             _getTransferList.value = DataState.Success(response.body()!!)
                         } else {
                             _getTransferList.value =
-                                DataState.Error(response.errorBody()!!.string())
+//                                DataState.Error(response.errorBody()!!.string())
+                                DataState.Error(response.code().toString())
                         }
                     }
 

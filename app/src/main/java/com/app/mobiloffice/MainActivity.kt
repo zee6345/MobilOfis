@@ -1,38 +1,70 @@
 package com.app.mobiloffice
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.app.mobiloffice.ui.MoApp
 import com.app.mobiloffice.ui.theme.MobilOfficeTheme
 import com.app.network.viewmodel.LoginViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.app.network.helper.Keys
+import com.app.network.helper.Session
+import com.app.network.models.DataState
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
 import java.util.TimerTask
 
 
+const val SESSION = "SESSION_EVENTS"
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-//    private lateinit var _context: Context
-//
-//    // Public read-only property to access the context
-//    val context: Context
-//        get() = _context
-//
-//    // Custom setter to set the context
-//    private fun setContext(context: Context) {
-//        // Here, you can do additional checks or actions if needed before setting the context.
-//        _context = context
-//    }
-
     val viewModel: LoginViewModel by viewModels()
+
+    // In your receiving code
+    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == SESSION) {
+                val data = intent.getStringExtra("data")
+                // Handle the received data
+                data?.let {
+
+                    if (it.equals("expire", true)) {
+
+                        Toast.makeText(context, "Session expire!", Toast.LENGTH_SHORT).show()
+
+                        //clear pin
+                        Session(context).delete(Keys.KEY_USER_PIN)
+
+                        val intent = Intent(this@MainActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finishAffinity()
+
+                    } else if (it.equals("exit", true)){
+
+                        val intent = Intent(this@MainActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finishAffinity()
+
+                    }
+
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        setContext(this)
 
         setContent {
             MobilOfficeTheme {
@@ -49,5 +81,40 @@ class MainActivity : ComponentActivity() {
             }
         }, 0, 30000)
 
+        viewModel.lastLogin.value?.let {
+            when (it) {
+                is DataState.Loading -> {
+
+                }
+
+                is DataState.Error -> {
+                    if (it.errorMessage == "401"){
+
+                        // In your sending code
+                        val intent = Intent()
+                        intent.action = SESSION
+                        intent.putExtra("data", "expire")
+                        LocalBroadcastManager.getInstance(this@MainActivity).sendBroadcast(intent)
+                    }
+                }
+
+                is DataState.Success -> {
+
+                }
+            }
+
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val filter = IntentFilter(SESSION)
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 }
