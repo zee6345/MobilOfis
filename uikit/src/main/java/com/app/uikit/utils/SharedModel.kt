@@ -8,6 +8,7 @@ class SharedModel:ViewModel() {
 
     val loginType = mutableStateOf(0)
     val ibankRef = mutableStateOf("")
+    val easyVerificationCode = mutableStateOf("")
 
 
     companion object {

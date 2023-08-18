@@ -1,30 +1,55 @@
 package com.app.auth.login.easysignature
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.utils.SharedModel
+import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun EasySignatureScreen() {
+fun EasySignatureScreen(navController: NavController) {
+
+    val easyCode = SharedModel.init().easyVerificationCode.value
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF3F7FA))
     ) {
         Surface(
             modifier = Modifier
@@ -33,18 +58,38 @@ fun EasySignatureScreen() {
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp),
-                contentAlignment = Alignment.BottomStart
-            ) {
-                Text(
-                    text = "Introduction with Easy Signature",
-                    style = TextStyle(color = Color.White, fontSize = 24.sp),
-                    modifier = Modifier.padding(bottom = 22.dp)
-                )
 
+            Column(Modifier.fillMaxSize()) {
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.1f)
+
+                ) {
+
+
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
+                    )
+
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(0.2f)
+                        .padding(horizontal = 20.sdp, vertical = 15.sdp)
+                        .background(color = Color(0xFF203657))
+                ) {
+
+                    androidx.compose.material3.Text(
+                        modifier = Modifier.align(Alignment.BottomStart),
+                        text = "Introduction with Easy Signature",
+                        style = TextStyle(color = Color.White, fontSize = 29.sp)
+                    )
+                }
 
             }
         }
@@ -70,7 +115,7 @@ fun EasySignatureScreen() {
                     Row(
                         modifier = Modifier
                             .dashedBorder(
-                                3.dp, Color(R.color.border_grey)
+                                3.dp, colorResource(R.color.border_grey)
                             )
                             .height(80.dp)
                             .fillMaxWidth(),
@@ -82,22 +127,25 @@ fun EasySignatureScreen() {
                             painter = painterResource(id = R.drawable.print_design),
                             modifier = Modifier
                                 .padding(start = 12.dp)
-                                .height(80.dp).width(100.dp),
+                                .height(80.dp)
+                                .width(100.dp),
                             contentDescription = ""
                         )
                         Image(
                             painter = painterResource(id = R.drawable.question_icon),
-                            modifier = Modifier.size(50.dp)
-                                .align(Alignment.CenterVertically).padding(end = 12.dp),
+                            modifier = Modifier
+                                .size(50.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 12.dp),
                             contentDescription = ""
                         )
                     }
                     Text(
                         modifier = Modifier
                             .dashedBorder(
-                                3.dp, Color(R.color.border_grey)
+                                3.dp, colorResource(R.color.border_grey)
                             )
-                            .padding(horizontal = 12.dp , vertical = 22.dp),
+                            .padding(horizontal = 12.dp, vertical = 22.dp),
                         text = "Please accept the query sent to your phone. Compare the checking code of the survey to the same code as the following code.",
                         style = TextStyle(fontSize = 16.sp)
                     )
@@ -107,7 +155,7 @@ fun EasySignatureScreen() {
                             .fillMaxWidth(),
                         text = "Check code",
                         style = TextStyle(
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center
                         )
@@ -115,9 +163,12 @@ fun EasySignatureScreen() {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "7960",
+                        text = "$easyCode",
                         style = TextStyle(fontSize = 32.sp, textAlign = TextAlign.Center)
                     )
+
+                    Spacer(modifier = Modifier.size(height = 20.sdp, width = 1.sdp))
+                    CircularTimer()
 
                 }
             }
@@ -128,8 +179,53 @@ fun EasySignatureScreen() {
     }
 }
 
+@Composable
+fun CircularTimer() {
+    val totalTimeSeconds = 2 * 60 // 2 minutes in seconds
+    var remainingTime by remember { mutableStateOf(totalTimeSeconds) }
+
+    val progress = (totalTimeSeconds - remainingTime) / totalTimeSeconds.toFloat()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(Unit) {
+        val timerJob = coroutineScope.launch {
+            while (remainingTime > 0) {
+                delay(1000) // Delay for 1 second
+                remainingTime -= 1
+            }
+        }
+
+        onDispose {
+            timerJob.cancel()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .background(
+                color = Color(0xffECE9FF),
+                shape = CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            progress = progress,
+            modifier = Modifier
+                .size(150.dp)
+        )
+        Text(
+            text = "${remainingTime / 60}:${String.format("%02d", remainingTime % 60)}",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xff7B61FF)
+        )
+    }
+}
+
+
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun EasySignatureScreenPreview() {
-    EasySignatureScreen()
+    EasySignatureScreen(rememberNavController())
 }

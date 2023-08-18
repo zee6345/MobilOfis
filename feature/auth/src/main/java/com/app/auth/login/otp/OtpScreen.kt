@@ -53,6 +53,7 @@ import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
 import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
@@ -137,9 +138,11 @@ fun OtpScreen(
                             modifier = Modifier.padding(bottom = 5.sdp)
                         )
                         Text(
-                            text = if (loginType == 0) stringResource(R.string.text_send_otp) else if (loginType == 1) stringResource(
-                                R.string.text_auth_otp
-                            ) else "",
+                            text = when (loginType) {
+                                0 -> stringResource(R.string.text_send_otp)
+                                1 -> stringResource(R.string.text_auth_otp)
+                                else -> ""
+                            },
                             style = TextStyle(
                                 color = Color.White,
                                 fontSize = 16.sp,
@@ -184,7 +187,7 @@ fun OtpScreen(
                             )
                     ) {
 
-                        TimerTextView()
+                        CountdownTimer(otpValue.value)
 
                     }
 
@@ -235,7 +238,6 @@ fun OtpScreen(
 
                     Button(
                         onClick = {
-//                    navController.navigate(pinNavigationRoute)
                             if (otpValue.value.isNotEmpty()) {
                                 if (otpValue.value.length == otpCount.value) {
 

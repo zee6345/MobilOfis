@@ -40,10 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.uikit.bottomSheet.PassChangedBottomSheet
-import com.app.uikit.dialogs.ShowProgressDialog
-import com.app.uikit.views.TimerTextView
-import com.app.uikit.views.OtpView
 import com.app.adjustment.otp.otpScreen.loginType
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.VerifyChangePasswordRequest

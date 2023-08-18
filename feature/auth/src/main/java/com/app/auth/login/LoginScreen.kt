@@ -1,16 +1,35 @@
 package com.app.auth.login
 
 
+import android.content.Context
+import android.view.MotionEvent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Tab
@@ -22,12 +41,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -45,18 +67,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
-import com.app.auth.login.navigation.loginNavigationRoute
+import com.app.auth.login.easysignature.navigation.loginToEasySignature
 import com.app.auth.login.navigation.otpNavigationRoute
 import com.app.auth.login.otp.otpScreen
 import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.ErrorResponse
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
+import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
-import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.borders.dashedBorder
@@ -64,12 +87,12 @@ import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.CallTopAlertDialog
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
-import com.app.uikit.views.TimerTextView
+import com.app.uikit.views.CountdownTimer
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
@@ -81,9 +104,13 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
-    val isPswdVisible = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val pin = viewModel.session[Keys.KEY_USER_PIN]
+    val coroutine = rememberCoroutineScope()
+
+    var isPswdVisible by remember { mutableStateOf(false) }
+    val passwordVisualTransformation =
+        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
@@ -253,56 +280,44 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                 ),
                                 fontSize = 14.sp
                             )
-                        }, trailingIcon = {
-                            if (userErrorCheck)
-                                Icon(
-                                    Icons.Filled.Info,
-                                    stringResource(R.string.error),
-                                    tint = Color.Red
-                                )
-                        }, colors = TextFieldDefaults.outlinedTextFieldColors(
+                        }, trailingIcon = {},
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
                             backgroundColor = Color.White,
                             focusedBorderColor = colorResource(R.color.background_card_blue),
                             unfocusedBorderColor = colorResource(com.app.home.R.color.border_grey),
                             unfocusedLabelColor = colorResource(com.app.adjustment.R.color.grey_text),
                             focusedLabelColor = colorResource(R.color.background_card_blue),
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        shape = RoundedCornerShape(10.sdp)
                     )
 
                     OutlinedTextField(
                         value = paswdState.value,
                         onValueChange = { paswdState.value = it },
-                        visualTransformation = if (isPswdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = passwordVisualTransformation,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         label = {
                             Text(
                                 text = if (selected == 2) stringResource(R.string.user_id) else stringResource(
                                     R.string.password
-                                ),
-                                fontSize = 14.sp
+                                ), fontSize = 14.sp
                             )
                         }, trailingIcon = {
-                            if (pswdErrorCheck)
-                                Icon(
-                                    Icons.Filled.Info,
-                                    stringResource(id = R.string.error),
-                                    tint = Color.Red
-                                )
 
-                            if (isPswdVisible.value) {
-                                Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible),
-                                    "",
-                                    modifier = Modifier.clickable {
-                                        isPswdVisible.value = false
-                                    })
-                            } else {
-                                Icon(painterResource(id = com.app.home.R.drawable.ic_password_visible_off),
-                                    "",
-                                    modifier = Modifier.clickable {
-                                        isPswdVisible.value = true
-                                    })
-                            }
+                            Icon(
+                                painter = painterResource(id = if (isPswdVisible) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
+                                contentDescription = if (isPswdVisible) "Hide Password" else "Show Password",
+                                modifier = Modifier
+                                    .pointerInteropFilter { event ->
+                                        when (event.action) {
+                                            MotionEvent.ACTION_DOWN -> isPswdVisible = true
+                                            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isPswdVisible =
+                                                false
+                                        }
+                                        true
+                                    }
+                            )
 
                         },
                         modifier = Modifier
@@ -315,7 +330,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             unfocusedLabelColor = colorResource(R.color.grey_text),
                             focusedLabelColor = colorResource(R.color.background_card_blue)
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        shape = RoundedCornerShape(10.sdp)
                     )
 
 
@@ -335,9 +351,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                         color = Color(0xFFE7F0F9),
                                     )
                             ) {
-
-                                TimerTextView()
-
+                                CountdownTimer(usernameState.value)
                             }
 
                             ClickableText(modifier = Modifier.padding(5.dp),
@@ -468,8 +482,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             contentAlignment = Alignment.BottomCenter
                         ) {
                             Row(
-                                Modifier .clickable {
-                                    navController.navigate(welcomePinScreen){
+                                Modifier.clickable {
+                                    navController.navigate(welcomePinScreen) {
 //                                        popUpTo(loginNavigationRoute){
 //                                            inclusive = true
 //                                        }
@@ -510,11 +524,23 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
         )
     }
 
+    //show empty field toast
+    if (userErrorCheck or pswdErrorCheck) {
+        RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(1000)
+            userErrorCheck = false
+            pswdErrorCheck = false
+        }
+
+    }
+
 
     /**
      * handle login response data
      */
-    loginData?.let {
+    loginData?.let { it ->
         when (it) {
             is DataState.Loading -> {
 
@@ -528,10 +554,18 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
             is DataState.Error -> {
                 isLoading.value = false
-                val msg = it.errorMessage.ifEmpty {
-                    stringResource(R.string.failed_to_login)
+
+                val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                errorMessage?.let { error ->
+                    if (error.code.equals("ERROR.FREE_TEXT", true)) {
+
+                        LaunchedEffect(error.code) {
+                            showMessage(context, "Wrong username or password!")
+                        }
+
+
+                    }
                 }
-                Message.showMessage(context, msg)
             }
 
             is DataState.Success -> {
@@ -562,24 +596,94 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 isLoading.value = true
                 if (isLoading.value) {
                     ShowProgressDialog(isLoading)
+                } else {
+
                 }
             }
 
             is DataState.Error -> {
                 isLoading.value = false
-                val msg = it.errorMessage.ifEmpty {
-                    stringResource(R.string.failed_to_login)
+
+                val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                errorMessage?.let { error ->
+                    if (error.code.equals("ERROR.FREE_TEXT", true)) {
+                        LaunchedEffect(error.code) {
+                            showMessage(context, "Wrong username or password!")
+                        }
+                    }
                 }
-                Message.showMessage(context, msg)
             }
 
             is DataState.Success -> {
+
+                val loginResponse = it.data as LoginAsanResponse
+                loginResponse?.apply {
+
+                    LaunchedEffect(Unit) {
+
+                        //route to OTP
+                        otpScreen.userName = usernameState.value
+                        SharedModel.init().loginType.value = selected
+
+                        //easy verification code
+                        SharedModel.init().easyVerificationCode.value =
+                            "${loginResponse.gniAuthResponseType.verfication}"
+
+
+                        navController.navigate(loginToEasySignature)
+
+                    }
+
+                }
 
             }
         }
     }
 
 
+}
+
+
+fun showMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+@Composable
+fun RoundedCornerToast(
+    text: String,
+    duration: Int = Toast.LENGTH_SHORT,
+    context: Context
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+
+//    LaunchedEffect(Unit) {
+//        coroutineScope.launch {
+//            Toast.makeText(context, text, duration).show()
+//        }
+//    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 50.sdp, horizontal = 20.sdp)
+            .background(Color.Transparent, RoundedCornerShape(16.dp))
+            .wrapContentSize(Alignment.TopCenter)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFFDCDE), RoundedCornerShape(16.dp))
+                .border(2.dp, Color(0xFFF3646C), RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Text(
+                text = text,
+                style = TextStyle(fontSize = 16.sp, color = Color(0xFFF3646C)),
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
 }
 
 
@@ -595,61 +699,74 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
             .background(Color(0xFFF3F7FA))
     ) {
 
-        Tab(
-            selectedContentColor = Color.Cyan,
-            selected = selected == 0,
-            onClick = { setSelected(0) },
-            modifier = Modifier
-                .background(
-                    color = if (selected == 0) Color(0xFF203657) else Color(0xFFF3F7FA),
-                    shape = RoundedCornerShape(10.dp)
+
+        Box(
+            Modifier.background(Color(0xFFF3F7FA))
+        ) {
+            Tab(
+                selectedContentColor = Color.Cyan,
+                selected = selected == 0,
+                onClick = { setSelected(0) },
+                modifier = Modifier
+                    .background(
+                        color = if (selected == 0) Color(0xFF203657) else Color(0xFFF3F7FA),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+
+            ) {
+
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = stringResource(id = R.string.login),
+                    style = TextStyle(fontSize = 12.sp),
+                    color = if (selected == 0) Color.White else Color.Black
                 )
 
+            }
+        }
+
+        Box(
+            Modifier.background(Color(0xFFF3F7FA))
         ) {
 
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = stringResource(id = R.string.login),
-                style = TextStyle(fontSize = 12.sp),
-                color = if (selected == 0) Color.White else Color.Black
-            )
-
+            Tab(
+                selected = selected == 1,
+                onClick = { setSelected(1) },
+                modifier = Modifier
+                    .background(
+                        color = if (selected == 1) Color(0xFF203657) else Color(0xFFF3F7FA),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            ) {
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = stringResource(R.string.google),
+                    style = TextStyle(fontSize = 12.sp),
+                    color = if (selected == 1) Color.White else Color.Black
+                )
+            }
         }
 
 
-
-        Tab(
-            selected = selected == 1,
-            onClick = { setSelected(1) },
-            modifier = Modifier
-                .background(
-                    color = if (selected == 1) Color(0xFF203657) else Color(0xFFF3F7FA),
-                    shape = RoundedCornerShape(10.dp)
-                )
+        Box(
+            Modifier.background(Color(0xFFF3F7FA))
         ) {
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = stringResource(R.string.google),
-                style = TextStyle(fontSize = 12.sp),
-                color = if (selected == 1) Color.White else Color.Black
-            )
-        }
-
-        Tab(
-            selected = selected == 2,
-            onClick = { setSelected(2) },
-            modifier = Modifier
-                .background(
-                    color = if (selected == 2) Color(0xFF203657) else Color(0xFFF3F7FA),
-                    shape = RoundedCornerShape(10.dp)
+            Tab(
+                selected = selected == 2,
+                onClick = { setSelected(2) },
+                modifier = Modifier
+                    .background(
+                        color = if (selected == 2) Color(0xFF203657) else Color(0xFFF3F7FA),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            ) {
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = stringResource(R.string.easy_signature),
+                    style = TextStyle(fontSize = 12.sp),
+                    color = if (selected == 2) Color.White else Color.Black
                 )
-        ) {
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = stringResource(R.string.easy_signature),
-                style = TextStyle(fontSize = 12.sp),
-                color = if (selected == 2) Color.White else Color.Black
-            )
+            }
         }
     }
 }
@@ -757,5 +874,8 @@ private fun LanguageOptions() {
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(rememberNavController())
+//    LoginScreen(rememberNavController())
+
+    RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, LocalContext.current)
 }
+
