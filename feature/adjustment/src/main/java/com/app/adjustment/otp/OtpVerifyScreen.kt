@@ -328,7 +328,7 @@ fun OtpVerifyScreen(navController: NavController, viewModel: AdjustmentViewModel
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {

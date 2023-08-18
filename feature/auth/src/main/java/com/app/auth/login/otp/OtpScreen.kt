@@ -1,6 +1,7 @@
 package com.app.auth.login.otp
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +59,7 @@ import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
 import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 
 object otpScreen {
@@ -75,6 +78,7 @@ fun OtpScreen(
     val loginData by viewModel.data.collectAsState()
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
+    val coroutine = rememberCoroutineScope()
 
     val loginType = SharedModel.init().loginType.value
 
@@ -191,11 +195,16 @@ fun OtpScreen(
 
                     }
 
-                    ClickableText(modifier = Modifier.padding(5.dp),
-                        text = AnnotatedString(text = stringResource(R.string.re_send_sms_code)),
-                        onClick = {
-                            Message.showMessage(context, "OTP send again!")
-                        })
+                    Text(
+                        modifier = Modifier.padding(5.dp)
+                            .clickable {
+                                coroutine.launch {
+                                    Message.showMessage(context, "OTP send again!")
+                                }
+                            },
+                        text = stringResource(R.string.re_send_sms_code)
+                    )
+                   
                 }
             }
 
@@ -298,7 +307,6 @@ fun OtpScreen(
                 Message.showMessage(context, stringResource(R.string.failed_to_verify_user))
 
                 //on error remove keys
-//                MainApp.session.delete(Keys.KEY_USERNAME)
                 viewModel.session.delete(Keys.KEY_TOKEN)
 
             }
@@ -308,10 +316,6 @@ fun OtpScreen(
                 loginVerifyResponse?.apply {
                     isLoading.value = false
 
-                    //remove username after use
-//                    MainApp.session.delete(Keys.KEY_USERNAME)
-
-
                     //cache login verify response
                     val strJson = Converter.toJson(loginVerifyResponse)
                     viewModel.session.put(Keys.KEY_USER_DETAILS, strJson)
@@ -319,6 +323,7 @@ fun OtpScreen(
 
                     //check if pin already set
                     val pin = viewModel.session[Keys.KEY_USER_PIN]
+
                     //route to OTP
                     LaunchedEffect(Unit) {
                         if (pin.isNullOrEmpty()) {

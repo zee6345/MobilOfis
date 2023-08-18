@@ -1,5 +1,6 @@
 package com.app.uikit.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,13 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.uikit.R
 
 
 @Composable
-fun CustomKeyboard(navController: NavController, screen: String?, onKeyPressed: (String) -> Unit) {
+fun CustomKeyboard(onKeyPressed: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -43,93 +43,58 @@ fun CustomKeyboard(navController: NavController, screen: String?, onKeyPressed: 
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton(
-                    stringResource(R.string._1),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string._2),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string._3),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
+                KeyButton(stringResource(R.string._1)) {
+                    onKeyPressed(it)
+                }
+                KeyButton(stringResource(R.string._2)) {
+                    onKeyPressed(it)
+                }
+                KeyButton(stringResource(R.string._3)) {
+                    onKeyPressed(it)
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton(
-                    stringResource(R.string._4),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string._5),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string._6),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
+                KeyButton(stringResource(R.string._4)) {
+                    onKeyPressed(it)
+                }
+                KeyButton(stringResource(R.string._5)) {
+                    onKeyPressed(it)
+                }
+                KeyButton(stringResource(R.string._6)) {
+                    onKeyPressed(it)
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
+                KeyButton(stringResource(R.string._7)) {
+                    onKeyPressed(it)
+                }
                 KeyButton(
-                    stringResource(R.string._7),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string._8),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
+                    "8"
+                ) {
+                    onKeyPressed(it)
+                }
                 KeyButton(
                     stringResource(R.string._9),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
+                ) {
+                    onKeyPressed(it)
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KeyButton(
-                    "",
-                    R.drawable.finger_print,
-                    navController,
-                    "fingerPrint",
-                    screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string._0),
-                    navController = navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
-                KeyButton(
-                    stringResource(R.string.del),
-                    R.drawable.clear,
-                    navController,
-                    screen = screen,
-                    onKeyPressed = onKeyPressed
-                )
+                KeyButton("fngr", R.drawable.finger_print) {
+                    onKeyPressed(it)
+                }
+                KeyButton(stringResource(R.string._0)) {
+                    onKeyPressed(it)
+                }
+                KeyButton(stringResource(R.string.del), R.drawable.clear) {
+                    onKeyPressed(it)
+                }
             }
         }
     }
@@ -139,9 +104,6 @@ fun CustomKeyboard(navController: NavController, screen: String?, onKeyPressed: 
 fun KeyButton(
     text: String,
     imageRes: Int? = null,
-    navController: NavController,
-    button: String? = null,
-    screen: String?,
     onKeyPressed: (String) -> Unit
 ) {
     Box(modifier = Modifier
@@ -153,6 +115,7 @@ fun KeyButton(
             Button(
                 onClick = {
                     onKeyPressed(text)
+                    Log.e("mmTAG", text)
                 },
                 modifier = Modifier.fillMaxSize(),
                 shape = CircleShape,
@@ -182,7 +145,7 @@ fun KeyButton(
 @Composable
 fun PreviewCustomKeyboard() {
     val navController = rememberNavController()
-    CustomKeyboard(navController, "ResetPin") {
+    CustomKeyboard {
 
     }
 }

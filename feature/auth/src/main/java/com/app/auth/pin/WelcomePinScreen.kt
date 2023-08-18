@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +48,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.bottomSheet.FingerPrintModalBottomSheet
 import ir.kaaveh.sdpcompose.sdp
 
 private const val TAG = "WelcomePinScreen"
@@ -55,10 +57,9 @@ private const val TAG = "WelcomePinScreen"
 fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     var enteredPin by remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
+    val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
 
-
-//    val userDetails = MainApp.session.fetchUserDetails()
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
     username.value = userDetails.userName
@@ -101,8 +102,7 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                 ) {
 
                     Text(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart),
+                        modifier = Modifier.align(Alignment.BottomStart),
                         text = stringResource(id = R.string.text_welcome) + ",\n${username.value}",
                         style = TextStyle(color = Color.White, fontSize = 22.sp)
                     )
@@ -127,7 +127,7 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-                PinInputView(navController, length = 5) { pin ->
+                PinInputView(length = 5, { pin ->
                     enteredPin = pin
 
                     if (pin.isNotEmpty() && pin.length == 5) {
@@ -138,7 +138,9 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                             Message.showMessage(context, "Wrong pin entered!")
                         }
                     }
-                }
+                }, {
+                    showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
+                })
 
             }
             Column(
@@ -185,6 +187,12 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
         }
 
     }
+
+    FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, onClickThen = {
+        navController.navigate(homeScreenRoute)
+    }, onClickYes = {
+        navController.navigate(homeScreenRoute)
+    })
 }
 
 

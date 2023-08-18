@@ -156,7 +156,7 @@ fun PinInputView(
         )
     }
 
-    CustomKeyboard(navController, null) { key ->
+    CustomKeyboard { key ->
         if (key == "del") {
             if (pinValue.value.isNotEmpty()) {
                 pinValue.value = pinValue.value.dropLast(1)

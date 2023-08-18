@@ -1,10 +1,8 @@
 package com.app.home.main
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,16 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.subviews.AccountListItem
 import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -58,7 +52,6 @@ import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.TransferTopMenu
 import ir.kaaveh.sdpcompose.sdp
@@ -106,7 +99,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     //default name
     customerName.value = userDetails.customerName
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
         viewModel.getBalance(userDetails.customerNo)
         viewModel.getRecentOps(userDetails.customerNo)
@@ -472,12 +465,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             Modifier
                                 .padding(horizontal = 22.dp)
                                 .pointerInput(Unit) {
-                                    detectTapGestures {
-
-                                        touchPoint = it
-                                        balancePopup.value = !balancePopup.value
-                                    }
-
+//                                    detectTapGestures {
+//
+//                                        touchPoint = it
+////                                        balancePopup.value = !balancePopup.value
+//                                    }
                                 },
                             verticalArrangement = Arrangement.Center
 
@@ -503,13 +495,50 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                         .align(Bottom)
                                         .padding(end = 8.dp, top = 3.dp)
                                 )
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_business_expand),
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .align(Bottom),
-                                    contentDescription = ""
-                                )
+                                Box(
+                                    Modifier.align(Bottom)
+                                ) {
+
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_business_expand),
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                            .clickable {
+                                                balancePopup.value = !balancePopup.value
+                                            },
+                                        contentDescription = ""
+                                    )
+
+                                    DropDownPopup(expanded = balancePopup) {
+                                        customerBalanceType.value = it
+                                        when (it) {
+                                            Balance.BLOCKED -> {
+                                                balance.value = customerBalance[0].BLOCK_BALANCE
+                                            }
+
+                                            Balance.FREE_BALANCE -> {
+                                                balance.value = customerBalance[0].AVAIL_BALANCE
+                                            }
+
+                                            Balance.BANK_EXECUTION -> {
+                                                balance.value = customerBalance[0].WAITING_BALANCE
+                                            }
+
+                                            Balance.AFTER_EXECUTION -> {
+                                                balance.value =
+                                                    customerBalance[0].AFTERAPPROVE_BALANCE
+                                            }
+
+                                            Balance.BALANCE -> {
+                                                balance.value = customerBalance[0].BALANCE
+                                            }
+
+                                        }
+                                    }
+
+
+                                }
+
 
                             }
                             Row() {
@@ -549,7 +578,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     .padding(horizontal = 5.dp)
             ) {
 
-                TransferTopMenu(transferHeaderList){
+                TransferTopMenu(transferHeaderList) {
 
                 }
 
@@ -575,34 +604,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
-    DropDownPopup(balancePopup, density, touchPoint, screenHeightDp) {
-        customerBalanceType.value = it
-        when (it) {
-            Balance.BLOCKED -> {
-                balance.value = customerBalance[0].BLOCK_BALANCE
-            }
-
-            Balance.FREE_BALANCE -> {
-                balance.value = customerBalance[0].AVAIL_BALANCE
-            }
-
-            Balance.BANK_EXECUTION -> {
-                balance.value = customerBalance[0].WAITING_BALANCE
-            }
-
-            Balance.AFTER_EXECUTION -> {
-                balance.value = customerBalance[0].AFTERAPPROVE_BALANCE
-            }
-
-            Balance.BALANCE -> {
-                balance.value = customerBalance[0].BALANCE
-            }
-
-        }
-    }
-
-
-
     if (customerBalance.isNotEmpty() && customerBalance != null) {
         setDefaultBalanceValue(customerBalanceType, balance, customerBalance)
     }
@@ -617,7 +618,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
 //                Message.showMessage(context, it.errorMessage)
-
             }
 
             is DataState.Success -> {
@@ -728,6 +728,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
 }
+
 
 @Composable
 fun DateHeader(date: String) {
@@ -874,17 +875,65 @@ fun setDefaultBalanceValue(
 @Composable
 fun DropDownPopup(
     expanded: MutableState<Boolean>,
-    density: Density,
-    touchPoint: Offset,
-    screenHeightDp: Dp,
+//    density: Density,
+//    touchPoint: Offset,
+//    screenHeightDp: Dp,
     selectedString: (type: Balance) -> Unit
 ) {
-    val (xDp, yDp) = with(density) {
-        (touchPoint.x.toDp()) to (touchPoint.y.toDp())
-    }
+//    val (xDp, yDp) = with(density) {
+//        (touchPoint.x.toDp()) to (touchPoint.y.toDp())
+//    }
+//    DropdownMenu(
+//        expanded = expanded.value,
+//        offset = DpOffset(xDp, -screenHeightDp + yDp + 150.dp),
+//        onDismissRequest = { expanded.value = false }
+//    ) {
+//
+//        DropdownMenuItem(
+//            content = { Text(stringResource(R.string.balance)) },
+//            onClick = {
+//                selectedString(Balance.BALANCE)
+//                expanded.value = false
+//            }
+//        )
+//        Divider()
+//
+//        DropdownMenuItem(
+//            content = { Text(stringResource(R.string.blocked)) },
+//            onClick = {
+//                selectedString(Balance.BLOCKED)
+//                expanded.value = false
+//            }
+//        )
+//        Divider()
+//        DropdownMenuItem(
+//            content = { Text(stringResource(R.string.free_balance)) },
+//            onClick = {
+//                selectedString(Balance.FREE_BALANCE)
+//                expanded.value = false
+//            }
+//        )
+//        Divider()
+//        DropdownMenuItem(
+//            content = { Text(stringResource(R.string.bank_execution)) },
+//            onClick = {
+//                selectedString(Balance.BANK_EXECUTION)
+//                expanded.value = false
+//            }
+//        )
+//        Divider()
+//        DropdownMenuItem(
+//            content = { Text(stringResource(R.string.after_execution)) },
+//            onClick = {
+//                selectedString(Balance.AFTER_EXECUTION)
+//                expanded.value = false
+//            }
+//        )
+//    }
+
+
     DropdownMenu(
         expanded = expanded.value,
-        offset = DpOffset(xDp, -screenHeightDp + yDp + 150.dp),
         onDismissRequest = { expanded.value = false }
     ) {
 

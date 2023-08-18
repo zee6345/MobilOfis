@@ -44,6 +44,8 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem, onFilterClick: 
     var status = ""
     var color = Color(0xff268ED9)
 
+
+
     when (menu.status) {
         "PENDING_SIGNER" -> {
             status = "For signing"

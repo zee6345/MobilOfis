@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -79,7 +78,7 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
                     Modifier
                         .fillMaxSize()
                         .weight(0.2f)
-                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 5.sdp)
+                        .padding(start = 20.sdp, end = 20.sdp, top = 5.sdp, bottom = 5.sdp)
                         .background(color = Color(0xFF203657))
                 ) {
 
@@ -105,7 +104,7 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
             Spacer(modifier = Modifier.height(20.dp))
 
             var enteredPin by remember { mutableStateOf("") }
-            PinInputView(navController, length = 5) { pin ->
+            PinInputView(length = 5, { pin ->
                 enteredPin = pin
 
                 if (pin.length == 5) {
@@ -113,7 +112,9 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
                     viewModel.session.put(Keys.KEY_PIN, pin)
                     navController.navigate(resetPinNavigationRoute)
                 }
-            }
+            }, {
+
+            })
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -134,9 +135,9 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
 
 @Composable
 fun PinInputView(
-    navController: NavController,
     length: Int,
-    onPinEntered: (String) -> Unit
+    onPinEntered: (String) -> Unit,
+    onKeyEntered: (String) -> Unit
 ) {
     val pinValue = remember { mutableStateOf("") }
 
@@ -155,11 +156,13 @@ fun PinInputView(
         )
     }
 
-    CustomKeyboard(navController, null) { key ->
+    CustomKeyboard { key ->
         if (key == "del") {
             if (pinValue.value.isNotEmpty()) {
                 pinValue.value = pinValue.value.dropLast(1)
             }
+        } else if (key == "fngr") {
+            onKeyEntered("fngr")
         } else {
             if (pinValue.value.length < length) {
                 pinValue.value += key
@@ -176,7 +179,6 @@ fun PinInputView(
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun pinScreenPreview() {
-    val navController = rememberNavController()
-    PinScreen(navController)
+    PinScreen(rememberNavController())
 
 }

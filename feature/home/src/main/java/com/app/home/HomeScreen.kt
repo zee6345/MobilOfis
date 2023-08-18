@@ -11,11 +11,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -41,7 +44,8 @@ fun BottomNavigation(navController: NavController) {
     val items = listOf(
         BottomNavItem.Main,
         BottomNavItem.Transfers,
-        BottomNavItem.Adjustments,)
+        BottomNavItem.Adjustments,
+    )
     BottomNavigation(
         backgroundColor = Color.White,
         contentColor = Color.Black
@@ -49,13 +53,17 @@ fun BottomNavigation(navController: NavController) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
+
             BottomNavigationItem(
                 icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
                 label = {
-                    Text(
-                        text = item.title,
-                        fontSize = 9.sp
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Spacer(modifier = Modifier.height(3.dp)) // Add space at the top
+                        Text(
+                            text = item.title,
+                            fontSize = 9.sp
+                        )
+                    }
                 },
                 selectedContentColor = Color.Black,
                 unselectedContentColor = Color.Black.copy(0.4f),

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,17 +38,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.uikit.bottomSheet.FingerPrintModalBottomSheet
 import com.app.auth.pin.navigation.successfulRegistration
-import com.app.network.utils.Message
 import com.app.network.helper.Keys
+import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.bottomSheet.FingerPrintModalBottomSheet
 import ir.kaaveh.sdpcompose.sdp
 
 
 @Composable
-fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hiltViewModel()) {
+fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
 
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     var enteredPin by remember { mutableStateOf("") }
@@ -87,7 +86,7 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hilt
                     Modifier
                         .fillMaxSize()
                         .weight(0.2f)
-                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 10.sdp)
+                        .padding(start = 20.sdp, end = 20.sdp, top = 5.sdp, bottom = 10.sdp)
                         .background(color = Color(0xFF203657))
                 ) {
 
@@ -132,26 +131,28 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hilt
             Spacer(modifier = Modifier.height(20.dp))
 
 
-            PinInputView(navController, length = 5) { pin ->
+            PinInputView(length = 5, { pin ->
                 enteredPin = pin
 
                 if (pin.isNotEmpty() && pin.length == 5) {
 
                     val firstPin = loginViewModel.session[Keys.KEY_PIN]
-                    if (firstPin.equals(pin)){
+                    if (firstPin.equals(pin)) {
 
                         enteredPin = pin
 
                         showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
 
-                    } else{
+                    } else {
                         loginViewModel.session.delete(Keys.KEY_PIN)
                         Message.showMessage(context, "Pin not matched")
 
                     }
 
                 }
-            }
+            }, {
+                showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
+            })
 
         }
 
@@ -174,7 +175,6 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel= hilt
 
 
 }
-
 
 
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
