@@ -1,20 +1,13 @@
 package com.app.home
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,17 +17,28 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.home.navigation.NavigationGraph
+import com.app.home.navigation.NavigationGraphSign
+import com.app.transfer.signatureauth.SignAuth
+import com.app.uikit.utils.SharedModel
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreenView(navController: NavController) {
-
     val navController = rememberNavController()
-    Scaffold(
-        bottomBar = { BottomNavigation(navController = navController) }
-    ) {
-        NavigationGraph(navController = navController)
+
+    val signInfo = SharedModel.init().signInfo
+
+    if (signInfo.value.fromSign) {
+        Scaffold() {
+            NavigationGraphSign(navController = navController)
+        }
+    } else {
+        Scaffold(
+            bottomBar = { BottomNavigation(navController = navController) }
+        ) {
+            NavigationGraph(navController = navController)
+        }
     }
 }
 

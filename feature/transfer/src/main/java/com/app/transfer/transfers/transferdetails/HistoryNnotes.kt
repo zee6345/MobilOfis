@@ -3,6 +3,7 @@ package com.app.transfer.transfers.transferdetails
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,9 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -60,10 +66,15 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     var expanded2 by remember { mutableStateOf(true) }
     val isLoading = remember { mutableStateOf(true) }
     val history = remember { mutableListOf<HISTORYDETAILS>() }
+    val isSigned = remember { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
-    val ibankRef = SharedModel.init().ibankRef.value
     val detailsData by viewModel.getTransactionDetails.collectAsState()
+
+    //fetch item data
+    val data = SharedModel.init().signatureData.value
+    isSigned.value = data!!.isSignRequired
+    val ibankRef = data.transfer.ibankRef
 
     LaunchedEffect(Unit) {
         viewModel.getTransactionDetails(ibankRef)
@@ -82,7 +93,8 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
 
             ) {
 
@@ -187,6 +199,12 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
                         CardInfo5(navController = navController, it)
                     })
                 }
+
+
+            if (isSigned.value) {
+                CardInfo6(navController = navController)
+            }
+
         }
     }
 
@@ -198,7 +216,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
             is DataState.Error -> {
                 isLoading.value = false
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -474,6 +492,74 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
 
         }
     }
+
+}
+
+@Composable
+private fun CardInfo6(navController: NavController) {
+
+    Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { navController.popBackStack() },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFFF3F7FA),
+                contentColor = Color(0xFF203657)
+            ),
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .border(
+                    width = 2.dp,
+                    color = Color(0xFF203657),
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            Text(
+                stringResource(R.string.back),
+                modifier = Modifier.padding(vertical = 10.dp),
+                style = TextStyle(
+                    fontSize = 17.sp,
+                    shadow = null
+                )
+            )
+        }
+
+        Button(
+            onClick = { navController.popBackStack() },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFF203657),
+                contentColor = Color(0xFF203657)
+            ),
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .border(
+                    width = 2.dp,
+                    color = Color(0xFF203657),
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            Text(
+                "Sign",
+                modifier = Modifier.padding(vertical = 10.dp),
+                style = TextStyle(
+                    fontSize = 17.sp,
+                    shadow = null,
+                    color = Color.White
+                )
+            )
+        }
+    }
+
 
 }
 

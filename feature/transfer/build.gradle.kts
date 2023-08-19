@@ -43,8 +43,6 @@ android {
 dependencies {
 
 
-
-//    implementation (project (":feature:adjustment" ))
     implementation (project (":uikit" ))
 
 

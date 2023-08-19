@@ -1,5 +1,6 @@
 package com.app.transfer.transfers
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -24,7 +25,7 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 
 
 @Composable
-fun TransferTopMenu(
+fun headerFilters(
     transferHeaderList: MutableList<TransferCountSummaryResponseItem>,
     onFilterClick: (String) -> Unit
 ) {
@@ -41,10 +42,9 @@ fun TransferTopMenu(
 
 @Composable
 fun TransferMenuItemView(menu: TransferCountSummaryResponseItem, onFilterClick: (String) -> Unit) {
+
     var status = ""
     var color = Color(0xff268ED9)
-
-
 
     when (menu.status) {
         "PENDING_SIGNER" -> {
@@ -95,6 +95,15 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem, onFilterClick: 
         "SEND_TO_BANK" -> {
             status = "In process"
             color = Color(0xFFCDDC39)
+        }
+
+        "EDITED" -> {
+            status = "In process"
+            color = Color(0xFFCDDC39)
+        }
+
+        else -> {
+            Log.e("mmmTAG", "${menu.status}")
         }
     }
 

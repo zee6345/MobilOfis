@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.app.auth.login.easysignature.navigation.easySignature
 import com.app.auth.login.navigation.loginScreen
 import com.app.auth.login.navigation.otpScreen
+import com.app.transfer.signatureauth.navigation.signAuth
 import com.app.auth.pin.navigation.pinScreen
 import com.app.auth.pin.navigation.resetScreen
 import com.app.auth.pin.navigation.successfulRegistrationScreen
@@ -14,6 +15,8 @@ import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.auth.splash.navigation.splashScreen
 import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
+import com.app.transfer.signatureauth.navigation.signAuthGoogle
+import com.app.transfer.signatureauth.navigation.signSuccess
 
 
 @Composable
@@ -37,6 +40,9 @@ fun MoNavHost(
         successfulRegistrationScreen(navController)
         welcomePin(navController)
         homeScreen(navController)
+        signAuth(navController)
+        signAuthGoogle(navController)
+        signSuccess(navController)
     }
 }
 

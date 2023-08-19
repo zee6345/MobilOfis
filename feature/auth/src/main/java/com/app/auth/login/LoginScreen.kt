@@ -109,8 +109,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val coroutine = rememberCoroutineScope()
 
     var isPswdVisible by remember { mutableStateOf(false) }
-    val passwordVisualTransformation =
-        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation = if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()

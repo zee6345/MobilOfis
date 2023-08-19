@@ -1,6 +1,7 @@
 package com.app.transfer.transfers.transferdetails
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,13 +52,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetTransactionDetails
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
+import com.app.uikit.bottomSheet.BankSignBottomSheet
+import com.app.uikit.models.AuthType
+import com.app.uikit.models.SignInfo
 import com.app.uikit.utils.SharedModel
 import ir.kaaveh.sdpcompose.sdp
 
@@ -67,7 +72,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val isLoading = remember { mutableStateOf(true) }
     var isFieldExpanded by remember { mutableStateOf(true) }
     var expanded by remember { mutableStateOf(true) }
-    val ibankRef = SharedModel.init().ibankRef.value
+
+
     val detailsData by viewModel.getTransactionDetails.collectAsState()
     val context: Context = LocalContext.current
 
@@ -84,10 +90,17 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val bnfAccount = remember { mutableStateOf("") }
     val bnfTIN = remember { mutableStateOf("") }
     val bnfNameCode = remember { mutableStateOf("") }
+    val isSigned = remember { mutableStateOf(false) }
+
+    val signBottomSheet = remember { mutableStateOf(false) }
+
+    //fetch item data
+    val data = SharedModel.init().signatureData.value
+    isSigned.value = data!!.isSignRequired
+    val ibankRef = data.transfer.ibankRef
 
 
 //    val pdfList  = remember { mutableListOf(Any) }
-
 
     LaunchedEffect(Unit) {
         viewModel.getTransactionDetails(ibankRef)
@@ -102,237 +115,85 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
             ) {
 
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
-            ) {
-                Column(
+            if (sourceOfOrigin.value != null) {
 
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                    backgroundColor = Color.White
                 ) {
+                    Column(
 
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey)),
-                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
+
+                        Row(
                             Modifier
-                                .weight(0.5f)
-                                .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
-                                .padding(horizontal = 10.sdp, vertical = 8.sdp)
                                 .fillMaxWidth()
-
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey)),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-
-                            Text(
-                                text = stringResource(R.string.source_of_origin), style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+                                    .rightVerticalDashedBorder(
+                                        3.dp,
+                                        colorResource(R.color.border_grey)
                                     )
-                            )
+                                    .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                                    .fillMaxWidth()
 
-                            Text(
-                                text = if ("${sourceOfOrigin.value}" == "WEB") "Internet Office" else "${sourceOfOrigin.value}",
-                                style = TextStyle(
+                            ) {
 
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
+                                Text(
+                                    text = stringResource(R.string.source_of_origin),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = colorResource(R.color.grey_text),
+
+                                        )
                                 )
-                            )
-                        }
 
-                        Column(
-                            Modifier
-                                .weight(0.5f)
-                                .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                                .fillMaxWidth()
-                        ) {
+                                Text(
+                                    text = if ("${sourceOfOrigin.value}" == "WEB") "Internet Office" else "${sourceOfOrigin.value}",
+                                    style = TextStyle(
 
-                            Text(
-                                text = stringResource(R.string.document_no), style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-                                )
-                            )
-
-                            Text(
-                                text = "${documentNo.value}", style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
-
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
                                     )
-                            )
-                        }
-                    }
-
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-
-                        Column {
-
-                            Text(
-                                text = stringResource(R.string.transfer_type), style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
                                 )
-                            )
+                            }
 
-                            Text(
-                                text = "${transferType.value}", style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
+                            Column(
+                                Modifier
+                                    .weight(0.5f)
+                                    .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    text = stringResource(R.string.document_no), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = colorResource(R.color.grey_text),
+                                    )
                                 )
-                            )
+
+                                Text(
+                                    text = "${documentNo.value}", style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+
+                                        )
+                                )
+                            }
                         }
 
 
-                    }
-
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-
-                        Column {
-
-                            Text(
-                                text = stringResource(R.string.sender), style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-                                )
-                            )
-
-                            Text(
-                                text = "${sender.value}",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
-                                )
-                            )
-                        }
-
-
-                    }
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-
-                        Column {
-
-                            Text(
-                                text = stringResource(id = R.string.from_the_account),
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-                                )
-                            )
-
-                            Text(
-                                text = "${fromAccount.value}",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
-                                )
-                            )
-                        }
-
-                    }
-
-
-                }
-            }
-
-
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
-            ) {
-                Column(
-
-                ) {
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                            .clickable {
-                                isFieldExpanded = !isFieldExpanded
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Text(
-                            text = stringResource(R.string.field),
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(600),
-
-                                )
-                        )
-
-                        if (isFieldExpanded)
-                            Image(
-                                painterResource(id = R.drawable.ic_option_expand),
-                                contentDescription = "",
-                                modifier = Modifier.size(25.dp)
-                            ) else Image(
-                            painterResource(id = R.drawable.ic_option_collapse),
-                            contentDescription = "",
-                            modifier = Modifier.size(25.dp)
-                        )
-                    }
-
-
-                    if (isFieldExpanded) {
 
                         Row(
                             Modifier
@@ -348,7 +209,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             Column {
 
                                 Text(
-                                    text = stringResource(R.string.name), style = TextStyle(
+                                    text = stringResource(R.string.transfer_type),
+                                    style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = colorResource(R.color.grey_text),
@@ -356,7 +218,42 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 Text(
-                                    text = bnfName.value,
+                                    text = "${transferType.value}", style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+                                    )
+                                )
+                            }
+
+
+                        }
+
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+
+                            Column {
+
+                                Text(
+                                    text = stringResource(R.string.sender), style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = colorResource(R.color.grey_text),
+                                    )
+                                )
+
+                                Text(
+                                    text = "${sender.value}",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -367,6 +264,311 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
 
                         }
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+
+                            Column {
+
+                                Text(
+                                    text = stringResource(id = R.string.from_the_account),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = colorResource(R.color.grey_text),
+                                    )
+                                )
+
+                                Text(
+                                    text = "${fromAccount.value}",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
+                                    )
+                                )
+                            }
+
+                        }
+
+
+                    }
+                }
+            }
+
+
+            if (bnfName.value != null) {
+
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                    backgroundColor = Color.White
+                ) {
+                    Column(
+
+                    ) {
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                                .clickable {
+                                    isFieldExpanded = !isFieldExpanded
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Text(
+                                text = stringResource(R.string.field),
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight(600),
+
+                                    )
+                            )
+
+                            if (isFieldExpanded)
+                                Image(
+                                    painterResource(id = R.drawable.ic_option_expand),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(25.dp)
+                                ) else Image(
+                                painterResource(id = R.drawable.ic_option_collapse),
+                                contentDescription = "",
+                                modifier = Modifier.size(25.dp)
+                            )
+                        }
+
+
+                        if (isFieldExpanded) {
+
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+
+                            ) {
+
+                                Column {
+
+                                    Text(
+                                        text = stringResource(R.string.name), style = TextStyle(
+                                            fontSize = 12.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = colorResource(R.color.grey_text),
+                                        )
+                                    )
+
+                                    Text(
+                                        text = "${bnfName.value}",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = Color(0xFF223142),
+                                        )
+                                    )
+                                }
+
+
+                            }
+
+
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    Modifier
+                                        .weight(0.7f)
+                                        .rightVerticalDashedBorder(
+                                            3.dp,
+                                            colorResource(R.color.border_grey)
+                                        )
+                                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                                        .fillMaxWidth()
+
+                                ) {
+
+                                    Text(
+                                        text = stringResource(R.string.account_number),
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = colorResource(R.color.grey_text),
+
+                                            )
+                                    )
+
+                                    Text(
+                                        text = bnfAccount.value,
+                                        style = TextStyle(
+
+                                            fontSize = 14.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = Color(0xFF223142),
+                                        )
+                                    )
+                                }
+
+                                Column(
+                                    Modifier
+                                        .weight(0.3f)
+                                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                                        .fillMaxWidth()
+                                ) {
+
+                                    Text(
+                                        text = stringResource(R.string.tin), style = TextStyle(
+                                            fontSize = 12.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = colorResource(R.color.grey_text),
+                                        )
+                                    )
+
+                                    Text(
+                                        text = bnfTIN.value, style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = Color(0xFF223142),
+
+                                            )
+                                    )
+                                }
+                            }
+
+
+                        }
+
+
+                    }
+                }
+
+            }
+
+
+            if (bnfNameCode.value != null) {
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                    backgroundColor = Color.White
+                ) {
+                    Column(
+
+                    ) {
+
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                                .clickable {
+                                    expanded = !expanded
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Text(
+                                text = stringResource(R.string.alan_s_bank),
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight(600),
+
+                                    )
+                            )
+
+                            if (expanded)
+                                Image(
+                                    painterResource(id = R.drawable.ic_option_expand),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(25.dp)
+                                ) else Image(
+                                painterResource(id = R.drawable.ic_option_collapse),
+                                contentDescription = "",
+                                modifier = Modifier.size(25.dp)
+                            )
+                        }
+
+
+                        if (expanded) {
+
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+
+                            ) {
+
+                                Column {
+
+                                    Text(
+                                        text = stringResource(R.string.code_and_name),
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = colorResource(R.color.grey_text),
+                                        )
+                                    )
+
+                                    Text(
+                                        text = "${bnfNameCode.value}",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            color = Color(0xFF223142),
+                                        )
+                                    )
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                    }
+                }
+            }
+
+
+            if (amount.value != null) {
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                    backgroundColor = Color.White
+                ) {
+                    Column(
+
+                    ) {
 
 
                         Row(
@@ -388,8 +590,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             ) {
 
                                 Text(
-                                    text = stringResource(R.string.account_number),
-                                    style = TextStyle(
+                                    text = stringResource(id = R.string.amount), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = colorResource(R.color.grey_text),
@@ -398,8 +599,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 Text(
-                                    text = bnfAccount.value,
-                                    style = TextStyle(
+                                    text = "${amount.value}", style = TextStyle(
 
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -416,7 +616,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             ) {
 
                                 Text(
-                                    text = stringResource(R.string.tin), style = TextStyle(
+                                    text = stringResource(R.string.commission), style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = colorResource(R.color.grey_text),
@@ -424,7 +624,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 Text(
-                                    text = bnfTIN.value, style = TextStyle(
+                                    text = "${commAmount.value}", style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF223142),
@@ -435,65 +635,12 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         }
 
 
-                    }
 
-
-                }
-            }
-
-
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
-            ) {
-                Column(
-
-                ) {
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                            .clickable {
-                                expanded = !expanded
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Text(
-                            text = stringResource(R.string.alan_s_bank),
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(600),
-
-                                )
-                        )
-
-                        if (expanded)
-                            Image(
-                                painterResource(id = R.drawable.ic_option_expand),
-                                contentDescription = "",
-                                modifier = Modifier.size(25.dp)
-                            ) else Image(
-                            painterResource(id = R.drawable.ic_option_collapse),
-                            contentDescription = "",
-                            modifier = Modifier.size(25.dp)
-                        )
-                    }
-
-
-                    if (expanded) {
 
                         Row(
                             Modifier
                                 .fillMaxWidth()
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -504,7 +651,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             Column {
 
                                 Text(
-                                    text = stringResource(R.string.code_and_name),
+                                    text = stringResource(R.string.the_purpose_of_the_payment),
                                     style = TextStyle(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -513,7 +660,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 Text(
-                                    text = stringResource(R.string._805722_international_bank_of_azerbaijan_ojsc_central_branch),
+                                    text = "${purpose.value}",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -522,161 +669,43 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
                             }
 
-
                         }
 
 
-                    }
 
-
-                }
-            }
-
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
-            ) {
-                Column(
-
-                ) {
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey)),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
+                        Row(
                             Modifier
-                                .weight(0.7f)
-                                .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
-                                .padding(horizontal = 10.sdp, vertical = 8.sdp)
                                 .fillMaxWidth()
+                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
 
                         ) {
 
-                            Text(
-                                text = stringResource(id = R.string.amount), style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
+                            Column {
 
+                                Text(
+                                    text = stringResource(R.string.information_for_alan),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = colorResource(R.color.grey_text),
                                     )
-                            )
-
-                            Text(
-                                text = "${amount.value}", style = TextStyle(
-
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
                                 )
-                            )
-                        }
 
-                        Column(
-                            Modifier
-                                .weight(0.3f)
-                                .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                                .fillMaxWidth()
-                        ) {
-
-                            Text(
-                                text = stringResource(R.string.commission), style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-                                )
-                            )
-
-                            Text(
-                                text = "${commAmount.value}", style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
-
+                                Text(
+                                    text = "${note.value}",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        color = Color(0xFF223142),
                                     )
-                            )
+                                )
+                            }
+
                         }
-                    }
-
-
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-
-                        Column {
-
-                            Text(
-                                text = stringResource(R.string.the_purpose_of_the_payment),
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-                                )
-                            )
-
-                            Text(
-                                text = "${purpose.value}",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
-                                )
-                            )
-                        }
-
-                    }
-
-
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-
-                        Column {
-
-                            Text(
-                                text = stringResource(R.string.information_for_alan),
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = colorResource(R.color.grey_text),
-                                )
-                            )
-
-                            Text(
-                                text = "${note.value}",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    color = Color(0xFF223142),
-                                )
-                            )
-                        }
-
-                    }
 
 //                if (!transactionDetails.PDF_LIST.isEmpty()) {
 //
@@ -725,12 +754,19 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 //                }
 
 
+                    }
                 }
             }
 
             PdfAttachmentItem(stringResource(R.string.pdf))
 
-            CardInfo5(navController = navController)
+            if (isSigned.value) {
+                CardInfo6(navController = navController) {
+                    signBottomSheet.value = true
+                }
+            } else {
+                CardInfo5(navController = navController)
+            }
 
             Spacer(modifier = Modifier.size(height = 100.dp, width = 1.dp))
 
@@ -754,7 +790,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
             is DataState.Error -> {
                 isLoading.value = false
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -780,6 +816,25 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
             }
         }
+    }
+
+
+    BankSignBottomSheet(signBottomSheet) {
+        when (it) {
+            AuthType.SMS -> {
+                SharedModel.init().signInfo.value = SignInfo(true, it)
+            }
+
+            AuthType.GOOGLE_AUTH -> {
+                SharedModel.init().signInfo.value = SignInfo(true, it)
+            }
+
+            AuthType.ASAN_IMZA -> {
+                SharedModel.init().signInfo.value = SignInfo(true, it)
+            }
+
+        }
+
     }
 
 
@@ -842,7 +897,7 @@ private fun CardInfo5(navController: NavController) {
     Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
     Button(
-        onClick = { },
+        onClick = { navController.popBackStack() },
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFFF3F7FA), // Change the background color here
@@ -864,6 +919,74 @@ private fun CardInfo5(navController: NavController) {
                 fontSize = 17.sp, shadow = null
             )
         )
+    }
+
+
+}
+
+@Composable
+private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
+
+    Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { navController.popBackStack() },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFFF3F7FA),
+                contentColor = Color(0xFF203657)
+            ),
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .border(
+                    width = 2.dp,
+                    color = Color(0xFF203657),
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            Text(
+                stringResource(R.string.back),
+                modifier = Modifier.padding(vertical = 10.dp),
+                style = TextStyle(
+                    fontSize = 17.sp,
+                    shadow = null
+                )
+            )
+        }
+
+        Button(
+            onClick = { onClick() },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFF203657),
+                contentColor = Color(0xFF203657)
+            ),
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .border(
+                    width = 2.dp,
+                    color = Color(0xFF203657),
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            Text(
+                "Sign",
+                modifier = Modifier.padding(vertical = 10.dp),
+                style = TextStyle(
+                    fontSize = 17.sp,
+                    shadow = null,
+                    color = Color.White
+                )
+            )
+        }
     }
 
 

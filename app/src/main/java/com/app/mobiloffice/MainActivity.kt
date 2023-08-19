@@ -14,9 +14,14 @@ import com.app.mobiloffice.ui.MoApp
 import com.app.mobiloffice.ui.theme.MobilOfficeTheme
 import com.app.network.viewmodel.LoginViewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
 import com.app.network.models.DataState
+import com.app.network.models.ErrorResponse
+import com.app.network.models.responseModels.GetLastLogin
+import com.app.network.retrofitClient.APIService
+import com.app.network.retrofitClient.BaseRetrofitClient
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
 import java.util.TimerTask
@@ -43,18 +48,29 @@ class MainActivity : ComponentActivity() {
 
                         //clear pin
                         Session(context).delete(Keys.KEY_USER_PIN)
+                        Session(context).delete(Keys.KEY_TOKEN)
+
+                        val userPing = Session(context)[Keys.KEY_USER_PIN]
+                        val token = Session(context)[Keys.KEY_TOKEN]
+
+                        Log.e("mmmTAG", "${userPing}")
+                        Log.e("mmmTAG", "${token}")
+
+
+
+//                        val intent = Intent(this@MainActivity, MainActivity::class.java)
+//                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                        startActivity(intent)
+//                        finishAffinity()
+
+                    } else if (it.equals("exit", true)) {
 
                         val intent = Intent(this@MainActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
                         finishAffinity()
 
-                    } else if (it.equals("exit", true)){
-
-                        val intent = Intent(this@MainActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                        finishAffinity()
+                    } else {
 
                     }
 
@@ -72,7 +88,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
         //schedule token validation
         val timer = Timer()
         timer.schedule(object : TimerTask() {
@@ -88,18 +103,66 @@ class MainActivity : ComponentActivity() {
                 }
 
                 is DataState.Error -> {
-                    if (it.errorMessage == "401"){
 
-                        // In your sending code
-                        val intent = Intent()
-                        intent.action = SESSION
-                        intent.putExtra("data", "expire")
-                        LocalBroadcastManager.getInstance(this@MainActivity).sendBroadcast(intent)
-                    }
+
+//                    val errorResponse =
+//                        Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+
+//                    Log.e("mmmTAG", errorResponse.code)
+
+//                    if (errorResponse.code.equals("ERROR.SESSION_EXPIRE", true)){
+//
+//                        // In your sending code
+//                        val intent = Intent()
+//                        intent.action = SESSION
+//                        intent.putExtra("data", "expire")
+//                        LocalBroadcastManager.getInstance(this@MainActivity).sendBroadcast(intent)
+//
+//                    }
+
+                    Log.e("mmmTAG", "error:: ${it.errorMessage}")
                 }
 
                 is DataState.Success -> {
-
+                    Log.e("mmmTAG", "success:: ${it.data}")
+//                    val code = it.data as Int
+//                    when (code) {
+//
+//                        200 -> {
+//
+//                        }
+//
+//                        401 -> {
+//
+////                            // In your sending code
+////                            val intent = Intent()
+////                            intent.action = SESSION
+////                            intent.putExtra("data", "expire")
+////                            LocalBroadcastManager.getInstance(this@MainActivity)
+////                                .sendBroadcast(intent)
+//
+//
+//                            val userPing = Session(this)[Keys.KEY_USER_PIN]
+//                            val token = Session(this)[Keys.KEY_TOKEN]
+//
+//                            Log.e("mmmTAG", "${userPing}")
+//                            Log.e("mmmTAG", "${token}")
+//
+//
+//                            //clear pin
+//                            Session(this).delete(Keys.KEY_USER_PIN)
+//                            Session(this).delete(Keys.KEY_TOKEN)
+//
+//
+//                            Log.e("mmmTAG", "${userPing}")
+//                            Log.e("mmmTAG", "${token}")
+//
+//                        }
+//
+//                        else -> {
+//
+//                        }
+//                    }
                 }
             }
 

@@ -1,6 +1,5 @@
 package com.app.home.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -43,10 +42,16 @@ import com.app.home.main.loan.navigation.homeToLoanInformation
 import com.app.home.main.trust.DepositDetails
 import com.app.home.main.trust.navigation.homeToTrustDepositDetails
 import com.app.transfer.TransferScreen
+import com.app.transfer.signatureauth.SignAuth
+import com.app.transfer.signatureauth.SignAuthGoogle
+import com.app.transfer.signatureauth.SignSuccess
+import com.app.transfer.signatureauth.navigation.signSuccess
+import com.app.transfer.signatureauth.navigation.signatureAuth
+import com.app.transfer.signatureauth.navigation.signatureAuthGoogle
+import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.transfer.transfers.TransferDetailsInformation
 import com.app.transfer.transfers.navigation.transferToDetails
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavItem.Main.screen_route) {
@@ -148,6 +153,25 @@ fun NavigationGraph(navController: NavHostController) {
             ConfirmSMSCodeScreen(navController)
         }
 
+
+    }
+}
+
+@Composable
+fun NavigationGraphSign(navController: NavHostController) {
+    NavHost(navController, startDestination = signatureAuth) {
+
+        composable(signatureAuth) {
+            SignAuth(navController)
+        }
+
+        composable(signatureAuthGoogle) {
+            SignAuthGoogle(navController)
+        }
+
+        composable(signatureSuccess) {
+            SignSuccess(navController)
+        }
 
     }
 }

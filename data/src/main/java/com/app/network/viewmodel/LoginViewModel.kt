@@ -1,5 +1,6 @@
 package com.app.network.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.network.helper.Error
@@ -137,12 +138,13 @@ class LoginViewModel @Inject constructor(
                         call: Call<GetLastLogin>,
                         response: Response<GetLastLogin>
                     ) {
-                        if (response.isSuccessful && response.body() != null) {
-                            _lastLogin.value = DataState.Success(response.body()!!)
-                        } else {
+//                        Log.e("mmmTAG", "${response.code()}")
+                        _lastLogin.value = DataState.Success(response.code())
+//                        if (response.isSuccessful && response.body() != null) {
+//                            _lastLogin.value = DataState.Success(response.body()!!)
+//                        } else {
 //                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
-                            _lastLogin.value = DataState.Error(response.code().toString())
-                        }
+//                        }
                     }
 
                     override fun onFailure(call: Call<GetLastLogin>, t: Throwable) {

@@ -53,7 +53,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.viewmodel.HomeViewModel
-import com.app.transfer.transfers.TransferTopMenu
+import com.app.transfer.transfers.headerFilters
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -578,7 +578,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     .padding(horizontal = 5.dp)
             ) {
 
-                TransferTopMenu(transferHeaderList) {
+                headerFilters(transferHeaderList) {
 
                 }
 
