@@ -44,10 +44,12 @@ import com.app.home.main.trust.navigation.homeToTrustDepositDetails
 import com.app.transfer.TransferScreen
 import com.app.transfer.signatureauth.SignAuth
 import com.app.transfer.signatureauth.SignAuthGoogle
+import com.app.transfer.signatureauth.SignFailed
 import com.app.transfer.signatureauth.SignSuccess
 import com.app.transfer.signatureauth.navigation.signSuccess
 import com.app.transfer.signatureauth.navigation.signatureAuth
 import com.app.transfer.signatureauth.navigation.signatureAuthGoogle
+import com.app.transfer.signatureauth.navigation.signatureFailed
 import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.transfer.transfers.TransferDetailsInformation
 import com.app.transfer.transfers.navigation.transferToDetails
@@ -171,6 +173,10 @@ fun NavigationGraphSign(navController: NavHostController) {
 
         composable(signatureSuccess) {
             SignSuccess(navController)
+        }
+
+        composable(signatureFailed) {
+            SignFailed(navController)
         }
 
     }

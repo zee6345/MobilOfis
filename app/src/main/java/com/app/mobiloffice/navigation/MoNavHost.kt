@@ -16,6 +16,7 @@ import com.app.auth.splash.navigation.splashScreen
 import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
 import com.app.transfer.signatureauth.navigation.signAuthGoogle
+import com.app.transfer.signatureauth.navigation.signFailed
 import com.app.transfer.signatureauth.navigation.signSuccess
 
 
@@ -43,6 +44,7 @@ fun MoNavHost(
         signAuth(navController)
         signAuthGoogle(navController)
         signSuccess(navController)
+        signFailed(navController)
     }
 }
 

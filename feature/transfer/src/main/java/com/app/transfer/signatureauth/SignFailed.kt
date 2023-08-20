@@ -52,7 +52,7 @@ import ir.kaaveh.sdpcompose.sdp
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @SuppressLint("RememberReturnType")
 @Composable
-fun SignSuccess(navController: NavController) {
+fun SignFailed(navController: NavController) {
 
     var selected by remember { mutableStateOf(0) }
 
@@ -132,7 +132,7 @@ fun SignSuccess(navController: NavController) {
 
 
                         Image(
-                            painterResource(id = R.drawable.ic_sign_success),
+                            painterResource(id = R.drawable.ic_sign_failed),
                             contentDescription = "",
                             Modifier
                                 .size(24.sdp)
@@ -142,7 +142,7 @@ fun SignSuccess(navController: NavController) {
                         Box() {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterStart),
-                                text = "Successful operation!",
+                                text = "Operation failed!",
                                 style = TextStyle(color = Color.White, fontSize = 29.sp)
                             )
                         }
@@ -173,8 +173,7 @@ fun SignSuccess(navController: NavController) {
                     Modifier.padding(horizontal = 20.sdp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "The transfer has been successfully sent to the bank and will be processed on the next business day.",
+                    Text("An error occurred!\n" + "Please try again.",
                         style = TextStyle(
                             textAlign = TextAlign.Center
                         )
@@ -231,6 +230,6 @@ fun SignSuccess(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSignSuccess() {
-    SignSuccess(navController = rememberNavController())
+fun PreviewSignFailed() {
+    SignFailed(navController = rememberNavController())
 }

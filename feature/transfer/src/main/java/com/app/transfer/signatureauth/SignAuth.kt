@@ -54,8 +54,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.network.utils.Message
 import com.app.transfer.R
-import com.app.transfer.signatureauth.navigation.signatureAuthGoogle
-import com.app.transfer.signatureauth.navigation.signatureSuccess
+import com.app.transfer.signatureauth.navigation.signatureFailed
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.models.AuthType
 import com.app.uikit.utils.SharedModel
@@ -452,8 +451,8 @@ fun SignAuth(navController: NavController) {
 
                 } else if (selected == 2) {
 
-                    LaunchedEffect(Unit){
-                        navController.navigate(signatureSuccess)
+                    LaunchedEffect(Unit) {
+                        navController.navigate(signatureFailed)
                     }
 
                 }

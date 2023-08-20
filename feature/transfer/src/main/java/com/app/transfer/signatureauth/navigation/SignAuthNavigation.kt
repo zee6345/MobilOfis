@@ -5,11 +5,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.transfer.signatureauth.SignAuth
 import com.app.transfer.signatureauth.SignAuthGoogle
+import com.app.transfer.signatureauth.SignFailed
 import com.app.transfer.signatureauth.SignSuccess
 
 const val signatureAuth = "signatureAuth"
 const val signatureAuthGoogle = "signatureAuthGoogle"
 const val signatureSuccess = "signatureSuccess"
+const val signatureFailed = "signatureFailed"
 
 
 fun NavGraphBuilder.signAuth(
@@ -39,5 +41,15 @@ fun NavGraphBuilder.signSuccess(
         route = signatureSuccess,
     ) {
         SignSuccess(navController)
+    }
+}
+
+fun NavGraphBuilder.signFailed(
+    navController: NavController
+) {
+    composable(
+        route = signatureFailed,
+    ) {
+        SignFailed(navController)
     }
 }
