@@ -7,6 +7,8 @@ import com.app.network.helper.Keys
 import com.app.network.helper.Session
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.ChangeCompanyName
+import com.app.network.models.requestModels.SendToBankModel
+import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetLoans
@@ -16,6 +18,7 @@ import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.repository.HomeRepository
@@ -422,4 +425,86 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    fun signOrApprove(signApproveRequest: SignApproveRequest) {
+        _getTransactionDetails.value = DataState.Loading
+
+        viewModelScope.launch {
+            repository.signOrApprove(token, signApproveRequest)
+                .enqueue(object : Callback<SignApproveResponse> {
+                    override fun onResponse(
+                        call: Call<SignApproveResponse>,
+                        response: Response<SignApproveResponse>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _getTransactionDetails.value =
+                                DataState.Success(response.body()!!)
+
+                        } else {
+                            _getTransactionDetails.value =
+                                DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SignApproveResponse>, t: Throwable) {
+                        _getTransactionDetails.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
+
+    fun transactionStatus(code: Int) {
+        _getTransactionDetails.value = DataState.Loading
+
+        viewModelScope.launch {
+            repository.transactionStatus(token, code)
+                .enqueue(object : Callback<SignApproveResponse> {
+                    override fun onResponse(
+                        call: Call<SignApproveResponse>,
+                        response: Response<SignApproveResponse>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _getTransactionDetails.value =
+                                DataState.Success(response.body()!!)
+
+                        } else {
+                            _getTransactionDetails.value =
+                                DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SignApproveResponse>, t: Throwable) {
+                        _getTransactionDetails.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
+    fun sendToBankAPI(sendToBankModel: SendToBankModel) {
+        _getTransactionDetails.value = DataState.Loading
+
+        viewModelScope.launch {
+            repository.sendToBankAPI(token, sendToBankModel)
+                .enqueue(object : Callback<SignApproveResponse> {
+                    override fun onResponse(
+                        call: Call<SignApproveResponse>,
+                        response: Response<SignApproveResponse>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _getTransactionDetails.value =
+                                DataState.Success(response.body()!!)
+
+                        } else {
+                            _getTransactionDetails.value =
+                                DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SignApproveResponse>, t: Throwable) {
+                        _getTransactionDetails.value = DataState.Error(handleException(t))
+                    }
+
+                })
+        }
+    }
 }

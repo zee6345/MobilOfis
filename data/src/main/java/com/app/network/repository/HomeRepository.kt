@@ -3,6 +3,8 @@ package com.app.network.repository
 import com.app.network.retrofitClient.APIService
 import com.app.network.models.requestModels.AccountNickNameRequest
 import com.app.network.models.requestModels.ChangeCompanyName
+import com.app.network.models.requestModels.SendToBankModel
+import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetLoans
@@ -12,6 +14,7 @@ import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
@@ -86,5 +89,16 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.transactionDetails(token, ibankRef)
     }
 
+    fun signOrApprove(token: String,signApproveRequest: SignApproveRequest):Call<SignApproveResponse>{
+        return apiService.signOrApprove(token,signApproveRequest)
+    }
+
+    fun transactionStatus(token: String,code: Int):Call<SignApproveResponse>{
+        return apiService.transactionStatus(token,code)
+    }
+
+    fun sendToBankAPI(token: String,sendToBankModel: SendToBankModel):Call<SignApproveResponse>{
+        return apiService.sendToBankAPI(token,sendToBankModel)
+    }
 
 }

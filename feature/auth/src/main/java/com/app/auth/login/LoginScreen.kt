@@ -380,7 +380,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                                     userName = usernameState.value,
                                                     password = paswdState.value,
                                                     authType = "OTP",
-                                                    channel = "INT"
+                                                    channel = "MOBILE"
                                                 )
                                             )
 
@@ -405,7 +405,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                                     userName = usernameState.value,
                                                     password = paswdState.value,
                                                     authType = "TOTP",
-                                                    channel = "INT"
+                                                    channel = "MOBILE"
                                                 )
                                             )
 

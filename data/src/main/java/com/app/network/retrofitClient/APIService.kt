@@ -6,7 +6,9 @@ import com.app.network.models.requestModels.ChangePasswordRequest
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
+import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.requestModels.SetFavCustomer
+import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetAccounts
@@ -23,6 +25,7 @@ import com.app.network.models.responseModels.GetUserProfile
 import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.VerifyChangePasswordResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
@@ -257,5 +260,22 @@ interface APIService {
         @Path("ibankRef") ibankRef:String
     ):Call<GetTransactionDetails>
 
+    @POST("transaction/approve")
+    fun signOrApprove(
+        @Header("Auth_token") token: String,
+        @Body signApproveRequest: SignApproveRequest
+    ):Call<SignApproveResponse>
+
+    @GET("transaction/status/{code}")
+    fun transactionStatus(
+        @Header("Auth_token")token: String,
+        @Path("code")code:Int
+    ):Call<SignApproveResponse>
+
+    @POST("transaction/send-to-bank")
+    fun sendToBankAPI(
+        @Header("Auth_token")token: String,
+        @Body sendToBank: SendToBankModel
+    ):Call<SignApproveResponse>
 
 }
