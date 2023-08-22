@@ -18,7 +18,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.home.navigation.NavigationGraph
 import com.app.home.navigation.NavigationGraphSign
-import com.app.transfer.signatureauth.SignAuth
 import com.app.uikit.utils.SharedModel
 
 

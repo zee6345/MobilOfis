@@ -115,7 +115,6 @@ fun KeyButton(
             Button(
                 onClick = {
                     onKeyPressed(text)
-                    Log.e("mmTAG", text)
                 },
                 modifier = Modifier.fillMaxSize(),
                 shape = CircleShape,

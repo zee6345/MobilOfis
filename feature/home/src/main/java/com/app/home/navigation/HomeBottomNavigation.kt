@@ -42,14 +42,17 @@ import com.app.home.main.loan.navigation.homeToLoanInformation
 import com.app.home.main.trust.DepositDetails
 import com.app.home.main.trust.navigation.homeToTrustDepositDetails
 import com.app.transfer.TransferScreen
+import com.app.transfer.signatureauth.SignAsanImza
 import com.app.transfer.signatureauth.SignAuth
 import com.app.transfer.signatureauth.SignAuthGoogle
 import com.app.transfer.signatureauth.SignFailed
 import com.app.transfer.signatureauth.SignSuccess
-import com.app.transfer.signatureauth.navigation.signSuccess
+import com.app.transfer.signatureauth.SigningHome
+import com.app.transfer.signatureauth.navigation.signatureAsanImza
 import com.app.transfer.signatureauth.navigation.signatureAuth
 import com.app.transfer.signatureauth.navigation.signatureAuthGoogle
 import com.app.transfer.signatureauth.navigation.signatureFailed
+import com.app.transfer.signatureauth.navigation.signatureHome
 import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.transfer.transfers.TransferDetailsInformation
 import com.app.transfer.transfers.navigation.transferToDetails
@@ -161,7 +164,11 @@ fun NavigationGraph(navController: NavHostController) {
 
 @Composable
 fun NavigationGraphSign(navController: NavHostController) {
-    NavHost(navController, startDestination = signatureAuth) {
+    NavHost(navController, startDestination = signatureHome) {
+
+        composable(signatureHome) {
+            SigningHome(navController)
+        }
 
         composable(signatureAuth) {
             SignAuth(navController)
@@ -169,6 +176,10 @@ fun NavigationGraphSign(navController: NavHostController) {
 
         composable(signatureAuthGoogle) {
             SignAuthGoogle(navController)
+        }
+
+        composable(signatureAsanImza) {
+            SignAsanImza(navController)
         }
 
         composable(signatureSuccess) {

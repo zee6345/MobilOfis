@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val session get() = _session
-    val token = session[Keys.KEY_TOKEN]!!
+    private val token = session[Keys.KEY_TOKEN]!!
 
     private val _accountsData = MutableStateFlow<DataState<Any>?>(null)
     val accountsData: MutableStateFlow<DataState<Any>?> get() = _accountsData
@@ -78,6 +78,12 @@ class HomeViewModel @Inject constructor(
 
     private val _getTransactionDetails = MutableStateFlow<DataState<Any>?>(null)
     val getTransactionDetails: MutableStateFlow<DataState<Any>?> get() = _getTransactionDetails
+
+    private val _getSignOrApprove = MutableStateFlow<DataState<Any>?>(null)
+    val getSignOrApprove: MutableStateFlow<DataState<Any>?> get() = _getSignOrApprove
+
+    private val _transactionStatus = MutableStateFlow<DataState<Any>?>(null)
+    val getTransactionStatus: MutableStateFlow<DataState<Any>?> get() = _transactionStatus
 
     fun getAccounts(customerId: Int) {
 
@@ -132,7 +138,6 @@ class HomeViewModel @Inject constructor(
                 })
         }
     }
-
 
     fun getTrusts(customerId: Int) {
 
@@ -308,7 +313,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
     fun getBusinessDate() {
         _businessDate.value = DataState.Loading
 
@@ -426,27 +430,27 @@ class HomeViewModel @Inject constructor(
 
 
     fun signOrApprove(signApproveRequest: SignApproveRequest) {
-        _getTransactionDetails.value = DataState.Loading
+        _getSignOrApprove.value = DataState.Loading
 
         viewModelScope.launch {
-            repository.signOrApprove(token, signApproveRequest)
+            repository.signOrApprove(session[Keys.KEY_TOKEN]!!, signApproveRequest)
                 .enqueue(object : Callback<SignApproveResponse> {
                     override fun onResponse(
                         call: Call<SignApproveResponse>,
                         response: Response<SignApproveResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _getTransactionDetails.value =
+                            _getSignOrApprove.value =
                                 DataState.Success(response.body()!!)
 
                         } else {
-                            _getTransactionDetails.value =
+                            _getSignOrApprove.value =
                                 DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
                     override fun onFailure(call: Call<SignApproveResponse>, t: Throwable) {
-                        _getTransactionDetails.value = DataState.Error(handleException(t))
+                        _getSignOrApprove.value = DataState.Error(handleException(t))
                     }
 
                 })
@@ -454,32 +458,33 @@ class HomeViewModel @Inject constructor(
     }
 
     fun transactionStatus(code: Int) {
-        _getTransactionDetails.value = DataState.Loading
+        _transactionStatus.value = DataState.Loading
 
         viewModelScope.launch {
-            repository.transactionStatus(token, code)
+            repository.transactionStatus(session[Keys.KEY_TOKEN]!!, code)
                 .enqueue(object : Callback<SignApproveResponse> {
                     override fun onResponse(
                         call: Call<SignApproveResponse>,
                         response: Response<SignApproveResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _getTransactionDetails.value =
+                            _transactionStatus.value =
                                 DataState.Success(response.body()!!)
 
                         } else {
-                            _getTransactionDetails.value =
+                            _transactionStatus.value =
                                 DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
                     override fun onFailure(call: Call<SignApproveResponse>, t: Throwable) {
-                        _getTransactionDetails.value = DataState.Error(handleException(t))
+                        _transactionStatus.value = DataState.Error(handleException(t))
                     }
 
                 })
         }
     }
+
     fun sendToBankAPI(sendToBankModel: SendToBankModel) {
         _getTransactionDetails.value = DataState.Loading
 

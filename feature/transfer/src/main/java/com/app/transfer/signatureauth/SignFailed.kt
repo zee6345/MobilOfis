@@ -173,7 +173,8 @@ fun SignFailed(navController: NavController) {
                     Modifier.padding(horizontal = 20.sdp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("An error occurred!\n" + "Please try again.",
+                    Text(
+                        "An error occurred!\n" + "Please try again.",
                         style = TextStyle(
                             textAlign = TextAlign.Center
                         )

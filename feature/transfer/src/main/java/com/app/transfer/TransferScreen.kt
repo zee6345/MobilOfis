@@ -595,24 +595,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Error -> {
                 isLoading.value = false
-//                Message.showMessage(context, it.errorMessage)
-                val data = it.errorMessage
-                if (data == "401") {
-
-
-//                    // In your sending code
-//                    val intent = Intent()
-//                    intent.action = SESSION
-//                    intent.putExtra("data", "expire")
-//                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-
-
-                } else {
-
-                }
-//                val error = Converter.fromJson(data, ErrorResponse::class.java)
-//                if (error.code.equals(""))
-
             }
 
             is DataState.Success -> {
@@ -636,7 +618,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 fun DateHeader(inputDateTimeString: String, value: Boolean) {
 
     val formattedDate = Utils.formattedDate(inputDateTimeString)
-//    val isChecked by remember { mutableStateOf(false) }
 
     Row(
 

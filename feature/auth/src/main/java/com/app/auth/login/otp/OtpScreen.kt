@@ -75,7 +75,7 @@ fun OtpScreen(
     val context = LocalContext.current
     val otpValue = remember { mutableStateOf("") }
     val isLoading = remember { mutableStateOf(false) }
-    val loginData by viewModel.data.collectAsState()
+    val otpData by viewModel.otp.collectAsState()
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
     val coroutine = rememberCoroutineScope()
@@ -292,7 +292,7 @@ fun OtpScreen(
 
     }
 
-    loginData?.let {
+    otpData?.let {
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true

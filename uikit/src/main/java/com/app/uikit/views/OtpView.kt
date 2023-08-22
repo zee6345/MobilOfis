@@ -120,6 +120,41 @@ fun OtpView(viewCount:Int, onValueChange: (String) -> Unit) {
     }
 }
 
+@Composable
+fun OtpView(viewCount:Int, presetValue:String, onValueChange: (String) -> Unit) {
+    val focusRequester = remember { FocusRequester() }
+    var otpValue by remember { mutableStateOf("") }
+
+    if (presetValue.isNotEmpty()){
+        otpValue = presetValue
+    }
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Transparent)
+            .focusRequester(focusRequester)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    focusRequester.requestFocus()
+                }
+            }
+            .padding(20.dp),
+        color = Color.Transparent
+    ) {
+
+
+        OtpTextField(
+            otpCount= viewCount,
+            otpText = otpValue,
+            onOtpTextChange = { value, _ ->
+                otpValue = value
+            })
+
+        onValueChange(otpValue)
+    }
+}
+
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun OtpPreview() {

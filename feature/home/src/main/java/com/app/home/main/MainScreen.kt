@@ -1,5 +1,6 @@
 package com.app.home.main
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
@@ -44,6 +46,7 @@ import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.ErrorResponse
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetCustomerBalanceItem
@@ -59,6 +62,7 @@ import kotlinx.coroutines.launch
 
 
 private const val TAG = "MenuScreen"
+private const val SESSION = "SESSION_EVENTS"
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -617,7 +621,14 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
+                val error = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                if(error.code.equals("ERROR.SESSION_EXPIRE", true)){
+                    val intent = Intent()
+                        intent.action = SESSION
+                        intent.putExtra("data", "expire")
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                }
+
             }
 
             is DataState.Success -> {

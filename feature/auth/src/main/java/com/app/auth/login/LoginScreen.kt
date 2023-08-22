@@ -85,6 +85,7 @@ import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.CallTopAlertDialog
+import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.CountdownTimer
@@ -647,43 +648,43 @@ fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
-@Composable
-fun RoundedCornerToast(
-    text: String,
-    duration: Int = Toast.LENGTH_SHORT,
-    context: Context
-) {
-    val coroutineScope = rememberCoroutineScope()
-
-
-//    LaunchedEffect(Unit) {
-//        coroutineScope.launch {
-//            Toast.makeText(context, text, duration).show()
+//@Composable
+//fun RoundedCornerToast(
+//    text: String,
+//    duration: Int = Toast.LENGTH_SHORT,
+//    context: Context
+//) {
+//    val coroutineScope = rememberCoroutineScope()
+//
+//
+////    LaunchedEffect(Unit) {
+////        coroutineScope.launch {
+////            Toast.makeText(context, text, duration).show()
+////        }
+////    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(vertical = 50.sdp, horizontal = 20.sdp)
+//            .background(Color.Transparent, RoundedCornerShape(16.dp))
+//            .wrapContentSize(Alignment.TopCenter)
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .background(Color(0xFFFFDCDE), RoundedCornerShape(16.dp))
+//                .border(2.dp, Color(0xFFF3646C), RoundedCornerShape(16.dp)),
+//            contentAlignment = Alignment.CenterStart
+//        ) {
+//            Text(
+//                text = text,
+//                style = TextStyle(fontSize = 16.sp, color = Color(0xFFF3646C)),
+//                modifier = Modifier.padding(16.dp)
+//            )
 //        }
 //    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 50.sdp, horizontal = 20.sdp)
-            .background(Color.Transparent, RoundedCornerShape(16.dp))
-            .wrapContentSize(Alignment.TopCenter)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFFFFDCDE), RoundedCornerShape(16.dp))
-                .border(2.dp, Color(0xFFF3646C), RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Text(
-                text = text,
-                style = TextStyle(fontSize = 16.sp, color = Color(0xFFF3646C)),
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
-}
+//}
 
 
 @Composable

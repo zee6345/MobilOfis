@@ -36,6 +36,9 @@ class LoginViewModel @Inject constructor(
     private val _data = MutableStateFlow<DataState<Any>?>(null)
     val data: MutableStateFlow<DataState<Any>?> get() = _data
 
+    private val _otp = MutableStateFlow<DataState<Any>?>(null)
+    val otp: MutableStateFlow<DataState<Any>?> get() = _otp
+
     private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
@@ -73,7 +76,7 @@ class LoginViewModel @Inject constructor(
 
 
     fun loginAuthVerification(loginVerificationRequest: LoginVerificationRequest) {
-        _data.value = DataState.Loading
+        _otp.value = DataState.Loading
 
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -87,14 +90,14 @@ class LoginViewModel @Inject constructor(
                         response: Response<LoginVerifyResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _data.value = DataState.Success(response.body()!!)
+                            _otp.value = DataState.Success(response.body()!!)
                         } else {
-                            _data.value = DataState.Error(response.errorBody()!!.string())
+                            _otp.value = DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
                     override fun onFailure(call: Call<LoginVerifyResponse>, t: Throwable) {
-                        _data.value = DataState.Error(Error.handleException(t))
+                        _otp.value = DataState.Error(Error.handleException(t))
                     }
 
                 })
@@ -138,13 +141,11 @@ class LoginViewModel @Inject constructor(
                         call: Call<GetLastLogin>,
                         response: Response<GetLastLogin>
                     ) {
-//                        Log.e("mmmTAG", "${response.code()}")
-                        _lastLogin.value = DataState.Success(response.code())
-//                        if (response.isSuccessful && response.body() != null) {
-//                            _lastLogin.value = DataState.Success(response.body()!!)
-//                        } else {
-//                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
-//                        }
+                        if (response.isSuccessful && response.body() != null) {
+                            _lastLogin.value = DataState.Success(response.body()!!)
+                        } else {
+                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
+                        }
                     }
 
                     override fun onFailure(call: Call<GetLastLogin>, t: Throwable) {

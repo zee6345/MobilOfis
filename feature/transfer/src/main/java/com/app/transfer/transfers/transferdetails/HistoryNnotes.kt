@@ -94,8 +94,6 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-
             ) {
 
 

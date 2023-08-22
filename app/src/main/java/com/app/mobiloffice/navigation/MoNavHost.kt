@@ -15,9 +15,11 @@ import com.app.auth.splash.navigation.splashNavigationRoute
 import com.app.auth.splash.navigation.splashScreen
 import com.app.home.navigation.homeScreen
 import com.app.mobiloffice.ui.MoState
+import com.app.transfer.signatureauth.navigation.signAsanImza
 import com.app.transfer.signatureauth.navigation.signAuthGoogle
 import com.app.transfer.signatureauth.navigation.signFailed
 import com.app.transfer.signatureauth.navigation.signSuccess
+import com.app.transfer.signatureauth.navigation.signingHome
 
 
 @Composable
@@ -41,8 +43,11 @@ fun MoNavHost(
         successfulRegistrationScreen(navController)
         welcomePin(navController)
         homeScreen(navController)
+
+        signingHome(navController)
         signAuth(navController)
         signAuthGoogle(navController)
+        signAsanImza(navController)
         signSuccess(navController)
         signFailed(navController)
     }
