@@ -27,32 +27,33 @@ import androidx.compose.ui.unit.sp
 import com.app.uikit.R
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.FilterModel
+import com.app.uikit.models.FilterType
 
 import ir.kaaveh.sdpcompose.sdp
 
 
-
 @Composable
-fun FiltersTopRow(callback: ItemClickedCallback) {
+fun FiltersTopRow(onFilterClick: (FilterType) -> Unit) {
     val menu = remember { DataProvider.filtersModelList }
     LazyRow(
     ) {
         items(items = menu, itemContent = {
-            FiltersMenuData(menu = it, callback)
-            Spacer(modifier = Modifier.size(width=5.dp, height=1.dp))
+            FiltersMenuData(menu = it) { type ->
+                onFilterClick(type)
+            }
+            Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
         })
     }
 }
 
 @Composable
-fun FiltersMenuData(menu: FilterModel, callback: ItemClickedCallback) {
+fun FiltersMenuData(menu: FilterModel, onFilterClick: (FilterType) -> Unit) {
     Card(
-        modifier = Modifier
-            .padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
+        modifier = Modifier.padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
     ) {
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.clickable {
-                callback.itemClicked(menu.id)
+                onFilterClick(menu.type)
                 menu.isSelected = !menu.isSelected
             }) {
             Text(
@@ -85,17 +86,11 @@ fun FiltersMenuData(menu: FilterModel, callback: ItemClickedCallback) {
     }
 }
 
-interface ItemClickedCallback {
-    fun itemClicked(id: String)
-}
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
 fun FiltersMenu() {
-    FiltersTopRow(object : ItemClickedCallback {
-        override fun itemClicked(id: String) {
+    FiltersTopRow() {
 
-        }
-
-    })
+    }
 }

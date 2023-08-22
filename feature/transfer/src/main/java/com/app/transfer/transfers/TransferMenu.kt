@@ -99,13 +99,15 @@ fun TransferMenuItemView(menu: TransferCountSummaryResponseItem, onFilterClick: 
 
         "EDITED" -> {
             status = "In process"
-            color = Color(0xFFCDDC39)
+            color = Color(0xFF009688)
         }
 
         else -> {
             Log.e("mmmTAG", "${menu.status}")
         }
     }
+
+
 
 
     Card(

@@ -77,9 +77,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val balance = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
     val customerBalance = remember { mutableStateListOf<GetCustomerBalanceItem>() }
-    val density = LocalDensity.current
+//    val density = LocalDensity.current
     val configuration = LocalConfiguration.current
-    val screenHeightDp = configuration.screenHeightDp.dp
+//    val screenHeightDp = configuration.screenHeightDp.dp
     val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
     var isBottomSheetExpanded by remember { mutableStateOf(false) }

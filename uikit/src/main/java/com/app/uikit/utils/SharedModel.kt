@@ -13,6 +13,8 @@ class SharedModel:ViewModel() {
     val easyVerificationCode = mutableStateOf("")
     val signatureData = mutableStateOf<SignatureInfo?>(null)
     val signInfo = mutableStateOf(SignInfo(false, AuthType.GOOGLE_AUTH))
+    val isForSigning = mutableStateOf(false)
+//    val isForApproval = mutableStateOf(false)
 
 
     companion object {

@@ -626,8 +626,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         SharedModel.init().loginType.value = selected
 
                         //easy verification code
-                        SharedModel.init().easyVerificationCode.value =
-                            "${loginResponse.gniAuthResponseType.verfication}"
+                        SharedModel.init().easyVerificationCode.value = "${loginResponse.gniAuthResponseType.verfication}"
 
 
                         navController.navigate(loginToEasySignature)

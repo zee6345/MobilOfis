@@ -65,13 +65,11 @@ import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.network.viewmodel.LoginViewModel
 import com.app.transfer.R
-import com.app.transfer.signatureauth.navigation.signatureFailed
 import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
@@ -124,6 +122,8 @@ fun SignAuthGoogle(
     val otpData by viewModel.otp.collectAsState()
     val signOrApprove by homeModel.getSignOrApprove.collectAsState()
     val transactionStatus by homeModel.getTransactionStatus.collectAsState()
+
+    val isForSigning = SharedModel.init().isForSigning.value
 
 
     val data = SharedModel.init().signatureData.value
@@ -475,8 +475,6 @@ fun SignAuthGoogle(
                                                         if (otpValue.value.length == otpCount.value) {
 
 
-
-
                                                             viewModel.loginAuthVerification(
                                                                 LoginVerificationRequest(
                                                                     userName = usernameForOtp,
@@ -800,7 +798,7 @@ fun SignAuthGoogle(
                         homeModel.signOrApprove(
                             SignApproveRequest(
                                 listOf(FileDescriptor("${transfer.value!!.ibankRef}")),
-                                "SIGN"
+                                if (isForSigning) "SIGN" else "APPROVE"
                             )
                         )
                     }
@@ -857,21 +855,9 @@ fun SignAuthGoogle(
             is DataState.Success -> {
                 isLoading.value = false
 
-//                val data = it.data as SignApproveResponse
-
-                LaunchedEffect(Unit){
+                LaunchedEffect(Unit) {
                     navController.navigate(signatureSuccess)
                 }
-
-//                if (data.lastStatus.equals("success", true)){
-//                    LaunchedEffect(Unit){
-//                        navController.navigate(signatureSuccess)
-//                    }
-//                } else {
-//                    LaunchedEffect(Unit){
-//                        navController.navigate(signatureFailed)
-//                    }
-//                }
 
 //                LaunchedEffect(Unit) {
 //                    index2.value = true

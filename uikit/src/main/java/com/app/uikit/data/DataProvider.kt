@@ -14,6 +14,7 @@ import com.app.uikit.models.CompanyListName
 import com.app.uikit.models.CurrencyModel
 import com.app.uikit.models.ExchangeRatesModel
 import com.app.uikit.models.FilterModel
+import com.app.uikit.models.FilterType
 import com.app.uikit.models.LoansData
 import com.app.uikit.models.MainCardTransfer
 import com.app.uikit.models.Task
@@ -283,54 +284,17 @@ object DataProvider {
             title = "AZ76BRES58380394402462924501", subTitle = "3 150 952.00 AZN", showIcon = true
         )
     )
-    val DateMenu = listOf(
-        com.app.uikit.bottomSheet.DateMenuModel(
-            title = "Today", textColor = Color(0xFFFFFFFF), color = Color(0xFF0FBF1B)
-        ),
-        com.app.uikit.bottomSheet.DateMenuModel(
-            title = "Yesterday", textColor = Color(0xFF223142), color = Color(0xFFFFFFFF)
-        ),
-        com.app.uikit.bottomSheet.DateMenuModel(
-            title = "This Week", textColor = Color(0xFF223142), color = Color(0xFFFFFFFF)
-        ),
-        com.app.uikit.bottomSheet.DateMenuModel(
-            title = "Last Week", textColor = Color(0xFF223142), color = Color(0xFFFFFFFF)
-        ),
-        com.app.uikit.bottomSheet.DateMenuModel(
-            title = "Bu ay", textColor = Color(0xFF223142), color = Color(0xFFFFFFFF)
-        ),
-        com.app.uikit.bottomSheet.DateMenuModel(
-            title = "Keçan ay", textColor = Color(0xFF223142), color = Color(0xFFFFFFFF)
-        ),
 
-        )
-    val topMenuList = listOf(
-        MainCardTransfer(
-            title = "Signature\n" + "Waiting", color = Color(R.color.blueColor), number = 3
-        ),
-        MainCardTransfer(
-            title = "Execution\n" + "done", color = Color(0xff26D978), number = 3
-        ),
-        MainCardTransfer(
-            title = "Signature and\n" + "confirmation", color = Color(0xff268ED9), number = 2
-        ),
-        MainCardTransfer(
-            title = "Sent to \nBank", color = Color(0xFFF48A1D), number = 1
-        ),
-        MainCardTransfer(
-            title = "Not\n Processed", color = Color(0xFFC74375), number = 1
-        ),
 
-        )
     val filtersModelList = listOf(
-        FilterModel("date", "This Week", Icons.Filled.ArrowDropDown, false),
-        FilterModel("account", "From the account", Icons.Filled.ArrowDropDown, false),
-        FilterModel("type", "Type", Icons.Filled.ArrowDropDown, false),
-        FilterModel("field", "Field", Icons.Filled.Search, false),
-        FilterModel("appointment", "Appointment", Icons.Filled.Search, false),
-        FilterModel("amount", "Amount", Icons.Filled.Search, false),
-        FilterModel("currency", "Currency", Icons.Filled.ArrowDropDown, false),
-        FilterModel("status", "Status", Icons.Filled.ArrowDropDown, false)
+        FilterModel(FilterType.DATE, "This Week", Icons.Filled.ArrowDropDown, false),
+        FilterModel(FilterType.ACCOUNT, "From the account", Icons.Filled.ArrowDropDown, false),
+        FilterModel(FilterType.TYPE, "Type", Icons.Filled.ArrowDropDown, false),
+        FilterModel(FilterType.FIELD, "Field", Icons.Filled.Search, false),
+        FilterModel(FilterType.APPOINTMENT, "Appointment", Icons.Filled.Search, false),
+        FilterModel(FilterType.AMOUNT, "Amount", Icons.Filled.Search, false),
+        FilterModel(FilterType.CURRENCY, "Currency", Icons.Filled.ArrowDropDown, false),
+        FilterModel(FilterType.STATUS, "Status", Icons.Filled.ArrowDropDown, false)
 
     )
 

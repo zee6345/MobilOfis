@@ -64,9 +64,11 @@ import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
+import com.app.network.viewmodel.HomeViewModel
 import com.app.network.viewmodel.LoginViewModel
 import com.app.transfer.R
 import com.app.transfer.signatureauth.navigation.signatureFailed
+import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
@@ -80,7 +82,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @SuppressLint("RememberReturnType")
 @Composable
-fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
+fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewModel(), homeModel: HomeViewModel = hiltViewModel()) {
 
     var selected by remember { mutableStateOf(0) }
 
@@ -95,16 +97,20 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
     val otpCount = remember { mutableStateOf(5) }
     val coroutine = rememberCoroutineScope()
     val otpValue = remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
     var usernameForOtp by remember { mutableStateOf("") }
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     val passwordVisualTransformation =
         if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val otpData by viewModel.otp.collectAsState()
+    val signOrApprove by homeModel.getSignOrApprove.collectAsState()
+    val transactionStatus by homeModel.getTransactionStatus.collectAsState()
 
     Column(
         modifier = Modifier
@@ -458,6 +464,9 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                                             )
 
 
+                                                            otp = otpValue.value
+
+
                                                         } else {
                                                             Message.showMessage(
                                                                 context,
@@ -513,8 +522,145 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
 
                     2 -> {
 
-                        LaunchedEffect(Unit) {
-                            navController.navigate(signatureFailed)
+                        Column {
+
+                            Column {
+                                OtpView(otpCount.value, otp) {
+                                    otpValue.value = it
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 5.dp, bottom = 17.dp)
+                                        .padding(horizontal = 22.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(
+                                                shape = RoundedCornerShape(15.dp),
+                                            )
+                                            .background(
+                                                color = Color(0xFFE7F0F9),
+                                            )
+                                    ) {
+
+                                        CountdownTimer(otpValue.value)
+
+                                    }
+
+                                    androidx.compose.material.Text(
+                                        modifier = Modifier
+                                            .padding(5.dp)
+                                            .clickable {
+                                                coroutine.launch {
+                                                    Message.showMessage(context, "OTP send again!")
+                                                }
+                                            },
+                                        text = "Re-send SMS code"
+                                    )
+
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp, bottom = 17.dp)
+                                        .padding(horizontal = 18.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.Bottom
+                                ) {
+                                    androidx.compose.material.Button(
+                                        onClick = {
+
+                                        },
+                                        shape = RoundedCornerShape(8.dp),
+                                        colors = androidx.compose.material.ButtonDefaults.buttonColors(
+                                            backgroundColor = colorResource(R.color.border_grey), // Change the background color here
+                                            contentColor = Color(0xFF203657) // Change the text color here if needed
+                                        ),
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .weight(1f)
+
+                                    ) {
+                                        androidx.compose.material.Text(
+                                            "Close",
+                                            modifier = Modifier.padding(vertical = 6.dp),
+                                            style = TextStyle(
+                                                fontSize = 17.sp, shadow = null
+                                            )
+                                        )
+                                    }
+
+                                    androidx.compose.material.Button(
+                                        onClick = {
+                                            if (otpValue.value.isNotEmpty()) {
+                                                if (otpValue.value.length == otpCount.value) {
+
+
+                                                    if (otpValue.value.isNotEmpty()) {
+                                                        if (otpValue.value.length == otpCount.value) {
+
+
+                                                            homeModel.transactionStatus(otpValue.value.toInt())
+
+
+                                                        } else {
+                                                            Message.showMessage(
+                                                                context,
+                                                                "OTP must be 5 digit.."
+                                                            )
+                                                        }
+
+                                                    } else {
+                                                        Message.showMessage(
+                                                            context,
+                                                            "Please add your OTP.."
+                                                        )
+                                                    }
+
+
+                                                } else {
+                                                    Message.showMessage(
+                                                        context,
+                                                        "OTP must be 5 digit.."
+                                                    )
+                                                }
+
+                                            } else {
+                                                Message.showMessage(
+                                                    context,
+                                                    "Please add your OTP.."
+                                                )
+                                            }
+                                        },
+                                        shape = RoundedCornerShape(8.dp),
+                                        colors = androidx.compose.material.ButtonDefaults.buttonColors(
+                                            backgroundColor = Color(0xFF203657),
+                                            contentColor = Color.White
+                                        ),
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .weight(1f)
+                                    ) {
+                                        androidx.compose.material.Text(
+                                            "Next",
+                                            modifier = Modifier.padding(vertical = 6.dp),
+                                            style = TextStyle(
+                                                color = Color.White, fontSize = 17.sp, shadow = null
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+
                         }
 
                     }
@@ -635,6 +781,61 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                     }
 
                 }
+            }
+        }
+    }
+
+    signOrApprove?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
+
+                }
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
+
+
+                LaunchedEffect(Unit) {
+                    index2.value = true
+                    selected = 2
+
+                }
+
+            }
+        }
+    }
+
+    transactionStatus?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
+
+                }
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
+
+                LaunchedEffect(Unit){
+                    navController.navigate(signatureSuccess)
+                }
+
             }
         }
     }

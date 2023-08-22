@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
@@ -27,7 +31,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,26 +51,36 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.app.network.models.requestModels.LoginRequest
+import com.app.network.helper.Converter
+import com.app.network.models.DataState
+import com.app.network.models.ErrorResponse
+import com.app.network.models.requestModels.FileDescriptor
+import com.app.network.models.requestModels.LoginAsanRequest
+import com.app.network.models.requestModels.SignApproveRequest
+import com.app.network.models.responseModels.LoginAsanResponse
+import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.utils.Message
+import com.app.network.viewmodel.HomeViewModel
 import com.app.network.viewmodel.LoginViewModel
 import com.app.transfer.R
-import com.app.transfer.signatureauth.navigation.signatureFailed
+import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.borders.dashedBorder
 import com.app.uikit.dialogs.RoundedCornerToast
-import com.app.uikit.models.AuthType
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.CountdownTimer
-import com.app.uikit.views.OtpView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -72,7 +88,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @SuppressLint("RememberReturnType")
 @Composable
-fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltViewModel()) {
+fun SignAsanImza(
+    navController: NavController,
+    viewModel: LoginViewModel = hiltViewModel(),
+    homeModel: HomeViewModel = hiltViewModel()
+) {
 
     var selected by remember { mutableStateOf(0) }
 
@@ -82,29 +102,25 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
     val index2 = remember { mutableStateOf(false) }
     val usernameState = remember { mutableStateOf("") }
     val paswdState = remember { mutableStateOf("") }
+    val easyCode = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     var isPswdVisible by remember { mutableStateOf(false) }
-    val otpCount = remember { mutableStateOf(6) }
-    val coroutine = rememberCoroutineScope()
-    val otpValue = remember { mutableStateOf("") }
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
+    val transfer = remember { mutableStateOf<TransferListResponseItem?>(null) }
+    val isLoading = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val passwordVisualTransformation =
         if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
+    val asanLogin by viewModel.asanLogin.collectAsState()
+    val signOrApprove by homeModel.getSignOrApprove.collectAsState()
+    val transactionStatus by homeModel.getTransactionStatus.collectAsState()
 
-    val authWith = when (signInfo.value.authType) {
-        AuthType.SMS -> {
-            "Access by SMS"
-        }
-
-        AuthType.GOOGLE_AUTH -> {
-            "Access with Google Auth"
-        }
-
-        AuthType.ASAN_IMZA -> {
-            "Access with Asan Imza"
+    val data = SharedModel.init().signatureData.value
+    data?.let {
+        it.transfer?.let { obj ->
+            transfer.value = obj
         }
     }
 
@@ -149,7 +165,7 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
 
                     Text(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        text = authWith,
+                        text = "Access with Asan Imza",
                         style = TextStyle(color = Color.White, fontSize = 29.sp)
                     )
                 }
@@ -232,7 +248,7 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
                             onValueChange = { usernameState.value = it },
                             label = {
                                 Text(
-                                    text = "Username",
+                                    text = "Mobile Number",
                                     fontSize = 14.sp
                                 )
                             }, trailingIcon = {},
@@ -254,7 +270,7 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             label = {
                                 Text(
-                                    text = "Password",
+                                    text = "User ID",
                                     fontSize = 14.sp
                                 )
                             }, trailingIcon = {
@@ -318,8 +334,6 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
 
                         Button(
                             onClick = {
-//                                index1.value = true
-//                                selected = 1
 
                                 if (usernameState.value.isNotEmpty()) {
                                     userErrorCheck = false
@@ -327,12 +341,11 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
                                         pswdErrorCheck = false
 
                                         //handle success
-                                        viewModel.loginWithUserName(
-                                            LoginRequest(
-                                                userName = usernameState.value,
-                                                password = paswdState.value,
-                                                authType = "OTP",
-                                                channel = "MOBILE"
+                                        viewModel.asanLogin(
+                                            LoginAsanRequest(
+                                                phoneNumber = usernameState.value,
+                                                userId = paswdState.value,
+                                                channel = "INT"
                                             )
                                         )
 
@@ -360,131 +373,171 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
                     }
 
                 } else if (selected == 1) {
-                    //todo:: OTP
+                    //todo:: ASAN service
 
                     Column {
 
-                        Column {
-                            OtpView(otpCount.value) {
-                                otpValue.value = it
-                            }
+                        Card(
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 22.dp),
+                            backgroundColor = Color.White
+                        ) {
 
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 5.dp, bottom = 17.dp)
-                                    .padding(horizontal = 22.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
-                                Box(
+                                Row(
                                     modifier = Modifier
-                                        .clip(
-                                            shape = RoundedCornerShape(15.dp),
+                                        .dashedBorder(
+                                            3.dp, colorResource(R.color.border_grey)
                                         )
-                                        .background(
-                                            color = Color(0xFFE7F0F9),
-                                        )
+                                        .height(80.dp)
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
 
-                                    CountdownTimer(otpValue.value)
-
+                                    Image(
+                                        painter = painterResource(id = R.drawable.print_design),
+                                        modifier = Modifier
+                                            .padding(start = 12.dp)
+                                            .height(80.dp)
+                                            .width(100.dp),
+                                        contentDescription = ""
+                                    )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.question_icon),
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .align(Alignment.CenterVertically)
+                                            .padding(end = 12.dp),
+                                        contentDescription = ""
+                                    )
                                 }
-
                                 androidx.compose.material.Text(
                                     modifier = Modifier
-                                        .padding(5.dp)
-                                        .clickable {
-                                            coroutine.launch {
-                                                Message.showMessage(context, "OTP send again!")
-                                            }
-                                        },
-                                    text = "Re-send SMS code"
+                                        .dashedBorder(
+                                            3.dp, colorResource(R.color.border_grey)
+                                        )
+                                        .padding(horizontal = 12.dp, vertical = 22.dp),
+                                    text = "Please accept the query sent to your phone. Compare the checking code of the survey to the same code as the following code.",
+                                    style = TextStyle(fontSize = 16.sp)
+                                )
+                                androidx.compose.material.Text(
+                                    modifier = Modifier
+                                        .padding(top = 32.dp, bottom = 5.dp)
+                                        .fillMaxWidth(),
+                                    text = "Check code",
+                                    style = TextStyle(
+                                        color = colorResource(R.color.grey_text),
+                                        fontSize = 14.sp,
+                                        textAlign = TextAlign.Center
+                                    )
                                 )
 
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp, bottom = 17.dp)
-                                    .padding(horizontal = 18.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                androidx.compose.material.Button(
-                                    onClick = {
-
-                                    },
-                                    shape = RoundedCornerShape(8.dp),
-                                    colors = androidx.compose.material.ButtonDefaults.buttonColors(
-                                        backgroundColor = colorResource(R.color.border_grey), // Change the background color here
-                                        contentColor = Color(0xFF203657) // Change the text color here if needed
-                                    ),
-                                    modifier = Modifier
-                                        .padding(8.dp)
-                                        .weight(1f)
-
-                                ) {
-                                    androidx.compose.material.Text(
-                                        "Close",
-                                        modifier = Modifier.padding(vertical = 6.dp),
-                                        style = TextStyle(
-                                            fontSize = 17.sp, shadow = null
-                                        )
+                                androidx.compose.material.Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = easyCode.value,
+                                    style = TextStyle(
+                                        fontSize = 32.sp,
+                                        textAlign = TextAlign.Center
                                     )
-                                }
+                                )
 
-                                androidx.compose.material.Button(
-                                    onClick = {
-                                        if (otpValue.value.isNotEmpty()) {
-                                            if (otpValue.value.length == otpCount.value) {
+                                Spacer(modifier = Modifier.size(height = 20.sdp, width = 1.sdp))
+                                CircularTimer()
 
-                                                index2.value = true
-                                                selected = 2
-
-
-                                            } else {
-                                                Message.showMessage(
-                                                    context,
-                                                    "OTP must be 6 digit.."
-                                                )
-                                            }
-
-                                        } else {
-                                            Message.showMessage(context, "Please add your OTP..")
-                                        }
-                                    },
-                                    shape = RoundedCornerShape(8.dp),
-                                    colors = androidx.compose.material.ButtonDefaults.buttonColors(
-                                        backgroundColor = Color(0xFF203657),
-                                        contentColor = Color.White
-                                    ),
-                                    modifier = Modifier
-                                        .padding(8.dp)
-                                        .weight(1f)
-                                ) {
-                                    androidx.compose.material.Text(
-                                        "Next",
-                                        modifier = Modifier.padding(vertical = 6.dp),
-                                        style = TextStyle(
-                                            color = Color.White, fontSize = 17.sp, shadow = null
-                                        )
-                                    )
-                                }
                             }
                         }
 
                     }
 
                 } else if (selected == 2) {
+                    LaunchedEffect(Unit){
+                        homeModel.transactionStatus(easyCode.value.toInt())
+                    }
 
-                    LaunchedEffect(Unit) {
-                        navController.navigate(signatureFailed)
+                    Column {
+
+                        Card(
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 22.dp),
+                            backgroundColor = Color.White
+                        ) {
+
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .dashedBorder(
+                                            3.dp, colorResource(R.color.border_grey)
+                                        )
+                                        .height(80.dp)
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Image(
+                                        painter = painterResource(id = R.drawable.print_design),
+                                        modifier = Modifier
+                                            .padding(start = 12.dp)
+                                            .height(80.dp)
+                                            .width(100.dp),
+                                        contentDescription = ""
+                                    )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.question_icon),
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .align(Alignment.CenterVertically)
+                                            .padding(end = 12.dp),
+                                        contentDescription = ""
+                                    )
+                                }
+                                androidx.compose.material.Text(
+                                    modifier = Modifier
+                                        .dashedBorder(
+                                            3.dp, colorResource(R.color.border_grey)
+                                        )
+                                        .padding(horizontal = 12.dp, vertical = 22.dp),
+                                    text = "Please accept the query sent to your phone. Compare the checking code of the survey to the same code as the following code.",
+                                    style = TextStyle(fontSize = 16.sp)
+                                )
+                                androidx.compose.material.Text(
+                                    modifier = Modifier
+                                        .padding(top = 32.dp, bottom = 5.dp)
+                                        .fillMaxWidth(),
+                                    text = "Check code",
+                                    style = TextStyle(
+                                        color = colorResource(R.color.grey_text),
+                                        fontSize = 14.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                )
+
+                                androidx.compose.material.Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = easyCode.value,
+                                    style = TextStyle(
+                                        fontSize = 32.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.size(height = 20.sdp, width = 1.sdp))
+                                CircularTimer()
+
+                            }
+                        }
+
                     }
 
                 }
@@ -508,6 +561,161 @@ fun SignAsanImza(navController: NavController, viewModel:LoginViewModel = hiltVi
 
     }
 
+
+    asanLogin?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
+
+                }
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+
+                val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                errorMessage?.let { error ->
+                    if (error.code.equals("ERROR.FREE_TEXT", true)) {
+                        LaunchedEffect(error.code) {
+                            Message.showMessage(context, "Wrong username or password!")
+                        }
+                    }
+                }
+            }
+
+            is DataState.Success -> {
+
+                val loginResponse = it.data as LoginAsanResponse
+                loginResponse?.apply {
+
+
+                    LaunchedEffect(Unit) {
+                        selected = 1
+                        index1.value = true
+
+
+                        //verification code
+                        easyCode.value = loginResponse.gniAuthResponseType.verfication
+
+
+                        //sign API
+                        homeModel.signOrApprove(
+                            SignApproveRequest(
+                                listOf(FileDescriptor("${transfer.value!!.ibankRef}")),
+                                "SIGN"
+                            )
+                        )
+
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    signOrApprove?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
+
+                }
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
+
+
+                LaunchedEffect(Unit) {
+                    index2.value = true
+                    selected = 2
+
+                }
+
+            }
+        }
+    }
+
+    transactionStatus?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
+
+                }
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
+
+                LaunchedEffect(Unit) {
+                    navController.navigate(signatureSuccess)
+                }
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun CircularTimer() {
+    val totalTimeSeconds = 2 * 60 // 2 minutes in seconds
+    var remainingTime by remember { mutableStateOf(totalTimeSeconds) }
+
+    val progress = (totalTimeSeconds - remainingTime) / totalTimeSeconds.toFloat()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(Unit) {
+        val timerJob = coroutineScope.launch {
+            while (remainingTime > 0) {
+                delay(1000) // Delay for 1 second
+                remainingTime -= 1
+            }
+        }
+
+        onDispose {
+            timerJob.cancel()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .background(
+                color = Color(0xffECE9FF),
+                shape = CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            progress = progress,
+            modifier = Modifier
+                .size(150.dp)
+        )
+        androidx.compose.material.Text(
+            text = "${remainingTime / 60}:${String.format("%02d", remainingTime % 60)}",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xff7B61FF)
+        )
+    }
 }
 
 @Preview(showBackground = true)

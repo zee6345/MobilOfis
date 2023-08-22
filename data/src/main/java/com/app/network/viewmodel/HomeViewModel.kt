@@ -82,6 +82,9 @@ class HomeViewModel @Inject constructor(
     private val _getSignOrApprove = MutableStateFlow<DataState<Any>?>(null)
     val getSignOrApprove: MutableStateFlow<DataState<Any>?> get() = _getSignOrApprove
 
+    private val _sendToBank = MutableStateFlow<DataState<Any>?>(null)
+    val sendToBank: MutableStateFlow<DataState<Any>?> get() = _sendToBank
+
     private val _transactionStatus = MutableStateFlow<DataState<Any>?>(null)
     val getTransactionStatus: MutableStateFlow<DataState<Any>?> get() = _transactionStatus
 
@@ -486,7 +489,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun sendToBankAPI(sendToBankModel: SendToBankModel) {
-        _getTransactionDetails.value = DataState.Loading
+        _sendToBank.value = DataState.Loading
 
         viewModelScope.launch {
             repository.sendToBankAPI(token, sendToBankModel)
@@ -496,17 +499,17 @@ class HomeViewModel @Inject constructor(
                         response: Response<SignApproveResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _getTransactionDetails.value =
+                            _sendToBank.value =
                                 DataState.Success(response.body()!!)
 
                         } else {
-                            _getTransactionDetails.value =
+                            _sendToBank.value =
                                 DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
                     override fun onFailure(call: Call<SignApproveResponse>, t: Throwable) {
-                        _getTransactionDetails.value = DataState.Error(handleException(t))
+                        _sendToBank.value = DataState.Error(handleException(t))
                     }
 
                 })

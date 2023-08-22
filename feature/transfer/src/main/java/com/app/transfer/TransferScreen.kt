@@ -1,6 +1,7 @@
 package com.app.transfer
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +48,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,6 +59,8 @@ import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.requestModels.FileDescriptor
+import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -72,12 +77,13 @@ import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.bottomSheet.DateBottomSheet
 import com.app.uikit.bottomSheet.StatusBottomSheet
 import com.app.uikit.bottomSheet.TypeBottomSheet
+import com.app.uikit.models.FilterType
 import com.app.uikit.models.SignatureInfo
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.FiltersTopRow
-import com.app.uikit.views.ItemClickedCallback
 import ir.kaaveh.sdpcompose.sdp
+import java.text.SimpleDateFormat
 
 
 const val SESSION = "SESSION_EVENTS"
@@ -88,8 +94,8 @@ private lateinit var showStatusBottomSheet: MutableState<Boolean>
 private lateinit var showTypeBottomSheet: MutableState<Boolean>
 private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
-private lateinit var startDateSelected: MutableState<String>
-private lateinit var endDateSelected: MutableState<String>
+//private lateinit var startDateSelected: MutableState<String>
+//private lateinit var endDateSelected: MutableState<String>
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -104,6 +110,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val selectedItem = remember { mutableStateOf<TransferListResponseItem?>(null) }
     val isLoading = remember { mutableStateOf(false) }
     val isSigned = remember { mutableStateOf(false) }
+    val sendToBank = remember { mutableStateOf(false) }
 
     val filterByStatus = remember { mutableStateOf("") }
     val filterByType = remember { mutableStateOf("") }
@@ -115,8 +122,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
-    startDateSelected = rememberSaveable { mutableStateOf("01-01-2019") }
-    endDateSelected = rememberSaveable { mutableStateOf("01-01-2023") }
+
     val isSelected = remember { mutableStateOf(false) }
 
 
@@ -125,21 +131,25 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val accountsList by viewModel.accountsData.collectAsState()
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
     val transferList by viewModel.transferList.collectAsState()
+    val getSendToBank by viewModel.sendToBank.collectAsState()
 
     //fetch data
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
-//    val currentDate = System.currentTimeMillis()
-//    val formattedDate = SimpleDateFormat("dd.mm.yyyy").format(currentDate)
-//    val dateStart = "01.01.2019"
-//    val endDate = "01.01.2023"
+    //set initial dates
+    val currentDate = System.currentTimeMillis()
+    val formattedDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+
+    var startDate by remember { mutableStateOf(formattedDate) }
+    var endDate by remember { mutableStateOf(formattedDate) }
+
 
     LaunchedEffect(Unit) {
         viewModel.getBusinessDate()
         viewModel.getAccounts(userDetails.customerNo)
-        viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
-        viewModel.getTransferList(startDateSelected.value, endDateSelected.value, 0)
+        viewModel.getTransferCountSummary(startDate, endDate)
+        viewModel.getTransferList(startDate, endDate, 0)
     }
 
     Column(
@@ -207,7 +217,23 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                 filterByStatus.value = filter
 
                                 //if filter clicked enable check
-                                isSigned.value = filter.contains("Rejected", true)
+                                if (filter.contains("PENDING_SIGNER", true)) {
+                                    isSigned.value = true
+
+                                    SharedModel.init().isForSigning.value = true
+
+                                } else if (filter.contains("PENDING_APPROVER", true)) {
+                                    isSigned.value = true
+
+                                    SharedModel.init().isForSigning.value = false
+
+                                } else if (filter.contains("SEND_TO_BANK", true)) {
+                                    isSigned.value = true
+                                    sendToBank.value = true
+                                } else {
+                                    isSigned.value = false
+                                }
+
                             }
                         }
 
@@ -286,7 +312,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                                 .fillMaxWidth()
                                                 .padding(vertical = 5.sdp)
                                                 .clickable {
-                                                    SharedModel.init().signatureData.value = SignatureInfo(false, item)
+                                                    SharedModel.init().signatureData.value =
+                                                        SignatureInfo(false, item)
 
                                                     navController.navigate(transferToDetails)
                                                 },
@@ -311,16 +338,17 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                                 ) {
                                                     Text(
                                                         text = "${item.benefName}",
-                                                        style = TextStyle(
-                                                            fontSize = 14.sp
-                                                        )
-
+                                                        style = TextStyle(fontSize = 14.sp),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier.weight(1f)
                                                     )
                                                     Text(
                                                         text = "${item.amount}",
                                                         style = TextStyle(
                                                             fontSize = 14.sp
-                                                        )
+                                                        ),
+                                                        modifier = Modifier.weight(0.2f)
                                                     )
 
                                                 }
@@ -462,9 +490,21 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         Button(
                             enabled = isSelected.value,
                             onClick = {
-                                SharedModel.init().signatureData.value =
-                                    SignatureInfo(true, selectedItem.value!!)
-                                navController.navigate(transferToDetails)
+                                if (sendToBank.value) {
+
+
+                                    viewModel.sendToBankAPI(
+                                        SendToBankModel(
+                                            listOf(FileDescriptor("${selectedItem.value!!.ibankRef}")),
+                                            ""
+                                        )
+                                    )
+
+                                } else {
+                                    SharedModel.init().signatureData.value =
+                                        SignatureInfo(true, selectedItem.value!!)
+                                    navController.navigate(transferToDetails)
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             modifier = Modifier
@@ -475,10 +515,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                         0.8f
                                     ),
                                     RoundedCornerShape(8.dp)
-                                ).fillMaxWidth()
+                                )
+                                .fillMaxWidth()
                         ) {
                             Text(
-                                "Sign",
+                                if (sendToBank.value) "Send to bank" else "Sign",
                                 modifier = Modifier.padding(vertical = 12.dp),
                                 color = Color.White
                             )
@@ -492,11 +533,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     }
 
-    DateBottomSheet(showDateBottomSheet, onDateStartSelected = {
-        startDateSelected.value = it
-    }, onDateEndSelected = {
-        endDateSelected.value = it
-    })
+    DateBottomSheet(showDateBottomSheet) {
+        startDate = it.startDate
+        endDate = it.endDate
+
+        viewModel.getTransferCountSummary(startDate, endDate)
+        viewModel.getTransferList(startDate, endDate, 0)
+    }
+
 
     AccountBottomSheet(showFromAccountBottomSheet, accountFilterList) {
         //on account click
@@ -527,34 +571,21 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     businessDates?.let {
         when (it) {
-            is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
-            }
-
-            is DataState.Loading -> {
-
-            }
-
+            is DataState.Error -> {}
+            is DataState.Loading -> {}
             is DataState.Success -> {
                 val dateEnd: String = it.data as String
-                endDateSelected.value = dateEnd
+                endDate = dateEnd
             }
         }
     }
 
     accountsList?.let {
         when (it) {
-            is DataState.Loading -> {
-
-            }
-
-            is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
-            }
-
+            is DataState.Loading -> {}
+            is DataState.Error -> {}
             is DataState.Success -> {
                 val userAccounts = it.data as GetAccounts
-
 
                 accountFilterList?.apply {
                     clear()
@@ -567,14 +598,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     transferCountSummery?.let {
         when (it) {
-            is DataState.Loading -> {
-
-            }
-
-            is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
-            }
-
+            is DataState.Loading -> {}
+            is DataState.Error -> {}
             is DataState.Success -> {
                 val data = it.data as TransferCountSummaryResponse
 
@@ -606,6 +631,23 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     addAll(transferData)
                 }
 
+
+            }
+        }
+    }
+
+    getSendToBank?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
 
             }
         }
@@ -647,24 +689,38 @@ fun DateHeader(inputDateTimeString: String, value: Boolean) {
 
 @Composable
 fun FilterListMenu() {
-    FiltersTopRow(object : ItemClickedCallback {
-        override fun itemClicked(id: String) {
-            if (id.equals("date", true)) {
+    FiltersTopRow() {
+        when (it) {
+            FilterType.DATE -> {
                 showDateBottomSheet.value = !showDateBottomSheet.value
-            } else if (id.equals("type", true)) {
+            }
+
+            FilterType.TYPE -> {
                 showTypeBottomSheet.value = !showTypeBottomSheet.value
-            } else if (id.equals("account", true)) {
+            }
+
+            FilterType.ACCOUNT -> {
                 showFromAccountBottomSheet.value = !showFromAccountBottomSheet.value
-            } else if (id.equals("amount", true)) {
+            }
+
+            FilterType.AMOUNT -> {
                 showAmountBottomSheet.value = !showAmountBottomSheet.value
-            } else if (id.equals("currency", true)) {
+            }
+
+            FilterType.CURRENCY -> {
                 showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
-            } else if (id.equals("status", true)) {
+            }
+
+            FilterType.STATUS -> {
                 showStatusBottomSheet.value = !showStatusBottomSheet.value
+            }
+
+            else -> {
 
             }
         }
-    })
+
+    }
 }
 
 @Preview(device = Devices.PIXEL_4)
