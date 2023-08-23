@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Surface
@@ -30,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -45,7 +43,6 @@ import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.login.otp.otpScreen.userName
 import com.app.auth.pin.navigation.pinNavigationRoute
 import com.app.auth.pin.navigation.welcomePinScreen
-import com.app.uikit.utils.SharedModel
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -55,9 +52,10 @@ import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.CountdownTimer
+import com.app.uikit.views.CountdownTimerSeconds
 import com.app.uikit.views.OtpView
-import com.app.uikit.views.TimerTextView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -130,29 +128,41 @@ fun OtpScreen(
                 ) {
 
                     Column(
-                        modifier = Modifier.align(Alignment.BottomStart)
+                        modifier = Modifier.align(Alignment.CenterStart)
                     ) {
-                        Text(
-                            text = stringResource(R.string.enter_otp_code),
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            modifier = Modifier.padding(bottom = 5.sdp)
-                        )
-                        Text(
-                            text = when (loginType) {
-                                0 -> stringResource(R.string.text_send_otp)
-                                1 -> stringResource(R.string.text_auth_otp)
-                                else -> ""
-                            },
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
+                        if (loginType == 1) {
+                            Text(
+                                text = "Enter the Google code",
+                                style = TextStyle(
+                                    color = Color.White,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                ),
+                                modifier = Modifier.padding(bottom = 5.sdp)
                             )
-                        )
+                        } else {
+                            Text(
+                                text = stringResource(R.string.enter_otp_code),
+                                style = TextStyle(
+                                    color = Color.White,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                ),
+                                modifier = Modifier.padding(bottom = 5.sdp)
+                            )
+                            Text(
+                                text = when (loginType) {
+                                    0 -> stringResource(R.string.text_send_otp)
+                                    1 -> stringResource(R.string.text_auth_otp)
+                                    else -> ""
+                                },
+                                style = TextStyle(
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -165,7 +175,7 @@ fun OtpScreen(
                 .weight(0.8f)
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+//            verticalArrangement = Arrangement.SpaceBetween
         ) {
 
 
@@ -174,37 +184,63 @@ fun OtpScreen(
                     otpValue.value = it
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 17.dp)
-                        .padding(horizontal = 22.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
+                if (loginType == 1){
                     Box(
                         modifier = Modifier
-                            .clip(
-                                shape = RoundedCornerShape(15.dp),
-                            )
-                            .background(
-                                color = Color(0xFFE7F0F9),
-                            )
+                            .fillMaxWidth()
+                            .padding(top = 5.dp, bottom = 17.dp)
+                            .padding(horizontal = 22.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .clip(
+                                    shape = RoundedCornerShape(15.dp),
+                                )
+                                .background(
+                                    color = Color(0xFFE7F0F9),
+                                )
+                        ) {
+
+                            CountdownTimerSeconds(otpValue.value)
+
+                        }
+                    }
+                } else {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp, bottom = 17.dp)
+                            .padding(horizontal = 22.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
 
-                        CountdownTimer(otpValue.value)
+                        Box(
+                            modifier = Modifier
+                                .clip(
+                                    shape = RoundedCornerShape(15.dp),
+                                )
+                                .background(
+                                    color = Color(0xFFE7F0F9),
+                                )
+                        ) {
 
+                            CountdownTimerSeconds(otpValue.value)
+
+                        }
+
+                        Text(
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .clickable {
+                                    coroutine.launch {
+                                        Message.showMessage(context, "OTP send again!")
+                                    }
+                                },
+                            text = stringResource(R.string.re_send_sms_code)
+                        )
                     }
-
-                    Text(
-                        modifier = Modifier.padding(5.dp)
-                            .clickable {
-                                coroutine.launch {
-                                    Message.showMessage(context, "OTP send again!")
-                                }
-                            },
-                        text = stringResource(R.string.re_send_sms_code)
-                    )
-                   
                 }
             }
 

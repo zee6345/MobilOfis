@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -64,7 +65,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
 
     val rowModify = Modifier
         .fillMaxWidth()
-        .dashedBorder(3.dp, Color(R.color.border_grey))
+        .dashedBorder(3.dp, colorResource(R.color.border_grey))
 
     val innerRowModify = Modifier.padding(vertical = 12.dp, horizontal = 15.dp)
 

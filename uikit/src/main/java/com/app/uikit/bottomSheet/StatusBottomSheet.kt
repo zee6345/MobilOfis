@@ -28,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -160,7 +161,7 @@ fun StatusMenuItem(menuItem: StatusModel, onStatusClick: (String) -> Unit) {
                     .fillMaxWidth()
                     .height(1.sdp)
                     .background(
-                        color = Color(R.color.border_grey),
+                        color = colorResource(R.color.border_grey),
                         shape = RoundedCornerShape(size = 10.sdp)
                     )
                     .align(Alignment.CenterVertically)

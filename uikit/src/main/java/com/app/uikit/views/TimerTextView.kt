@@ -142,3 +142,48 @@ fun CountdownTimer(value: String) {
     )
 }
 
+@Composable
+fun CountdownTimerSeconds(value: String) {
+    var remainingTime by remember { mutableStateOf(20) } // 5 minutes in seconds
+    var timerJob by remember { mutableStateOf<Job?>(null) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(value) {
+        timerJob?.cancel()
+
+        if (value.isNotEmpty()) {
+            timerJob = coroutineScope.launch {
+                while (remainingTime > 0) {
+                    delay(1000) // Delay for 1 second
+                    remainingTime -= 1
+                }
+            }
+        } else {
+            remainingTime = 20 // Reset remaining time to 5 minutes when value is empty
+        }
+
+        onDispose {
+            timerJob?.cancel()
+        }
+    }
+
+    val formattedTime = remember(remainingTime) {
+        String.format(
+            "%02d:%02d",
+            remainingTime / 60,
+            remainingTime % 60
+        )
+    }
+
+    Text(
+        text = formattedTime,
+        modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
+        color = Color(0xFF223142),
+        style = TextStyle(
+            fontSize = 16.sp,
+            fontWeight = FontWeight(500)
+        )
+    )
+}
+

@@ -49,6 +49,7 @@ import com.app.network.models.responseModels.GetExchangeRatesItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import com.app.uikit.borders.rightVerticalDashedBorder
+import java.text.SimpleDateFormat
 
 
 @Composable
@@ -112,7 +113,7 @@ fun ExchangeRatesScreen(
         Column(
             modifier = Modifier
                 .weight(0.9f)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -145,7 +146,8 @@ fun ExchangeRatesScreen(
                                         3.dp, Color(0xFFE7EEFC)
                                     )
                                     .padding(horizontal = 12.dp, vertical = 12.dp),
-                                text = "${date.value}",
+                                text = "${date.value}"
+                                    .replace("/", "."),
                                 style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Center)
                             )
 

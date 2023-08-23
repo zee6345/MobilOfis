@@ -40,8 +40,7 @@ fun ShowProgressDialog(isLoading: MutableState<Boolean>) {
 
                 CircularProgressIndicator()
 
-                Text("Please wait...",
-                    Modifier.padding(start = 20.sdp))
+                Text("Please wait...", Modifier.padding(start = 20.sdp))
             }
 
         }

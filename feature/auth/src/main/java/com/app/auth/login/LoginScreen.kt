@@ -6,7 +6,6 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,6 +35,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -92,14 +91,18 @@ import com.app.uikit.views.CountdownTimer
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
+private lateinit var usernameState: MutableState<String>
+private lateinit var paswdState: MutableState<String>
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
     val (selected, setSelected) = remember { mutableStateOf(0) }
-    val usernameState = remember { mutableStateOf("") }
-    val paswdState = remember { mutableStateOf("") }
+
+    usernameState = remember { mutableStateOf("") }
+    paswdState = remember { mutableStateOf("") }
+
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
     var userErrorCheck by remember { mutableStateOf(false) }
@@ -110,7 +113,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val coroutine = rememberCoroutineScope()
 
     var isPswdVisible by remember { mutableStateOf(false) }
-    val passwordVisualTransformation = if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation =
+        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
@@ -273,6 +277,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         value = usernameState.value,
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { usernameState.value = it },
+                        keyboardOptions = if (selected == 2) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions(
+                            keyboardType = KeyboardType.Text
+                        ),
                         label = {
                             Text(
                                 text = if (selected == 2) stringResource(R.string.mobile_number) else stringResource(
@@ -296,7 +303,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         value = paswdState.value,
                         onValueChange = { paswdState.value = it },
                         visualTransformation = passwordVisualTransformation,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        keyboardOptions = if (selected == 2) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions(
+                            keyboardType = KeyboardType.Password
+                        ),
                         label = {
                             Text(
                                 text = if (selected == 2) stringResource(R.string.user_id) else stringResource(
@@ -626,7 +635,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         SharedModel.init().loginType.value = selected
 
                         //easy verification code
-                        SharedModel.init().easyVerificationCode.value = "${loginResponse.gniAuthResponseType.verfication}"
+                        SharedModel.init().easyVerificationCode.value =
+                            "${loginResponse.gniAuthResponseType.verfication}"
 
 
                         navController.navigate(loginToEasySignature)
@@ -698,14 +708,18 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
             .background(Color(0xFFF3F7FA))
     ) {
 
-
         Box(
             Modifier.background(Color(0xFFF3F7FA))
         ) {
             Tab(
                 selectedContentColor = Color.Cyan,
                 selected = selected == 0,
-                onClick = { setSelected(0) },
+                onClick = {
+                    setSelected(0)
+                    //reset values
+                    usernameState.value = ""
+                    paswdState.value = ""
+                },
                 modifier = Modifier
                     .background(
                         color = if (selected == 0) Color(0xFF203657) else Color(0xFFF3F7FA),
@@ -730,7 +744,12 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 
             Tab(
                 selected = selected == 1,
-                onClick = { setSelected(1) },
+                onClick = {
+                    setSelected(1)
+                    //reset values
+                    usernameState.value = ""
+                    paswdState.value = ""
+                },
                 modifier = Modifier
                     .background(
                         color = if (selected == 1) Color(0xFF203657) else Color(0xFFF3F7FA),
@@ -752,7 +771,12 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
         ) {
             Tab(
                 selected = selected == 2,
-                onClick = { setSelected(2) },
+                onClick = {
+                    setSelected(2)
+                    //reset values
+                    usernameState.value = ""
+                    paswdState.value = ""
+                },
                 modifier = Modifier
                     .background(
                         color = if (selected == 2) Color(0xFF203657) else Color(0xFFF3F7FA),

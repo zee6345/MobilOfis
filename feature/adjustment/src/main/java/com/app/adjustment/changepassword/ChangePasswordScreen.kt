@@ -1,6 +1,8 @@
 package com.app.adjustment.changepassword
 
 import android.content.Context
+import android.view.MotionEvent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,10 +33,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -61,6 +66,9 @@ import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
+import com.app.uikit.dialogs.RoundedCornerToast
+import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -87,14 +95,14 @@ fun ForgetPasswordScreen(
     val coroutine = rememberCoroutineScope()
 //    val userDetails = viewModel.session.fetchUserDetails()
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
-    val userDetails =  Converter.fromJson(str!!, LoginVerifyResponse::class.java)
+    val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
 
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.white)),
+            .background(color = Color(0xFFF3F7FA)),
     ) {
         Surface(
             modifier = Modifier
@@ -127,6 +135,7 @@ fun ForgetPasswordScreen(
 
             }
         }
+
         Column(
             modifier = Modifier
                 .weight(0.9f)
@@ -185,7 +194,7 @@ fun ForgetPasswordScreen(
                     },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFFE7EEFC), // Change the background color here
+                        backgroundColor = Color(0xFFF3F7FA), // Change the background color here
                         contentColor = Color(0xFF203657) // Change the text color here if needed
                     ),
                     modifier = Modifier
@@ -273,6 +282,20 @@ fun ForgetPasswordScreen(
         }
     }
 
+    //show empty field toast
+    if (pswdErrorCheck1.value or pswdErrorCheck2.value or pswdErrorCheck3.value) {
+        RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(1000)
+
+            pswdErrorCheck1.value = false
+            pswdErrorCheck2.value = false
+            pswdErrorCheck3.value = false
+
+        }
+    }
+
 
     changePassword?.let {
         when (it) {
@@ -293,7 +316,7 @@ fun ForgetPasswordScreen(
                 val data = it.data as ChangePasswordResponse
                 if (data.errMessage.equals("SUCCESS", true)) {
 
-                    LaunchedEffect(Unit){
+                    LaunchedEffect(Unit) {
                         navController.navigate(changePasswordToOTP)
                     }
 
@@ -307,6 +330,7 @@ fun ForgetPasswordScreen(
 }
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextFieldWithEndDrawable(
     hint: String,
@@ -316,7 +340,9 @@ fun TextFieldWithEndDrawable(
 ) {
 
     val textState = remember { mutableStateOf("") }
-    val isPswdVisible = remember { mutableStateOf(false) }
+    var isPswdVisible by remember { mutableStateOf(false) }
+    val passwordVisualTransformation =
+        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     Column {
 
@@ -324,39 +350,36 @@ fun TextFieldWithEndDrawable(
         OutlinedTextField(
             value = textState.value,
             onValueChange = { textState.value = it },
-            visualTransformation = if (isPswdVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = passwordVisualTransformation,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             label = {
                 androidx.compose.material3.Text(
                     text = hint,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    style = TextStyle(
+                        color = Color(0xFF859DB5)
+                    )
                 )
             }, trailingIcon = {
-                if (pswdErrorCheck)
-                    Icon(
-                        Icons.Filled.Info,
-                        "Error",
-                        tint = Color.Red
-                    )
 
-                if (isPswdVisible.value) {
-                    Icon(painterResource(id = R.drawable.ic_password_visible),
-                        "",
-                        modifier = Modifier.clickable {
-                            isPswdVisible.value = false
-                        })
-                } else {
-                    Icon(painterResource(id = R.drawable.ic_password_visible_off),
-                        "",
-                        modifier = Modifier.clickable {
-                            isPswdVisible.value = true
-                        })
-                }
+                Icon(
+                    painter = painterResource(id = if (isPswdVisible) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
+                    contentDescription = if (isPswdVisible) "Hide Password" else "Show Password",
+                    modifier = Modifier
+                        .pointerInteropFilter { event ->
+                            when (event.action) {
+                                MotionEvent.ACTION_DOWN -> isPswdVisible = true
+                                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isPswdVisible =
+                                    false
+                            }
+                            true
+                        }
+                )
 
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp),
+                .padding(top = 8.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = Color.White,
                 focusedBorderColor = Color(0xFF223142),
@@ -364,11 +387,13 @@ fun TextFieldWithEndDrawable(
                 unfocusedLabelColor = Color(0xFF859DB5),
                 focusedLabelColor = Color(0xFF223142)
             ),
-            singleLine = true
+
+            singleLine = true,
+            shape = RoundedCornerShape(10.sdp)
         )
 
-        if (pswdErrorCheck)
-            Text(errorString)
+//        if (pswdErrorCheck)
+//            Text(errorString)
 
     }
     onValueChange(textState.value)

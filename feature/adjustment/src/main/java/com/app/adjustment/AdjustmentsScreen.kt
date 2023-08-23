@@ -436,7 +436,7 @@ fun Switch() {
 
 @Composable
 private fun ThreeBoxComponent() {
-    val selectedBoxIndex = remember { mutableStateOf(-1) }
+    val selectedBoxIndex = remember { mutableStateOf(1) }
 
     Row() {
         Box(modifier = Modifier

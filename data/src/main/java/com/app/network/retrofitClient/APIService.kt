@@ -74,7 +74,6 @@ interface APIService {
     ): Call<ResponseBody>
 
     // Main
-
     @GET("customers/{customerId}/accounts")
     fun getAccounts(
         @Header("Auth_token") token: String,

@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -136,7 +137,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -166,7 +167,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -181,7 +182,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.account_number), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
 
                             )
                     )
@@ -191,7 +192,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -203,7 +204,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -218,7 +219,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(id = R.string.branch), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
 
                             )
                     )
@@ -233,7 +234,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                             text = "${data.BRANCH_NAME}", style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = Color(R.color.background_card_blue),
+                                color = colorResource(R.color.background_card_blue),
 
                                 )
                         )
@@ -249,7 +250,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -265,7 +266,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(id = R.string.interest_rate), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
 
                             )
                     )
@@ -275,7 +276,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -291,7 +292,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.duration_months), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -299,7 +300,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.periodMonth}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -315,7 +316,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(id = R.string.currency), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -323,7 +324,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.CCY_NAME}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -334,13 +335,13 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey)),
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -350,7 +351,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.start_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
 
                             )
                     )
@@ -360,7 +361,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -376,7 +377,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(id = R.string.end_date), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -384,7 +385,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.MATURITY_DATE}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -396,13 +397,13 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey)),
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -412,7 +413,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.remainder), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
 
                             )
                     )
@@ -421,7 +422,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -438,7 +439,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(id = R.string.free_balance), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -446,7 +447,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.INITIALAMOUNT}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -458,13 +459,13 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey)),
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -474,7 +475,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.initial_amount), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
 
                             )
                     )
@@ -484,7 +485,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -500,7 +501,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.amount_of_income_tax), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -508,7 +509,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.taxAmount}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )
@@ -526,7 +527,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -539,7 +540,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.interest_payment_scheme), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -547,7 +548,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.PAYMENTPERIOD}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -561,7 +562,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey))
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -575,7 +576,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(com.app.adjustment.R.color.grey_text),
+                            color = colorResource(com.app.adjustment.R.color.grey_text),
                         )
                     )
 
@@ -583,7 +584,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.INTEREST_ACC}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -597,13 +598,13 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(R.color.border_grey)),
+                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     Modifier
                         .weight(0.5f)
-                        .rightVerticalDashedBorder(3.dp, Color(R.color.border_grey))
+                        .rightVerticalDashedBorder(3.dp, colorResource(R.color.border_grey))
                         .padding(horizontal = 10.sdp, vertical = 8.sdp)
                         .fillMaxWidth()
 
@@ -614,7 +615,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
 
                             )
                     )
@@ -624,7 +625,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
                         )
                     )
                 }
@@ -640,7 +641,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = stringResource(R.string.amount_of_interest_paid), style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.grey_text),
+                            color = colorResource(R.color.grey_text),
                         )
                     )
 
@@ -648,7 +649,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                         text = "${data.totalIntPaidAmount}", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            color = Color(R.color.background_card_blue),
+                            color = colorResource(R.color.background_card_blue),
 
                             )
                     )

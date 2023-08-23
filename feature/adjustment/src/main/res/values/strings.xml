@@ -5,7 +5,7 @@
     <string name="new_password">New password</string>
     <string name="repeat_the_new_password">Repeat the new password</string>
     <string name="back">Back</string>
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Update</string>
     <string name="_1">1</string>
     <string name="_2">2</string>
     <string name="_3">3</string>
@@ -45,9 +45,9 @@
     <string name="change_pin">Change PIN</string>
     <string name="fingerprint_login">Fingerprint login</string>
     <string name="user_s_profile">User\'s profile</string>
-    <string name="source_of_origin">Source of origin</string>
+    <string name="source_of_origin">Surname</string>
     <string name="internet_office">Internet Office</string>
-    <string name="document_no">Document no</string>
+    <string name="document_no">Name</string>
     <string name="p10001080">P10001080</string>
     <string name="father_s_name">Father\'s name</string>
     <string name="login">Login</string>

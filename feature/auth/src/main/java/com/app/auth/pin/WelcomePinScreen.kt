@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -165,7 +166,7 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                     Image(
                         painter = painterResource(id = R.drawable.exit_icon),
                         contentDescription = "",
-                        colorFilter = ColorFilter.tint(Color(com.app.home.R.color.background_card_blue)),
+                        colorFilter = ColorFilter.tint(colorResource(com.app.home.R.color.background_card_blue)),
                         modifier = Modifier
                             .size(35.dp)
                             .align(Alignment.CenterVertically)

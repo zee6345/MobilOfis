@@ -36,7 +36,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -44,6 +43,7 @@ import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.responseModels.AsanCustomer
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.AdjustmentViewModel
+import com.app.uikit.dialogs.ShowProgressDialog
 
 
 @Composable
@@ -55,14 +55,23 @@ fun CompanyDisplayList(
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
     val companyList = userDetails.customers.asanCustomerList
+    var selectedFavoriteCompany by remember { mutableStateOf<AsanCustomer?>(null) }
+
+    if (selectedFavoriteCompany == null) {
+        selectedFavoriteCompany = companyList.find { it.favorite.equals("Y", true) }
+    }
 
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
     ) {
         items(items = companyList, itemContent = {
-            CompanyDisplayListItem(company = it, viewModel) {
-                navController.navigate(companiesDisplayToCompanies)
-            }
+            CompanyDisplayListItem(
+                company = it,
+                viewModel = viewModel,
+                selectedFavoriteCompany = selectedFavoriteCompany,
+                onFavoriteCompanySelected = {
+                    selectedFavoriteCompany = it
+                })
         })
     }
 }
@@ -71,21 +80,23 @@ fun CompanyDisplayList(
 private fun CompanyDisplayListItem(
     company: AsanCustomer,
     viewModel: AdjustmentViewModel,
-    onClick: () -> Unit
+    selectedFavoriteCompany: AsanCustomer?, // Add selected favorite company state
+    onFavoriteCompanySelected: (AsanCustomer) -> Unit
 ) {
 
     var isClicked by remember { mutableStateOf(false) }
-    var isClickedStar by remember { mutableStateOf(false) }
-
+    val isLoading = remember { mutableStateOf(false) }
     val data by viewModel.setFavCustomer.collectAsState()
-
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
             .clickable {
-                onClick()
+                onFavoriteCompanySelected(company)
+//                if (company == selectedFavoriteCompany) {
+                viewModel.setFavCustomer(SetFavCustomer(company.customerNo))
+//                }
             }, shape = RoundedCornerShape(8.dp)
     ) {
         Row(
@@ -131,37 +142,39 @@ private fun CompanyDisplayListItem(
 
             }
 
-            Image(painter = if (isClickedStar) painterResource(R.drawable.ic_star_filled) else painterResource(
-                R.drawable.ic_star_outlined
-            ),
-                contentDescription = if (isClickedStar) "Filled Star Icon" else "Outlined Star Icon",
+            Image(
+                painter = if (company == selectedFavoriteCompany) painterResource(R.drawable.ic_star_filled) else painterResource(
+                    R.drawable.ic_star_outlined
+                ),
+                contentDescription = if (company == selectedFavoriteCompany) "Filled Star Icon" else "Outlined Star Icon",
                 modifier = Modifier
                     .size(25.dp)
                     .align(Alignment.CenterVertically)
                     .offset(x = (-2).dp, y = 1.dp)
-                    .clickable {
-                        isClickedStar = !isClickedStar
-
-                        if (isClickedStar) {
-                            viewModel.setFavCustomer(SetFavCustomer(company.customerNo))
-                        }
-
-                    })
+            )
         }
     }
+
 
 
     data?.let {
         when (it) {
             is DataState.Error -> {
+                isLoading.value = false
 
             }
 
             is DataState.Loading -> {
+                isLoading.value = true
+                if (isLoading.value) {
+                    ShowProgressDialog(isLoading)
+                } else {
 
+                }
             }
 
             is DataState.Success -> {
+                isLoading.value = false
 
             }
         }

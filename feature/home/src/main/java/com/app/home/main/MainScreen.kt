@@ -621,12 +621,16 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-                val error = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
-                if(error.code.equals("ERROR.SESSION_EXPIRE", true)){
-                    val intent = Intent()
+                try {
+                    val error = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                    if (error.code.equals("ERROR.SESSION_EXPIRE", true)) {
+                        val intent = Intent()
                         intent.action = SESSION
                         intent.putExtra("data", "expire")
                         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
                 }
 
             }
