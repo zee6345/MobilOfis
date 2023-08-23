@@ -1,6 +1,7 @@
 package com.app.home.main
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -57,6 +58,7 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.headerFilters
+import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -69,22 +71,16 @@ private const val SESSION = "SESSION_EVENTS"
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
-    val selectCompanyState = rememberSaveable { mutableStateOf(false) }
-    val showBalance = rememberSaveable { mutableStateOf(false) }
-    val balancePopup = rememberSaveable { mutableStateOf(false) }
-    var touchPoint: Offset by remember { mutableStateOf(Offset.Zero) }
+    val selectCompanyState = remember { mutableStateOf(false) }
+    val showBalance = remember { mutableStateOf(false) }
+    val balancePopup = remember { mutableStateOf(false) }
     val customerBalanceType = remember { mutableStateOf(Balance.BALANCE) }
     val balance = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
     val customerBalance = remember { mutableStateListOf<GetCustomerBalanceItem>() }
-//    val density = LocalDensity.current
-    val configuration = LocalConfiguration.current
-//    val screenHeightDp = configuration.screenHeightDp.dp
     val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
-    var isBottomSheetExpanded by remember { mutableStateOf(false) }
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
-    val coroutineScope = rememberCoroutineScope()
     val accountBalance by viewModel.accountBalance.collectAsState()
     val recentOps by viewModel.recentOps.collectAsState()
     val setCustomerName by viewModel.setCustomerName.collectAsState()
@@ -124,13 +120,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            isBottomSheetExpanded = !isBottomSheetExpanded
+//                            isBottomSheetExpanded = !isBottomSheetExpanded
 
-                            coroutineScope.launch {
-                                if (isBottomSheetExpanded) {
-                                    scaffoldState.bottomSheetState.expand()
-                                } else {
+                            coroutine.launch {
+                                if (scaffoldState.bottomSheetState.isExpanded) {
                                     scaffoldState.bottomSheetState.collapse()
+                                } else {
+                                    scaffoldState.bottomSheetState.expand()
                                 }
                             }
 
@@ -375,7 +371,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         ) {
 
                             Row(
-                                modifier = Modifier.weight(0.7f),
+                                modifier = Modifier
+                                    .weight(0.7f)
+                                    .clickable {
+                                        selectCompanyState.value = true
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
@@ -384,7 +384,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                         .size(28.dp)
                                         .align(Top)
                                         .clickable {
-                                            selectCompanyState.value = !selectCompanyState.value
+//                                            selectCompanyState.value = !selectCompanyState.value
                                         },
                                     contentDescription = "",
                                     tint = Color.White
@@ -417,7 +417,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                         .size(16.dp)
                                         .align(Top)
                                         .clickable {
-                                            selectCompanyState.value = !selectCompanyState.value
+//                                            selectCompanyState.value = !selectCompanyState.value
                                         },
                                     contentDescription = ""
                                 )
@@ -596,16 +596,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
-
-
-    com.app.uikit.bottomSheet.SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-        viewModel.setCustomerName(ChangeCompanyName(it))
-
+    SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
         coroutine.launch {
-            //refresh api
+            viewModel.setCustomerName(ChangeCompanyName(it))
             viewModel.getRecentOps(userDetails.customerNo)
         }
-
     }
 
     if (customerBalance.isNotEmpty() && customerBalance != null) {
@@ -653,7 +648,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
-
     //handle API Responce
     recentOps?.let {
         when (it) {
@@ -683,21 +677,24 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
-
     setCustomerName?.let {
         when (it) {
             is DataState.Loading -> {
 
+
+
             }
 
             is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
+
+//                selectCompanyState.value = false
 
             }
 
             is DataState.Success -> {
 
-                selectCompanyState.value = false
+                //reset sheet state
+//                selectCompanyState.value = false
 
                 try {
 
@@ -707,6 +704,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         viewModel.session.put(Keys.KEY_USER_DETAILS, str)
 
                         customerName.value = this.customerName
+
 
                     }
 
@@ -740,6 +738,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
         }
     }
+
+
 
 
 }

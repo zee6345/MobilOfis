@@ -90,6 +90,7 @@ import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.CountdownTimer
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private lateinit var usernameState: MutableState<String>
 private lateinit var paswdState: MutableState<String>
@@ -107,20 +108,24 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val showDialog = remember { mutableStateOf(false) }
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
+    var isPswdVisible by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     val pin = viewModel.session[Keys.KEY_USER_PIN]
-    val coroutine = rememberCoroutineScope()
 
-    var isPswdVisible by remember { mutableStateOf(false) }
     val passwordVisualTransformation =
         if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
 
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val coroutine = rememberCoroutineScope()
+
+
     BottomSheetScaffold(
-        scaffoldState = rememberBottomSheetScaffoldState(),
+        scaffoldState = scaffoldState,
         sheetPeekHeight = 50.sdp,
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetElevation = 20.sdp,
@@ -153,7 +158,16 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.sdp),
+                        .padding(top = 10.sdp)
+                        .clickable {
+                            coroutine.launch {
+                                if (scaffoldState.bottomSheetState.isExpanded) {
+                                    scaffoldState.bottomSheetState.collapse()
+                                } else {
+                                    scaffoldState.bottomSheetState.expand()
+                                }
+                            }
+                        },
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
                         fontSize = 14.sp
