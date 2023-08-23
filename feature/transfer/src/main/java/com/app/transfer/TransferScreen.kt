@@ -1,7 +1,6 @@
 package com.app.transfer
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -253,6 +252,10 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                     it.brTrnType.contains(filterByType.value, true)
                                 }.filter {
                                     it.customerAccount.contains(filterByAccount.value, true)
+                                }.filter {
+                                    it.currency.contains(filterByCurrency.value, true)
+                                }.filter {
+                                    it.amount.toString().contains(filterByAmount.value, true)
                                 }
 
                                 //date header
@@ -562,10 +565,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByType.value = it.prefix
     }
 
-    AmountBottomSheet(showAmountBottomSheet)
+    AmountBottomSheet(showAmountBottomSheet) {
+        filterByAmount.value = ((it.startAmount.toFloat() + it.endAmount.toFloat()) / 2).toString()
+    }
 
     CurrencyBottomSheet(showCurrencyBottomSheet) {
         filterByCurrency.value = it
+
+        showCurrencyBottomSheet.value = false
     }
 
 

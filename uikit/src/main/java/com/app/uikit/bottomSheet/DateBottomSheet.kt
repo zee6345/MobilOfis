@@ -99,9 +99,10 @@ fun DateBottomSheet(
     datePickerStartBottomSheet = rememberSaveable { mutableStateOf(false) }
     datePickerEndBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    val showDatePicker = remember { mutableStateOf(false) }
+    val showStartDatePicker = remember { mutableStateOf(false) }
+    val showEndDatePicker = remember { mutableStateOf(false) }
 
-    val selectedDate = remember { mutableStateOf("") }
+//    val selectedDate = remember { mutableStateOf("") }
     var selectedDateType by remember { mutableStateOf(DateType.TODAY) }
     val currentDate = System.currentTimeMillis()
     val formattedCurrentDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
@@ -131,7 +132,7 @@ fun DateBottomSheet(
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
             DateTypeMenu({
-                selectedDate.value = it
+                startDate.value = it
             }, {
                 selectedDateType = it
             })
@@ -161,7 +162,7 @@ fun DateBottomSheet(
                     modifier = Modifier
                         .padding(2.dp)
                         .clickable {
-                            showDatePicker.value = true
+                            showStartDatePicker.value = true
                         },
                     shape = RoundedCornerShape(5.dp)
                 ) {
@@ -214,7 +215,7 @@ fun DateBottomSheet(
                     modifier = Modifier
                         .padding(2.dp)
                         .clickable {
-                            showDatePicker.value = true
+                            showEndDatePicker.value = true
                         },
                     shape = RoundedCornerShape(5.dp)
                 ) {
@@ -282,8 +283,8 @@ fun DateBottomSheet(
 
                         onSelectedDate(
                             DateModel(
-                                selectedDate.value,
-                                formattedCurrentDate,
+                                startDate.value,
+                                endDate.value,
                                 selectedDateType
                             )
                         )
@@ -297,14 +298,14 @@ fun DateBottomSheet(
     }
 
 
-    DatePicker(showDatePicker) {
+    StartDatePicker(showStartDatePicker) {
         startDate.value = it
-        showDatePicker.value = false
+        showStartDatePicker.value = false
     }
 
-    DatePicker(showDatePicker) {
+    EndDatePicker(showEndDatePicker) {
         endDate.value = it
-        showDatePicker.value = false
+        showEndDatePicker.value = false
     }
 
 }

@@ -1,6 +1,8 @@
 package com.app.uikit.bottomSheet
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -29,8 +31,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -41,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.uikit.R
-import com.app.uikit.views.CustomRangeSlider
+import com.app.uikit.models.AmountModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -67,15 +69,16 @@ fun AmountBottomSheet() {
         )
     }
 
-    AmountBottomSheet(showAmountBottomSheet)
+    AmountBottomSheet(showAmountBottomSheet){
+
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>) {
-    val minAmountState = remember { mutableStateOf("") }
-    val maxAmountState = remember { mutableStateOf("") }
-    var sliderPosition by remember { mutableStateOf(0f..100000f) }
+fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChanged: (AmountModel) -> Unit) {
+    val minAmountState = remember { mutableStateOf("1000") }
+    val maxAmountState = remember { mutableStateOf("1000000") }
 
     if (showAmountBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
@@ -106,99 +109,81 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                OutlinedTextField(
-                    value = minAmountState.value,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.1f),
-                    onValueChange = {
-                        minAmountState.value = it
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(R.string._20000),
-                            fontSize = 14.sp
-                        )
-
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.White,
-                        focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(R.color.border_grey),
-                        unfocusedLabelColor = Color(R.color.grey_text),
-                        focusedLabelColor = Color(0xFF223142),
-                    ),
-                    singleLine = true
-                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.01f)
+                        .weight(1f)
+                        .padding(horizontal = 8.sdp)
+                        .background(Color.White) // Background color of the box
+                        .border(
+                            width = 2.dp,          // Outline width
+                            color = Color.Black.copy(0.6f),   // Outline color
+                            shape = RoundedCornerShape(8.dp) // Rounded corners
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = minAmountState.value,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.1f)
                         .width(2.sdp)
-                        .height(1.sdp)
+                        .height(2.sdp)
                         .background(
-                            color = Color(R.color.border_grey),
+                            color = colorResource(R.color.border_grey),
                             shape = RoundedCornerShape(size = 10.sdp)
                         )
                         .align(Alignment.CenterVertically)
                 )
-                OutlinedTextField(
-                    value = minAmountState.value,
+
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.1f),
-                    onValueChange = {
-                        /* Handle value change */
-                        maxAmountState.value = it
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(R.string._10000000),
-                            fontSize = 14.sp
-                        )
-
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.White,
-                        focusedBorderColor = Color(0xFF223142),
-                        unfocusedBorderColor = Color(R.color.border_grey),
-                        unfocusedLabelColor = Color(R.color.grey_text),
-                        focusedLabelColor = Color(0xFF223142),
-                    ),
-                    singleLine = true
-                )
+                        .weight(1f)
+                        .padding(horizontal = 8.sdp)
+                        .background(Color.White) // Background color of the box
+                        .border(
+                            width = 2.dp,          // Outline width
+                            color = Color.Black.copy(0.6f),   // Outline color
+                            shape = RoundedCornerShape(8.dp) // Rounded corners
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = maxAmountState.value,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                CustomRangeSlider(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .fillMaxWidth(),
-                    rangeColor = Color(0xff203657),
-                    backColor = Color(0xff859DB5),
-                    barHeight = 2.dp,
-                    circleRadius = 8.dp,
-                    progress1InitialValue = 0.3f,
-                    progress2InitialValue = 0.8f,
-                    cornerRadius = CornerRadius(32f, 32f),
-                ) { progress1, progress2 ->
 
-                    minAmountState.value = progress1.toString()
-                    maxAmountState.value = progress2.toString()
-
+                RangeSeekBar() {
+                    minAmountState.value = it.startAmount.toString()
+                    maxAmountState.value = it.endAmount.toString()
                 }
             }
 
-            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
 
             Row(
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 3.sdp, horizontal = 5.sdp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ClickableText(
@@ -221,12 +206,45 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>) {
                         fontSize = 14.ssp
                     ),
                     onClick = {
+                        onValueChanged(AmountModel(minAmountState.value, maxAmountState.value))
                         showAmountBottomSheet.value = false
                     },
-
-                    )
+                )
             }
 
         }
     }
 }
+
+
+@Composable
+fun RangeSeekBar(
+    onValueChanged: (AmountModel) -> Unit
+) {
+    var sliderValues by remember { mutableStateOf(1000f..1000000f) }
+
+    RangeSlider(
+        value = sliderValues,
+        onValueChange = { sliderValues_ ->
+            sliderValues = sliderValues_
+        },
+        valueRange = 1000f..1000000f,
+        onValueChangeFinished = {
+            // this is called when the user completed selecting the value
+//            Log.d(
+//                "MainActivity",
+//                "Start: ${sliderValues.start}, End: ${sliderValues.endInclusive}"
+//            )
+        },
+        colors = SliderDefaults.colors(
+            thumbColor = Color(0xFF203657),
+            activeTrackColor = Color(0xFF203657),
+            inactiveTrackColor = Color(0xFF859DB5)
+        )
+    )
+
+    onValueChanged(AmountModel(sliderValues.start.toString(), sliderValues.endInclusive.toString()))
+
+}
+
+
