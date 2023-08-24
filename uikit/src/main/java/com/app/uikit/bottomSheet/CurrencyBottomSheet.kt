@@ -3,15 +3,11 @@ package com.app.uikit.bottomSheet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,7 +55,6 @@ fun CurrencyBottomSheet() {
 
         ClickableText(modifier = Modifier.padding(5.dp),
             text = AnnotatedString(text = "Show Status BottomSheet"),
-//                    color = Color(0xFF203657),
             onClick = {
                 showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
             }
@@ -83,11 +78,7 @@ fun CurrencyBottomSheet(
         onDismissRequest = { showCurrencyBottomSheet.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
     ) {
-        Column(
-            modifier = Modifier
-                .padding(3.dp)
-                .padding(horizontal = 10.dp)
-        ) {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth(), Arrangement.Center
             ) {
@@ -123,7 +114,7 @@ fun CurrencyMenuItem(menuItem: CurrencyModel, onCurrencyClick: (String) -> Unit)
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
-            .dashedBorder(2.dp, colorResource(R.color.border_grey))
+            .dashedBorder(3.dp, colorResource(R.color.border_grey))
             .clickable {
                 val data = if (menuItem.equals("ALL")) {
                     ""
@@ -137,7 +128,7 @@ fun CurrencyMenuItem(menuItem: CurrencyModel, onCurrencyClick: (String) -> Unit)
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.sdp, bottom = 5.sdp),
+                .padding(vertical = 10.sdp, horizontal = 15.sdp),
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily(Font(R.font.roboto_regular)),
             color = Color(0xFF223142)

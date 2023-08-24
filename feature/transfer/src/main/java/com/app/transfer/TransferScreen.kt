@@ -93,8 +93,6 @@ private lateinit var showStatusBottomSheet: MutableState<Boolean>
 private lateinit var showTypeBottomSheet: MutableState<Boolean>
 private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
-//private lateinit var startDateSelected: MutableState<String>
-//private lateinit var endDateSelected: MutableState<String>
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -212,6 +210,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     transferListResponse?.let { it ->
 
                         item {
+                            Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
                             headerFilters(transferHeaderList) { filter ->
                                 filterByStatus.value = filter
 
@@ -237,11 +236,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         }
 
                         item {
+                            Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
                             FilterListMenu()
                         }
 
 
-                        val groupedItems = it.groupBy { group -> group.trnDateTime }
+                        val groupedItems = it.groupBy { group ->
+                            group.trnDateTime
+                        }
                         groupedItems.forEach { (date, items) ->
                             item {
 
@@ -259,7 +261,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                 }
 
                                 //date header
-                                if (filter.isNotEmpty()) {
+                                if (filter.isNullOrEmpty()) {
                                     Spacer(
                                         modifier = Modifier.size(
                                             height = 15.sdp,
@@ -270,7 +272,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                     // Display the date as a header
                                     DateHeader(date, isSigned.value)
                                 }
-
 
 
                                 filter.forEach { item ->

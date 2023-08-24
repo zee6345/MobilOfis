@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -54,6 +53,7 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.headerFilters
 import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
+import com.app.uikit.dialogs.ShowProgressDialog
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -62,7 +62,6 @@ import java.text.SimpleDateFormat
 private const val TAG = "MenuScreen"
 private const val SESSION = "SESSION_EVENTS"
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -70,6 +69,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val selectCompanyState = remember { mutableStateOf(false) }
     val showBalance = remember { mutableStateOf(false) }
     val balancePopup = remember { mutableStateOf(false) }
+    val isCustomerChange = remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf(false) }
     val customerBalanceType = remember { mutableStateOf("Balance") }
     val balance = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
@@ -121,7 +122,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-
                 ) {
                     Icon(
                         if (scaffoldState.bottomSheetState.isExpanded) painterResource(id = R.drawable.ic_option_down) else painterResource(
@@ -158,16 +158,25 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 10.sdp, bottom = 10.sdp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
+                    val sumDR = recentData
+                        .filter { it.debit_credit_flag == "DR" }
+                        .sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
+
+                    val sumCR = recentData
+                        .filter { it.debit_credit_flag == "CR" }
+                        .sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
 
                     Row {
 
                         Icon(
                             painterResource(id = R.drawable.ic_options_arrow_in),
-                            modifier = Modifier.size(width = 18.sdp, height = 12.sdp),
+                            modifier = Modifier.size(width = 18.sdp, height = 8.sdp),
                             tint = colorResource(R.color.background_card_blue),
                             contentDescription = null
                         )
@@ -177,7 +186,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         )
 
                         Text(
-                            text = "5600.00",
+                            text = "${sumDR}",
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 lineHeight = 18.4.sp,
@@ -198,7 +207,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                         Icon(
                             painterResource(id = R.drawable.ic_options_arrow_out),
-                            modifier = Modifier.size(width = 18.sdp, height = 12.sdp),
+                            modifier = Modifier.size(width = 18.sdp, height = 8.sdp),
                             tint = Color(0xFFFF4E57),
                             contentDescription = null
                         )
@@ -209,7 +218,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                         Text(
-                            text = "-5600.00",
+                            text = "-${sumCR}",
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 lineHeight = 18.4.sp,
@@ -230,67 +239,81 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val selectedBoxIndex = remember { mutableStateOf(-1) }
+                    val selectedBoxIndex = remember { mutableStateOf(0) }
 
                     Row() {
-                        Box(modifier = Modifier
-                            .padding(6.dp)
-                            .background(
-                                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
-                                    R.color.border_grey
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .clickable { selectedBoxIndex.value = 0 }) {
-                            Text(
-                                text = "All", modifier = Modifier.padding(6.dp), style = TextStyle(
-                                    if (selectedBoxIndex.value == 0) Color.White else colorResource(
-                                        R.color.background_card_blue
-                                    ),
-                                    fontSize = 12.sp
+
+                        Card(
+                            modifier = Modifier
+                                .padding(6.dp),
+                            elevation = 8.sdp,
+                        ){
+                            Box(modifier = Modifier
+                                .background(
+                                    if (selectedBoxIndex.value == 0) Color(0xFFE7EEFC) else Color.White,
+
+                                    )
+                                .clickable { selectedBoxIndex.value = 0 }) {
+                                Text(
+                                    text = "All", modifier = Modifier.padding(6.dp), style = TextStyle(
+                                        if (selectedBoxIndex.value == 0) Color(0xFF015CD1) else Color(
+                                            0xFF223142
+                                        ),
+                                        fontSize = 12.sp
+                                    )
                                 )
-                            )
+                            }
                         }
-                        Box(modifier = Modifier
-                            .padding(6.dp)
-                            .background(
-                                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
-                                    R.color.border_grey
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .clickable { selectedBoxIndex.value = 1 }) {
-                            Text(
-                                text = "Income",
-                                modifier = Modifier.padding(6.dp),
-                                style = TextStyle(
-                                    if (selectedBoxIndex.value == 1) Color.White else colorResource(
-                                        R.color.background_card_blue
-                                    ),
-                                    fontSize = 12.sp
+
+                        Card(
+                            modifier = Modifier
+                                .padding(6.dp),
+                            elevation = 8.sdp,
+                        ){
+                            Box(modifier = Modifier
+                                .background(
+                                    if (selectedBoxIndex.value == 1) Color(0xFFE7EEFC) else Color.White,
+
+                                    )
+                                .clickable { selectedBoxIndex.value = 1 }) {
+                                Text(
+                                    text = "Income",
+                                    modifier = Modifier.padding(6.dp),
+                                    style = TextStyle(
+                                        if (selectedBoxIndex.value == 1) Color(0xFF015CD1) else Color(
+                                            0xFF223142
+                                        ),
+                                        fontSize = 12.sp
+                                    )
                                 )
-                            )
+                            }
                         }
-                        Box(modifier = Modifier
-                            .padding(6.dp)
-                            .background(
-                                if (selectedBoxIndex.value == 2) colorResource(R.color.background_card_blue) else colorResource(
-                                    R.color.border_grey
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .clickable { selectedBoxIndex.value = 2 }) {
-                            Text(
-                                text = "Expenditure",
-                                modifier = Modifier.padding(6.dp),
-                                style = TextStyle(
-                                    if (selectedBoxIndex.value == 2) Color.White else colorResource(
-                                        R.color.background_card_blue
-                                    ),
-                                    fontSize = 12.sp
+
+
+                        Card(
+                            modifier = Modifier
+                                .padding(6.dp),
+                            elevation = 8.sdp,
+                        ){
+                            Box(modifier = Modifier
+                                .background(
+                                    if (selectedBoxIndex.value == 2) Color(0xFFE7EEFC) else Color.White,
+
+                                    )
+                                .clickable { selectedBoxIndex.value = 2 }) {
+                                Text(
+                                    text = "Expenditure",
+                                    modifier = Modifier.padding(6.dp),
+                                    style = TextStyle(
+                                        if (selectedBoxIndex.value == 2) Color(0xFF015CD1) else Color(
+                                            0xFF223142
+                                        ),
+                                        fontSize = 12.sp
+                                    )
                                 )
-                            )
+                            }
                         }
+
                     }
 
                     Box() {
@@ -310,15 +333,27 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 }
 
-                LazyColumn(
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
 
-                    items(items = recentData, itemContent = {
-                        CardsItem(it)
-                    })
+                LazyColumn {
+                    val groupedItems = recentData.groupBy { it.trn_date }
+
+                    groupedItems.forEach { (dateStr, itemList) ->
+
+                        item {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.sdp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = dateStr)
+                            }
+
+                            itemList.forEach { ops ->
+                                CardsItem(ops)
+                            }
+                        }
+                    }
 
                 }
             }
@@ -579,14 +614,21 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-        coroutine.launch {
-            viewModel.setCustomerName(ChangeCompanyName(it))
-            viewModel.getRecentOps(userDetails.customerNo)
-        }
+        Log.e(TAG, "company sheet called")
+        viewModel.setCustomerName(ChangeCompanyName(it))
+
+        Log.e(TAG, "recent ops called")
+        viewModel.getRecentOps(userDetails.customerNo)
+
     }
 
     if (customerBalance.isNotEmpty() && customerBalance != null) {
         setDefaultBalanceValue(customerBalanceType, balance, customerBalance)
+    }
+
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
     }
 
 
@@ -630,52 +672,19 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
-    //handle API Responce
-    recentOps?.let {
-        when (it) {
-            is DataState.Loading -> {
-
-            }
-
-            is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
-            }
-
-            is DataState.Success -> {
-                try {
-                    val data = it.data as GetRecentOps
-                    data.forEach {
-                        recentData.apply {
-                            clear()
-                            add(it)
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-
-    }
-
     setCustomerName?.let {
         when (it) {
             is DataState.Loading -> {
-
-
+                isLoading.value = true
             }
 
             is DataState.Error -> {
-
-//                selectCompanyState.value = false
-
+                isLoading.value = false
             }
 
             is DataState.Success -> {
+                isLoading.value = false
 
-                //reset sheet state
-//                selectCompanyState.value = false
 
                 try {
 
@@ -685,9 +694,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         viewModel.session.put(Keys.KEY_USER_DETAILS, str)
 
                         customerName.value = this.customerName
-
-
                     }
+
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -700,13 +708,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     transferCountSummery?.let {
         when (it) {
-            is DataState.Loading -> {
+            is DataState.Loading -> {}
 
-            }
-
-            is DataState.Error -> {
-//                Message.showMessage(context, it.errorMessage)
-            }
+            is DataState.Error -> {}
 
             is DataState.Success -> {
                 val data = it.data as TransferCountSummaryResponse
@@ -720,34 +724,52 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         }
     }
 
+    //handle API Responce
+    recentOps?.let {
+        when (it) {
+            is DataState.Loading -> {}
+
+            is DataState.Error -> {}
+
+            is DataState.Success -> {
+                try {
+                    val data = it.data as GetRecentOps
+
+                    if (!recentData.isNullOrEmpty()) {
+                        recentData.clear()
+                    }
+
+                    recentData.addAll(data)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+
+    }
+
 
 }
 
-
-@Composable
-fun DateHeader(date: String) {
-    Text(
-        text = date,
-        style = Typography().body2.copy(fontWeight = FontWeight.Bold),
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
-    )
-}
 
 @Composable
 private fun CardsItem(data: GetRecentOpsItem) {
 
+    var isCredit by remember { mutableStateOf(false) }
+
+    isCredit = data.debit_credit_flag != "DR"
+
     Card(
         modifier = Modifier
-            .padding(vertical = 5.sdp, horizontal = 5.sdp)
+            .padding(vertical = 4.sdp, horizontal = 8.sdp)
             .fillMaxWidth()
             .clickable {
 
             },
         elevation = 1.dp,
-        backgroundColor = colorResource(R.color.border_grey),
+        backgroundColor = Color(0xFFF3F7FA),
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
     ) {
 
@@ -755,77 +777,136 @@ private fun CardsItem(data: GetRecentOpsItem) {
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.sdp, vertical = 5.sdp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(0.7f),
+                contentAlignment = Alignment.Center
             ) {
-
+                Text(
+                    "${data.receiver_name}",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF203657),
+                        textAlign = TextAlign.Left,
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Column(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)
             ) {
 
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text(
-                        "PHARMASCOPE LIMITED",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            lineHeight = 18.4.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                            fontWeight = FontWeight(400),
-                            color = colorResource(R.color.background_card_blue),
-                        ),
-                        modifier = Modifier.padding(vertical = 5.sdp)
-                    )
+                Text(
+                    if (isCredit) "-${data.amount} ₼" else "${data.amount} ₼",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                        fontWeight = FontWeight(600),
+                        color = if (isCredit) Color(0xFFFF4E57) else Color(0xFF203657),
+                        textAlign = TextAlign.Right,
+                    ),
+                    modifier = Modifier
+                        .padding(vertical = 5.sdp)
+                        .fillMaxWidth()
+                )
 
 
-                    Text(
-                        "${data.trn_date}",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                            fontWeight = FontWeight(600),
-                            color = Color(0xFF203657),
-                            textAlign = TextAlign.Right,
-                        ),
-                        modifier = Modifier.padding(vertical = 5.sdp)
-                    )
-                }
-
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text(
-                        "LIABILITY COMPANY",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            lineHeight = 18.4.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                            fontWeight = FontWeight(400),
-                            color = colorResource(R.color.background_card_blue),
-                        ),
-
-                        )
-
-                    Text(
-                        "${data.trn_time}",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            lineHeight = 16.1.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                            fontWeight = FontWeight(400),
-                            color = colorResource(R.color.grey_text),
-                        ),
-
-                        )
-                }
+                Text(
+                    "${data.trn_time}",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        lineHeight = 16.1.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                        fontWeight = FontWeight(400),
+                        color = colorResource(R.color.grey_text),
+                        textAlign = TextAlign.Right
+                    ),
+                    modifier = Modifier
+                        .padding(vertical = 5.sdp)
+                        .fillMaxWidth()
+                )
 
 
             }
+
+//            Column(
+//                Modifier.fillMaxWidth()
+//            ) {
+
+//                Row(
+//                    Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceBetween
+//                ) {
+//
+//                    Text(
+//                        "${data.receiver_name}",
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            lineHeight = 18.4.sp,
+//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+//                            fontWeight = FontWeight(400),
+//                            color = colorResource(R.color.background_card_blue),
+//                        ),
+//                        modifier = Modifier.padding(vertical = 5.sdp)
+//                    )
+//
+//
+//                    Text(
+//                        "${data.amount}",
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+//                            fontWeight = FontWeight(600),
+//                            color = Color(0xFF203657),
+//                            textAlign = TextAlign.Right,
+//                        ),
+//                        modifier = Modifier.padding(vertical = 5.sdp)
+//                    )
+//                }
+
+//                Row(
+//                    Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceBetween
+//                ) {
+//
+//                    Text(
+//                        "LIABILITY COMPANY",
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            lineHeight = 18.4.sp,
+//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+//                            fontWeight = FontWeight(400),
+//                            color = colorResource(R.color.background_card_blue),
+//                        ),
+//
+//                        )
+//
+//                    Text(
+//                        "${data.trn_time}",
+//                        style = TextStyle(
+//                            fontSize = 12.sp,
+//                            lineHeight = 16.1.sp,
+//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+//                            fontWeight = FontWeight(400),
+//                            color = colorResource(R.color.grey_text),
+//                        ),
+//
+//                        )
+//                }
+
+
+//            }
 
         }
 

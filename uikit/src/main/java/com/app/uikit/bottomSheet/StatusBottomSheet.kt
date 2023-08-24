@@ -3,13 +3,11 @@ package com.app.uikit.bottomSheet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.uikit.R
+import com.app.uikit.borders.dashedBorder
 import com.app.uikit.data.DataProvider
 import ir.kaaveh.sdpcompose.sdp
 
@@ -57,7 +56,6 @@ fun StatusBottomSheet() {
     ) {
         ClickableText(modifier = Modifier.padding(5.dp),
             text = AnnotatedString(text = "Show Status BottomSheet"),
-//                    color = Color(0xFF203657),
             onClick = {
                 showAccountBottomSheet.value = !showAccountBottomSheet.value
             }
@@ -65,7 +63,7 @@ fun StatusBottomSheet() {
         )
     }
 
-    StatusBottomSheet(showAccountBottomSheet){
+    StatusBottomSheet(showAccountBottomSheet) {
 
     }
 }
@@ -82,10 +80,7 @@ fun StatusBottomSheet(
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
 
         ) {
-        Column(
-            modifier = Modifier
-
-        ) {
+        Column {
 
             Text(
                 text = stringResource(R.string.status),
@@ -121,16 +116,16 @@ data class StatusModel(
 
 @Composable
 fun StatusMenuItem(menuItem: StatusModel, onStatusClick: (String) -> Unit) {
-    Column(
+    Row(
         modifier = Modifier
             .background(Color.White)
+            .dashedBorder(3.dp, colorResource(R.color.border_grey))
             .clickable { onStatusClick(menuItem.title) }
-            .padding(horizontal = 10.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 2.dp)
+                .padding(top = 10.sdp, start = 15.sdp, end = 15.sdp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_circle),
@@ -150,24 +145,7 @@ fun StatusMenuItem(menuItem: StatusModel, onStatusClick: (String) -> Unit) {
                 color = Color(0xFF223142)
             )
         }
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.sdp)
-                    .background(
-                        color = colorResource(R.color.border_grey),
-                        shape = RoundedCornerShape(size = 10.sdp)
-                    )
-                    .align(Alignment.CenterVertically)
-            )
-        }
-        Spacer(modifier = Modifier.padding(top = 5.sdp))
+
     }
 }
 

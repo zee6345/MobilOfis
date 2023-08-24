@@ -97,7 +97,7 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChang
             ) {
                 Text(
                     text = stringResource(R.string.amount),
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     fontFamily = FontFamily(Font(R.font.roboto_medium)),
                     color = Color(0xFF223142)
                 )
@@ -116,8 +116,8 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChang
                         .padding(horizontal = 8.sdp)
                         .background(Color.White) // Background color of the box
                         .border(
-                            width = 2.dp,          // Outline width
-                            color = Color.Black.copy(0.6f),   // Outline color
+                            width = 1.dp,          // Outline width
+                            color = Color.Black.copy(0.4f),   // Outline color
                             shape = RoundedCornerShape(8.dp) // Rounded corners
                         ),
                     contentAlignment = Alignment.Center
@@ -149,8 +149,8 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChang
                         .padding(horizontal = 8.sdp)
                         .background(Color.White) // Background color of the box
                         .border(
-                            width = 2.dp,          // Outline width
-                            color = Color.Black.copy(0.6f),   // Outline color
+                            width = 1.dp,          // Outline width
+                            color = Color.Black.copy(0.4f),   // Outline color
                             shape = RoundedCornerShape(8.dp) // Rounded corners
                         ),
                     contentAlignment = Alignment.Center
@@ -161,6 +161,26 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChang
                         modifier = Modifier.padding(16.dp)
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
+
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+
+                Text(text = "0",
+                    style = TextStyle(
+                        colorResource(id = R.color.grey_text)
+                    )
+                )
+                Text(text = "1 000 000",
+                    style = TextStyle(
+                        colorResource(id = R.color.grey_text)
+                    )
+                )
+
             }
 
             Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
@@ -221,26 +241,22 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChang
 fun RangeSeekBar(
     onValueChanged: (AmountModel) -> Unit
 ) {
-    var sliderValues by remember { mutableStateOf(1000f..1000000f) }
+    var sliderValues by remember { mutableStateOf(0f..1000000f) }
 
     RangeSlider(
         value = sliderValues,
         onValueChange = { sliderValues_ ->
             sliderValues = sliderValues_
         },
-        valueRange = 1000f..1000000f,
-        onValueChangeFinished = {
-            // this is called when the user completed selecting the value
-//            Log.d(
-//                "MainActivity",
-//                "Start: ${sliderValues.start}, End: ${sliderValues.endInclusive}"
-//            )
-        },
+        valueRange = 0f..1000000f,
+        onValueChangeFinished = {},
         colors = SliderDefaults.colors(
             thumbColor = Color(0xFF203657),
             activeTrackColor = Color(0xFF203657),
             inactiveTrackColor = Color(0xFF859DB5)
-        )
+        ),
+        modifier = Modifier
+            .height(2.dp)
     )
 
     onValueChanged(AmountModel(sliderValues.start.toString(), sliderValues.endInclusive.toString()))
