@@ -46,8 +46,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
+import com.app.home.main.subviews.selectedCard
 import com.app.uikit.bottomSheet.BusinessCardOptionsSheet
-import com.app.home.main.subviews.cardsList
+
 import com.app.network.models.responseModels.MainCard
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
@@ -60,7 +61,7 @@ import ir.kaaveh.sdpcompose.sdp
 fun CardDetails(navController: NavController) {
 
 
-    val data = cardsList[0]
+    val data = selectedCard.value
 
     Column(
         modifier = Modifier
@@ -119,10 +120,10 @@ fun CardDetails(navController: NavController) {
 //                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    MainContent(navController, data)
+                    MainContent(navController, data!!)
                 }
 
-                if (data.AdditionCards.isNotEmpty() && data.AdditionCards != null) {
+                if (data!!.AdditionCards.isNotEmpty() && data!!.AdditionCards != null) {
 
                     item {
                         Text(

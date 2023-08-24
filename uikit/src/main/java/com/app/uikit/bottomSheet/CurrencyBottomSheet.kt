@@ -27,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -37,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.uikit.R
+import com.app.uikit.borders.dashedBorder
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.CurrencyModel
 import ir.kaaveh.sdpcompose.sdp
@@ -117,10 +119,11 @@ fun CurrencyBottomSheet(
 
 @Composable
 fun CurrencyMenuItem(menuItem: CurrencyModel, onCurrencyClick: (String) -> Unit) {
-    Column(
+    Row(
         modifier = Modifier
+            .fillMaxWidth()
             .background(Color.White)
-            .padding(horizontal = 10.dp)
+            .dashedBorder(2.dp, colorResource(R.color.border_grey))
             .clickable {
                 val data = if (menuItem.equals("ALL")) {
                     ""
@@ -139,24 +142,6 @@ fun CurrencyMenuItem(menuItem: CurrencyModel, onCurrencyClick: (String) -> Unit)
             fontFamily = FontFamily(Font(R.font.roboto_regular)),
             color = Color(0xFF223142)
         )
-        Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.sdp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.sdp)
-                    .background(
-                        color = Color(R.color.border_grey),
-                        shape = RoundedCornerShape(size = 10.sdp)
-                    )
-                    .align(Alignment.CenterVertically)
-            )
-        }
-        Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.sdp))
     }
 }
 

@@ -48,24 +48,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-
 import com.app.home.main.loan.navigation.homeToLoanInformation
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetLoansItem
-
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
 
 
-
-val loansList =  mutableListOf<GetLoansItem>()
+val loansList = mutableListOf<GetLoansItem>()
 
 @Composable
 fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -76,6 +72,8 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
     val cardFilters = remember { DataProvider.filtersLoanList }
     val isLoading = remember { mutableStateOf(false) }
+    val isEmpty = remember { mutableStateOf(false) }
+    val selectedFilter = remember { mutableStateOf("") }
 
 
     LaunchedEffect(Unit) {
@@ -95,37 +93,60 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
     } else {
 
-        Column(
+        LazyColumn(
             modifier = Modifier.padding(horizontal = 2.sdp, vertical = 5.sdp)
         ) {
 
 
-            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+            item {
+                Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-            Filters()
-
-            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
-
-            LazyRow(
-                contentPadding = PaddingValues(vertical = 1.dp)
-            ) {
-                items(items = cardFilters, itemContent = {
-                    Row {
-                        FilterView(filter = it)
-                        Box(modifier = Modifier.padding(end = 5.sdp))
-                    }
-
-                })
+                Filters() {
+                    selectedFilter.value = it
+                }
             }
 
+            item {
+                if(!isEmpty.value) {
+                    Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 1.dp)
-            ) {
-                items(items = loansList, itemContent = {
+                    LazyRow(
+                        contentPadding = PaddingValues(vertical = 1.dp)
+                    ) {
+                        items(items = cardFilters, itemContent = {
+                            Row {
+                                FilterView(filter = it)
+                                Box(modifier = Modifier.padding(end = 5.sdp))
+                            }
+
+                        })
+                    }
+                }
+            }
+
+            val filter = loansList.filter {
+                it.STATUS.contains(selectedFilter.value, true)
+            }
+
+            if (!filter.isNullOrEmpty()){
+                items(items = filter, itemContent = {
                     LoansListItem(obj = it, navController)
                 })
+                isEmpty.value = false
+            } else {
+                item {
+                    Box(
+                        Modifier.fillMaxSize()
+                            .padding(20.sdp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No loan found!")
+                    }
+                }
+                isEmpty.value = true
             }
+
+
 
         }
     }
@@ -138,7 +159,6 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
             is DataState.Error -> {
                 isLoading.value = false
-//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -191,16 +211,19 @@ private fun LoansListItem(obj: GetLoansItem, navController: NavController) {
                 Row(
 
                 ) {
-                    var color: Color? = null
+                    var color = Color(0xFF0FBF1B)
                     when (obj.STATUS) {
+                        //no delay
                         "Gecikmədə deyil" -> {
                             color = Color(0xFF0FBF1B)
                         }
 
+                        //on delay
                         "Gecikmədədir" -> {
                             color = Color(R.color.red_2)
                         }
 
+                        //closed
                         "Ödənilibdir" -> {
                             color = Color(0xFF2196F3)
                         }
@@ -213,9 +236,10 @@ private fun LoansListItem(obj: GetLoansItem, navController: NavController) {
                             .height(10.dp)
                             .drawBehind {
                                 drawCircle(
-                                    color = color!!, radius = 5.dp.toPx()
+                                    color = color, radius = 5.dp.toPx()
                                 )
-                            }.align(Alignment.CenterVertically)
+                            }
+                            .align(Alignment.CenterVertically)
                     ) {
 
                     }
@@ -241,7 +265,7 @@ private fun LoansListItem(obj: GetLoansItem, navController: NavController) {
             }
 
             Text(
-                text = "${obj.MAIN_BALANCE} ",
+                text = "${obj.MAIN_BALANCE}",
                 style = TextStyle(
                     fontSize = 14.sp, color = Color(R.color.background_card_blue),
                     textAlign = TextAlign.End
@@ -298,7 +322,7 @@ private fun FilterView(filter: CardFilters) {
 
 
 @Composable
-private fun Filters() {
+private fun Filters(onFilter: (String) -> Unit) {
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
 
@@ -308,11 +332,17 @@ private fun Filters() {
     ) {
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey),
+                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
+                ),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 0 }) {
+            .clickable {
+                selectedBoxIndex.value = 0
+                onFilter("Gecikmədə deyil")
+            }
+        ) {
             Text(
                 stringResource(R.string.current_loans), style = TextStyle(
                     fontSize = 12.sp,
@@ -324,11 +354,17 @@ private fun Filters() {
 
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey),
+                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
+                ),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 1 }) {
+            .clickable {
+                selectedBoxIndex.value = 1
+                onFilter("Ödənilibdir")
+            }
+        ) {
             Text(
                 stringResource(R.string.closed_loans), style = TextStyle(
                     fontSize = 12.sp,

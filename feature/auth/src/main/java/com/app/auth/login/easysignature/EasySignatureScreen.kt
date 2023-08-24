@@ -1,8 +1,20 @@
 package com.app.auth.login.easysignature
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -11,7 +23,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,9 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,8 +45,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
+import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.bottomSheet.AsanImzaBottomSheet
 import com.app.uikit.utils.SharedModel
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
@@ -45,7 +58,19 @@ import kotlinx.coroutines.launch
 fun EasySignatureScreen(navController: NavController) {
 
     val easyCode = SharedModel.init().easyVerificationCode.value
+    val asanImzaHelp = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
+
+    //backpress
+    BackHandler(enabled = true, onBack = {
+        navController.navigate(loginNavigationRoute) {
+            popUpTo(loginNavigationRoute) { inclusive = true }
+        }
+    })
+
+
+    //rest
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +111,7 @@ fun EasySignatureScreen(navController: NavController) {
 
                     androidx.compose.material3.Text(
                         modifier = Modifier.align(Alignment.BottomStart),
-                        text = "Introduction with Easy Signature",
+                        text = "Login with Asan Imza",
                         style = TextStyle(color = Color.White, fontSize = 29.sp)
                     )
                 }
@@ -132,10 +157,13 @@ fun EasySignatureScreen(navController: NavController) {
                             contentDescription = ""
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.question_icon),
+                            painter = painterResource(id = R.drawable.ic_question),
                             modifier = Modifier
                                 .size(50.dp)
                                 .align(Alignment.CenterVertically)
+                                .clickable {
+                                    asanImzaHelp.value = true
+                                }
                                 .padding(end = 12.dp),
                             contentDescription = ""
                         )
@@ -177,6 +205,10 @@ fun EasySignatureScreen(navController: NavController) {
         }
 
     }
+
+
+    AsanImzaBottomSheet(asanImzaState = asanImzaHelp, navController = navController)
+
 }
 
 @Composable

@@ -279,6 +279,7 @@
     <string name="anipay_non_budget">AniPay - Non-budget</string>
     <string name="_18_24">18:24</string>
     <string name="execution_done">Execution done</string>
+    <string name="asan_imza_help">"Asan Signature" is a technology that allows you to use a mobile phone as a digital identity certificate and signature tool. The availability of a SIM card-based mobile phone with authentication and electronic signature digital keys is sufficient for the use of the "Asan Signature" service. For more information:  www.asanimza.az </string>
 
 
 </resources>

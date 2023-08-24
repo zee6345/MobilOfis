@@ -55,13 +55,12 @@ import com.app.network.models.responseModels.GetTrustsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
 
-val trustsList =  mutableListOf<GetTrustsItem>()
+val trustsList = mutableListOf<GetTrustsItem>()
 
 @Composable
 fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -70,11 +69,11 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
     val context: Context = LocalContext.current
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-//    val userDetails = MainApp.session.fetchUserDetails()
 
     val isLoading = remember { mutableStateOf(false) }
-//    val cardsList = remember { mutableListOf<GetTrustsItem>() }
     val cardFilters = remember { DataProvider.filtersTrustsList }
+    val onFilter = remember { mutableStateOf("") }
+    val isEmpty = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.getTrusts(
@@ -91,37 +90,62 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
         }
     } else {
 
-        Column(
+        LazyColumn(
             modifier = Modifier.padding(horizontal = 3.sdp, vertical = 5.sdp)
         ) {
 
-            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+            item {
 
-            Filters()
+                Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+                Filters() {
+                    onFilter.value = it
+                }
+            }
 
-            LazyRow(
-                contentPadding = PaddingValues(vertical = 1.dp)
-            ) {
-                items(items = cardFilters, itemContent = {
-                    Row {
-                        FilterView(filter = it)
-                        Box(modifier = Modifier.padding(end = 5.sdp))
+            item {
+                if (!isEmpty.value) {
+                    Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
+                    LazyRow(
+                        contentPadding = PaddingValues(vertical = 1.dp)
+                    ) {
+                        items(items = cardFilters, itemContent = {
+                            Row {
+                                FilterView(filter = it)
+                                Box(modifier = Modifier.padding(end = 5.sdp))
+                            }
+
+                        })
                     }
-
-                })
+                }
             }
 
 
+            val filter = trustsList.filter {
+                it.STATUS.contains(onFilter.value, true)
+            }
 
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 5.dp)
-            ) {
+            if (!filter.isNullOrEmpty()) {
                 items(items = trustsList, itemContent = {
                     TrustsListItem(obj = it, navController)
                 })
+
+                isEmpty.value = false
+            } else {
+                item {
+                    Box(
+                        Modifier.fillMaxSize()
+                            .padding(20.sdp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No deposit found!")
+                    }
+                }
+
+                isEmpty.value = true
             }
+
 
         }
 
@@ -136,7 +160,6 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
                 isLoading.value = false
-//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -269,7 +292,7 @@ private fun FilterView(filter: CardFilters) {
 
 
 @Composable
-private fun Filters() {
+private fun Filters(onFilter: (String) -> Unit) {
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
 
@@ -279,11 +302,16 @@ private fun Filters() {
     ) {
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey),
+                if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
+                ),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 0 }) {
+            .clickable {
+                selectedBoxIndex.value = 0
+                onFilter("1")
+            }) {
             Text(
                 stringResource(R.string.current_deposits), style = TextStyle(
                     fontSize = 12.sp,
@@ -295,11 +323,16 @@ private fun Filters() {
 
         Box(modifier = Modifier
             .background(
-                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(R.color.border_grey),
+                if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.border_grey
+                ),
                 shape = RoundedCornerShape(size = 6.dp)
             )
             .padding(vertical = 5.sdp, horizontal = 10.sdp)
-            .clickable { selectedBoxIndex.value = 1 }) {
+            .clickable {
+                selectedBoxIndex.value = 1
+                onFilter("3")
+            }) {
             Text(
                 stringResource(R.string.closed_deposits), style = TextStyle(
                     fontSize = 12.sp,

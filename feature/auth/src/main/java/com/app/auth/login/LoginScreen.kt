@@ -671,45 +671,6 @@ fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
-//@Composable
-//fun RoundedCornerToast(
-//    text: String,
-//    duration: Int = Toast.LENGTH_SHORT,
-//    context: Context
-//) {
-//    val coroutineScope = rememberCoroutineScope()
-//
-//
-////    LaunchedEffect(Unit) {
-////        coroutineScope.launch {
-////            Toast.makeText(context, text, duration).show()
-////        }
-////    }
-//
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(vertical = 50.sdp, horizontal = 20.sdp)
-//            .background(Color.Transparent, RoundedCornerShape(16.dp))
-//            .wrapContentSize(Alignment.TopCenter)
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .background(Color(0xFFFFDCDE), RoundedCornerShape(16.dp))
-//                .border(2.dp, Color(0xFFF3646C), RoundedCornerShape(16.dp)),
-//            contentAlignment = Alignment.CenterStart
-//        ) {
-//            Text(
-//                text = text,
-//                style = TextStyle(fontSize = 16.sp, color = Color(0xFFF3646C)),
-//                modifier = Modifier.padding(16.dp)
-//            )
-//        }
-//    }
-//}
-
-
 @Composable
 fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 
@@ -911,8 +872,6 @@ private fun LanguageOptions() {
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-//    LoginScreen(rememberNavController())
-
     RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, LocalContext.current)
 }
 
