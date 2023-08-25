@@ -257,17 +257,19 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                     it.amount.toString().contains(filterByAmount.value, true)
                                 }.toList()
 
-                                Log.e("mmmmTAG", "$filter")
+//                                Log.e("mmmmTAG", "$filter")
 
                                 // Display the date header if it's different from the last displayed date
-                                Spacer(
-                                    modifier = Modifier.size(
-                                        height = 10.sdp,
-                                        width = 1.sdp
+                                if (filter.isNotEmpty()) {
+                                    Spacer(
+                                        modifier = Modifier.size(
+                                            height = 10.sdp,
+                                            width = 1.sdp
+                                        )
                                     )
-                                )
 
-                                DateHeader(date, isSigned.value)
+                                    DateHeader(date, isSigned.value)
+                                }
 
 
                                 filter.forEach { item ->
