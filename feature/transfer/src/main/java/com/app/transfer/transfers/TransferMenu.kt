@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -22,26 +23,39 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
+import com.app.transfer.transferHeaders
 
 
 @Composable
 fun headerFilters(
-    transferHeaderList: MutableList<TransferCountSummaryResponseItem>,
+    transferHeaderList: List<TransferCountSummaryResponseItem>,
     onFilterClick: (String) -> Unit
 ) {
-    LazyRow(
-    ) {
-        items(items = transferHeaderList, itemContent = {
-            TransferMenuItemView(menu = it) { status ->
-                onFilterClick(status)
+    if (transferHeaderList.isNotEmpty()) {
+        LazyRow {
+
+            itemsIndexed(items = transferHeaders) { index, menu ->
+                TransferMenuItemView(menu = menu) { status ->
+                    if (status.isNotEmpty() && index >= 0 && index < transferHeaderList.size) {
+                        onFilterClick(status)
+                    }
+                }
+
+                //Add Spacer after each item except for the last one
+                if (index < transferHeaderList.size - 1) {
+                    Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+                }
             }
-            Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
-        })
+        }
+
     }
 }
 
 @Composable
-fun TransferMenuItemView(menu: TransferCountSummaryResponseItem, onFilterClick: (String) -> Unit) {
+private fun TransferMenuItemView(
+    menu: TransferCountSummaryResponseItem,
+    onFilterClick: (String) -> Unit
+) {
 
     var status = ""
     var color = Color(0xff268ED9)

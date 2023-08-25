@@ -1,7 +1,6 @@
 package com.app.uikit.bottomSheet
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.network.helper.Session
 import com.app.uikit.R
 import com.app.uikit.models.DateType
 import ir.kaaveh.sdpcompose.sdp
@@ -320,8 +321,20 @@ data class DateModel(
 @Composable
 fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) -> Unit) {
 
-    val selectedBoxIndex = rememberSaveable { mutableStateOf(0) }
+    val selectedBoxIndex = remember { mutableStateOf(0) }
     var dateType by remember { mutableStateOf(DateType.TODAY) }
+
+    val session = Session(LocalContext.current)
+
+    if (session.getInt("selected") != null) {
+        selectedBoxIndex.value = session.getInt("selected")
+    }
+
+//    when (selectedBoxIndex.value) {
+//        0 -> dateType = DateType.TODAY
+//        1 -> dateType = DateType.YESTERDAY
+//        2 -> dateType = DateType.WEEK
+//    }
 
 
     Row(
@@ -340,6 +353,9 @@ fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) ->
                 )
                 .clickable {
                     selectedBoxIndex.value = 0
+
+                    session.put("selected", selectedBoxIndex.value)
+
                     dateType = DateType.TODAY
                 },
         ) {
@@ -364,6 +380,9 @@ fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) ->
                 )
                 .clickable {
                     selectedBoxIndex.value = 1
+
+                    session.put("selected", selectedBoxIndex.value)
+
                     dateType = DateType.YESTERDAY
                 },
 
@@ -393,6 +412,9 @@ fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) ->
                 )
                 .clickable {
                     selectedBoxIndex.value = 2
+
+                    session.put("selected", selectedBoxIndex.value)
+
                     dateType = DateType.WEEK
                 },
 
@@ -412,23 +434,20 @@ fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) ->
     }
 
     val currentDate = System.currentTimeMillis()
-    val finalDate = when (selectedBoxIndex.value) {
+    var finalDate = ""
+    when (selectedBoxIndex.value) {
         0 -> {
-            SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            finalDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
 
         1 -> {
             val yesterdayDate = Date(currentDate - 24 * 60 * 60 * 1000)
-            SimpleDateFormat("dd.MM.yyyy").format(yesterdayDate)
+            finalDate = SimpleDateFormat("dd.MM.yyyy").format(yesterdayDate)
         }
 
         2 -> {
             val oneWeekLaterDate = Date(currentDate - 7 * 24 * 60 * 60 * 1000)
-            SimpleDateFormat("dd.MM.yyyy").format(oneWeekLaterDate)
-        }
-
-        else -> {
-            ""
+            finalDate = SimpleDateFormat("dd.MM.yyyy").format(oneWeekLaterDate)
         }
     }
 

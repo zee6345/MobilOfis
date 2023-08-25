@@ -1,7 +1,6 @@
 package com.app.transfer
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -98,6 +97,8 @@ private lateinit var showTypeBottomSheet: MutableState<Boolean>
 private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
 
+val transferHeaders = mutableListOf<TransferCountSummaryResponseItem>()
+
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
@@ -108,7 +109,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    val selectedItem = remember { mutableStateOf<TransferListResponseItem?>(null) }
+    var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
+
     val isLoading = remember { mutableStateOf(false) }
     val isSigned = remember { mutableStateOf(false) }
     val sendToBank = remember { mutableStateOf(false) }
@@ -120,10 +122,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val filterByCurrency = remember { mutableStateOf("") }
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
 
-    val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
+//    val headerList = mutableListOf<TransferCountSummaryResponseItem>()
+//    val headerList = ArrayList<TransferCountSummaryResponseItem>()
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
-
-    val isSelected = remember { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
     val businessDates by viewModel.businessDate.collectAsState()
@@ -201,7 +202,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             Column {
 
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
-                headerFilters(transferHeaderList) { filter ->
+
+
+                headerFilters(transferHeaders) { filter ->
                     filterByStatus.value = filter
 
                     //if filter clicked enable check
@@ -228,11 +231,10 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
                 FilterListMenu()
 
-                var lastDisplayedDate: String? = null
-
-                LazyColumn {
-
-                    if (!transferListResponse.isNullOrEmpty()) {
+                if (!transferListResponse.isNullOrEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier.padding(bottom = 50.sdp)
+                    ) {
 
                         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
                         val groupedItems = transferListResponse.groupBy { transferItem ->
@@ -273,201 +275,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
 
                                 filter.forEach { item ->
-                                    isSelected.value = selectedItem.value == item
 
-                                    val formattedTime = Utils.formattedTime(item.trnDateTime)
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
+                                    TransferListItem(
+                                        item,
+                                        viewModel,
+                                        selectedTransfer,
+                                        navController,
+                                        isSigned,
                                     ) {
-
-                                        if (isSigned.value) {
-                                            Box(
-                                                modifier = Modifier.clickable {
-                                                    selectedItem.value =
-                                                        if (isSelected.value) null else item
-                                                }
-                                            ) {
-
-                                                val icon =
-                                                    if (isSelected.value) painterResource(id = R.drawable.ic_checkbox_check) else painterResource(
-                                                        id = R.drawable.ic_checkbox_uncheck
-                                                    )
-                                                Image(icon, contentDescription = "")
-                                            }
-                                        }
-
-                                        Spacer(
-                                            modifier = Modifier.size(
-                                                height = 1.sdp,
-                                                width = 5.sdp
-                                            )
-                                        )
-
-
-
-                                        Card(
-                                            shape = RoundedCornerShape(10.dp),
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(vertical = 5.sdp)
-                                                .clickable {
-                                                    SharedModel.init().signatureData.value =
-                                                        SignatureInfo(false, item)
-
-                                                    navController.navigate(transferToDetails)
-                                                },
-                                            backgroundColor = Color.White
-                                        ) {
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(
-                                                        horizontal = 5.sdp,
-                                                        vertical = 5.sdp
-                                                    )
-                                            ) {
-
-
-                                                Row(
-                                                    Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(horizontal = 5.dp),
-                                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Text(
-                                                        text = "${item.benefName}",
-                                                        style = TextStyle(fontSize = 14.sp),
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        modifier = Modifier.weight(1f)
-                                                    )
-                                                    Text(
-                                                        text = "${item.amount}",
-                                                        style = TextStyle(
-                                                            fontSize = 14.sp
-                                                        ),
-                                                        modifier = Modifier.weight(0.2f)
-                                                    )
-
-                                                }
-
-                                                Spacer(
-                                                    modifier = Modifier.size(
-                                                        height = 5.dp,
-                                                        width = 1.dp
-                                                    )
-                                                )
-
-                                                Row(
-                                                    Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(horizontal = 5.dp),
-                                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-
-                                                    Row {
-                                                        Box(
-                                                            Modifier
-                                                                .background(
-                                                                    colorResource(R.color.border_grey),
-                                                                    shape = RoundedCornerShape(
-                                                                        size = 6.dp
-                                                                    )
-                                                                )
-                                                                .padding(
-                                                                    vertical = 1.sdp,
-                                                                    horizontal = 6.sdp
-                                                                )
-                                                        ) {
-                                                            Text(
-                                                                text = "${item.brTrnType}",
-                                                                style = TextStyle(
-                                                                    color = colorResource(R.color.grey_text),
-                                                                    fontSize = 12.sp
-
-                                                                )
-                                                            )
-                                                        }
-
-                                                        Spacer(
-                                                            Modifier.size(
-                                                                width = 5.dp,
-                                                                height = 1.dp
-                                                            )
-                                                        )
-
-                                                        Box(
-                                                            Modifier
-                                                                .background(
-                                                                    colorResource(R.color.border_grey),
-                                                                    shape = RoundedCornerShape(
-                                                                        size = 6.dp
-                                                                    )
-                                                                )
-                                                                .padding(
-                                                                    vertical = 1.sdp,
-                                                                    horizontal = 6.sdp
-                                                                )
-                                                        ) {
-                                                            Text(
-                                                                text = "$formattedTime",
-                                                                style = TextStyle(
-                                                                    color = colorResource(R.color.grey_text),
-                                                                    fontSize = 12.sp
-
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-
-                                                    Row(
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-
-
-                                                        Box(modifier = Modifier
-                                                            .padding(2.dp)
-                                                            .width(10.dp)
-                                                            .height(10.dp)
-                                                            .drawBehind {
-                                                                drawCircle(
-                                                                    color = Utils.headerStatus(
-                                                                        item.status
-                                                                    ).color,
-                                                                    radius = 5.dp.toPx()
-                                                                )
-                                                            }
-                                                            .align(Alignment.CenterVertically)) {
-
-                                                        }
-
-
-                                                        Spacer(
-                                                            modifier = Modifier.size(
-                                                                width = 5.dp,
-                                                                height = 1.dp
-                                                            )
-                                                        )
-
-                                                        Text(
-                                                            text = Utils.headerStatus(item.status).status,
-                                                            style = TextStyle(
-                                                                fontSize = 14.sp
-                                                            )
-                                                        )
-
-
-                                                    }
-
-
-                                                }
-                                            }
-                                        }
+                                        selectedTransfer = it
                                     }
 
 
@@ -476,9 +292,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         }
 
                     }
-
-                    item {
-                        Box(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
+                } else {
+                    Box(
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No transfer found!")
                     }
                 }
             }
@@ -490,21 +309,20 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Button(
-                        enabled = isSelected.value,
+                        enabled = selectedTransfer != null,
                         onClick = {
                             if (sendToBank.value) {
 
-
                                 viewModel.sendToBankAPI(
                                     SendToBankModel(
-                                        listOf(FileDescriptor("${selectedItem.value!!.ibankRef}")),
+                                        listOf(FileDescriptor("${selectedTransfer!!.ibankRef}")),
                                         ""
                                     )
                                 )
 
                             } else {
                                 SharedModel.init().signatureData.value =
-                                    SignatureInfo(true, selectedItem.value!!)
+                                    SignatureInfo(true, selectedTransfer!!)
                                 navController.navigate(transferToDetails)
                             }
                         },
@@ -513,7 +331,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                             .fillMaxWidth()
                             .padding(bottom = 50.sdp)
                             .background(
-                                if (isSelected.value) Color(0xFF203657) else Color(0xFF203657).copy(
+                                if (selectedTransfer != null) Color(0xFF203657) else Color(
+                                    0xFF203657
+                                ).copy(
                                     0.8f
                                 ),
                                 RoundedCornerShape(8.dp)
@@ -608,11 +428,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             is DataState.Success -> {
                 val data = it.data as TransferCountSummaryResponse
 
-                transferHeaderList.apply {
-                    clear()
-                    addAll(data)
+                if (transferHeaders.isNotEmpty()) {
+                    transferHeaders.clear()
                 }
 
+                transferHeaders.addAll(data)
             }
         }
     }
@@ -666,7 +486,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 }
 
 @Composable
-fun DateHeader(inputDateTimeString: LocalDate, value: Boolean) {
+private fun DateHeader(inputDateTimeString: LocalDate, value: Boolean) {
     val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val formattedDate = inputDateTimeString.format(outputFormatter)
 
@@ -703,7 +523,211 @@ fun DateHeader(inputDateTimeString: LocalDate, value: Boolean) {
 }
 
 @Composable
-fun FilterListMenu() {
+private fun TransferListItem(
+    transfer: TransferListResponseItem,
+    viewModel: HomeViewModel,
+    selectedTransfer: TransferListResponseItem?,
+    navController: NavController,
+    isSigned: MutableState<Boolean>,
+    onTransferSelected: (TransferListResponseItem) -> Unit
+) {
+
+    val formattedTime = Utils.formattedTime(transfer.trnDateTime)
+
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        if (isSigned.value) {
+            Box(
+                modifier = Modifier.clickable {
+                    onTransferSelected(transfer)
+                }
+            ) {
+
+                val icon =
+                    if (transfer == selectedTransfer) painterResource(id = R.drawable.ic_checkbox_check) else painterResource(
+                        id = R.drawable.ic_checkbox_uncheck
+                    )
+                Image(icon, contentDescription = "")
+            }
+        }
+
+        Spacer(
+            modifier = Modifier.size(
+                height = 1.sdp,
+                width = 5.sdp
+            )
+        )
+
+
+
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.sdp)
+                .clickable {
+                    SharedModel.init().signatureData.value = SignatureInfo(false, transfer)
+                    navController.navigate(transferToDetails)
+                },
+            backgroundColor = Color.White
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 5.sdp,
+                        vertical = 5.sdp
+                    )
+            ) {
+
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${transfer.benefName}",
+                        style = TextStyle(fontSize = 14.sp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "${transfer.amount}",
+                        style = TextStyle(
+                            fontSize = 14.sp
+                        ),
+                        modifier = Modifier.weight(0.2f)
+                    )
+
+                }
+
+                Spacer(
+                    modifier = Modifier.size(
+                        height = 5.dp,
+                        width = 1.dp
+                    )
+                )
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Row {
+                        Box(
+                            Modifier
+                                .background(
+                                    colorResource(R.color.border_grey),
+                                    shape = RoundedCornerShape(
+                                        size = 6.dp
+                                    )
+                                )
+                                .padding(
+                                    vertical = 1.sdp,
+                                    horizontal = 6.sdp
+                                )
+                        ) {
+                            Text(
+                                text = "${transfer.brTrnType}",
+                                style = TextStyle(
+                                    color = colorResource(R.color.grey_text),
+                                    fontSize = 12.sp
+
+                                )
+                            )
+                        }
+
+                        Spacer(
+                            Modifier.size(
+                                width = 5.dp,
+                                height = 1.dp
+                            )
+                        )
+
+                        Box(
+                            Modifier
+                                .background(
+                                    colorResource(R.color.border_grey),
+                                    shape = RoundedCornerShape(
+                                        size = 6.dp
+                                    )
+                                )
+                                .padding(
+                                    vertical = 1.sdp,
+                                    horizontal = 6.sdp
+                                )
+                        ) {
+                            Text(
+                                text = "$formattedTime",
+                                style = TextStyle(
+                                    color = colorResource(R.color.grey_text),
+                                    fontSize = 12.sp
+
+                                )
+                            )
+                        }
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+
+                        Box(modifier = Modifier
+                            .padding(2.dp)
+                            .width(10.dp)
+                            .height(10.dp)
+                            .drawBehind {
+                                drawCircle(
+                                    color = Utils.headerStatus(
+                                        transfer.status
+                                    ).color,
+                                    radius = 5.dp.toPx()
+                                )
+                            }
+                            .align(Alignment.CenterVertically)) {
+
+                        }
+
+
+                        Spacer(
+                            modifier = Modifier.size(
+                                width = 5.dp,
+                                height = 1.dp
+                            )
+                        )
+
+                        Text(
+                            text = Utils.headerStatus(transfer.status).status,
+                            style = TextStyle(
+                                fontSize = 14.sp
+                            )
+                        )
+
+
+                    }
+
+
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterListMenu() {
     FiltersTopRow() {
         when (it) {
             FilterType.DATE -> {

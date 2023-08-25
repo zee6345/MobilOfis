@@ -94,9 +94,9 @@ private fun CompanyDisplayListItem(
             .padding(5.dp)
             .clickable {
                 onFavoriteCompanySelected(company)
-//                if (company == selectedFavoriteCompany) {
+
                 viewModel.setFavCustomer(SetFavCustomer(company.customerNo))
-//                }
+
             }, shape = RoundedCornerShape(8.dp)
     ) {
         Row(

@@ -65,6 +65,7 @@ private const val SESSION = "SESSION_EVENTS"
 
 val recentDetail = mutableStateOf<GetRecentOpsItem?>(null)
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
