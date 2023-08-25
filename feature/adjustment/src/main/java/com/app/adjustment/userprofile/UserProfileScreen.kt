@@ -57,6 +57,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.dialogs.ShowProgressDialog
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -80,6 +81,8 @@ fun UserProfileScreen(
     val context: Context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val userData = remember { mutableStateOf<GetUserProfile?>(null) }
+    val isLoading = remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         //fetch accounts list
@@ -528,29 +531,21 @@ fun UserProfileScreen(
     userProfileInfo?.let {
         when (it) {
             is DataState.Loading -> {
-
+                isLoading.value = true
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, "Failed to Get UserInfo")
+                isLoading.value = false
+//                Message.showMessage(context, "Failed to Get UserInfo")
             }
 
             is DataState.Success -> {
+                isLoading.value = false
+
                 val userAccounts = it.data as GetUserProfile
                 userAccounts?.let { user ->
 
                     userData.value = user
-
-//                    userName.value = this.userName
-//                    customerName.value = this.customerName
-//                    customerLastName.value = this.customerLastName
-//                    customerFatherName.value = this.customerAtaAdi
-//                    lang.value = this.lang
-//                    phoneNumber.value = this.phoneNumber
-//                    email.value = "${this.email}"
-//                    TOTPEnabled.value = this.TOTPEnabled
-//                    TOTPChangeDate.value = this.TOTPChangeDate
-//                    nonOtpEnabled.value = this.nonOtpEnabled
 
                 }
             }
@@ -564,7 +559,7 @@ fun UserProfileScreen(
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -580,7 +575,7 @@ fun UserProfileScreen(
             }
 
             is DataState.Error -> {
-                Message.showMessage(context, it.errorMessage)
+//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -591,6 +586,10 @@ fun UserProfileScreen(
         }
     }
 
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
 
 }
 

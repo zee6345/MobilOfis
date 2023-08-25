@@ -58,6 +58,8 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "AccountInformation"
 
+const val accountDetailsRoute = "accountDetailsInformation"
+
 @Composable
 fun AccountInformation(
     navController: NavController,

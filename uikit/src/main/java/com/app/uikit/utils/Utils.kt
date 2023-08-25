@@ -17,8 +17,24 @@ object Utils {
         val formattedDate = dateTime.format(outputDateFormatter)
 
         // Extract the time separately
-        val outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
-        val formattedTime = dateTime.format(outputTimeFormatter)
+//        val outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+//        val formattedTime = dateTime.format(outputTimeFormatter)
+
+        return formattedDate
+    }
+
+    fun extractDate(inputDateTimeString: String): String? {
+        // Parse the input string using the given format
+        val inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.ENGLISH)
+        val dateTime = LocalDateTime.parse(inputDateTimeString, inputFormatter)
+
+        // Format the date in the desired format
+        val outputDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
+        val formattedDate = dateTime.format(outputDateFormatter)
+
+        // Extract the time separately
+//        val outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+//        val formattedTime = dateTime.format(outputTimeFormatter)
 
         return formattedDate
     }

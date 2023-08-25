@@ -4,12 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,16 +39,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.account.navigation.accountDetailsRoute
+import com.app.home.main.account.accountDetailsRoute
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
-
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
+import com.app.uikit.dialogs.ShowProgressDialog
 
 
 @Composable
@@ -60,7 +56,6 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
-//    val userDetails = MainApp.session.fetchUserDetails()
     val homeData by rememberUpdatedState(viewModel.accountsData.collectAsState())
     val cardsList = remember { mutableListOf<GetAccountsItem>() }
     val isLoading = remember { mutableStateOf(false) }
@@ -73,31 +68,19 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
         )
     }
 
-    if (isLoading.value) {
+    LazyColumn(
+        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
+    ) {
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        item {
+            Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
         }
 
+        items(items = cardsList, itemContent = {
 
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
-        ) {
+            AccountListItem(obj = it, navController, viewModel)
 
-            item {
-                Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
-            }
-
-            items(items = cardsList, itemContent = {
-
-                AccountListItem(obj = it, navController, viewModel)
-
-            })
-        }
+        })
     }
 
 
@@ -112,7 +95,6 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 
             is DataState.Error -> {
                 isLoading.value = false
-//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -127,6 +109,10 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 
             }
         }
+    }
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
     }
 
 }

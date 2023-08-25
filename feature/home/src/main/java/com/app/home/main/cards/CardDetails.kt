@@ -57,6 +57,8 @@ import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
 
 
+const val homeToCardDetails = "homeToCardDetails"
+
 @Composable
 fun CardDetails(navController: NavController) {
 

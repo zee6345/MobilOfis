@@ -47,8 +47,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
+import com.app.home.main.trust.homeToTrustDepositDetails
 
-import com.app.home.main.trust.navigation.homeToTrustDepositDetails
+
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetTrustsItem
@@ -57,6 +58,7 @@ import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
 
@@ -80,15 +82,15 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
             userDetails.customerNo
         )
     }
-
-    if (isLoading.value) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    } else {
+//
+//    if (isLoading.value) {
+//        Box(
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//        }
+//    } else {
 
         LazyColumn(
             modifier = Modifier.padding(horizontal = 3.sdp, vertical = 5.sdp)
@@ -149,7 +151,7 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 
         }
 
-    }
+//    }
 
 
     customerTrusts?.let {
@@ -175,6 +177,10 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
             }
         }
 
+    }
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
     }
 
 

@@ -45,7 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.cards.navigation.homeToCardDetails
+import com.app.home.main.cards.homeToCardDetails
+
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -55,6 +56,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.MainCard
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
 
@@ -84,14 +86,14 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
         viewModel.getOldBusinessCards(userDetails.customerNo)
     }
 
-    if (isLoading.value) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    } else {
+//    if (isLoading.value) {
+//        Box(
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//        }
+//    } else {
 
         LazyColumn(
             modifier = Modifier
@@ -217,7 +219,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
         }
 
-    }
+//    }
 
 
 
@@ -275,6 +277,10 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             }
         }
 
+    }
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
     }
 
 }

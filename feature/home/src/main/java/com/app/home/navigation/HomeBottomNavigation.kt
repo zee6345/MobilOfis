@@ -34,13 +34,21 @@ import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
 import com.app.home.BottomNavItem
 import com.app.home.main.MenuScreen
 import com.app.home.main.account.AccountInformation
-import com.app.home.main.account.navigation.accountDetailsRoute
+import com.app.home.main.account.accountDetailsRoute
+
 import com.app.home.main.cards.CardDetails
-import com.app.home.main.cards.navigation.homeToCardDetails
+import com.app.home.main.cards.homeToCardDetails
+
 import com.app.home.main.loan.LoanInformationDetails
-import com.app.home.main.loan.navigation.homeToLoanInformation
+import com.app.home.main.loan.homeToLoanInformation
+
+import com.app.home.main.recents.RecentDetailed
+import com.app.home.main.recents.RecentTransactions
+import com.app.home.main.recents.recentToDetails
+import com.app.home.main.recents.recentTransactions
 import com.app.home.main.trust.DepositDetails
-import com.app.home.main.trust.navigation.homeToTrustDepositDetails
+import com.app.home.main.trust.homeToTrustDepositDetails
+
 import com.app.transfer.TransferScreen
 import com.app.transfer.signatureauth.SignAsanImza
 import com.app.transfer.signatureauth.SignAuth
@@ -129,7 +137,6 @@ fun NavigationGraph(navController: NavHostController) {
             CurrentPin(navController)
         }
 
-
         composable(
             adjustmentToNewPin,
         ) {
@@ -156,6 +163,14 @@ fun NavigationGraph(navController: NavHostController) {
 
         composable(otpToConfirmGoogleAuthOtp) {
             ConfirmSMSCodeScreen(navController)
+        }
+
+        composable(recentToDetails) {
+            RecentDetailed(navController)
+        }
+
+        composable(recentTransactions) {
+            RecentTransactions(navController)
         }
 
 

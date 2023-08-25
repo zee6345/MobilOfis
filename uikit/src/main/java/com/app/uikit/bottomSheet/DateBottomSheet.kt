@@ -320,7 +320,7 @@ data class DateModel(
 @Composable
 fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) -> Unit) {
 
-    val selectedBoxIndex = remember { mutableStateOf(0) }
+    val selectedBoxIndex = rememberSaveable { mutableStateOf(0) }
     var dateType by remember { mutableStateOf(DateType.TODAY) }
 
 

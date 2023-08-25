@@ -118,7 +118,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Nothing found!")
+                Text(text = "No blocked account found!")
             }
 
 

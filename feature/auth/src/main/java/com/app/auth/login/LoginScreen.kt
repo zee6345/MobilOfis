@@ -506,11 +506,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         ) {
                             Row(
                                 Modifier.clickable {
-                                    navController.navigate(welcomePinScreen) {
-//                                        popUpTo(loginNavigationRoute){
-//                                            inclusive = true
-//                                        }
-                                    }
+                                    navController.navigate(welcomePinScreen)
                                 }
                             ) {
                                 Image(
@@ -568,11 +564,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             is DataState.Loading -> {
 
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
 
-                }
             }
 
             is DataState.Error -> {
@@ -617,11 +609,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
-
-                }
             }
 
             is DataState.Error -> {
@@ -638,6 +625,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             }
 
             is DataState.Success -> {
+
+                isLoading.value = false
+
 
                 val loginResponse = it.data as LoginAsanResponse
                 loginResponse?.apply {
@@ -663,6 +653,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
         }
     }
 
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
 
 }
 

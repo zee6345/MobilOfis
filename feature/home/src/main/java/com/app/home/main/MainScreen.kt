@@ -1,7 +1,6 @@
 package com.app.home.main
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +36,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
+import com.app.home.main.recents.recentToDetails
+import com.app.home.main.recents.recentTransactions
 import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -62,6 +63,8 @@ import java.text.SimpleDateFormat
 private const val TAG = "MenuScreen"
 private const val SESSION = "SESSION_EVENTS"
 
+val recentDetail = mutableStateOf<GetRecentOpsItem?>(null)
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -69,7 +72,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val selectCompanyState = remember { mutableStateOf(false) }
     val showBalance = remember { mutableStateOf(false) }
     val balancePopup = remember { mutableStateOf(false) }
-    val isCustomerChange = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
     val customerBalanceType = remember { mutableStateOf("Balance") }
     val balance = remember { mutableStateOf("") }
@@ -83,7 +85,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val setCustomerName by viewModel.setCustomerName.collectAsState()
     val recentData = remember { mutableListOf<GetRecentOpsItem>() }
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
-
 
     //set initial dates
     val currentDate = System.currentTimeMillis()
@@ -158,7 +159,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = 10.sdp, bottom = 10.sdp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -247,7 +249,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             modifier = Modifier
                                 .padding(6.dp),
                             elevation = 8.sdp,
-                        ){
+                        ) {
                             Box(modifier = Modifier
                                 .background(
                                     if (selectedBoxIndex.value == 0) Color(0xFFE7EEFC) else Color.White,
@@ -255,7 +257,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     )
                                 .clickable { selectedBoxIndex.value = 0 }) {
                                 Text(
-                                    text = "All", modifier = Modifier.padding(6.dp), style = TextStyle(
+                                    text = "All",
+                                    modifier = Modifier.padding(6.dp),
+                                    style = TextStyle(
                                         if (selectedBoxIndex.value == 0) Color(0xFF015CD1) else Color(
                                             0xFF223142
                                         ),
@@ -269,7 +273,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             modifier = Modifier
                                 .padding(6.dp),
                             elevation = 8.sdp,
-                        ){
+                        ) {
                             Box(modifier = Modifier
                                 .background(
                                     if (selectedBoxIndex.value == 1) Color(0xFFE7EEFC) else Color.White,
@@ -294,12 +298,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             modifier = Modifier
                                 .padding(6.dp),
                             elevation = 8.sdp,
-                        ){
+                        ) {
                             Box(modifier = Modifier
                                 .background(
-                                    if (selectedBoxIndex.value == 2) Color(0xFFE7EEFC) else Color.White,
-
-                                    )
+                                    if (selectedBoxIndex.value == 2) Color(0xFFE7EEFC) else Color.White
+                                )
                                 .clickable { selectedBoxIndex.value = 2 }) {
                                 Text(
                                     text = "Expenditure",
@@ -316,13 +319,21 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                     }
 
-                    Box() {
+                    Box(
+                        Modifier.clickable {
+                            navController.navigate(recentTransactions)
+                        }
+                    ) {
                         Text(
                             text = "More"
                         )
                     }
 
-                    Box() {
+                    Box(
+                        Modifier.clickable {
+                            viewModel.getRecentOps(userDetails.customerNo)
+                        }
+                    ) {
                         Icon(
                             painterResource(R.drawable.ic_transfers),
                             tint = colorResource(R.color.background_card_blue),
@@ -350,7 +361,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             }
 
                             itemList.forEach { ops ->
-                                CardsItem(ops)
+                                CardsItem(ops, navController)
                             }
                         }
                     }
@@ -386,15 +397,18 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 22.dp, end = 12.dp)
+                                .padding(start = 22.dp, end = 22.dp)
 
                         ) {
+
 
                             Row(
                                 modifier = Modifier
                                     .weight(0.6f)
                                     .clickable {
-                                        selectCompanyState.value = true
+                                        coroutine.launch {
+                                            selectCompanyState.value = true
+                                        }
                                     },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -407,29 +421,12 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     tint = Color.White
                                 )
 
-                                Column(
-                                    modifier = Modifier
-                                        .wrapContentWidth()
-                                        .padding(start = 10.dp)
-                                ) {
-                                    Text(
-                                        text = customerName.value,
-                                        style = TextStyle(color = Color.White, fontSize = 14.sp),
-                                        modifier = Modifier
-                                            .padding(start = 3.dp)
-                                            .widthIn(max = 140.dp)
-                                            .wrapContentWidth(align = Alignment.Start),
-                                        maxLines = 2,
-                                    )
-                                    Text(
-                                        text = "${userDetails.userName}",
-                                        style = TextStyle(
-                                            color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
-                                        ),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
+                                Text(
+                                    text = customerName.value,
+                                    style = TextStyle(color = Color.White, fontSize = 14.sp),
+                                    modifier = Modifier.padding(start = 5.dp),
+                                    maxLines = 2,
+                                )
 
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_business_expand),
@@ -473,6 +470,20 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                         }
 
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 22.sdp),
+                        ) {
+                            Text(
+                                text = "${userDetails.userName}",
+                                style = TextStyle(
+                                    color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
+                                ),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
                     }
 
                     Column(
@@ -610,25 +621,18 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
         }
 
-
     }
 
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-        Log.e(TAG, "company sheet called")
+
         viewModel.setCustomerName(ChangeCompanyName(it))
 
-        Log.e(TAG, "recent ops called")
         viewModel.getRecentOps(userDetails.customerNo)
 
     }
 
     if (customerBalance.isNotEmpty() && customerBalance != null) {
         setDefaultBalanceValue(customerBalanceType, balance, customerBalance)
-    }
-
-
-    if (isLoading.value) {
-        ShowProgressDialog(isLoading)
     }
 
 
@@ -727,11 +731,17 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     //handle API Responce
     recentOps?.let {
         when (it) {
-            is DataState.Loading -> {}
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
 
-            is DataState.Error -> {}
+            is DataState.Error -> {
+                isLoading.value = false
+            }
 
             is DataState.Success -> {
+                isLoading.value = false
+
                 try {
                     val data = it.data as GetRecentOps
 
@@ -751,11 +761,16 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
 
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
+
 }
 
 
 @Composable
-private fun CardsItem(data: GetRecentOpsItem) {
+private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
 
     var isCredit by remember { mutableStateOf(false) }
 
@@ -766,7 +781,8 @@ private fun CardsItem(data: GetRecentOpsItem) {
             .padding(vertical = 4.sdp, horizontal = 8.sdp)
             .fillMaxWidth()
             .clickable {
-
+                recentDetail.value = data
+                navController.navigate(recentToDetails)
             },
         elevation = 1.dp,
         backgroundColor = Color(0xFFF3F7FA),
@@ -836,83 +852,9 @@ private fun CardsItem(data: GetRecentOpsItem) {
                         .padding(vertical = 5.sdp)
                         .fillMaxWidth()
                 )
-
-
             }
-
-//            Column(
-//                Modifier.fillMaxWidth()
-//            ) {
-
-//                Row(
-//                    Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//
-//                    Text(
-//                        "${data.receiver_name}",
-//                        style = TextStyle(
-//                            fontSize = 14.sp,
-//                            lineHeight = 18.4.sp,
-//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-//                            fontWeight = FontWeight(400),
-//                            color = colorResource(R.color.background_card_blue),
-//                        ),
-//                        modifier = Modifier.padding(vertical = 5.sdp)
-//                    )
-//
-//
-//                    Text(
-//                        "${data.amount}",
-//                        style = TextStyle(
-//                            fontSize = 14.sp,
-//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-//                            fontWeight = FontWeight(600),
-//                            color = Color(0xFF203657),
-//                            textAlign = TextAlign.Right,
-//                        ),
-//                        modifier = Modifier.padding(vertical = 5.sdp)
-//                    )
-//                }
-
-//                Row(
-//                    Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//
-//                    Text(
-//                        "LIABILITY COMPANY",
-//                        style = TextStyle(
-//                            fontSize = 14.sp,
-//                            lineHeight = 18.4.sp,
-//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-//                            fontWeight = FontWeight(400),
-//                            color = colorResource(R.color.background_card_blue),
-//                        ),
-//
-//                        )
-//
-//                    Text(
-//                        "${data.trn_time}",
-//                        style = TextStyle(
-//                            fontSize = 12.sp,
-//                            lineHeight = 16.1.sp,
-//                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
-//                            fontWeight = FontWeight(400),
-//                            color = colorResource(R.color.grey_text),
-//                        ),
-//
-//                        )
-//                }
-
-
-//            }
-
         }
-
-
     }
-
 }
 
 fun setDefaultBalanceValue(

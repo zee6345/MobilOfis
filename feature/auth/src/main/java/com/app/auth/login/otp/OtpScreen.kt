@@ -332,14 +332,12 @@ fun OtpScreen(
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
 
-                }
             }
 
             is DataState.Error -> {
+                isLoading.value = false
+
                 Message.showMessage(context, stringResource(R.string.failed_to_verify_user))
 
                 //on error remove keys
@@ -348,9 +346,11 @@ fun OtpScreen(
             }
 
             is DataState.Success -> {
+                isLoading.value = false
+
                 val loginVerifyResponse = it.data as LoginVerifyResponse
                 loginVerifyResponse?.apply {
-                    isLoading.value = false
+
 
                     //cache login verify response
                     val strJson = Converter.toJson(loginVerifyResponse)
@@ -375,6 +375,10 @@ fun OtpScreen(
         }
     }
 
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
 
 }
 

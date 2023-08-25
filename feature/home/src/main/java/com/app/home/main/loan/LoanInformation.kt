@@ -49,6 +49,8 @@ import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
+const val homeToLoanInformation= "homeToLoanInformation"
+
 @Composable
 fun LoanInformationDetails(navController: NavController) {
 

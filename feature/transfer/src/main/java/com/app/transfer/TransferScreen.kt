@@ -1,6 +1,7 @@
 package com.app.transfer
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
@@ -76,6 +76,7 @@ import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.bottomSheet.DateBottomSheet
 import com.app.uikit.bottomSheet.StatusBottomSheet
 import com.app.uikit.bottomSheet.TypeBottomSheet
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.FilterType
 import com.app.uikit.models.SignatureInfo
 import com.app.uikit.utils.SharedModel
@@ -83,6 +84,9 @@ import com.app.uikit.utils.Utils
 import com.app.uikit.views.FiltersTopRow
 import ir.kaaveh.sdpcompose.sdp
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 const val SESSION = "SESSION_EVENTS"
@@ -119,9 +123,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
-
     val isSelected = remember { mutableStateOf(false) }
-
 
     val context: Context = LocalContext.current
     val businessDates by viewModel.businessDate.collectAsState()
@@ -196,59 +198,54 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 .padding(horizontal = 10.dp)
         ) {
 
-            if (isLoading.value) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Column {
+
+                Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
+                headerFilters(transferHeaderList) { filter ->
+                    filterByStatus.value = filter
+
+                    //if filter clicked enable check
+                    if (filter.contains("PENDING_SIGNER", true)) {
+                        isSigned.value = true
+
+                        SharedModel.init().isForSigning.value = true
+
+                    } else if (filter.contains("PENDING_APPROVER", true)) {
+                        isSigned.value = true
+
+                        SharedModel.init().isForSigning.value = false
+
+                    } else if (filter.contains("SEND_TO_BANK", true)) {
+                        isSigned.value = true
+                        sendToBank.value = true
+                    } else {
+                        isSigned.value = false
+                    }
+
                 }
-            } else {
+
+
+                Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
+                FilterListMenu()
+
+                var lastDisplayedDate: String? = null
 
                 LazyColumn {
 
-                    transferListResponse?.let { it ->
+                    if (!transferListResponse.isNullOrEmpty()) {
 
-                        item {
-                            Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
-                            headerFilters(transferHeaderList) { filter ->
-                                filterByStatus.value = filter
-
-                                //if filter clicked enable check
-                                if (filter.contains("PENDING_SIGNER", true)) {
-                                    isSigned.value = true
-
-                                    SharedModel.init().isForSigning.value = true
-
-                                } else if (filter.contains("PENDING_APPROVER", true)) {
-                                    isSigned.value = true
-
-                                    SharedModel.init().isForSigning.value = false
-
-                                } else if (filter.contains("SEND_TO_BANK", true)) {
-                                    isSigned.value = true
-                                    sendToBank.value = true
-                                } else {
-                                    isSigned.value = false
-                                }
-
+                        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                        val groupedItems = transferListResponse.groupBy { transferItem ->
+                            val dateTime = formatter.parse(transferItem.trnDateTime)
+                            dateTime.query { temporal ->
+                                LocalDate.from(temporal)
                             }
                         }
 
-                        item {
-                            Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
-                            FilterListMenu()
-                        }
-
-
-                        val groupedItems = it.groupBy { group ->
-                            group.trnDateTime
-                        }
                         groupedItems.forEach { (date, items) ->
                             item {
 
-                                // Display the items under the date header
-                                val filter = items.filter {
+                                val filter = items.asSequence().filter {
                                     it.status.contains(filterByStatus.value, true)
                                 }.filter {
                                     it.brTrnType.contains(filterByType.value, true)
@@ -258,20 +255,19 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                     it.currency.contains(filterByCurrency.value, true)
                                 }.filter {
                                     it.amount.toString().contains(filterByAmount.value, true)
-                                }
+                                }.toList()
 
-                                //date header
-                                if (filter.isNullOrEmpty()) {
-                                    Spacer(
-                                        modifier = Modifier.size(
-                                            height = 15.sdp,
-                                            width = 1.sdp
-                                        )
+                                Log.e("mmmmTAG", "$filter")
+
+                                // Display the date header if it's different from the last displayed date
+                                Spacer(
+                                    modifier = Modifier.size(
+                                        height = 10.sdp,
+                                        width = 1.sdp
                                     )
+                                )
 
-                                    // Display the date as a header
-                                    DateHeader(date, isSigned.value)
-                                }
+                                DateHeader(date, isSigned.value)
 
 
                                 filter.forEach { item ->
@@ -482,57 +478,56 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     item {
                         Box(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
                     }
-
                 }
+            }
 
-                if (isSigned.value) {
+            if (isSigned.value) {
 
-                    Box(
-                        Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        Button(
-                            enabled = isSelected.value,
-                            onClick = {
-                                if (sendToBank.value) {
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Button(
+                        enabled = isSelected.value,
+                        onClick = {
+                            if (sendToBank.value) {
 
 
-                                    viewModel.sendToBankAPI(
-                                        SendToBankModel(
-                                            listOf(FileDescriptor("${selectedItem.value!!.ibankRef}")),
-                                            ""
-                                        )
+                                viewModel.sendToBankAPI(
+                                    SendToBankModel(
+                                        listOf(FileDescriptor("${selectedItem.value!!.ibankRef}")),
+                                        ""
                                     )
-
-                                } else {
-                                    SharedModel.init().signatureData.value =
-                                        SignatureInfo(true, selectedItem.value!!)
-                                    navController.navigate(transferToDetails)
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 50.sdp)
-                                .background(
-                                    if (isSelected.value) Color(0xFF203657) else Color(0xFF203657).copy(
-                                        0.8f
-                                    ),
-                                    RoundedCornerShape(8.dp)
                                 )
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                if (sendToBank.value) "Send to bank" else "Sign",
-                                modifier = Modifier.padding(vertical = 12.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
 
+                            } else {
+                                SharedModel.init().signatureData.value =
+                                    SignatureInfo(true, selectedItem.value!!)
+                                navController.navigate(transferToDetails)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 50.sdp)
+                            .background(
+                                if (isSelected.value) Color(0xFF203657) else Color(0xFF203657).copy(
+                                    0.8f
+                                ),
+                                RoundedCornerShape(8.dp)
+                            )
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            if (sendToBank.value) "Send to bank" else "Sign",
+                            modifier = Modifier.padding(vertical = 12.dp),
+                            color = Color.White
+                        )
+                    }
                 }
 
             }
+
         }
 
     }
@@ -662,12 +657,22 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
 
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
+
 }
 
 @Composable
-fun DateHeader(inputDateTimeString: String, value: Boolean) {
+fun DateHeader(inputDateTimeString: LocalDate, value: Boolean) {
+    val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val formattedDate = inputDateTimeString.format(outputFormatter)
 
-    val formattedDate = Utils.formattedDate(inputDateTimeString)
+    val inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val output = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
+
+    val localDate = LocalDate.parse(formattedDate, inputFormatter)
+    val finalDate = localDate.format(output)
 
     Row(
 
@@ -679,7 +684,7 @@ fun DateHeader(inputDateTimeString: String, value: Boolean) {
         ) {
 
             Text(
-                text = "$formattedDate",
+                text = "$finalDate",
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.roboto_regular)),

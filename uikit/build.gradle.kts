@@ -87,8 +87,10 @@ dependencies {
     implementation(Others.sdp_compose)
     //Constraint Layout
     implementation(Compose.compose_constraints)
-    implementation("androidx.compose.foundation:foundation:1.5.0-alpha04")
-//    implementation (Compose.compose_pager)
+    implementation(Compose.compose_foundation)
+
+    implementation(Compose.progress_indicator)
+
 
 
     //Hilt

@@ -16,6 +16,8 @@ object Compose {
     const val normal_material ="androidx.compose.material:material"
     const val composeBoam = "androidx.compose:compose-bom:2023.03.00"
     const val compose_constraints ="androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    const val progress_indicator = "com.ehsanmsz:msz-progress-indicator:0.2.0"
+    const val compose_foundation = "androidx.compose.foundation:foundation:1.5.0-alpha04"
     // const val compose_pager = "com.google.accompanist:accompanist-pager:0.23.1"
     // const val compose_foundation ="androidx.compose.foundation$foundation"
 

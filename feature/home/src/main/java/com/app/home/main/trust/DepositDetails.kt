@@ -46,6 +46,8 @@ import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
+const val homeToTrustDepositDetails = "homeToTrustDepositDetails"
+
 @Composable
 fun DepositDetails(navController: NavController) {
 
