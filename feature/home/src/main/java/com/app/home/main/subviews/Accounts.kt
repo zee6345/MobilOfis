@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.dialogs.ShowProgressDialog
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -59,13 +61,17 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
     val homeData by rememberUpdatedState(viewModel.accountsData.collectAsState())
     val cardsList = remember { mutableListOf<GetAccountsItem>() }
     val isLoading = remember { mutableStateOf(false) }
+    val coroutine = rememberCoroutineScope()
 
 
     LaunchedEffect(Unit) {
         //fetch accounts list
-        viewModel.getAccounts(
-            userDetails.customerNo
-        )
+        coroutine.launch {
+            viewModel.getAccounts(
+                userDetails.customerNo
+            )
+        }
+
     }
 
     LazyColumn(

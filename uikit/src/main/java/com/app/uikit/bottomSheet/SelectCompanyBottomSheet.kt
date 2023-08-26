@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.network.helper.Session
 import com.app.network.models.responseModels.AsanCustomer
 import com.app.network.models.responseModels.Customers
 import com.app.uikit.R
@@ -107,6 +109,10 @@ fun SelectCompanyBottomSheet(
 
 @Composable
 private fun rowItem(asanCustomer: AsanCustomer, onItemClick: (companyName: Int) -> Unit) {
+
+    val context = LocalContext.current
+    val selectedCustomer = Session(context)["customer"]
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,7 +131,9 @@ private fun rowItem(asanCustomer: AsanCustomer, onItemClick: (companyName: Int) 
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Medium,
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = colorResource(R.color.background_card_blue),
+                color = if (asanCustomer.name == selectedCustomer) colorResource(R.color.background_card_blue) else colorResource(
+                    R.color.background_card_blue
+                ).copy(0.5f),
                 maxLines = 1,
                 fontSize = 15.sp
             )

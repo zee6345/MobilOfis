@@ -144,6 +144,7 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
                         showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
 
                     } else {
+
                         loginViewModel.session.delete(Keys.KEY_PIN)
                         Message.showMessage(context, "Pin not matched")
 
@@ -162,12 +163,19 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
         loginViewModel.session.delete(Keys.KEY_PIN)
         loginViewModel.session.put(Keys.KEY_USER_PIN, enteredPin)
 
+        //enable login with pin
+        loginViewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
+
+
         navController.navigate(successfulRegistration)
 
     }, onClickYes = {
 
         loginViewModel.session.delete(Keys.KEY_PIN)
         loginViewModel.session.put(Keys.KEY_USER_PIN, enteredPin)
+
+        //enable login with pin
+        loginViewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
 
         navController.navigate(successfulRegistration)
 

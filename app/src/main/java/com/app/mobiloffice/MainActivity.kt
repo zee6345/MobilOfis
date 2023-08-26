@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,14 +13,8 @@ import com.app.mobiloffice.ui.MoApp
 import com.app.mobiloffice.ui.theme.MobilOfficeTheme
 import com.app.network.viewmodel.LoginViewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
-import com.app.network.models.DataState
-import com.app.network.models.ErrorResponse
-import com.app.network.models.responseModels.GetLastLogin
-import com.app.network.retrofitClient.APIService
-import com.app.network.retrofitClient.BaseRetrofitClient
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
 import java.util.TimerTask
@@ -47,8 +40,13 @@ class MainActivity : ComponentActivity() {
                         Toast.makeText(context, "Session expire!", Toast.LENGTH_SHORT).show()
 
                         //clear pin
-                        Session(context).delete(Keys.KEY_USER_PIN)
+//                        Session(context).delete(Keys.KEY_USER_PIN)
+
+                        //clear old token
                         Session(context).delete(Keys.KEY_TOKEN)
+
+                        //disable login with pin
+                        Session(context).put(Keys.KEY_ENABLE_PIN_LOGIN, false)
 
                         val intent = Intent(this@MainActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -86,79 +84,7 @@ class MainActivity : ComponentActivity() {
             override fun run() {
                 viewModel.lastLogin()
             }
-        }, 0, 30000)
-
-//        viewModel.lastLogin.value?.let {
-//            when (it) {
-//                is DataState.Loading -> {
-//
-//                }
-//
-//                is DataState.Error -> {
-//
-//
-////                    val errorResponse =
-////                        Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
-//
-////                    Log.e("mmmTAG", errorResponse.code)
-//
-////                    if (errorResponse.code.equals("ERROR.SESSION_EXPIRE", true)){
-////
-////                        // In your sending code
-////                        val intent = Intent()
-////                        intent.action = SESSION
-////                        intent.putExtra("data", "expire")
-////                        LocalBroadcastManager.getInstance(this@MainActivity).sendBroadcast(intent)
-////
-////                    }
-//
-//                    Log.e("mmmTAG", "error:: ${it.errorMessage}")
-//                }
-//
-//                is DataState.Success -> {
-//                    Log.e("mmmTAG", "success:: ${it.data}")
-////                    val code = it.data as Int
-////                    when (code) {
-////
-////                        200 -> {
-////
-////                        }
-////
-////                        401 -> {
-////
-//////                            // In your sending code
-//////                            val intent = Intent()
-//////                            intent.action = SESSION
-//////                            intent.putExtra("data", "expire")
-//////                            LocalBroadcastManager.getInstance(this@MainActivity)
-//////                                .sendBroadcast(intent)
-////
-////
-////                            val userPing = Session(this)[Keys.KEY_USER_PIN]
-////                            val token = Session(this)[Keys.KEY_TOKEN]
-////
-////                            Log.e("mmmTAG", "${userPing}")
-////                            Log.e("mmmTAG", "${token}")
-////
-////
-////                            //clear pin
-////                            Session(this).delete(Keys.KEY_USER_PIN)
-////                            Session(this).delete(Keys.KEY_TOKEN)
-////
-////
-////                            Log.e("mmmTAG", "${userPing}")
-////                            Log.e("mmmTAG", "${token}")
-////
-////                        }
-////
-////                        else -> {
-////
-////                        }
-////                    }
-//                }
-//            }
-//
-//        }
+        }, 0, 60000)
 
     }
 

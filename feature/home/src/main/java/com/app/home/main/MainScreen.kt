@@ -1,6 +1,5 @@
 package com.app.home.main
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
@@ -42,7 +40,6 @@ import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.ErrorResponse
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetCustomerBalanceItem
@@ -61,7 +58,7 @@ import java.text.SimpleDateFormat
 
 
 private const val TAG = "MenuScreen"
-private const val SESSION = "SESSION_EVENTS"
+
 
 val recentDetail = mutableStateOf<GetRecentOpsItem?>(null)
 
@@ -74,18 +71,24 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val showBalance = remember { mutableStateOf(false) }
     val balancePopup = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+    val isEmpty = remember { mutableStateOf(false) }
     val customerBalanceType = remember { mutableStateOf("Balance") }
     val balance = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
-    val customerBalance = remember { mutableStateListOf<GetCustomerBalanceItem>() }
+
+
     val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
+
+    val customerBalance = remember { mutableStateListOf<GetCustomerBalanceItem>() }
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
+    val recentData = remember { mutableListOf<GetRecentOpsItem>() }
+
     val accountBalance by viewModel.accountBalance.collectAsState()
     val recentOps by viewModel.recentOps.collectAsState()
     val setCustomerName by viewModel.setCustomerName.collectAsState()
-    val recentData = remember { mutableListOf<GetRecentOpsItem>() }
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
+
 
     //set initial dates
     val currentDate = System.currentTimeMillis()
@@ -104,15 +107,18 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     //default name
     customerName.value = userDetails.customerName
 
+
     LaunchedEffect(Unit) {
-        viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
-        viewModel.getBalance(userDetails.customerNo)
-        viewModel.getRecentOps(userDetails.customerNo)
+        coroutine.launch {
+            viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
+            viewModel.getBalance(userDetails.customerNo)
+            viewModel.getRecentOps(userDetails.customerNo)
+        }
     }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        sheetPeekHeight = if (!recentData.isNullOrEmpty()) 40.sdp else 0.sdp,
+        sheetPeekHeight = if (isEmpty.value) 0.sdp else 45.sdp,
         modifier = Modifier.padding(bottom = 40.sdp),
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetContent = {
@@ -167,13 +173,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    val sumDR = recentData
-                        .filter { it.debit_credit_flag == "DR" }
-                        .sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
+                    val sumDR = recentData?.filter { it.debit_credit_flag == "DR" }
+                        ?.sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
 
-                    val sumCR = recentData
-                        .filter { it.debit_credit_flag == "CR" }
-                        .sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
+                    val sumCR = recentData?.filter { it.debit_credit_flag == "CR" }
+                        ?.sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
 
                     Row {
 
@@ -332,7 +336,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                     Box(
                         Modifier.clickable {
-                            viewModel.getRecentOps(userDetails.customerNo)
+                            coroutine.launch {
+                                viewModel.getRecentOps(userDetails.customerNo)
+                            }
                         }
                     ) {
                         Icon(
@@ -347,9 +353,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                 LazyColumn {
-                    val groupedItems = recentData.groupBy { it.trn_date }
+                    val groupedItems = recentData?.groupBy { it.trn_date }
 
-                    groupedItems.forEach { (dateStr, itemList) ->
+                    groupedItems?.forEach { (dateStr, itemList) ->
 
                         item {
                             Box(
@@ -417,7 +423,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     painter = painterResource(id = R.drawable.ic_business_icon),
                                     modifier = Modifier
                                         .size(28.dp)
-                                        .align(Top),
+                                        .align(Top)
+                                        .weight(0.5f),
                                     contentDescription = "",
                                     tint = Color.White
                                 )
@@ -425,7 +432,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 Text(
                                     text = customerName.value,
                                     style = TextStyle(color = Color.White, fontSize = 14.sp),
-                                    modifier = Modifier.padding(start = 5.dp),
+                                    modifier = Modifier
+                                        .padding(start = 5.dp)
+                                        .weight(1f),
                                     maxLines = 2,
                                 )
 
@@ -433,7 +442,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     painter = painterResource(id = R.drawable.ic_business_expand),
                                     modifier = Modifier
                                         .size(16.dp)
-                                        .align(Top),
+                                        .align(Top)
+                                        .weight(0.5f),
                                     contentDescription = ""
                                 )
                             }
@@ -441,7 +451,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(0.3f)
+                                    .weight(0.4f)
                                     .padding(8.dp),
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Top
@@ -534,34 +544,37 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                         contentDescription = ""
                                     )
 
-                                    DropDownPopup(expanded = balancePopup) {
-                                        when (it) {
-                                            Balance.BLOCKED -> {
-                                                balance.value = customerBalance[0].BLOCK_BALANCE
-                                                customerBalanceType.value = "Blocked"
-                                            }
+                                    if (customerBalance.isNotEmpty()) {
+                                        DropDownPopup(expanded = balancePopup) {
+                                            when (it) {
+                                                Balance.BLOCKED -> {
+                                                    balance.value = customerBalance[0].BLOCK_BALANCE
+                                                    customerBalanceType.value = "Blocked"
+                                                }
 
-                                            Balance.FREE_BALANCE -> {
-                                                balance.value = customerBalance[0].AVAIL_BALANCE
-                                                customerBalanceType.value = "Free Balance"
-                                            }
+                                                Balance.FREE_BALANCE -> {
+                                                    balance.value = customerBalance[0].AVAIL_BALANCE
+                                                    customerBalanceType.value = "Free Balance"
+                                                }
 
-                                            Balance.BANK_EXECUTION -> {
-                                                balance.value = customerBalance[0].WAITING_BALANCE
-                                                customerBalanceType.value = "Bank Execution"
-                                            }
+                                                Balance.BANK_EXECUTION -> {
+                                                    balance.value =
+                                                        customerBalance[0].WAITING_BALANCE
+                                                    customerBalanceType.value = "Bank Execution"
+                                                }
 
-                                            Balance.AFTER_EXECUTION -> {
-                                                balance.value =
-                                                    customerBalance[0].AFTERAPPROVE_BALANCE
-                                                customerBalanceType.value = "After Execution"
-                                            }
+                                                Balance.AFTER_EXECUTION -> {
+                                                    balance.value =
+                                                        customerBalance[0].AFTERAPPROVE_BALANCE
+                                                    customerBalanceType.value = "After Execution"
+                                                }
 
-                                            Balance.BALANCE -> {
-                                                balance.value = customerBalance[0].BALANCE
-                                                customerBalanceType.value = "Balance"
-                                            }
+                                                Balance.BALANCE -> {
+                                                    balance.value = customerBalance[0].BALANCE
+                                                    customerBalanceType.value = "Balance"
+                                                }
 
+                                            }
                                         }
                                     }
 
@@ -625,11 +638,10 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-
-        viewModel.setCustomerName(ChangeCompanyName(it))
-
-        viewModel.getRecentOps(userDetails.customerNo)
-
+        coroutine.launch {
+            viewModel.setCustomerName(ChangeCompanyName(it))
+            viewModel.getRecentOps(userDetails.customerNo)
+        }
     }
 
     if (customerBalance.isNotEmpty() && customerBalance != null) {
@@ -645,18 +657,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is DataState.Error -> {
-                try {
-                    val error = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
-                    if (error.code.equals("ERROR.SESSION_EXPIRE", true)) {
-                        val intent = Intent()
-                        intent.action = SESSION
-                        intent.putExtra("data", "expire")
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
+//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {
@@ -664,8 +665,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                     val data = it.data as GetCustomerBalance
 
-                    data.forEach { balance ->
-                        customerBalance.add(balance)
+                    if (data.isNotEmpty()) {
+                        customerBalance?.apply {
+                            clear()
+                            addAll(data)
+                        }
+                    } else {
+
                     }
 
                 } catch (e: Exception) {
@@ -685,6 +691,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
                 isLoading.value = false
+//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {
@@ -699,6 +706,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         viewModel.session.put(Keys.KEY_USER_DETAILS, str)
 
                         customerName.value = this.customerName
+
+                        viewModel.session.put("customer", this.customerName)
+
                     }
 
 
@@ -720,9 +730,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             is DataState.Success -> {
                 val data = it.data as TransferCountSummaryResponse
 
-                transferHeaderList.apply {
-                    clear()
-                    addAll(data)
+                if (data.isNotEmpty()) {
+                    transferHeaderList.apply {
+                        clear()
+                        addAll(data)
+                    }
                 }
 
             }
@@ -738,6 +750,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
                 isLoading.value = false
+
+                //on error hide sheet
+                isEmpty.value = true
+
+//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {
@@ -746,11 +763,15 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                 try {
                     val data = it.data as GetRecentOps
 
-                    if (!recentData.isNullOrEmpty()) {
-                        recentData.clear()
+                    if (data.isNotEmpty()) {
+                        recentData?.apply {
+                            clear()
+                            addAll(data)
+                        }
+                        isEmpty.value = false
+                    } else {
+                        isEmpty.value = true
                     }
-
-                    recentData.addAll(data)
 
                 } catch (e: Exception) {
                     e.printStackTrace()

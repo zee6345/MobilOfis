@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,6 +60,7 @@ import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 
 val selectedCard = mutableStateOf<MainCard?>(null)
@@ -81,9 +83,13 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val oldCards = remember { mutableListOf<MainCard>() }
     val newCards = remember { mutableListOf<MainCard>() }
 
+    val coroutine = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewModel.getOldBusinessCards(userDetails.customerNo)
+        coroutine.launch {
+            viewModel.getOldBusinessCards(userDetails.customerNo)
+        }
+
     }
 
 //    if (isLoading.value) {
@@ -117,7 +123,11 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                         .padding(vertical = 5.sdp, horizontal = 10.sdp)
                         .clickable {
                             selectedBoxIndex.value = 0
-                            viewModel.getOldBusinessCards(userDetails.customerNo)
+
+                            coroutine.launch {
+                                viewModel.getOldBusinessCards(userDetails.customerNo)
+                            }
+
                         }) {
                         Text(
                             stringResource(R.string.in_the_name_of_a_physical_person),

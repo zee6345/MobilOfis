@@ -58,7 +58,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.ErrorResponse
+import com.app.network.models.errorResponse.ErrorResponse
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.responseModels.LoginResponse
@@ -67,7 +67,6 @@ import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.network.viewmodel.LoginViewModel
 import com.app.transfer.R
-import com.app.transfer.signatureauth.navigation.signatureFailed
 import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.RoundedCornerToast

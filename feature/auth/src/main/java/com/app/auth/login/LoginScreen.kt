@@ -74,7 +74,7 @@ import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.ErrorResponse
+import com.app.network.models.errorResponse.ErrorResponse
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.responseModels.LoginAsanResponse
@@ -112,10 +112,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val isLoading = remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val pin = viewModel.session[Keys.KEY_USER_PIN]
+    val enableLoginWithPin = viewModel.session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)
 
-    val passwordVisualTransformation =
-        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation = if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
@@ -398,15 +397,19 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                         if (paswdState.value.isNotEmpty()) {
                                             pswdErrorCheck = false
 
-                                            //handle success
-                                            viewModel.loginWithUserName(
-                                                LoginRequest(
-                                                    userName = usernameState.value,
-                                                    password = paswdState.value,
-                                                    authType = "OTP",
-                                                    channel = "MOBILE"
+                                            coroutine.launch {
+
+                                                //handle success
+                                                viewModel.loginWithUserName(
+                                                    LoginRequest(
+                                                        userName = usernameState.value,
+                                                        password = paswdState.value,
+                                                        authType = "OTP",
+                                                        channel = "MOBILE"
+                                                    )
                                                 )
-                                            )
+
+                                            }
 
                                         } else {
                                             pswdErrorCheck = !pswdErrorCheck
@@ -423,15 +426,18 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                         if (paswdState.value.isNotEmpty()) {
                                             pswdErrorCheck = false
 
-                                            //handle success
-                                            viewModel.loginWithUserName(
-                                                LoginRequest(
-                                                    userName = usernameState.value,
-                                                    password = paswdState.value,
-                                                    authType = "TOTP",
-                                                    channel = "MOBILE"
+                                            coroutine.launch {
+                                                //handle success
+                                                viewModel.loginWithUserName(
+                                                    LoginRequest(
+                                                        userName = usernameState.value,
+                                                        password = paswdState.value,
+                                                        authType = "TOTP",
+                                                        channel = "MOBILE"
+                                                    )
                                                 )
-                                            )
+                                            }
+
 
                                         } else {
                                             pswdErrorCheck = !pswdErrorCheck
@@ -448,14 +454,17 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                         if (paswdState.value.isNotEmpty()) {
                                             pswdErrorCheck = false
 
-                                            //handle success
-                                            viewModel.asanLogin(
-                                                LoginAsanRequest(
-                                                    phoneNumber = usernameState.value,
-                                                    userId = paswdState.value,
-                                                    channel = "INT"
+                                            coroutine.launch {
+                                                //handle success
+                                                viewModel.asanLogin(
+                                                    LoginAsanRequest(
+                                                        phoneNumber = usernameState.value,
+                                                        userId = paswdState.value,
+                                                        channel = "INT"
+                                                    )
                                                 )
-                                            )
+                                            }
+
 
                                         } else {
                                             pswdErrorCheck = !pswdErrorCheck
@@ -484,7 +493,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 }
 
 
-                if (!pin.isNullOrEmpty()) {
+                if (enableLoginWithPin) {
                     Column {
 
                         Box(

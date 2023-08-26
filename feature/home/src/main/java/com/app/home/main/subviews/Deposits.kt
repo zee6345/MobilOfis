@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,6 +62,7 @@ import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 val trustsList = mutableListOf<GetTrustsItem>()
 
@@ -76,11 +78,14 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
     val cardFilters = remember { DataProvider.filtersTrustsList }
     val onFilter = remember { mutableStateOf("") }
     val isEmpty = remember { mutableStateOf(false) }
+    val coroutine = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewModel.getTrusts(
-            userDetails.customerNo
-        )
+        coroutine.launch {
+            viewModel.getTrusts(
+                userDetails.customerNo
+            )
+        }
     }
 //
 //    if (isLoading.value) {
@@ -137,7 +142,8 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
             } else {
                 item {
                     Box(
-                        Modifier.fillMaxSize()
+                        Modifier
+                            .fillMaxSize()
                             .padding(20.sdp),
                         contentAlignment = Alignment.Center
                     ) {

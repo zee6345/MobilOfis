@@ -8,5 +8,6 @@ object Keys {
     val KEY_USER_DETAILS = "loginVerify"
     val KEY_USER_PIN = "finalPin"
     val KEY_PIN = "firstPin"
+    val KEY_ENABLE_PIN_LOGIN = "enableLoginWithPin"
 
 }

@@ -1,6 +1,7 @@
 package com.app.transfer
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
@@ -30,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -62,12 +66,14 @@ import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
+import com.app.network.models.responseModels.MainCard
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.headerFilters
+
 import com.app.transfer.transfers.navigation.transferToDetails
 import com.app.uikit.bottomSheet.AccountBottomSheet
 import com.app.uikit.bottomSheet.AmountBottomSheet
@@ -82,6 +88,7 @@ import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.FiltersTopRow
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -97,7 +104,7 @@ private lateinit var showTypeBottomSheet: MutableState<Boolean>
 private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
 
-val transferHeaders = mutableListOf<TransferCountSummaryResponseItem>()
+var isListEmpty = mutableStateOf(false)
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -109,7 +116,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
+
+
     var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
+
+    val coroutine = rememberCoroutineScope()
 
     val isLoading = remember { mutableStateOf(false) }
     val isSigned = remember { mutableStateOf(false) }
@@ -122,16 +133,17 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val filterByCurrency = remember { mutableStateOf("") }
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
 
-//    val headerList = mutableListOf<TransferCountSummaryResponseItem>()
+    var headerList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
 //    val headerList = ArrayList<TransferCountSummaryResponseItem>()
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
     val context: Context = LocalContext.current
     val businessDates by viewModel.businessDate.collectAsState()
     val accountsList by viewModel.accountsData.collectAsState()
-    val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
+    val transferCountSummery by viewModel.getTransferCountSummary.collectAsState(initial = emptyList<TransferCountSummaryResponseItem>())
     val transferList by viewModel.transferList.collectAsState()
     val getSendToBank by viewModel.sendToBank.collectAsState()
+
 
     //fetch data
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
@@ -146,10 +158,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
 
     LaunchedEffect(Unit) {
-        viewModel.getBusinessDate()
-        viewModel.getAccounts(userDetails.customerNo)
-        viewModel.getTransferCountSummary(startDate, endDate)
-        viewModel.getTransferList(startDate, endDate, 0)
+        coroutine.launch {
+            viewModel.getBusinessDate()
+            viewModel.getAccounts(userDetails.customerNo)
+            viewModel.getTransferCountSummary(startDate, endDate)
+            viewModel.getTransferList(startDate, endDate, 0)
+        }
     }
 
     Column(
@@ -203,8 +217,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
 
-
-                headerFilters(transferHeaders) { filter ->
+                headerFilters(headerList) { filter ->
                     filterByStatus.value = filter
 
                     //if filter clicked enable check
@@ -226,7 +239,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     }
 
                 }
-
 
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
                 FilterListMenu()
@@ -313,12 +325,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         onClick = {
                             if (sendToBank.value) {
 
-                                viewModel.sendToBankAPI(
-                                    SendToBankModel(
-                                        listOf(FileDescriptor("${selectedTransfer!!.ibankRef}")),
-                                        ""
+                                coroutine.launch {
+
+                                    viewModel.sendToBankAPI(
+                                        SendToBankModel(
+                                            listOf(FileDescriptor("${selectedTransfer!!.ibankRef}")),
+                                            ""
+                                        )
                                     )
-                                )
+                                }
 
                             } else {
                                 SharedModel.init().signatureData.value =
@@ -358,8 +373,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         startDate = it.startDate
         endDate = it.endDate
 
-        viewModel.getTransferCountSummary(startDate, endDate)
-        viewModel.getTransferList(startDate, endDate, 0)
+        coroutine.launch {
+            viewModel.getTransferCountSummary(startDate, endDate)
+            viewModel.getTransferList(startDate, endDate, 0)
+        }
+
     }
 
 
@@ -425,15 +443,23 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         when (it) {
             is DataState.Loading -> {}
             is DataState.Error -> {}
-            is DataState.Success -> {
+            is DataState.Success<*> -> {
                 val data = it.data as TransferCountSummaryResponse
+                if (data.isNotEmpty()) {
+                    headerList?.apply {
+                        clear()
+                        addAll(data)
+                    }
 
-                if (transferHeaders.isNotEmpty()) {
-                    transferHeaders.clear()
+                    isListEmpty.value = false
+                } else {
+
+                    isListEmpty.value = true
                 }
 
-                transferHeaders.addAll(data)
             }
+
+            else -> {}
         }
     }
 
@@ -759,6 +785,107 @@ private fun FilterListMenu() {
             }
         }
 
+    }
+}
+
+@Composable
+private fun TransferMenuItemView(
+    menu: TransferCountSummaryResponseItem,
+    onFilterClick: (String) -> Unit
+) {
+
+    var status = ""
+    var color = Color(0xff268ED9)
+
+    when (menu.status) {
+        "PENDING_SIGNER" -> {
+            status = "For signing"
+            color = Color(0xff268ED9)
+        }
+
+        "CLOSED" -> {
+            status = "Executed"
+            color = Color(0xff26D978)
+        }
+
+        "PENDING_ALL" -> {
+            status = "Sign and confirmation"
+            color = Color(0xFFC74375)
+        }
+
+        "BANK_SUCCESS" -> {
+            status = "Sent to the bank"
+            color = Color(0xFFF48A1D)
+        }
+
+        "BANK_ERROR" -> {
+            status = "Not processed"
+            color = Color(0xff2CCAD3)
+        }
+
+        "DELETED" -> {
+            status = "Deleted"
+            color = Color(0xFFE91E63)
+        }
+
+        "BANK_REJECTED" -> {
+            status = "Rejected"
+            color = Color(0xFFE91E63)
+        }
+
+        "PENDING_APPROVER" -> {
+            status = "For confirmation"
+            color = Color(0xFFFF5722)
+        }
+
+        "EXPIRED" -> {
+            status = "Expired"
+            color = Color(0xFFF80658)
+        }
+
+        "SEND_TO_BANK" -> {
+            status = "In process"
+            color = Color(0xFFCDDC39)
+        }
+
+        "EDITED" -> {
+            status = "In process"
+            color = Color(0xFF009688)
+        }
+
+        else -> {
+            Log.e("mmmTAG", "${menu.status}")
+        }
+    }
+
+
+
+
+    Card(
+        modifier = Modifier.padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(
+            Modifier.clickable { onFilterClick(status) },
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                text = status,
+                modifier = Modifier
+                    .padding(horizontal = 7.dp)
+                    .align(Alignment.CenterVertically),
+                fontSize = 12.sp
+            )
+            Text(
+                text = "${menu.count}", modifier = Modifier
+                    .padding(16.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = color, radius = 12.dp.toPx()
+                        )
+                    }, fontSize = 14.sp, color = Color.White
+            )
+
+        }
     }
 }
 

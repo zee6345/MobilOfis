@@ -1,4 +1,4 @@
-package com.app.network.models
+package com.app.network.models.errorResponse
 
 data class Message(
     val MESSAGE: String

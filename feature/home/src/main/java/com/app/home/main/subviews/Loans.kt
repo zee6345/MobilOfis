@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -61,6 +62,7 @@ import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 
 val loansList = mutableListOf<GetLoansItem>()
@@ -76,12 +78,15 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(false) }
     val selectedFilter = remember { mutableStateOf("") }
+    val coroutine = rememberCoroutineScope()
 
 
     LaunchedEffect(Unit) {
-        viewModel.getLoans(
-            userDetails.customerNo
-        )
+        coroutine.launch {
+            viewModel.getLoans(
+                userDetails.customerNo
+            )
+        }
     }
 
 //    if (isLoading.value) {
@@ -138,7 +143,8 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             } else {
                 item {
                     Box(
-                        Modifier.fillMaxSize()
+                        Modifier
+                            .fillMaxSize()
                             .padding(20.sdp),
                         contentAlignment = Alignment.Center
                     ) {

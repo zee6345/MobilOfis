@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +58,7 @@ import com.app.transfer.R
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.utils.SharedModel
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 @Composable
 fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -76,8 +78,12 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     isSigned.value = data!!.isSignRequired
     val ibankRef = data.transfer.ibankRef
 
+    val coroutine = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
-        viewModel.getTransactionDetails(ibankRef)
+        coroutine.launch{
+            viewModel.getTransactionDetails(ibankRef)
+        }
     }
 
     if (isLoading.value) {

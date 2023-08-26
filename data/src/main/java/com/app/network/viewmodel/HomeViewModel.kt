@@ -1,5 +1,6 @@
 package com.app.network.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.network.helper.Error.handleException
@@ -40,7 +41,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val session get() = _session
-    private val token = session[Keys.KEY_TOKEN]!!
+//    private val token = session[Keys.KEY_TOKEN]!!
 
     private val _accountsData = MutableStateFlow<DataState<Any>?>(null)
     val accountsData: MutableStateFlow<DataState<Any>?> get() = _accountsData
@@ -94,7 +95,7 @@ class HomeViewModel @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.getAccounts(token, customerId)
+            repository.getAccounts(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetAccounts> {
                     override fun onResponse(
                         call: Call<GetAccounts>,
@@ -121,7 +122,7 @@ class HomeViewModel @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.getLoans(token, customerId)
+            repository.getLoans(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetLoans> {
                     override fun onResponse(
                         call: Call<GetLoans>,
@@ -148,7 +149,7 @@ class HomeViewModel @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            repository.getTrusts(token, customerId)
+            repository.getTrusts(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetTrusts> {
                     override fun onResponse(
                         call: Call<GetTrusts>,
@@ -172,7 +173,7 @@ class HomeViewModel @Inject constructor(
     fun getBalance(customerId: Int) {
         _accountBalance.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getUserBalance(token, customerId)
+            repository.getUserBalance(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetCustomerBalance> {
                     override fun onResponse(
                         call: Call<GetCustomerBalance>,
@@ -195,7 +196,7 @@ class HomeViewModel @Inject constructor(
     fun getAccountBlockByIBAN(customerId: Int, IBAN: String) {
         _accountsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getAccountBlockByIban(token, customerId, IBAN)
+            repository.getAccountBlockByIban(session[Keys.KEY_TOKEN]!!, customerId, IBAN)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -218,7 +219,7 @@ class HomeViewModel @Inject constructor(
     fun getOldBusinessCards(customerId: Int) {
         _oldBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getOldBusinessCards(token, customerId)
+            repository.getOldBusinessCards(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetOldCards> {
                     override fun onResponse(
                         call: Call<GetOldCards>,
@@ -242,7 +243,7 @@ class HomeViewModel @Inject constructor(
     fun getNewBusinessCards(customerId: Int) {
         _newBusinessCardsData.value = DataState.Loading
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getNewBusinessCards(token, customerId)
+            repository.getNewBusinessCards(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetNewCards> {
                     override fun onResponse(
                         call: Call<GetNewCards>,
@@ -266,8 +267,10 @@ class HomeViewModel @Inject constructor(
     fun getRecentOps(customerId: Int) {
         _recentOps.value = DataState.Loading
 
+        Log.e("mTAGRecentOps", "${session[Keys.KEY_TOKEN]!!}")
+
         viewModelScope.launch {
-            repository.getRecentOps(token, customerId)
+            repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetRecentOps> {
                     override fun onResponse(
                         call: Call<GetRecentOps>,
@@ -291,9 +294,11 @@ class HomeViewModel @Inject constructor(
     fun setCustomerName(changeCompanyName: ChangeCompanyName) {
         _setCustomerName.value = DataState.Loading
 
+        Log.e("mTAGCustomer", "${session[Keys.KEY_TOKEN]!!}")
+
         viewModelScope.launch {
 
-            repository.setCustomerName(token, changeCompanyName)
+            repository.setCustomerName(session[Keys.KEY_TOKEN]!!, changeCompanyName)
                 .enqueue(object : Callback<LoginVerifyResponse> {
                     override fun onResponse(
                         call: Call<LoginVerifyResponse>,
@@ -321,7 +326,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            repository.getBusinessDate(token)
+            repository.getBusinessDate(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -348,7 +353,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            repository.getTransferCountSummary(token, startDate, endDate)
+            repository.getTransferCountSummary(session[Keys.KEY_TOKEN]!!, startDate, endDate)
                 .enqueue(object : Callback<TransferCountSummaryResponse> {
                     override fun onResponse(
                         call: Call<TransferCountSummaryResponse>,
@@ -376,7 +381,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            repository.getTransferList(token, dateStart, dateEnd, page)
+            repository.getTransferList(session[Keys.KEY_TOKEN]!!, dateStart, dateEnd, page)
                 .enqueue(object : Callback<TransferListResponse> {
                     override fun onResponse(
                         call: Call<TransferListResponse>,
@@ -404,7 +409,7 @@ class HomeViewModel @Inject constructor(
         _getTransactionDetails.value = DataState.Loading
 
         viewModelScope.launch {
-            repository.getTransactionDetails(token, ibankRef)
+            repository.getTransactionDetails(session[Keys.KEY_TOKEN]!!, ibankRef)
                 .enqueue(object : Callback<GetTransactionDetails> {
                     override fun onResponse(
                         call: Call<GetTransactionDetails>,
@@ -492,7 +497,7 @@ class HomeViewModel @Inject constructor(
         _sendToBank.value = DataState.Loading
 
         viewModelScope.launch {
-            repository.sendToBankAPI(token, sendToBankModel)
+            repository.sendToBankAPI(session[Keys.KEY_TOKEN]!!, sendToBankModel)
                 .enqueue(object : Callback<SignApproveResponse> {
                     override fun onResponse(
                         call: Call<SignApproveResponse>,

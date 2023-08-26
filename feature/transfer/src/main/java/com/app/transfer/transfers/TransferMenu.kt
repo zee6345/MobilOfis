@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -23,32 +22,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
-import com.app.transfer.transferHeaders
+import com.app.transfer.isListEmpty
+import com.app.uikit.utils.SharedModel
 
 
 @Composable
 fun headerFilters(
-    transferHeaderList: List<TransferCountSummaryResponseItem>,
+    transferHeaderList: MutableList<TransferCountSummaryResponseItem>,
     onFilterClick: (String) -> Unit
 ) {
-    if (transferHeaderList.isNotEmpty()) {
+
+//    val isEmpty = SharedModel.init().isListEmpty
+//    Log.e("mmmTAG", "${isEmpty.value}")
+
+    if (!isListEmpty.value) {
+
         LazyRow {
+            itemsIndexed(items = transferHeaderList) { index, menu ->
 
-            itemsIndexed(items = transferHeaders) { index, menu ->
                 TransferMenuItemView(menu = menu) { status ->
-                    if (status.isNotEmpty() && index >= 0 && index < transferHeaderList.size) {
-                        onFilterClick(status)
-                    }
+                    onFilterClick(status)
                 }
 
-                //Add Spacer after each item except for the last one
-                if (index < transferHeaderList.size - 1) {
-                    Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
-                }
+                Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+
             }
         }
-
     }
+
 }
 
 @Composable

@@ -134,6 +134,9 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                     if (pin.isNotEmpty() && pin.length == 5) {
                         val finalPin = viewModel.session[Keys.KEY_USER_PIN]
                         if (finalPin.equals(pin)) {
+
+                            viewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
+
                             navController.navigate(homeScreenRoute)
                         } else {
                             Message.showMessage(context, "Wrong pin entered!")
@@ -190,9 +193,15 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
     }
 
     FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, onClickThen = {
+
+
         navController.navigate(homeScreenRoute)
+
     }, onClickYes = {
+
+
         navController.navigate(homeScreenRoute)
+
     })
 }
 

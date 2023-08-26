@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +58,7 @@ import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.dialogs.ShowProgressDialog
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 const val recentTransactions = "RecentTransactions"
 
@@ -69,10 +71,13 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
     val recentOps by viewModel.recentOps.collectAsState()
     val recentData = remember { mutableListOf<GetRecentOpsItem>() }
     val isLoading = remember { mutableStateOf(false) }
+    val coroutine = rememberCoroutineScope()
 
 
     LaunchedEffect(Unit) {
-        viewModel.getRecentOps(userDetails.customerNo)
+        coroutine.launch{
+            viewModel.getRecentOps(userDetails.customerNo)
+        }
     }
 
     Column(

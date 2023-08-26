@@ -64,7 +64,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.models.DataState
-import com.app.network.models.ErrorResponse
+import com.app.network.models.errorResponse.ErrorResponse
 import com.app.network.models.requestModels.FileDescriptor
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.SignApproveRequest

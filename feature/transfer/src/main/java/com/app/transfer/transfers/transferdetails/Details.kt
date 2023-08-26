@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,6 +65,7 @@ import com.app.uikit.models.AuthType
 import com.app.uikit.models.SignInfo
 import com.app.uikit.utils.SharedModel
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -98,12 +100,16 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val data = SharedModel.init().signatureData.value
     isSigned.value = data!!.isSignRequired
     val ibankRef = data.transfer.ibankRef
+    val coroutine = rememberCoroutineScope()
 
 
 //    val pdfList  = remember { mutableListOf(Any) }
 
     LaunchedEffect(Unit) {
-        viewModel.getTransactionDetails(ibankRef)
+        coroutine.launch {
+            viewModel.getTransactionDetails(ibankRef)
+        }
+
     }
 
     if (!isLoading.value) {
