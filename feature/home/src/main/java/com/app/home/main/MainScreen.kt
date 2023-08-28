@@ -40,6 +40,7 @@ import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetCustomerBalanceItem

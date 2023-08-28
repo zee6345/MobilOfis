@@ -51,6 +51,7 @@ import com.app.home.main.cards.homeToCardDetails
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -241,6 +242,9 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
             is DataState.Error -> {
                 isLoading.value = false
+
+//                ErrorState(context = context, it.errorMessage).handleError()
+
             }
 
             is DataState.Success -> {

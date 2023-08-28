@@ -44,6 +44,7 @@ import com.app.home.main.account.accountDetailsRoute
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -82,11 +83,15 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
             Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
         }
 
-        items(items = cardsList, itemContent = {
+        item {
+          cardsList.forEachIndexed { index, getAccountsItem ->
+              AccountListItem(obj = getAccountsItem, navController, viewModel)
+          }
+        }
 
-            AccountListItem(obj = it, navController, viewModel)
-
-        })
+//        items(items = cardsList, itemContent = {
+//            AccountListItem(obj = it, navController, viewModel)
+//        })
     }
 
 
@@ -108,9 +113,11 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 
                 isLoading.value = false
 
-                cardsList.apply {
-                    clear()
-                    cardsList.addAll(userAccounts)
+                if (userAccounts.isNotEmpty()) {
+                    cardsList.apply {
+                        clear()
+                        cardsList.addAll(userAccounts)
+                    }
                 }
 
             }

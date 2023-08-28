@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.transfer.isListEmpty
-import com.app.uikit.utils.SharedModel
 
 
 @Composable
@@ -32,22 +32,146 @@ fun headerFilters(
     onFilterClick: (String) -> Unit
 ) {
 
-//    val isEmpty = SharedModel.init().isListEmpty
-//    Log.e("mmmTAG", "${isEmpty.value}")
-
     if (!isListEmpty.value) {
 
         LazyRow {
-            itemsIndexed(items = transferHeaderList) { index, menu ->
 
-                TransferMenuItemView(menu = menu) { status ->
-                    onFilterClick(status)
+            item {
+
+                transferHeaderList.forEachIndexed { index, menu ->
+
+                    Row(
+                        Modifier.fillMaxWidth()
+                    ) {
+
+//                    item {
+                        TransferMenuItemView(menu = menu) { status ->
+
+                            var filter = ""
+
+                            when (status) {
+                                "For signing" -> {
+                                    filter = "PENDING_SIGNER"
+                                }
+
+                                "Executed" -> {
+                                    filter = "CLOSED"
+                                }
+
+                                "Sign and confirmation" -> {
+                                    filter = "PENDING_ALL"
+                                }
+
+                                "Sent to the bank" -> {
+                                    filter = "BANK_SUCCESS"
+                                }
+
+                                "Not processed" -> {
+                                    filter = "BANK_ERROR"
+                                }
+
+                                "Deleted" -> {
+                                    filter = "DELETED"
+                                }
+
+                                "Rejected" -> {
+                                    filter = "BANK_REJECTED"
+                                }
+
+                                "For confirmation" -> {
+                                    filter = "PENDING_APPROVER"
+                                }
+
+                                "Expired" -> {
+                                    filter = "EXPIRED"
+                                }
+
+                                "In process" -> {
+                                    filter = "SEND_TO_BANK"
+                                }
+
+//                        "In process" -> {
+//                            filter = "EDITED"
+//                        }
+
+                                else -> {
+                                    filter = ""
+                                }
+                            }
+
+                            onFilterClick(filter)
+                        }
+
+                        Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+//                    }
+
+                    }
                 }
-
-                Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
-
             }
         }
+//            itemsIndexed(items = transferHeaderList) { index, menu ->
+//
+//                TransferMenuItemView(menu = menu) { status ->
+//
+//                    var filter = ""
+//
+//                    when (status) {
+//                        "For signing" -> {
+//                            filter = "PENDING_SIGNER"
+//                        }
+//
+//                        "Executed" -> {
+//                            filter = "CLOSED"
+//                        }
+//
+//                        "Sign and confirmation" -> {
+//                            filter = "PENDING_ALL"
+//                        }
+//
+//                        "Sent to the bank" -> {
+//                            filter = "BANK_SUCCESS"
+//                        }
+//
+//                        "Not processed" -> {
+//                            filter = "BANK_ERROR"
+//                        }
+//
+//                        "Deleted" -> {
+//                            filter = "DELETED"
+//                        }
+//
+//                        "Rejected" -> {
+//                            filter = "BANK_REJECTED"
+//                        }
+//
+//                        "For confirmation" -> {
+//                            filter = "PENDING_APPROVER"
+//                        }
+//
+//                        "Expired" -> {
+//                            filter = "EXPIRED"
+//                        }
+//
+//                        "In process" -> {
+//                            filter = "SEND_TO_BANK"
+//                        }
+//
+////                        "In process" -> {
+////                            filter = "EDITED"
+////                        }
+//
+//                        else -> {
+//                            filter = ""
+//                        }
+//                    }
+//
+//                    onFilterClick(filter)
+//                }
+//
+//                Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+//
+//            }
+//        }
     }
 
 }
@@ -121,9 +245,6 @@ private fun TransferMenuItemView(
             Log.e("mmmTAG", "${menu.status}")
         }
     }
-
-
-
 
     Card(
         modifier = Modifier.padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)

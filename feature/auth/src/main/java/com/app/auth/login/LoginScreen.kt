@@ -55,9 +55,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -114,7 +117,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val context = LocalContext.current
     val enableLoginWithPin = viewModel.session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)
 
-    val passwordVisualTransformation = if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation =
+        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
@@ -289,7 +293,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     OutlinedTextField(
                         value = usernameState.value,
                         modifier = Modifier.fillMaxWidth(),
-                        onValueChange = { usernameState.value = it },
+                        onValueChange = {
+                            val formatedInput = if (selected == 2) it.take(12) else it
+                            usernameState.value = formatedInput
+                        },
+                        visualTransformation = if (selected == 2) PhoneNumberVisualTransformation else VisualTransformation.None,
                         keyboardOptions = if (selected == 2) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions(
                             keyboardType = KeyboardType.Text
                         ),
@@ -673,6 +681,7 @@ fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
+
 @Composable
 fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
 
@@ -867,6 +876,96 @@ private fun LanguageOptions() {
                 )
             )
         }
+    }
+}
+
+private object PhoneNumberVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val trimmed = text.text.filter { it.isDigit() }
+
+        val formattedText = buildString {
+            if (trimmed.length >= 2) {
+                append("(${trimmed.take(2)}) ")
+            } else if (trimmed.isNotEmpty()) {
+                append("(")
+                append(trimmed)
+            }
+
+            if (trimmed.length >= 4) {
+                append("${trimmed.substring(2, 4)}")
+            } else if (trimmed.length > 2) {
+                append("${trimmed.substring(2)}")
+            }
+
+            if (trimmed.length >= 6) {
+                append("-${trimmed.substring(4, 6)}")
+            } else if (trimmed.length > 4) {
+                append("-${trimmed.substring(4)}")
+            }
+
+            if (trimmed.length >= 8) {
+                append("-${trimmed.substring(6, 8)}")
+            } else if (trimmed.length > 6) {
+                append("-${trimmed.substring(6)}")
+            }
+
+            if (trimmed.length >= 10) {
+                append("-${trimmed.substring(8, 10)}")
+            } else if (trimmed.length > 8) {
+                append("-${trimmed.substring(8)}")
+            }
+
+            if (trimmed.length >= 12) {
+                append("-${trimmed.substring(10, 12)}")
+            } else if (trimmed.length > 10) {
+                append("-${trimmed.substring(10)}")
+            }
+        }
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                // Adjust the mapping based on formatting changes
+                return offset
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                val originalLength = trimmed.length
+                val transformedLength = formattedText.length
+                val originalPosition = when {
+                    offset <= 2 -> offset
+                    offset <= 7 -> offset - 1
+                    offset <= 10 -> offset - 2
+                    offset <= 13 -> offset - 3
+                    else -> offset - 4
+                }
+                return originalPosition.coerceIn(0, originalLength)
+                    .coerceIn(0, transformedLength)
+            }
+        }
+
+        return TransformedText(AnnotatedString(formattedText), offsetMapping)
+    }
+}
+
+
+private fun formatPhoneNumber(input: String): String {
+    val builder = StringBuilder(input)
+
+    while (builder.length < 11) {
+        builder.append("0")
+    }
+
+    return buildString {
+        append("(")
+        append(builder.substring(0, 2))
+        append(") ")
+        append(builder.substring(2, 5))
+        append("-")
+        append(builder.substring(5, 7))
+        append("-")
+        append(builder.substring(7, 9))
+        append("-")
+        append(builder.substring(9, 11))
     }
 }
 

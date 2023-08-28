@@ -5,16 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.app.mobiloffice.ui.MoApp
 import com.app.mobiloffice.ui.theme.MobilOfficeTheme
-import com.app.network.viewmodel.LoginViewModel
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
+import com.app.network.models.DataState
+import com.app.network.retrofitClient.BaseRetrofitClient
+import com.app.network.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
 import java.util.TimerTask
@@ -39,9 +42,6 @@ class MainActivity : ComponentActivity() {
 
                         Toast.makeText(context, "Session expire!", Toast.LENGTH_SHORT).show()
 
-                        //clear pin
-//                        Session(context).delete(Keys.KEY_USER_PIN)
-
                         //clear old token
                         Session(context).delete(Keys.KEY_TOKEN)
 
@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         finishAffinity()
 
                     } else {
+
 
                     }
 
@@ -85,6 +86,19 @@ class MainActivity : ComponentActivity() {
                 viewModel.lastLogin()
             }
         }, 0, 60000)
+
+        viewModel.lastLogin.observe(this) {
+            when (it) {
+                is DataState.Loading -> {}
+                is DataState.Error -> {
+                    Log.e("mTAG", "last login ")
+                }
+                is DataState.Success -> {
+                    Log.e("mTAG", "last login success ")
+                }
+                else -> {}
+            }
+        }
 
     }
 

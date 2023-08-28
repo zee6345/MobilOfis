@@ -1,6 +1,8 @@
 package com.app.network.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.network.helper.Error
@@ -42,8 +44,12 @@ class LoginViewModel @Inject constructor(
     private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
-    private val _lastLogin = MutableStateFlow<DataState<Any>?>(null)
-    val lastLogin: MutableStateFlow<DataState<Any>?> get() = _lastLogin
+//    private val _lastLogin = MutableStateFlow<DataState<Any>?>(null)
+//    val lastLogin: MutableStateFlow<DataState<Any>?> get() = _lastLogin
+
+    private val _lastLogin = MutableLiveData<DataState<Any>?>(null)
+    val lastLogin :LiveData<DataState<Any>?> get() = _lastLogin
+
 
 
     fun loginWithUserName(loginRequest: LoginRequest) {
@@ -132,7 +138,7 @@ class LoginViewModel @Inject constructor(
 
 
     fun lastLogin() {
-        _lastLogin.value = DataState.Loading
+        _lastLogin.postValue(DataState.Loading)
 
         viewModelScope.launch {
             repository.lastLogin(session[Keys.KEY_TOKEN]!!)
@@ -142,14 +148,14 @@ class LoginViewModel @Inject constructor(
                         response: Response<GetLastLogin>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _lastLogin.value = DataState.Success(response.body()!!)
+                            _lastLogin.postValue(DataState.Success(response.body()!!))
                         } else {
-                            _lastLogin.value = DataState.Error(response.errorBody()!!.string())
+                            _lastLogin.postValue(DataState.Error(response.errorBody()!!.string()))
                         }
                     }
 
                     override fun onFailure(call: Call<GetLastLogin>, t: Throwable) {
-                        _lastLogin.value = DataState.Error(Error.handleException(t))
+                        _lastLogin.postValue(DataState.Error(Error.handleException(t)))
                     }
 
                 })

@@ -57,6 +57,7 @@ import com.app.network.models.responseModels.GetTrustsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
+import com.app.network.models.errorResponse.ErrorState
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
@@ -168,6 +169,8 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
                 isLoading.value = false
+
+//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {

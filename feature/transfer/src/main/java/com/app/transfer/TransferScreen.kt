@@ -61,6 +61,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.requestModels.FileDescriptor
 import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.responseModels.GetAccounts
@@ -117,7 +118,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
 
-
     var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
 
     val coroutine = rememberCoroutineScope()
@@ -133,8 +133,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val filterByCurrency = remember { mutableStateOf("") }
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
 
-    var headerList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
-//    val headerList = ArrayList<TransferCountSummaryResponseItem>()
+    val headerList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
     val context: Context = LocalContext.current
@@ -215,6 +214,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             Column {
 
+
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
 
                 headerFilters(headerList) { filter ->
@@ -239,6 +239,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     }
 
                 }
+
 
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
                 FilterListMenu()
@@ -445,15 +446,16 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             is DataState.Error -> {}
             is DataState.Success<*> -> {
                 val data = it.data as TransferCountSummaryResponse
+
                 if (data.isNotEmpty()) {
-                    headerList?.apply {
+
+                    headerList.apply {
                         clear()
                         addAll(data)
                     }
 
                     isListEmpty.value = false
                 } else {
-
                     isListEmpty.value = true
                 }
 
@@ -471,6 +473,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Error -> {
                 isLoading.value = false
+
+//                ErrorState(context = context, it.errorMessage).handleError()
+
             }
 
             is DataState.Success -> {
