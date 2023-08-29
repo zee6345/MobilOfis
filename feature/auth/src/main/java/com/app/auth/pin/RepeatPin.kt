@@ -54,7 +54,8 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
     var enteredPin by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(color = Color(0xFFF3F7FA))) {
 
         Surface(
             modifier = Modifier

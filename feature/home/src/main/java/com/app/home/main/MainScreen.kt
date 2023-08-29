@@ -40,7 +40,6 @@ import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetCustomerBalanceItem
@@ -77,19 +76,18 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val balance = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
 
-
-    val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
-    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
+    val sheet = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheet)
 
     val customerBalance = remember { mutableStateListOf<GetCustomerBalanceItem>() }
     val transferHeaderList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val recentData = remember { mutableListOf<GetRecentOpsItem>() }
 
     val accountBalance by viewModel.accountBalance.collectAsState()
-    val recentOps by viewModel.recentOps.collectAsState()
     val setCustomerName by viewModel.setCustomerName.collectAsState()
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
 
+    val recentOps by viewModel.recentOps.collectAsState()
 
     //set initial dates
     val currentDate = System.currentTimeMillis()
@@ -99,6 +97,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val endDateSelected = remember { mutableStateOf(formattedDate) }
 
     val coroutine = rememberCoroutineScope()
+
+    val selectedBoxIndex = remember { mutableStateOf(0) }
 
 
     val context = LocalContext.current
@@ -113,7 +113,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         coroutine.launch {
             viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
             viewModel.getBalance(userDetails.customerNo)
-            viewModel.getRecentOps(userDetails.customerNo)
+            viewModel.getRecentOps(userDetails.customerNo, "")
         }
     }
 
@@ -124,7 +124,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
         sheetContent = {
 
-            Column(Modifier.fillMaxWidth()) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.6f)
+            ) {
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -247,7 +251,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val selectedBoxIndex = remember { mutableStateOf(0) }
+
 
                     Row() {
 
@@ -259,9 +263,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             Box(modifier = Modifier
                                 .background(
                                     if (selectedBoxIndex.value == 0) Color(0xFFE7EEFC) else Color.White,
-
-                                    )
-                                .clickable { selectedBoxIndex.value = 0 }) {
+                                )
+                                .clickable {
+                                    selectedBoxIndex.value = 0
+                                    viewModel.getRecentOps(userDetails.customerNo, "")
+                                }) {
                                 Text(
                                     text = "All",
                                     modifier = Modifier.padding(6.dp),
@@ -281,11 +287,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             elevation = 8.sdp,
                         ) {
                             Box(modifier = Modifier
-                                .background(
-                                    if (selectedBoxIndex.value == 1) Color(0xFFE7EEFC) else Color.White,
-
-                                    )
-                                .clickable { selectedBoxIndex.value = 1 }) {
+                                .background(if (selectedBoxIndex.value == 1) Color(0xFFE7EEFC) else Color.White)
+                                .clickable {
+                                    selectedBoxIndex.value = 1
+                                    viewModel.getRecentOps(userDetails.customerNo, "CR")
+                                }) {
                                 Text(
                                     text = "Income",
                                     modifier = Modifier.padding(6.dp),
@@ -309,7 +315,10 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 .background(
                                     if (selectedBoxIndex.value == 2) Color(0xFFE7EEFC) else Color.White
                                 )
-                                .clickable { selectedBoxIndex.value = 2 }) {
+                                .clickable {
+                                    selectedBoxIndex.value = 2
+                                    viewModel.getRecentOps(userDetails.customerNo, "DR")
+                                }) {
                                 Text(
                                     text = "Expenditure",
                                     modifier = Modifier.padding(6.dp),
@@ -338,7 +347,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     Box(
                         Modifier.clickable {
                             coroutine.launch {
-                                viewModel.getRecentOps(userDetails.customerNo)
+                                viewModel.getRecentOps(userDetails.customerNo, "")
                             }
                         }
                     ) {
@@ -641,7 +650,15 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
         coroutine.launch {
             viewModel.setCustomerName(ChangeCompanyName(it))
-            viewModel.getRecentOps(userDetails.customerNo)
+
+            //refresh APIs
+            viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
+            viewModel.getBalance(userDetails.customerNo)
+            viewModel.getRecentOps(userDetails.customerNo, "")
+
+
+            viewModel.getAccounts(userDetails.customerNo)
+
         }
     }
 
@@ -650,7 +667,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
 
-    //handle API Responce
+//handle API Responce
     accountBalance?.let {
         when (it) {
             is DataState.Loading -> {
@@ -742,7 +759,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         }
     }
 
-    //handle API Responce
+//handle API Responce
     recentOps?.let {
         when (it) {
             is DataState.Loading -> {
@@ -754,8 +771,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 //on error hide sheet
                 isEmpty.value = true
-
-//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {
@@ -783,11 +798,10 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
-
-
     if (isLoading.value) {
         ShowProgressDialog(isLoading)
     }
+
 
 }
 

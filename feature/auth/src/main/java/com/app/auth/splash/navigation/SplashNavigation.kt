@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.app.auth.login.navigation.loginNavigationRoute
 import com.app.auth.splash.SplashScreen
-import com.app.home.navigation.homeScreenRoute
+
 import kotlinx.coroutines.delay
 
 

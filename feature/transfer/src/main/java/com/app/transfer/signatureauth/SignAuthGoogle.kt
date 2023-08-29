@@ -75,6 +75,8 @@ import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.models.AuthType
+import com.app.uikit.models.SignInfo
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
@@ -445,6 +447,9 @@ fun SignAuthGoogle(
                                     androidx.compose.material.Button(
                                         onClick = {
 
+                                            SharedModel.init().signInfo.value =
+                                                SignInfo(false, AuthType.SMS)
+
                                         },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = androidx.compose.material.ButtonDefaults.buttonColors(
@@ -733,7 +738,6 @@ fun SignAuthGoogle(
                         LaunchedEffect(error.code) {
                             Message.showMessage(context, "Wrong username or password!")
                         }
-
 
                     }
                 }

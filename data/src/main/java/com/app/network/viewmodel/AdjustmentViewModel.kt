@@ -15,6 +15,8 @@ import com.app.network.helper.Session
 import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.repository.AdjustmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -57,7 +59,7 @@ class AdjustmentViewModel @Inject constructor(
     fun getUserInfo(customerId: String) {
         _userInfo.value = DataState.Loading
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
 
             repository.getUserInfo(session[Keys.KEY_TOKEN]!!, customerId)
                 .enqueue(object : Callback<GetUserProfile> {
@@ -84,7 +86,7 @@ class AdjustmentViewModel @Inject constructor(
     fun disable2FA() {
         _disable2FA.value = DataState.Loading
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
 
             repository.disable2FA(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<ResponseBody> {
@@ -111,7 +113,7 @@ class AdjustmentViewModel @Inject constructor(
     fun enable2FA() {
         _enable2FA.value = DataState.Loading
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
 
             repository.enable2FA(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<ResponseBody> {
@@ -137,7 +139,7 @@ class AdjustmentViewModel @Inject constructor(
     fun getExchangeRates() {
         _exchangeRates.value = DataState.Loading
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
 
             repository.getExchangeList(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<GetExchangeRates> {
@@ -163,7 +165,8 @@ class AdjustmentViewModel @Inject constructor(
 
     fun changePassword(changePasswordRequest: ChangePasswordRequest) {
         _changePassword.value = DataState.Loading
-        viewModelScope.launch {
+
+        CoroutineScope(Dispatchers.IO).launch {
             repository.changePasswordRequest(
                 session[Keys.KEY_TOKEN]!!,
                 changePasswordRequest
@@ -190,7 +193,8 @@ class AdjustmentViewModel @Inject constructor(
 
     fun verifyChangePassword(verifyChangePasswordRequest: VerifyChangePasswordRequest) {
         _verifyChangePassword.value = DataState.Loading
-        viewModelScope.launch {
+
+        CoroutineScope(Dispatchers.IO).launch {
             repository.changePasswordVerify(
                 session[Keys.KEY_TOKEN]!!,
                 verifyChangePasswordRequest
@@ -218,7 +222,8 @@ class AdjustmentViewModel @Inject constructor(
 
     fun setFavCustomer(favCustomer: SetFavCustomer) {
         _setFavCustomer.value = DataState.Loading
-        viewModelScope.launch {
+
+        CoroutineScope(Dispatchers.IO).launch {
             repository.setFavCustomer(
                 session[Keys.KEY_TOKEN]!!,
                 favCustomer

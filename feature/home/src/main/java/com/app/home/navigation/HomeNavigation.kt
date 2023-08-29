@@ -11,7 +11,7 @@ fun NavGraphBuilder.homeScreen(
     navController: NavController
 ) {
     composable(
-        route = homeScreenRoute,
+        route = homeScreenRoute
     ) {
         MainScreenView(navController)
     }

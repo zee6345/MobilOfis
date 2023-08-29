@@ -76,7 +76,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
 
     LaunchedEffect(Unit) {
         coroutine.launch{
-            viewModel.getRecentOps(userDetails.customerNo)
+            viewModel.getRecentOps(userDetails.customerNo, "")
         }
     }
 

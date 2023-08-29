@@ -64,6 +64,10 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.getRecentOps(token, customerId)
     }
 
+    fun getRecentOps(token: String, customerId: Int, incomeFlag:String):Call<GetRecentOps>{
+        return apiService.getRecentOps(token, customerId, incomeFlag)
+    }
+
     fun setCustomerName(token: String, changeCompanyName: ChangeCompanyName): Call<LoginVerifyResponse> {
         return apiService.setCompanyName(token, changeCompanyName)
     }
@@ -76,10 +80,6 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
     fun getTransferCountSummary(token: String,startDate: String,endDate: String): Call<TransferCountSummaryResponse> {
         return apiService.getTransferCountSummary(token,startDate,endDate)
     }
-
-//    fun getTransferList(token: String,startDate:String,endDate:String,page:Int): Call<ResponseBody> {
-//        return apiService.getTransferList(token,startDate,endDate, page)
-//    }
 
     fun getTransferList(token: String, startDate: String, endDate: String, page: Int): Call<TransferListResponse> {
         return apiService.getTransferList(token,startDate,endDate, page)

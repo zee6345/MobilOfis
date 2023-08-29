@@ -34,6 +34,7 @@ fun MoNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
+
         splashScreen(navController)
         loginScreen(navController)
         easySignature(navController)
@@ -43,6 +44,8 @@ fun MoNavHost(
         successfulRegistrationScreen(navController)
         welcomePin(navController)
         homeScreen(navController)
+
+
 
         signingHome(navController)
         signAuth(navController)

@@ -44,9 +44,6 @@ class LoginViewModel @Inject constructor(
     private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
-//    private val _lastLogin = MutableStateFlow<DataState<Any>?>(null)
-//    val lastLogin: MutableStateFlow<DataState<Any>?> get() = _lastLogin
-
     private val _lastLogin = MutableLiveData<DataState<Any>?>(null)
     val lastLogin :LiveData<DataState<Any>?> get() = _lastLogin
 
@@ -113,7 +110,7 @@ class LoginViewModel @Inject constructor(
     fun asanLogin(loginAsanRequest: LoginAsanRequest) {
         _asanLogin.value = DataState.Loading
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             repository.sendLoginAsanRequest(loginAsanRequest)
                 .enqueue(object : Callback<LoginAsanResponse> {
                     override fun onResponse(
@@ -140,7 +137,7 @@ class LoginViewModel @Inject constructor(
     fun lastLogin() {
         _lastLogin.postValue(DataState.Loading)
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             repository.lastLogin(session[Keys.KEY_TOKEN]!!)
                 .enqueue(object : Callback<GetLastLogin> {
                     override fun onResponse(

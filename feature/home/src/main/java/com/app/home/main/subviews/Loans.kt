@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,11 +49,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.loan.homeToLoanInformation
-
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetLoansItem
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -78,7 +75,7 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val cardFilters = remember { DataProvider.filtersLoanList }
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(false) }
-    val selectedFilter = remember { mutableStateOf("") }
+    val selectedFilter = remember { mutableStateOf("Gecikmədə deyil") }
     val coroutine = rememberCoroutineScope()
 
 
@@ -90,74 +87,67 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
         }
     }
 
-//    if (isLoading.value) {
-//
-//        Box(
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//        }
-//
-//    } else {
-
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 2.sdp, vertical = 5.sdp)
-        ) {
+    LazyColumn(
+        modifier = Modifier.padding(horizontal = 2.sdp, vertical = 5.sdp)
+    ) {
 
 
-            item {
+        item {
+            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
+            Filters() {
+                selectedFilter.value = it
+            }
+        }
+
+        item {
+            if (!isEmpty.value) {
                 Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-                Filters() {
-                    selectedFilter.value = it
+                LazyRow(
+                    contentPadding = PaddingValues(vertical = 1.dp)
+                ) {
+                    items(items = cardFilters, itemContent = {
+                        Row {
+                            FilterView(filter = it)
+                            Box(modifier = Modifier.padding(end = 5.sdp))
+                        }
+
+                    })
                 }
             }
+        }
+
+        val filter = loansList.filter {
+            it.STATUS.contains(selectedFilter.value, true)
+        }
+
+        if (!filter.isNullOrEmpty()) {
+            items(items = filter, itemContent = {
+                LoansListItem(obj = it, navController)
+            })
 
             item {
-                if(!isEmpty.value) {
-                    Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+                Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
+            }
 
-                    LazyRow(
-                        contentPadding = PaddingValues(vertical = 1.dp)
-                    ) {
-                        items(items = cardFilters, itemContent = {
-                            Row {
-                                FilterView(filter = it)
-                                Box(modifier = Modifier.padding(end = 5.sdp))
-                            }
-
-                        })
-                    }
+            isEmpty.value = false
+        } else {
+            item {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(20.sdp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No loan found!")
                 }
             }
-
-            val filter = loansList.filter {
-                it.STATUS.contains(selectedFilter.value, true)
-            }
-
-            if (!filter.isNullOrEmpty()){
-                items(items = filter, itemContent = {
-                    LoansListItem(obj = it, navController)
-                })
-                isEmpty.value = false
-            } else {
-                item {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(20.sdp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("No loan found!")
-                    }
-                }
-                isEmpty.value = true
-            }
-
-
-
+            isEmpty.value = true
         }
+
+
+    }
 //    }
 
     customerLoans?.let {
@@ -168,8 +158,6 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
             is DataState.Error -> {
                 isLoading.value = false
-
-//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {

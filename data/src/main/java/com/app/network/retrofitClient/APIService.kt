@@ -146,8 +146,29 @@ interface APIService {
     @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
     fun getRecentOps(
         @Header("Auth_token") token: String,
+        @Path("customerId") customerId: Int,
+        @Query("debit_credit_flag") flag: String
+    ): Call<GetRecentOps>
+
+    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
+    fun getRecentOps(
+        @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int
     ): Call<GetRecentOps>
+
+//    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
+//    fun getRecentOpsIncome(
+//        @Header("Auth_token") token: String,
+//        @Path("customerId") customerId: Int,
+//        @Query("debit_credit_flag") flag: String
+//    ): Call<GetRecentOps>
+//
+//    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20&debit_credit_flag=DR")
+//    fun getRecentOpsExpenditure(
+//        @Header("Auth_token") token: String,
+//        @Path("customerId") customerId: Int
+//    ): Call<GetRecentOps>
+
 
     @POST("auth/totp-register/disable")
     fun disable2FA(
@@ -192,13 +213,6 @@ interface APIService {
         @Query("status") status: String
     ): Call<ResponseBody> // transfer count summary response
 
-    @GET("transaction/transfer-count-summary")
-    fun getTransferCountSummaryFilter(
-        @Header("Auth_token") token: String,
-        @Query("startdate") startDate: String,
-        @Query("enddate") endDate: String,
-        @Query("filter") filter: String
-    ): Call<ResponseBody> // transfer count summary response
 
     @GET("transaction/transfer-list/{startDate}/{endDate}")
     fun getTransferList(

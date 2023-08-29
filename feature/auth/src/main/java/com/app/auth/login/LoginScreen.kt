@@ -611,7 +611,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         otpScreen.userName = usernameState.value
                         SharedModel.init().loginType.value = selected
 
-                        navController.navigate(otpNavigationRoute)
+                        navController.navigate(otpNavigationRoute){
+                            popUpTo(otpNavigationRoute){
+                                inclusive=true
+                            }
+                        }
 
                     }
 
@@ -660,7 +664,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             "${loginResponse.gniAuthResponseType.verfication}"
 
 
-                        navController.navigate(loginToEasySignature)
+                        navController.navigate(loginToEasySignature){
+                            popUpTo(loginToEasySignature){
+                                inclusive = true
+                            }
+                        }
 
                     }
 

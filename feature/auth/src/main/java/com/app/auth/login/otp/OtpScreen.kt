@@ -53,7 +53,6 @@ import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
-import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.CountdownTimerSeconds
 import com.app.uikit.views.OtpView
 import ir.kaaveh.sdpcompose.sdp
@@ -184,7 +183,7 @@ fun OtpScreen(
                     otpValue.value = it
                 }
 
-                if (loginType == 1){
+                if (loginType == 1) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -260,7 +259,11 @@ fun OtpScreen(
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(loginNavigationRoute)
+                            navController.navigate(loginNavigationRoute) {
+                                popUpTo(loginNavigationRoute) {
+                                    inclusive = true
+                                }
+                            }
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -363,9 +366,17 @@ fun OtpScreen(
                     //route to OTP
                     LaunchedEffect(Unit) {
                         if (pin.isNullOrEmpty()) {
-                            navController.navigate(pinNavigationRoute)
+                            navController.navigate(pinNavigationRoute) {
+                                popUpTo(pinNavigationRoute) {
+                                    inclusive = true
+                                }
+                            }
                         } else {
-                            navController.navigate(welcomePinScreen)
+                            navController.navigate(welcomePinScreen) {
+                                popUpTo(welcomePinScreen) {
+                                    inclusive = true
+                                }
+                            }
                         }
                     }
 

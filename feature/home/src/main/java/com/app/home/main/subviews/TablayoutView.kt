@@ -10,7 +10,6 @@ import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -20,12 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.uikit.models.TabItem
+import com.app.uikit.views.AutoResizedText
 import kotlinx.coroutines.launch
-
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -60,7 +59,7 @@ fun TabLayoutMenu(navController: NavController) {
             tabs.forEachIndexed { index, item ->
                 Tab(
                     selected = index == pagerState.currentPage,
-                    text = { Text(text = item.title, fontSize = 12.sp) },
+                    text = { AutoResizedText(text = item.title) },
                     selectedContentColor = Color(0xFF203657),
                     unselectedContentColor = Color(R.color.grey_text),
                     onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
@@ -94,5 +93,5 @@ fun TabLayoutMenu(navController: NavController) {
 @Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun TabLayoutMenuPreview() {
-//    TabLayoutMenu(rememberNavController(), homeData)
+    TabLayoutMenu(rememberNavController())
 }

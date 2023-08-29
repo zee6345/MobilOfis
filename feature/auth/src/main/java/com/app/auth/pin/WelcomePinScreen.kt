@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.login.navigation.loginNavigationRoute
+import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.home.navigation.homeScreenRoute
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -56,6 +57,7 @@ private const val TAG = "WelcomePinScreen"
 
 @Composable
 fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
+
     var enteredPin by remember { mutableStateOf("") }
     val username = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
@@ -66,7 +68,11 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
     username.value = userDetails.userName
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA))
+    ) {
 
         Surface(
             modifier = Modifier
@@ -137,7 +143,11 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
 
                             viewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
 
-                            navController.navigate(homeScreenRoute)
+                            navController.navigate(homeScreenRoute) {
+                                popUpTo(welcomePinScreen) { inclusive = true }
+                            }
+
+
                         } else {
                             Message.showMessage(context, "Wrong pin entered!")
                         }
@@ -192,17 +202,16 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
 
     }
 
-    FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, onClickThen = {
-
-
-        navController.navigate(homeScreenRoute)
-
-    }, onClickYes = {
-
-
-        navController.navigate(homeScreenRoute)
-
-    })
+    FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet,
+        onClickThen = {
+            navController.navigate(homeScreenRoute) {
+                popUpTo(welcomePinScreen) { inclusive = true }
+            }
+        }, onClickYes = {
+            navController.navigate(homeScreenRoute) {
+                popUpTo(welcomePinScreen) { inclusive = true }
+            }
+        })
 }
 
 

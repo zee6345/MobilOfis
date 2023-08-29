@@ -139,6 +139,10 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
                     TrustsListItem(obj = it, navController)
                 })
 
+                item {
+                    Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
+                }
+
                 isEmpty.value = false
             } else {
                 item {

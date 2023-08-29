@@ -46,7 +46,8 @@ import ir.kaaveh.sdpcompose.sdp
 fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(color = Color(0xFFF3F7FA))) {
 
         Surface(
             modifier = Modifier
