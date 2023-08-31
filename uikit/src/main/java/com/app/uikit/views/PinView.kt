@@ -73,7 +73,7 @@ private fun CharPinView(
         else -> ""
     }
 
-    val borderStrokeWidth = if (index <= text.length - 1) 6.dp else 1.dp
+    val borderStrokeWidth = if (index <= text.length - 1) 6.dp else 0.dp
     val borderColor = if (index <= text.length - 1) Color(0xFF223142) else Color(R.color.border_grey)
 
     Box(

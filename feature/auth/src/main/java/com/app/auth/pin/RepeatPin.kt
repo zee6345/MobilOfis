@@ -1,5 +1,6 @@
 package com.app.auth.pin
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +46,10 @@ import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.bottomSheet.FingerPrintModalBottomSheet
+import com.app.uikit.dialogs.RoundedCornerToast
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -52,6 +57,7 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
 
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     var enteredPin by remember { mutableStateOf("") }
+    val isPinMatched = remember{ mutableStateOf(false) }
     val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()
@@ -99,15 +105,15 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
 
                     ) {
 
-                        Image(
-                            painterResource(id = R.drawable.ic_back_arrow),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(width = 32.dp, height = 25.dp)
-                                .clickable { navController.popBackStack() }
-                        )
+//                        Image(
+//                            painterResource(id = R.drawable.ic_back_arrow),
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .size(width = 32.dp, height = 25.dp)
+//                                .clickable { navController.popBackStack() }
+//                        )
 
-                        Text(
+                        AutoResizedText(
                             modifier = Modifier
                                 .padding(horizontal = 12.sdp),
                             text = stringResource(com.app.auth.R.string.repeat_pin),
@@ -146,8 +152,9 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
 
                     } else {
 
-                        loginViewModel.session.delete(Keys.KEY_PIN)
-                        Message.showMessage(context, "Pin not matched")
+//                        loginViewModel.session.delete(Keys.KEY_PIN)
+
+                        isPinMatched.value = true
 
                     }
 
@@ -168,7 +175,11 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
         loginViewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
 
 
-        navController.navigate(successfulRegistration)
+        navController.navigate(successfulRegistration){
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        }
 
     }, onClickYes = {
 
@@ -178,9 +189,25 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
         //enable login with pin
         loginViewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
 
-        navController.navigate(successfulRegistration)
+        navController.navigate(successfulRegistration){
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        }
 
     })
+
+
+    //show empty field toast
+    if (isPinMatched.value) {
+        RoundedCornerToast("Pin not matched", Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            isPinMatched.value = false
+        }
+
+    }
 
 
 }

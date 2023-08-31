@@ -4,6 +4,11 @@ package com.app.auth.login
 import android.content.Context
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,15 +23,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -55,7 +64,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -63,8 +71,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -80,13 +86,13 @@ import com.app.network.models.DataState
 import com.app.network.models.errorResponse.ErrorResponse
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
+import com.app.network.models.responseModels.GetStartMessage
 import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
-import com.app.uikit.dialogs.CallTopAlertDialog
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
@@ -113,10 +119,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     var pswdErrorCheck by remember { mutableStateOf(false) }
     var isPswdVisible by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+    val message = remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val enableLoginWithPin = viewModel.session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)
-
     val passwordVisualTransformation =
         if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
@@ -125,6 +131,15 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutine = rememberCoroutineScope()
+
+    val startMessage by viewModel.getDashboardMessage.collectAsState()
+
+
+    LaunchedEffect(Unit) {
+        coroutine.launch {
+            viewModel.getDashBoardMessage()
+        }
+    }
 
 
     BottomSheetScaffold(
@@ -155,27 +170,32 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     )
                 }
 
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.information_and_content),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
 
-                Text(
-                    text = stringResource(R.string.information_and_content),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.sdp)
-                        .clickable {
-                            coroutine.launch {
-                                if (scaffoldState.bottomSheetState.isExpanded) {
-                                    scaffoldState.bottomSheetState.collapse()
-                                } else {
-                                    scaffoldState.bottomSheetState.expand()
+                            .padding(top = 10.sdp)
+                            .clickable {
+                                coroutine.launch {
+                                    if (scaffoldState.bottomSheetState.isExpanded) {
+                                        scaffoldState.bottomSheetState.collapse()
+                                    } else {
+                                        scaffoldState.bottomSheetState.expand()
+                                    }
                                 }
-                            }
-                        },
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        fontSize = 14.sp
+                            },
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(
+                            fontSize = 14.sp
+                        )
                     )
-                )
+
+                }
 
                 BottomSheetItems(
                     R.drawable.ic_location,
@@ -266,7 +286,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
                         Text(
                             modifier = Modifier.align(Alignment.BottomStart),
-                            text = stringResource(R.string.mobile_office_welcome),
+                            text = stringResource(R.string.mobile_office_welcome_),
                             style = TextStyle(color = Color.White, fontSize = 29.sp)
                         )
                     }
@@ -279,6 +299,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 modifier = Modifier.weight(0.7f),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -317,7 +338,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             focusedLabelColor = colorResource(R.color.background_card_blue),
                         ),
                         singleLine = true,
-                        shape = RoundedCornerShape(10.sdp)
+                        shape = RoundedCornerShape(8.dp)
                     )
 
                     OutlinedTextField(
@@ -335,7 +356,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             )
                         }, trailingIcon = {
 
-                            Icon(
+                            Image(
                                 painter = painterResource(id = if (isPswdVisible) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
                                 contentDescription = if (isPswdVisible) "Hide Password" else "Show Password",
                                 modifier = Modifier
@@ -361,7 +382,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             focusedLabelColor = colorResource(R.color.background_card_blue)
                         ),
                         singleLine = true,
-                        shape = RoundedCornerShape(10.sdp)
+                        shape = RoundedCornerShape(8.dp)
                     )
 
 
@@ -523,7 +544,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         ) {
                             Row(
                                 Modifier.clickable {
-                                    navController.navigate(welcomePinScreen)
+                                    navController.navigate(welcomePinScreen) {
+                                        popUpTo(navController.graph.id) {
+                                            inclusive = true
+                                        }
+                                    }
                                 }
                             ) {
                                 Image(
@@ -545,27 +570,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     ForgetPasswordModalBottomSheet(showForgetPassBottomSheetSheet)
 
 
-    LaunchedEffect(Unit) {
-        delay(1000)
-        showDialog.value = true
-    }
-
-    if (showDialog.value) {
-        CallTopAlertDialog(
-            backgroundColor = colorResource(R.color.background_card_blue),
-            cornerRadius = 12.dp,
-            title = stringResource(R.string.attention),
-            message = stringResource(R.string.demo_text),
-            onClose = { showDialog.value = false }
-        )
-    }
-
     //show empty field toast
     if (userErrorCheck or pswdErrorCheck) {
         RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
 
         LaunchedEffect(Unit) {
-            delay(1000)
+            delay(3000)
             userErrorCheck = false
             pswdErrorCheck = false
         }
@@ -611,9 +621,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         otpScreen.userName = usernameState.value
                         SharedModel.init().loginType.value = selected
 
-                        navController.navigate(otpNavigationRoute){
-                            popUpTo(otpNavigationRoute){
-                                inclusive=true
+                        navController.navigate(otpNavigationRoute) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
                             }
                         }
 
@@ -624,7 +634,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             }
         }
     }
-
 
     asanLogin?.let {
         when (it) {
@@ -664,8 +673,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             "${loginResponse.gniAuthResponseType.verfication}"
 
 
-                        navController.navigate(loginToEasySignature){
-                            popUpTo(loginToEasySignature){
+                        navController.navigate(loginToEasySignature) {
+                            popUpTo(navController.graph.id) {
                                 inclusive = true
                             }
                         }
@@ -678,12 +687,173 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
         }
     }
 
+    startMessage?.let {
+        when (it) {
+            is DataState.Loading -> {
+//                isLoading.value = true
+            }
+
+            is DataState.Error -> {
+//                isLoading.value = false
+            }
+
+            is DataState.Success -> {
+//                isLoading.value = false
+
+                val data = it.data as GetStartMessage
+                data?.apply {
+
+                    message.value = messageText
+
+                    if (isVisible.equals("y", true)) {
+                        LaunchedEffect(Unit) {
+                            showDialog.value = true
+                        }
+                    }
+
+                }
+
+            }
+        }
+    }
+
     if (isLoading.value) {
         ShowProgressDialog(isLoading)
     }
 
+    if (showDialog.value) {
+//        CallTopAlertDialog(
+//            backgroundColor = colorResource(R.color.background_card_blue),
+//            cornerRadius = 12.dp,
+//            title = stringResource(R.string.attention),
+//            message = message.value,
+//            onClose = { showDialog.value = false }
+//        )
+
+        showDialog(showDialog.value, message.value) {
+            showDialog.value = false
+        }
+    }
+
 }
 
+
+@Composable
+private fun showDialog(
+    shown: Boolean,
+    message: String,
+    onClose: () -> Unit
+) {
+
+//    val annotatedString = buildAnnotatedString {
+//        val startIndex = message.indexOf("|")
+//        val endIndex = message.lastIndexOf("|")
+//
+//        val linkText = message.substring(startIndex + 1, endIndex)
+//        val linkUrl = message.substring(endIndex + 1)
+//
+//        append(message.substring(0, startIndex))
+//        pushStringAnnotation("URL", linkUrl)
+//        withStyle(style = SpanStyle(color = Color.Blue)) {
+//            append(linkText)
+//        }
+//        pop()
+//        append(message.substring(endIndex + linkUrl.length + 2))
+//    }
+
+    AnimatedVisibility(
+        visible = shown,
+        enter = slideInVertically(
+            initialOffsetY = { fullHeight -> -fullHeight },
+            animationSpec = tween(durationMillis = 250, easing = LinearOutSlowInEasing)
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> -fullHeight }
+        )
+    ) {
+
+        Box(
+            Modifier
+                .fillMaxSize()
+//                .clickable { onClose() }
+            ,
+            contentAlignment = Alignment.TopCenter
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .background(
+                        Color(0xFF203657),
+                        shape = RoundedCornerShape(
+                            bottomStart = 10.dp,
+                            bottomEnd = 10.dp
+                        )
+                    ),
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 10.sdp, horizontal = 15.sdp)
+                        .fillMaxWidth()
+                ) {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        androidx.compose.material.Text(
+                            text = stringResource(R.string.attention),
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(com.app.uikit.R.color.grey_text),
+                            modifier = Modifier.padding(end = 16.dp),
+                            fontSize = 18.sp,
+                        )
+                        IconButton(onClick = {
+                            onClose()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Close",
+                                tint = colorResource(com.app.uikit.R.color.grey_text)
+                            )
+                        }
+                    }
+
+
+                    Box() {
+                        Text(
+                            text = message,
+                            style = TextStyle(
+                                color = Color.White
+                            )
+                        )
+
+//                        ClickableText(
+//                            text = annotatedString,
+//                            style = TextStyle(
+//                                color = Color.White
+//                            ),
+//                            onClick = { offset ->
+//                                annotatedString.getStringAnnotations(
+//                                    tag = "URL",
+//                                    start = offset,
+//                                    end = offset
+//                                ).firstOrNull()?.let { annotation ->
+//
+//                                }
+//                            },
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .padding(16.dp)
+//                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -717,7 +887,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
                 modifier = Modifier
                     .background(
                         color = if (selected == 0) Color(0xFF203657) else Color(0xFFF3F7FA),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
 
             ) {
@@ -747,7 +917,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
                 modifier = Modifier
                     .background(
                         color = if (selected == 1) Color(0xFF203657) else Color(0xFFF3F7FA),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
             ) {
                 Text(
@@ -774,7 +944,7 @@ fun LoginTabsRow(selected: Int, setSelected: (Int) -> Unit) {
                 modifier = Modifier
                     .background(
                         color = if (selected == 2) Color(0xFF203657) else Color(0xFFF3F7FA),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
             ) {
                 Text(
@@ -827,7 +997,7 @@ private fun BottomSheetItems(iconRes: Int, title: String, showBorder: Boolean) {
 @Composable
 private fun LanguageOptions() {
 
-    val selectedBoxIndex = remember { mutableStateOf(-1) }
+    val selectedBoxIndex = remember { mutableStateOf(1) }
 
     Row() {
         Box(modifier = Modifier
@@ -978,7 +1148,7 @@ private fun formatPhoneNumber(input: String): String {
 }
 
 
-@Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
+//@Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, LocalContext.current)

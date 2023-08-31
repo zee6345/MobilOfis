@@ -1,6 +1,7 @@
 package com.app.auth.pin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,9 +35,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.pin.navigation.resetPinNavigationRoute
+import com.app.auth.pin.navigation.successfulRegistration
 import com.app.network.helper.Keys
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.CustomKeyboard
 import com.app.uikit.views.PinTextField
 import ir.kaaveh.sdpcompose.sdp
@@ -46,8 +49,11 @@ import ir.kaaveh.sdpcompose.sdp
 fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
 
-    Column(modifier = Modifier.fillMaxSize()
-        .background(color = Color(0xFFF3F7FA))) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA))
+    ) {
 
         Surface(
             modifier = Modifier
@@ -83,11 +89,11 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
                         .background(color = Color(0xFF203657))
                 ) {
 
-                    Text(
+                    AutoResizedText(
                         modifier = Modifier
                             .align(Alignment.CenterStart),
                         text = stringResource(R.string.do_you_want_to_set_a_pin),
-                        style = TextStyle(color = Color.White, fontSize = 22.sp)
+                        style = TextStyle(color = Color.White, fontSize = 18.sp)
                     )
                 }
 
@@ -119,7 +125,14 @@ fun PinScreen(navController: NavController, viewModel: LoginViewModel = hiltView
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Card(modifier = Modifier.wrapContentSize(), shape = RoundedCornerShape(14.dp)) {
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .clickable {
+                        navController.navigate(successfulRegistration)
+                    },
+                shape = RoundedCornerShape(14.dp)
+            ) {
                 Text(
                     text = stringResource(R.string.skip),
                     fontSize = 16.sp,

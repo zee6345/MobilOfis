@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -34,17 +34,24 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.auth.R
 import com.app.auth.pin.navigation.welcomePinScreen
+import com.app.home.navigation.homeScreenRoute
+import com.app.network.helper.Keys
+import com.app.network.helper.Session
 import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun SuccessfulRegistrationScreen(navController: NavController) {
+
+    val context = LocalContext.current
+    val session = Session(context = context)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
     ) {
-
 
 
         Surface(
@@ -77,7 +84,7 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                     Modifier
                         .fillMaxSize()
                         .weight(0.2f)
-                        .padding(start= 20.sdp, end=20.sdp, top=5.sdp, bottom = 10.sdp)
+                        .padding(start = 20.sdp, end = 20.sdp, top = 5.sdp, bottom = 10.sdp)
                         .background(color = Color(0xFF203657))
                 ) {
 
@@ -98,14 +105,16 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                                 contentDescription = ""
                             )
                             Column() {
-                                Text(
+                                AutoResizedText(
                                     text = stringResource(R.string.successful_registration),
                                     style = TextStyle(color = Color.White, fontSize = 24.sp)
                                 )
-                                Text(
-                                    text = stringResource(R.string.pin_set),
-                                    style = TextStyle(color = Color.White, fontSize = 16.sp)
-                                )
+                                if (session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)) {
+                                    Text(
+                                        text = stringResource(R.string.pin_set),
+                                        style = TextStyle(color = Color.White, fontSize = 16.sp)
+                                    )
+                                }
                             }
 
                         }
@@ -138,7 +147,23 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
 
 
             Button(
-                onClick = { navController.navigate(welcomePinScreen) },
+                onClick = {
+
+                    if (session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)) {
+                        navController.navigate(welcomePinScreen) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+                        }
+                    } else {
+                        navController.navigate(homeScreenRoute) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+                        }
+                    }
+
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 22.dp)
@@ -150,7 +175,11 @@ fun SuccessfulRegistrationScreen(navController: NavController) {
                 )
 
             ) {
-                Text(stringResource(R.string.text_continue), modifier = Modifier.padding(vertical = 12.dp), color = Color.White)
+                Text(
+                    stringResource(R.string.text_continue),
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    color = Color.White
+                )
             }
 
         }

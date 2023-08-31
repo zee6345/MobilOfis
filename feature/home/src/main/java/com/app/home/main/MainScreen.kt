@@ -53,6 +53,7 @@ import com.app.transfer.transfers.headerFilters
 import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
@@ -61,7 +62,6 @@ private const val TAG = "MenuScreen"
 
 
 val recentDetail = mutableStateOf<GetRecentOpsItem?>(null)
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -648,18 +648,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-        coroutine.launch {
-            viewModel.setCustomerName(ChangeCompanyName(it))
-
-            //refresh APIs
-            viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
-            viewModel.getBalance(userDetails.customerNo)
-            viewModel.getRecentOps(userDetails.customerNo, "")
-
-
-            viewModel.getAccounts(userDetails.customerNo)
-
-        }
+        viewModel.setCustomerName(ChangeCompanyName(it))
     }
 
     if (customerBalance.isNotEmpty() && customerBalance != null) {
@@ -667,35 +656,27 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
 
-//handle API Responce
+    //handle API Response
     accountBalance?.let {
         when (it) {
             is DataState.Loading -> {
-
+                isLoading.value = true
             }
-
             is DataState.Error -> {
-//                ErrorState(context = context, it.errorMessage).handleError()
+                isLoading.value = false
             }
-
             is DataState.Success -> {
-                try {
 
-                    val data = it.data as GetCustomerBalance
+                isLoading.value = false
 
-                    if (data.isNotEmpty()) {
-                        customerBalance?.apply {
-                            clear()
-                            addAll(data)
-                        }
-                    } else {
+                val data = it.data as GetCustomerBalance
 
+                if (data.isNotEmpty()) {
+                    customerBalance?.apply {
+                        clear()
+                        addAll(data)
                     }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
-
             }
         }
 
@@ -709,30 +690,43 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
             is DataState.Error -> {
                 isLoading.value = false
-//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {
+
                 isLoading.value = false
 
 
-                try {
+                val data = it.data as LoginVerifyResponse
+                data?.apply {
+                    val str = Converter.toJson(this)
+                    viewModel.session.put(Keys.KEY_USER_DETAILS, str)
 
-                    val data = it.data as LoginVerifyResponse
-                    data?.apply {
-                        val str = Converter.toJson(this)
-                        viewModel.session.put(Keys.KEY_USER_DETAILS, str)
 
-                        customerName.value = this.customerName
+                    customerName.value = this.customerName
+                    viewModel.session.put("customer", this.customerName)
 
-                        viewModel.session.put("customer", this.customerName)
+                    LaunchedEffect(Unit) {
 
+//                        for (i in 0 until 2){
+//                        delay(500)
+
+                        //refresh APIs
+                        viewModel.getTransferCountSummary(
+                            startDateSelected.value,
+                            endDateSelected.value
+                        )
+
+                        viewModel.getBalance(userDetails.customerNo)
+                        viewModel.getRecentOps(userDetails.customerNo, "")
+                        viewModel.getAccounts(userDetails.customerNo)
+//                        }
                     }
 
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
+
+//                isLoading.value = false
+
 
             }
         }
@@ -741,11 +735,17 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     transferCountSummery?.let {
         when (it) {
-            is DataState.Loading -> {}
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
 
-            is DataState.Error -> {}
+            is DataState.Error -> {
+                isLoading.value = false
+            }
 
             is DataState.Success -> {
+                isLoading.value = false
+
                 val data = it.data as TransferCountSummaryResponse
 
                 if (data.isNotEmpty()) {
@@ -759,7 +759,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         }
     }
 
-//handle API Responce
+
     recentOps?.let {
         when (it) {
             is DataState.Loading -> {
@@ -776,22 +776,19 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             is DataState.Success -> {
                 isLoading.value = false
 
-                try {
-                    val data = it.data as GetRecentOps
+                val data = it.data as GetRecentOps
 
-                    if (data.isNotEmpty()) {
-                        recentData?.apply {
-                            clear()
-                            addAll(data)
-                        }
-                        isEmpty.value = false
-                    } else {
-                        isEmpty.value = true
+                if (data.isNotEmpty()) {
+                    recentData?.apply {
+                        clear()
+                        addAll(data)
                     }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    isEmpty.value = false
+                } else {
+                    isEmpty.value = true
                 }
+
+
 
             }
         }

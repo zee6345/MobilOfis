@@ -55,6 +55,9 @@ import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.CountdownTimerSeconds
 import com.app.uikit.views.OtpView
+import com.app.uikit.views.TimerTextView
+import com.app.uikit.views.TimerTextsView
+import com.app.uikit.views.TimerTextsView20S
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -72,6 +75,7 @@ fun OtpScreen(
     val context = LocalContext.current
     val otpValue = remember { mutableStateOf("") }
     val isLoading = remember { mutableStateOf(false) }
+    val isTimerStarted = remember { mutableStateOf(false) }
     val otpData by viewModel.otp.collectAsState()
     var offset by remember { mutableStateOf(0f) }
     val otpCount = remember { mutableStateOf(6) }
@@ -178,6 +182,7 @@ fun OtpScreen(
         ) {
 
 
+            //google auth otp
             Column {
                 OtpView(otpCount.value) {
                     otpValue.value = it
@@ -201,11 +206,14 @@ fun OtpScreen(
                                 )
                         ) {
 
-                            CountdownTimerSeconds(otpValue.value)
+                            TimerTextsView()
 
                         }
                     }
                 } else {
+
+
+                    //normal otp
 
                     Row(
                         modifier = Modifier
@@ -225,7 +233,12 @@ fun OtpScreen(
                                 )
                         ) {
 
-                            CountdownTimerSeconds(otpValue.value)
+//                            CountdownTimerSeconds(otpValue.value)
+                            TimerTextsView20S(onTimerStart = {
+                                isTimerStarted.value = true
+                            }, onTimerStop = {
+                                isTimerStarted.value = false
+                            })
 
                         }
 
@@ -233,11 +246,16 @@ fun OtpScreen(
                             modifier = Modifier
                                 .padding(5.dp)
                                 .clickable {
-                                    coroutine.launch {
-                                        Message.showMessage(context, "OTP send again!")
+                                    if (!isTimerStarted.value){
+                                        coroutine.launch {
+                                            Message.showMessage(context, "OTP send again!")
+                                        }
                                     }
                                 },
-                            text = stringResource(R.string.re_send_sms_code)
+                            text = stringResource(R.string.re_send_sms_code),
+                            style = TextStyle(
+                                color = if(!isTimerStarted.value) Color(0xFF203657) else Color(0xFF859DB5)
+                            )
                         )
                     }
                 }
@@ -260,7 +278,7 @@ fun OtpScreen(
                     Button(
                         onClick = {
                             navController.navigate(loginNavigationRoute) {
-                                popUpTo(loginNavigationRoute) {
+                                popUpTo(navController.graph.id) {
                                     inclusive = true
                                 }
                             }
@@ -367,13 +385,13 @@ fun OtpScreen(
                     LaunchedEffect(Unit) {
                         if (pin.isNullOrEmpty()) {
                             navController.navigate(pinNavigationRoute) {
-                                popUpTo(pinNavigationRoute) {
+                                popUpTo(navController.graph.id) {
                                     inclusive = true
                                 }
                             }
                         } else {
                             navController.navigate(welcomePinScreen) {
-                                popUpTo(welcomePinScreen) {
+                                popUpTo(navController.graph.id) {
                                     inclusive = true
                                 }
                             }

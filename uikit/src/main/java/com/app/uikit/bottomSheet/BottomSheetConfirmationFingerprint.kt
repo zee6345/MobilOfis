@@ -61,7 +61,8 @@ fun FingerPrintModalBottomSheet(
 ) {
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = false },
-        containerColor = Color(0xFFF3F7FA)
+        containerColor = Color.White,
+        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
     ) {
         Column(
             Modifier

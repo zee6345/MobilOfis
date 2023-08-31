@@ -16,23 +16,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun TimerTextView(value: String) {
-    val remainingTime = remember { mutableStateOf(300) } // 30 seconds
+fun TimerTextsView() {
+    var remainingTime by remember { mutableStateOf(5 * 60) } // 5 minutes in seconds
 
     val coroutineScope = rememberCoroutineScope()
 
-    DisposableEffect(value) {
+    DisposableEffect(Unit) {
         val timerJob = coroutineScope.launch {
-            while (remainingTime.value > 0) {
+            while (remainingTime > 0) {
                 delay(1000) // Delay for 1 second
-                if (value.isNotEmpty()) {
-                    remainingTime.value -= 1
-                }
+                remainingTime -= 1
             }
         }
 
@@ -41,21 +40,62 @@ fun TimerTextView(value: String) {
         }
     }
 
-    val formattedTime = remember(remainingTime.value) {
-        String.format(
-            "%02d:%02d",
-            remainingTime.value / 60,
-            remainingTime.value % 60
-        )
-    }
+    val formattedTime = String.format(
+        "%02d:%02d",
+        remainingTime / 60,
+        remainingTime % 60
+    )
 
     Text(
         text = formattedTime,
-        modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
-        color = Color(0xFF223142),
+        modifier = Modifier.padding(vertical = 5.sdp, horizontal = 16.sdp),
+        color = Color.Black,
         style = TextStyle(
             fontSize = 16.sp,
-            fontWeight = FontWeight(500)
+            fontWeight = FontWeight.Normal
+        )
+    )
+}
+
+
+@Composable
+fun TimerTextsView20S(
+    onTimerStart: () -> Unit = {},
+    onTimerStop: () -> Unit = {}
+) {
+    var remainingTime by remember { mutableStateOf(20) } // 20 seconds
+
+    val coroutineScope = rememberCoroutineScope()
+    var timerJob: Job? by remember { mutableStateOf(null) }
+
+    DisposableEffect(Unit) {
+        timerJob = coroutineScope.launch {
+            onTimerStart()
+            while (remainingTime > 0) {
+                delay(1000) // Delay for 1 second
+                remainingTime -= 1
+            }
+            onTimerStop()
+        }
+
+        onDispose {
+            timerJob?.cancel()
+        }
+    }
+
+    val formattedTime = String.format(
+        "%02d:%02d",
+        remainingTime / 60,
+        remainingTime % 60
+    )
+
+    Text(
+        text = formattedTime,
+        modifier = Modifier.padding(vertical = 5.sdp, horizontal = 16.sdp),
+        color = Color.Black,
+        style = TextStyle(
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal
         )
     )
 }

@@ -22,6 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -106,10 +111,7 @@ fun KeyButton(
     imageRes: Int? = null,
     onKeyPressed: (String) -> Unit
 ) {
-    Box(modifier = Modifier
-        .padding(8.dp)
-        .size(64.dp)
-        .aspectRatio(1f),
+    Box(modifier = Modifier.padding(8.dp).size(70.dp).aspectRatio(1f),
         contentAlignment = Alignment.Center,
         content = {
             Button(
@@ -129,11 +131,21 @@ fun KeyButton(
                         contentDescription = null,
                         modifier = Modifier
                             .size(64.dp)
-                            .padding(5.dp),
+                            .padding(10.dp),
                         contentScale = ContentScale.Fit
                     )
                 } else {
-                    Text(text = text, fontSize = 32.sp)
+                    Text(
+                        text = text,
+                        style = TextStyle(
+                            fontSize = 32.sp,
+                            lineHeight = 30.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                            textAlign = TextAlign.Center,
+                        )
+                    )
                 }
             }
         })

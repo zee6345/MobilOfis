@@ -45,7 +45,8 @@ fun ForgetPasswordBottomSheetScreen() {
 fun ForgetPasswordModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = false },
-        containerColor = Color.White
+        containerColor = Color.White,
+        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
     ) {
         Column(
             Modifier
@@ -59,7 +60,7 @@ fun ForgetPasswordModalBottomSheet(showModalBottomSheet: MutableState<Boolean>) 
                     .fillMaxWidth()
                     .padding(bottom = 22.dp)
                     .padding(horizontal = 12.dp),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Normal
             )
             Button(
                 onClick = {

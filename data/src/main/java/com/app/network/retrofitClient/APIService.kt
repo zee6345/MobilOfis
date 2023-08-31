@@ -19,6 +19,7 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
+import com.app.network.models.responseModels.GetStartMessage
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserProfile
@@ -290,5 +291,8 @@ interface APIService {
         @Header("Auth_token")token: String,
         @Body sendToBank: SendToBankModel
     ):Call<SignApproveResponse>
+
+    @GET("bank/dashboardMessage")
+    fun getDashBoardMessage():Call<GetStartMessage>
 
 }

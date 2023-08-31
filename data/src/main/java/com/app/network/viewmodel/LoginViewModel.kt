@@ -1,10 +1,8 @@
 package com.app.network.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.app.network.helper.Error
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
@@ -13,6 +11,7 @@ import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.responseModels.GetLastLogin
+import com.app.network.models.responseModels.GetStartMessage
 import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -44,9 +43,11 @@ class LoginViewModel @Inject constructor(
     private val _asanLogin = MutableStateFlow<DataState<Any>?>(null)
     val asanLogin: MutableStateFlow<DataState<Any>?> get() = _asanLogin
 
-    private val _lastLogin = MutableLiveData<DataState<Any>?>(null)
-    val lastLogin :LiveData<DataState<Any>?> get() = _lastLogin
+    private val _getDashboardMessage = MutableStateFlow<DataState<Any>?>(null)
+    val getDashboardMessage: MutableStateFlow<DataState<Any>?> get() = _getDashboardMessage
 
+    private val _lastLogin = MutableLiveData<DataState<Any>?>(null)
+    val lastLogin: LiveData<DataState<Any>?> get() = _lastLogin
 
 
     fun loginWithUserName(loginRequest: LoginRequest) {
@@ -157,6 +158,32 @@ class LoginViewModel @Inject constructor(
 
                 })
         }
+    }
+
+    fun getDashBoardMessage() {
+        _getDashboardMessage.value = DataState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.getDashBoardMessage().enqueue(object : Callback<GetStartMessage> {
+                override fun onResponse(
+                    call: Call<GetStartMessage>,
+                    response: Response<GetStartMessage>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        _getDashboardMessage.value = DataState.Success(response.body()!!)
+                    } else {
+                        _getDashboardMessage.value =
+                            DataState.Error(response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<GetStartMessage>, t: Throwable) {
+                    _getDashboardMessage.value = DataState.Error(Error.handleException(t))
+                }
+
+            })
+        }
+
     }
 
 }
