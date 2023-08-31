@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,12 +25,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,10 +46,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.account.accountDetailsRoute
+import com.app.home.main.isShowBalance
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -77,7 +82,7 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
     }
 
     LazyColumn(
-        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 5.dp)
+        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
     ) {
 
         item {
@@ -85,9 +90,9 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
         }
 
         item {
-          cardsList.forEachIndexed { index, getAccountsItem ->
-              AccountListItem(obj = getAccountsItem, navController, viewModel)
-          }
+            cardsList.forEachIndexed { index, getAccountsItem ->
+                AccountListItem(obj = getAccountsItem, navController, viewModel)
+            }
         }
 
         item {
@@ -135,9 +140,41 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 @Composable
 fun AccountListItem(obj: GetAccountsItem, navController: NavController, viewModel: HomeViewModel) {
 
+    var isCardAccount by remember { mutableStateOf(false) }
+
+    var title = ""
+    if (obj.ACCOUNT_TYPE != null) {
+        when (obj.ACCOUNT_TYPE) {
+            "CARD-ACCOUNT" -> {
+                title = if (obj.NICKNAME != null) {
+                    obj.NICKNAME.ifEmpty {
+                        "Settlement-card account"
+                    }
+                } else {
+                    "Settlement-card account"
+                }
+
+                isCardAccount = true
+
+            }
+
+            "ACCOUNT" -> {
+                title = if (obj.NICKNAME != null) {
+                    obj.NICKNAME.ifEmpty {
+                        "Settlement account"
+                    }
+                } else {
+                    "Settlement account"
+                }
+
+                isCardAccount = false
+            }
+        }
+    }
+
     Card(
         modifier = Modifier
-            .padding(vertical = 5.dp)
+            .padding(vertical = 5.dp, horizontal = 5.sdp)
             .fillMaxWidth()
             .clickable {
                 viewModel.session.put(Keys.KEY_MAIN_INFO, Converter.toJson(obj))
@@ -159,39 +196,56 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController, viewMode
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = obj.BRANCH_NAME,
+                    text = title,
                     style = TextStyle(fontSize = 14.sp),
-                    color = Color(R.color.background_card_blue),
+                    color = Color.Black,
                     modifier = Modifier
                         .padding(vertical = 5.dp)
                 )
-                Box(
-                    modifier = Modifier
-                        .clip(
-                            shape = RoundedCornerShape(15.dp),
+
+                Row {
+
+
+                    Box(
+                        modifier = Modifier
+                            .clip(
+                                shape = RoundedCornerShape(15.dp),
+                            )
+                            .background(
+                                color = Color(0xFFF3F7FA),
+                            )
+                    ) {
+                        Text(
+                            text = obj.IBAN,
+                            modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
+                            style = TextStyle(fontSize = 11.sp),
+                            color = Color(R.color.grey_text)
                         )
-                        .background(
-                            color = Color(0xFFF3F7FA),
-                        )
-                ) {
-                    Text(
-                        text = obj.IBAN,
-                        modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
-                        style = TextStyle(fontSize = 11.sp),
-                        color = Color(R.color.grey_text)
-                    )
+                    }
+
+                    if (isCardAccount) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_card_acc),
+                            contentDescription = "",
+
+                            )
+                    }
+
                 }
+
             }
 
             Text(
-                text = "${obj.BALANCE} ₼",
+                text = if (isShowBalance.value) "****" else "${obj.BALANCE} ₼",
                 modifier = Modifier
                     .padding(vertical = 4.dp, horizontal = 10.dp),
                 style = TextStyle(
                     fontSize = 14.sp,
-                    textAlign = TextAlign.End,
-                    color = Color(R.color.background_card_blue)
-                )
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontWeight = FontWeight(600),
+                    color = Color(0xFF223142),
+                    textAlign = TextAlign.Right,
+                ),
             )
         }
     }

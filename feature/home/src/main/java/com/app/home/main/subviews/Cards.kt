@@ -31,12 +31,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +52,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.cards.homeToCardDetails
+import com.app.home.main.isShowBalance
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -89,100 +96,176 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
         }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .padding(horizontal = 5.sdp, vertical = 5.sdp)
-    ) {
+
+    Column {
 
 
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                verticalAlignment = Alignment.Top,
-                modifier = Modifier.padding(top = 10.sdp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+            verticalAlignment = Alignment.Top,
+            modifier = Modifier.padding(top = 10.sdp, start = 10.sdp, end = 10.sdp)
+        ) {
+
+            Box(modifier = Modifier
+                .background(
+                    if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
+                        R.color.border_grey
+                    ),
+                    shape = RoundedCornerShape(size = 6.dp)
+                )
+                .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                .clickable {
+                    selectedBoxIndex.value = 0
+                    viewModel.getOldBusinessCards(userDetails.customerNo)
+                }) {
+                Text(
+                    stringResource(R.string.in_the_name_of_a_physical_person),
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = if (selectedBoxIndex.value == 0) Color.White else colorResource(
+                            R.color.background_card_blue
+                        )
+                    )
+                )
+            }
+
+
+
+            Box(modifier = Modifier
+                .background(
+                    if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
+                        R.color.border_grey
+                    ),
+                    shape = RoundedCornerShape(size = 6.dp)
+                )
+                .padding(vertical = 5.sdp, horizontal = 10.sdp)
+                .clickable {
+                    selectedBoxIndex.value = 1
+                    viewModel.getNewBusinessCards(userDetails.customerNo)
+                }) {
+                Text(
+                    stringResource(R.string.tin_based), style = TextStyle(
+                        fontSize = 12.sp,
+                        color = if (selectedBoxIndex.value == 1) Color.White else colorResource(
+                            R.color.background_card_blue
+                        )
+                    )
+                )
+            }
+
+        }
+
+        Spacer(modifier = Modifier.size(width = 1.dp, height = 10.sdp))
+
+
+        if (!isEmpty.value) {
+            LazyRow(
+                contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.sdp)
             ) {
-                Box(modifier = Modifier
-                    .background(
-                        if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
-                            R.color.border_grey
-                        ),
-                        shape = RoundedCornerShape(size = 6.dp)
-                    )
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
-                    .clickable {
-                        selectedBoxIndex.value = 0
-                        viewModel.getOldBusinessCards(userDetails.customerNo)
-                    }) {
-                    Text(
-                        stringResource(R.string.in_the_name_of_a_physical_person),
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = if (selectedBoxIndex.value == 0) Color.White else colorResource(
-                                R.color.background_card_blue
-                            )
-                        )
-                    )
-                }
-
-
-
-                Box(modifier = Modifier
-                    .background(
-                        if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
-                            R.color.border_grey
-                        ),
-                        shape = RoundedCornerShape(size = 6.dp)
-                    )
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
-                    .clickable {
-                        selectedBoxIndex.value = 1
-                        viewModel.getNewBusinessCards(userDetails.customerNo)
-                    }) {
-                    Text(
-                        stringResource(R.string.tin_based), style = TextStyle(
-                            fontSize = 12.sp,
-                            color = if (selectedBoxIndex.value == 1) Color.White else colorResource(
-                                R.color.background_card_blue
-                            )
-                        )
-                    )
-                }
-
+                items(items = cardFilters, itemContent = {
+                    Row {
+                        FilterView(filter = it)
+                        Box(modifier = Modifier.padding(end = 5.sdp))
+                    }
+                })
             }
-
-            Spacer(modifier = Modifier.size(width = 1.dp, height = 10.sdp))
         }
 
 
-        item {
-            if (!isEmpty.value) {
-                LazyRow(
-                    contentPadding = PaddingValues(vertical = 5.dp)
-                ) {
-                    items(items = cardFilters, itemContent = {
-                        Row {
-                            FilterView(filter = it)
-                            Box(modifier = Modifier.padding(end = 5.sdp))
-                        }
-                    })
-                }
-            }
+        LazyColumn(
+            modifier = Modifier
+                .padding(horizontal = 5.sdp, vertical = 10.sdp)
+        ) {
 
 
-        }
+//        item {
+//            Row(
+//                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+//                verticalAlignment = Alignment.Top,
+//                modifier = Modifier.padding(top = 10.sdp)
+//            ) {
+//                Box(modifier = Modifier
+//                    .background(
+//                        if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
+//                            R.color.border_grey
+//                        ),
+//                        shape = RoundedCornerShape(size = 6.dp)
+//                    )
+//                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//                    .clickable {
+//                        selectedBoxIndex.value = 0
+//                        viewModel.getOldBusinessCards(userDetails.customerNo)
+//                    }) {
+//                    Text(
+//                        stringResource(R.string.in_the_name_of_a_physical_person),
+//                        style = TextStyle(
+//                            fontSize = 12.sp,
+//                            color = if (selectedBoxIndex.value == 0) Color.White else colorResource(
+//                                R.color.background_card_blue
+//                            )
+//                        )
+//                    )
+//                }
+//
+//
+//
+//                Box(modifier = Modifier
+//                    .background(
+//                        if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
+//                            R.color.border_grey
+//                        ),
+//                        shape = RoundedCornerShape(size = 6.dp)
+//                    )
+//                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
+//                    .clickable {
+//                        selectedBoxIndex.value = 1
+//                        viewModel.getNewBusinessCards(userDetails.customerNo)
+//                    }) {
+//                    Text(
+//                        stringResource(R.string.tin_based), style = TextStyle(
+//                            fontSize = 12.sp,
+//                            color = if (selectedBoxIndex.value == 1) Color.White else colorResource(
+//                                R.color.background_card_blue
+//                            )
+//                        )
+//                    )
+//                }
+//
+//            }
+//
+//            Spacer(modifier = Modifier.size(width = 1.dp, height = 10.sdp))
+//        }
+//
+//
+//        item {
+//            if (!isEmpty.value) {
+//                LazyRow(
+//                    contentPadding = PaddingValues(vertical = 5.dp)
+//                ) {
+//                    items(items = cardFilters, itemContent = {
+//                        Row {
+//                            FilterView(filter = it)
+//                            Box(modifier = Modifier.padding(end = 5.sdp))
+//                        }
+//                    })
+//                }
+//            }
+//
+//
+//        }
 
 
-        if (selectedBoxIndex.value == 0) {
-            if (oldCards.isNotEmpty()) {
+            if (selectedBoxIndex.value == 0) {
+                if (oldCards.isNotEmpty()) {
 
-                oldCards.forEachIndexed { index, mainCard ->
-                    item {
-                        CardsListItem(obj = mainCard) {
-                            selectedCard.value = it
-                            navController.navigate(homeToCardDetails)
+                    oldCards.forEachIndexed { index, mainCard ->
+                        item {
+                            CardsListItem(obj = mainCard) {
+                                selectedCard.value = it
+                                navController.navigate(homeToCardDetails)
+                            }
                         }
                     }
-                }
 
 //                items(items = oldCards, itemContent = {
 //                    CardsListItem(obj = it) {
@@ -191,32 +274,32 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 //                    }
 //                })
 
-                item {
-                    Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
-                }
+                    item {
+                        Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
+                    }
 
-            } else {
-                item {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(20.sdp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("No old card found!")
+                } else {
+                    item {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(20.sdp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No old card found!")
+                        }
                     }
                 }
-            }
-        } else if (selectedBoxIndex.value == 1) {
-            if (newCards.isNotEmpty()) {
-               newCards.forEachIndexed { index, mainCard ->
-                   item {
-                       CardsListItem(obj = mainCard) {
-                           selectedCard.value = it
-                           navController.navigate(homeToCardDetails)
-                       }
-                   }
-               }
+            } else if (selectedBoxIndex.value == 1) {
+                if (newCards.isNotEmpty()) {
+                    newCards.forEachIndexed { index, mainCard ->
+                        item {
+                            CardsListItem(obj = mainCard) {
+                                selectedCard.value = it
+                                navController.navigate(homeToCardDetails)
+                            }
+                        }
+                    }
 //                items(items = newCards, itemContent = {
 //                    CardsListItem(obj = it) {
 //                        selectedCard.value = it
@@ -224,27 +307,30 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 //                    }
 //                })
 
-                item {
-                    Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
-                }
-
-                isEmpty.value = false
-            } else {
-                item {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(20.sdp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("No new card found!")
+                    item {
+                        Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
                     }
+
+                    isEmpty.value = false
+                } else {
+                    item {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(20.sdp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No new card found!")
+                        }
+                    }
+                    isEmpty.value = true
                 }
-                isEmpty.value = true
             }
+
         }
 
     }
+
 
     oldBusinessCards?.let {
         when (it) {
@@ -311,9 +397,33 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
 @Composable
 fun CardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
+
+    val amount: String = if (obj.Balance != null) {
+        "${obj.Balance}"
+    } else {
+        "0.00"
+    }
+
+    val icon = if (obj.PaymentSys.equals("Master", true)) {
+        painterResource(id = R.drawable.ic_master_card)
+    } else if (obj.PaymentSys.equals("VISA", true)) {
+        painterResource(id = R.drawable.ic_visa_business)
+    } else {
+        painterResource(id = R.drawable.ic_master_card)
+    }
+
+    val subIcon = if (obj.PaymentSys.equals("Master", true)) {
+        painterResource(id = R.drawable.ic_master_card_icon)
+    } else if (obj.PaymentSys.equals("VISA", true)) {
+        painterResource(id = R.drawable.ic_visa_icon)
+    } else {
+        painterResource(id = R.drawable.ic_master_card_icon)
+    }
+
+
     Card(
         modifier = Modifier
-            .padding(vertical = 5.dp)
+            .padding(vertical = 5.dp, horizontal = 5.sdp)
             .fillMaxWidth()
             .clickable {
                 onCardClick(obj)
@@ -329,11 +439,20 @@ fun CardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
                 .padding(horizontal = 10.sdp, vertical = 5.sdp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_master_card),
-                contentDescription = "",
-                modifier = Modifier.size(width = 36.dp, height = 24.dp)
-            )
+
+            Box(
+                modifier = Modifier
+                    .size(width = 36.dp, height = 24.dp)
+                    .background(Color.Transparent)
+                    .clip(RoundedCornerShape(5.dp))
+            ) {
+                Image(
+                    painter = icon,
+                    contentDescription = "",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(width = 36.dp, height = 26.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
@@ -356,7 +475,7 @@ fun CardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_master_card_icon),
+                        painter = subIcon,
                         contentDescription = "",
                         modifier = Modifier.size(width = 30.dp, height = 20.dp)
                     )
@@ -374,29 +493,37 @@ fun CardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
 
                     }
 
-                    Box(
-                        Modifier
-                            .width(26.dp)
-                            .height(22.dp)
-                            .background(
-                                color = Color(0xFFF3F7FA), shape = RoundedCornerShape(size = 30.dp)
-                            ), contentAlignment = Alignment.Center
-                    ) {
-                        Text(
+                    if (obj.AdditionNumb > 0) {
+                        Box(
+                            Modifier
+                                .width(26.dp)
+                                .height(22.dp)
+                                .background(
+                                    color = Color(0xFFF3F7FA),
+                                    shape = RoundedCornerShape(size = 30.dp)
+                                ), contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${obj.AdditionNumb}", style = TextStyle(
+                                    fontSize = 14.sp, color = colorResource(R.color.grey_text)
+                                )
 
-                            text = "${obj.AdditionNumb}", style = TextStyle(
-                                fontSize = 14.sp, color = colorResource(R.color.grey_text)
                             )
-
-                        )
+                        }
                     }
                 }
             }
 
             Text(
-                text = if (obj.Balance == null) "0.00" else "${obj.Balance}",
-                style = TextStyle(fontSize = 14.sp),
-                color = colorResource(R.color.background_card_blue)
+                text = if (isShowBalance.value) "****" else amount,
+                color = colorResource(R.color.background_card_blue),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontWeight = FontWeight(600),
+                    color = Color(0xFF223142),
+                    textAlign = TextAlign.Right,
+                )
             )
         }
 

@@ -1,6 +1,9 @@
 package com.app.home.main.account.details
 
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +56,47 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
     val data = Converter.fromJson(str!!, GetAccountsItem::class.java)
 
 
+
+
+    var title = ""
+    if (data.ACCOUNT_TYPE != null) {
+        when (data.ACCOUNT_TYPE) {
+            "CARD-ACCOUNT" -> {
+                title = if (data.NICKNAME != null) {
+                    data.NICKNAME.ifEmpty {
+                        "Settlement-card account"
+                    }
+                }else {
+                    "Settlement-card account"
+                }
+
+//                isCardAccount = true
+
+            }
+
+            "ACCOUNT" -> {
+                title = if (data.NICKNAME != null) {
+                    data.NICKNAME.ifEmpty {
+                        "Settlement account"
+                    }
+                } else{
+                    "Settlement account"
+                }
+
+//                isCardAccount = false
+            }
+        }
+    }
+
+
+    val shareIntentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        // This block will be executed after returning from the sharing activity
+        // You can perform any necessary actions here
+    }
+
+
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
@@ -73,7 +117,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${data.NICKNAME}", style = TextStyle(
+                    text = title, style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium))
                     )
@@ -126,7 +170,17 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_share), contentDescription = "",
-                    Modifier.size(height = 20.dp, width = 20.dp)
+                    Modifier
+                        .size(height = 20.dp, width = 20.dp)
+                        .clickable {
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "${data.IBAN}")
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            shareIntentLauncher.launch(shareIntent)
+                        }
                 )
 
 
@@ -167,6 +221,15 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                 Image(
                     painter = painterResource(id = R.drawable.ic_share), contentDescription = "",
                     Modifier.size(height = 20.dp, width = 20.dp)
+                        .clickable {
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "${data.ORJ_IBAN}")
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            shareIntentLauncher.launch(shareIntent)
+                        }
                 )
 
 
@@ -346,7 +409,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                     Text(
                         text = "${data.REAL_BALANCE}", style = TextStyle(
                             fontSize = 14.sp,
-                            color = colorResource(R.color.red_2)
+                            color = if (data.REAL_BALANCE.startsWith("-")) colorResource(R.color.red_2) else colorResource(R.color.background_card_blue)
 
                         )
                     )

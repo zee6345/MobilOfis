@@ -5,13 +5,13 @@ package com.app.uikit.bottomSheet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +41,6 @@ import com.app.network.models.responseModels.AsanCustomer
 import com.app.network.models.responseModels.Customers
 import com.app.uikit.R
 import com.app.uikit.borders.dashedBorder
-import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun SelectCompanyBottomSheet() {
@@ -76,7 +76,7 @@ fun SelectCompanyBottomSheet(
         ModalBottomSheet(
             containerColor = Color.White,
             onDismissRequest = { selectCompanyState.value = false },
-            shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         ) {
 
             Column(
@@ -85,21 +85,37 @@ fun SelectCompanyBottomSheet(
 
                 Text(
                     text = stringResource(R.string.select_company),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                    color = colorResource(R.color.background_card_blue)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_bold)),
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF223142),
+                        textAlign = TextAlign.Center,
+                    )
                 )
 
                 if (companyList != null) {
                     LazyColumn() {
-                        items(items = customers.asanCustomerList, itemContent = {
-                            rowItem(it) { customerId ->
-                                onItemClick(customerId)
-                                selectCompanyState.value = false
+
+                        item {
+                            customers.asanCustomerList.forEachIndexed { index, asanCustomer ->
+                                rowItem(asanCustomer) { customerId ->
+                                    onItemClick(customerId)
+                                    selectCompanyState.value = false
+                                }
                             }
-                        })
+                        }
+
+
+//                        items(items = customers.asanCustomerList, itemContent = {
+//                            rowItem(it) { customerId ->
+//                                onItemClick(customerId)
+//                                selectCompanyState.value = false
+//                            }
+//                        })
 
                     }
                 }
@@ -116,26 +132,26 @@ private fun rowItem(asanCustomer: AsanCustomer, onItemClick: (companyName: Int) 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .dashedBorder(1.dp, Color(0x99C9CACC))
+            .dashedBorder(2.dp, Color(0x99C9CACC))
             .clickable {
                 onItemClick(asanCustomer.customerNo.toInt())
             }
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .padding(horizontal = 10.dp, vertical = 10.dp)
                 .fillMaxWidth()
         ) {
             Text(
                 text = "${asanCustomer.name}",
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Medium,
-                fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = if (asanCustomer.name == selectedCustomer) colorResource(R.color.background_card_blue) else colorResource(
-                    R.color.background_card_blue
-                ).copy(0.5f),
-                maxLines = 1,
-                fontSize = 15.sp
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+//                    fontWeight = if (asanCustomer.customerNo == selectedCustomer) FontWeight(600) else FontWeight(300),
+                    color = if (asanCustomer.name == selectedCustomer) colorResource(R.color.background_card_blue) else colorResource(
+                        R.color.background_card_blue
+                    ).copy(0.5f),
+                )
             )
         }
 

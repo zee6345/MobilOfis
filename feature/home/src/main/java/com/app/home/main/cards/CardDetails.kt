@@ -1,5 +1,8 @@
 package com.app.home.main.cards
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,11 +50,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.subviews.selectedCard
-import com.app.uikit.bottomSheet.BusinessCardOptionsSheet
-
 import com.app.network.models.responseModels.MainCard
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
+import com.app.uikit.bottomSheet.BusinessCardOptionsSheet
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.CardFilters
 import ir.kaaveh.sdpcompose.sdp
@@ -162,6 +164,29 @@ private fun MainContent(navController: NavController, data: MainCard) {
 
     val businessCardOptions = rememberSaveable { mutableStateOf(false) }
 
+    val icon = if (data!!.PaymentSys.equals("Master", true)) {
+        painterResource(id = R.drawable.ic_master_card)
+    } else if (data!!.PaymentSys.equals("VISA", true)) {
+        painterResource(id = R.drawable.ic_visa_business)
+    } else {
+        painterResource(id = R.drawable.ic_master_card)
+    }
+
+    val subIcon = if (data!!.PaymentSys.equals("Master", true)) {
+        painterResource(id = R.drawable.ic_master_card_icon)
+    } else if (data!!.PaymentSys.equals("VISA", true)) {
+        painterResource(id = R.drawable.ic_visa_icon)
+    } else {
+        painterResource(id = R.drawable.ic_master_card_icon)
+    }
+
+    val shareIntentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        // This block will be executed after returning from the sharing activity
+        // You can perform any necessary actions here
+    }
+
 
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -177,19 +202,26 @@ private fun MainContent(navController: NavController, data: MainCard) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Row {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 36.dp, height = 24.dp)
+                            .background(Color.Transparent)
+                            .clip(RoundedCornerShape(5.dp))
+                    ) {
+                        Image(
+                            painter = icon,
+                            contentDescription = "",
+                            modifier = Modifier.size(width = 36.dp, height = 24.dp)
+                        )
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_master_card),
-                        contentDescription = "",
-                        modifier = Modifier.size(width = 36.dp, height = 24.dp)
-                    )
+                    }
 
                     Spacer(
                         Modifier.size(width = 5.dp, height = 1.dp)
@@ -221,7 +253,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -232,7 +264,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
                 Row {
 
                     Image(
-                        painter = painterResource(id = R.drawable.ic_master_card_icon),
+                        painter = subIcon,
                         contentDescription = "",
                         modifier = Modifier.size(width = 36.dp, height = 24.dp)
                     )
@@ -251,31 +283,32 @@ private fun MainContent(navController: NavController, data: MainCard) {
                 }
 
 
-                Row {
+                if (data.AdditionNumb > 0) {
+                    Row {
 
-                    Text(
-                        text = stringResource(R.string.additional_card), style = TextStyle(
-                            fontSize = 14.sp,
-                            color = colorResource(R.color.grey_text),
-                            fontFamily = FontFamily(
-                                Font(R.font.roboto_medium),
+                        Text(
+                            text = stringResource(R.string.additional_card), style = TextStyle(
+                                fontSize = 14.sp,
+                                color = colorResource(R.color.grey_text),
+                                fontFamily = FontFamily(
+                                    Font(R.font.roboto_medium),
 
-                                )
+                                    )
+                            )
                         )
-                    )
 
-                    Spacer(
-                        Modifier.size(width = 5.dp, height = 1.dp)
-                    )
-
-                    Text(
-                        text = "${data.AdditionNumb}", style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.roboto_medium))
+                        Spacer(
+                            Modifier.size(width = 5.dp, height = 1.dp)
                         )
-                    )
+
+                        Text(
+                            text = "${data.AdditionNumb}", style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_medium))
+                            )
+                        )
+                    }
                 }
-
 
             }
 
@@ -284,7 +317,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -316,7 +349,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -345,7 +378,17 @@ private fun MainContent(navController: NavController, data: MainCard) {
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_share), contentDescription = "",
-                    Modifier.size(height = 20.dp, width = 20.dp)
+                    Modifier
+                        .size(height = 20.dp, width = 20.dp)
+                        .clickable {
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "${data.Iban}")
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            shareIntentLauncher.launch(shareIntent)
+                        }
                 )
 
             }
@@ -354,7 +397,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -417,7 +460,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey)),
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -434,12 +477,12 @@ private fun MainContent(navController: NavController, data: MainCard) {
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.grey_text),
-
-                            )
+                        )
                     )
 
                     Text(
-                        text = "${data.Balance}", style = TextStyle(
+                        text = if (data.Balance != null) "${data.Balance}" else "",
+                        style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),

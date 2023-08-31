@@ -101,7 +101,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = stringResource(R.string.circulation),
+                        text = "Turnover",
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),
@@ -261,7 +261,7 @@ fun MainInfoBottomSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = stringResource(R.string.change_your_name),
+                        text = "Change name",
                         style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         ),

@@ -227,8 +227,11 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                             CardsItem(ops, navController)
                         }
 
-
                     }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.size(height = 80.dp, width = 1.dp))
                 }
 
             }
@@ -284,10 +287,11 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
         modifier = Modifier
             .padding(vertical = 4.sdp, horizontal = 8.sdp)
             .fillMaxWidth()
-            .clickable {
-                recentDetail.value = data
-                navController.navigate(recentToDetails)
-            },
+//            .clickable {
+//                recentDetail.value = data
+//                navController.navigate(recentToDetails)
+//            }
+        ,
         elevation = 1.dp,
         backgroundColor = Color(0xFFF3F7FA),
         shape = RoundedCornerShape(corner = CornerSize(12.dp))

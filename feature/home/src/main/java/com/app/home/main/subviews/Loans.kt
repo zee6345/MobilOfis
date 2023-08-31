@@ -48,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
+import com.app.home.main.isShowBalance
 import com.app.home.main.loan.homeToLoanInformation
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -88,7 +89,7 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     }
 
     LazyColumn(
-        modifier = Modifier.padding(horizontal = 2.sdp, vertical = 5.sdp)
+        modifier = Modifier.padding(horizontal = 10.sdp, vertical = 5.sdp)
     ) {
 
 
@@ -267,7 +268,7 @@ private fun LoansListItem(obj: GetLoansItem, navController: NavController) {
             }
 
             Text(
-                text = "${obj.MAIN_BALANCE}",
+                text = if (isShowBalance.value) "****" else "${obj.MAIN_BALANCE}",
                 style = TextStyle(
                     fontSize = 14.sp, color = Color(R.color.background_card_blue),
                     textAlign = TextAlign.End

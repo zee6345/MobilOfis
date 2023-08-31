@@ -46,6 +46,7 @@ import com.app.auth.pin.navigation.welcomePinScreen
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorResponse
 import com.app.network.models.requestModels.LoginVerificationRequest
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
@@ -53,9 +54,7 @@ import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
-import com.app.uikit.views.CountdownTimerSeconds
 import com.app.uikit.views.OtpView
-import com.app.uikit.views.TimerTextView
 import com.app.uikit.views.TimerTextsView
 import com.app.uikit.views.TimerTextsView20S
 import ir.kaaveh.sdpcompose.sdp
@@ -246,7 +245,7 @@ fun OtpScreen(
                             modifier = Modifier
                                 .padding(5.dp)
                                 .clickable {
-                                    if (!isTimerStarted.value){
+                                    if (!isTimerStarted.value) {
                                         coroutine.launch {
                                             Message.showMessage(context, "OTP send again!")
                                         }
@@ -254,7 +253,9 @@ fun OtpScreen(
                                 },
                             text = stringResource(R.string.re_send_sms_code),
                             style = TextStyle(
-                                color = if(!isTimerStarted.value) Color(0xFF203657) else Color(0xFF859DB5)
+                                color = if (!isTimerStarted.value) Color(0xFF203657) else Color(
+                                    0xFF859DB5
+                                )
                             )
                         )
                     }
@@ -359,10 +360,23 @@ fun OtpScreen(
             is DataState.Error -> {
                 isLoading.value = false
 
-                Message.showMessage(context, stringResource(R.string.failed_to_verify_user))
+                val errorResponse: ErrorResponse =
+                    Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+
+//                ErrorState(context, it.errorMessage).handleError()
+                if (errorResponse.code.equals("ERROR.TOTP_2FA_VERIFICATION_NOT_MATCH", true)) {
+
+                    LaunchedEffect(Unit) {
+                        coroutine.launch {
+                            Message.showMessage(context, "Incorrect Google Authenticator Code")
+                        }
+                    }
+                } else {
+
+                }
 
                 //on error remove keys
-                viewModel.session.delete(Keys.KEY_TOKEN)
+//                viewModel.session.delete(Keys.KEY_TOKEN)
 
             }
 

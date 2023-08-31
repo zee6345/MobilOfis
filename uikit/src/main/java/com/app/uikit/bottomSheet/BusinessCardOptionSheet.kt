@@ -81,7 +81,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
             ) {
 
@@ -113,7 +113,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
 
                 ) {
@@ -146,7 +146,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
             ) {
 
@@ -178,7 +178,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
 
                 ) {
@@ -208,7 +208,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
             ) {
                 Row(
@@ -236,7 +236,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
 
                 ) {
@@ -267,7 +267,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
             ) {
 
@@ -299,7 +299,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
 
                 ) {
@@ -353,7 +353,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
 
             Row(
                 modifier = Modifier
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
                     .fillMaxWidth(),
             ) {
 
@@ -373,7 +373,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
                     Spacer(modifier = Modifier.size(width = 10.dp, height = 1.dp))
 
                     Text(
-                        text = stringResource(id = R.string.change_your_name), style = TextStyle(
+                        text = "Change name", style = TextStyle(
                             fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.roboto_regular))
                         )
                     )

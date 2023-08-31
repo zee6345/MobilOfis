@@ -2,6 +2,7 @@ package com.app.network.models.errorResponse
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.app.network.helper.Converter
 
@@ -24,6 +25,10 @@ class ErrorState(private val context: Context, error: String) {
                 intent.action = SESSION
                 intent.putExtra("data", "expire")
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+
+            } else if (errorResponse.code.equals("ERROR.TOTP_2FA_VERIFICATION_NOT_MATCH", true)){
+
+                Toast.makeText(context, "Incorrect Google Authenticator Code", Toast.LENGTH_SHORT).show()
 
             }
 

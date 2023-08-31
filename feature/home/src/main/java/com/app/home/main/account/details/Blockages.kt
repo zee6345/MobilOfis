@@ -57,7 +57,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val blockReason = remember { mutableStateOf("") }
 
     val isLoading = remember { mutableStateOf(false) }
-    val isEmpty = remember { mutableStateOf(false) }
+    val isEmpty = remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         coroutine.launch {

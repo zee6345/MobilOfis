@@ -88,6 +88,12 @@ dependencies {
 
     implementation ("androidx.compose.foundation:foundation:1.5.0-alpha04")
 
+    implementation(Network.NETWORK_RETROFIT)
+    implementation(Network.GSON_CONVERTER)
+    implementation(Network.OKHTTP)
+    implementation(Network.LIFECYCLEVIEWMODEL)
+    implementation(Network.HTTP_LOGGIN)
+
     //Hilt
     implementation (Hilt.android)
     kapt (Hilt.compiler)
