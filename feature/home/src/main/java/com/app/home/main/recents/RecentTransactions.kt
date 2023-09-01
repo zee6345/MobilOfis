@@ -6,14 +6,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.app.home.R
-import com.app.home.main.recentDetail
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -55,8 +59,10 @@ import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
-import com.app.uikit.borders.dashedBorder
+import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.models.CardFilters
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -72,10 +78,11 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
     val recentData = remember { mutableListOf<GetRecentOpsItem>() }
     val isLoading = remember { mutableStateOf(false) }
     val coroutine = rememberCoroutineScope()
+    val cardFilters = remember { DataProvider.filtersRecentList }
 
 
     LaunchedEffect(Unit) {
-        coroutine.launch{
+        coroutine.launch {
             viewModel.getRecentOps(userDetails.customerNo, "")
         }
     }
@@ -87,6 +94,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                 rememberScrollState(), enabled = true
             )
             .background(color = Color(0xFFF3F7FA))
+
     ) {
 
         Surface(
@@ -112,7 +120,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                     contentDescription = ""
                 )
                 Text(
-                    text = "Recent transactions on accounts",
+                    text = "Recent operations on accounts",
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -192,7 +200,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
 
 
                     Text(
-                        text = "-${sumCR}",
+                        text = if (sumCR == 0.0) "$sumCR" else "- $sumCR",
                         style = TextStyle(
                             fontSize = 14.sp,
                             lineHeight = 18.4.sp,
@@ -208,6 +216,18 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
 
 
 
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 10.sdp)
+            ) {
+                items(items = cardFilters, itemContent = {
+                    Row {
+                        FilterView(filter = it)
+                        Box(modifier = Modifier.padding(end = 5.sdp))
+                    }
+                })
+            }
+
+
             LazyColumn {
                 val groupedItems = recentData.groupBy { it.trn_date }
 
@@ -220,7 +240,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                                 .padding(4.sdp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = dateStr)
+                            Text(text = Utils.formatInputDate(dateStr))
                         }
 
                         itemList.forEach { ops ->
@@ -363,4 +383,43 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
             }
         }
     }
+}
+
+@Composable
+private fun FilterView(filter: CardFilters) {
+    Card(
+        modifier = Modifier
+            .padding(vertical = 5.dp)
+            .clickable {
+            },
+        elevation = 1.dp,
+        backgroundColor = Color.White,
+        shape = RoundedCornerShape(corner = CornerSize(8.dp))
+
+    ) {
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(6.sdp)
+        ) {
+
+            Text(
+                text = filter.filterName, style = TextStyle(fontSize = 12.sp)
+            )
+
+            if (filter.filterIcon != null) {
+                Image(
+                    painter = painterResource(id = filter.filterIcon!!),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(1.dp)
+                        .width(14.dp)
+                        .height(14.dp)
+                )
+            }
+        }
+    }
+
+
 }

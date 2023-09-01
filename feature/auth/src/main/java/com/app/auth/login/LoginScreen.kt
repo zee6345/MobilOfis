@@ -553,7 +553,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_login_pin),
-                                    contentDescription = ""
+                                    contentDescription = "",
+                                    Modifier.padding(2.dp)
+                                        .size(22.dp)
                                 )
                                 Text(text = "Login with PIN code")
                             }

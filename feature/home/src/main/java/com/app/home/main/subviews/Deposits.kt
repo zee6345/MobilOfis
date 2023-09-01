@@ -304,14 +304,16 @@ private fun FilterView(filter: CardFilters) {
                 text = filter.filterName, style = TextStyle(fontSize = 12.sp)
             )
 
-            Image(
-                painter = painterResource(id = filter.filterIcon),
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(1.dp)
-                    .width(14.dp)
-                    .height(14.dp)
-            )
+            if (filter.filterIcon != null) {
+                Image(
+                    painter = painterResource(id = filter.filterIcon!!),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(1.dp)
+                        .width(14.dp)
+                        .height(14.dp)
+                )
+            }
         }
     }
 

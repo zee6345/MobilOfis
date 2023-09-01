@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -53,6 +52,7 @@ import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.headerFilters
 import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -145,6 +145,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         ),
                         modifier = Modifier
                             .size(width = 24.sdp, height = 24.sdp)
+                            .padding(3.dp)
                             .clickable {
                                 coroutine.launch {
                                     if (scaffoldState.bottomSheetState.isExpanded) {
@@ -187,7 +188,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     val sumCR = recentData?.filter { it.debit_credit_flag == "CR" }
                         ?.sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
 
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
                         Icon(
                             painterResource(id = R.drawable.ic_options_arrow_in),
@@ -203,7 +206,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Text(
                             text = "${sumDR}",
                             style = TextStyle(
-                                fontSize = 14.sp,
+                                fontSize = 16.sp,
                                 lineHeight = 18.4.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 fontWeight = FontWeight(400),
@@ -218,7 +221,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         modifier = Modifier.size(width = 20.sdp, height = 1.sdp)
                     )
 
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
                         Icon(
                             painterResource(id = R.drawable.ic_options_arrow_out),
@@ -233,9 +238,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                         Text(
-                            text = "-${sumCR}",
+                            text = if (sumCR == 0.0) "$sumCR" else "- $sumCR",
                             style = TextStyle(
-                                fontSize = 14.sp,
+                                fontSize = 16.sp,
                                 lineHeight = 18.4.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 fontWeight = FontWeight(400),
@@ -256,12 +261,14 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                 ) {
 
 
-                    Row() {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
                         Card(
                             modifier = Modifier
                                 .padding(6.dp),
-                            elevation = 8.sdp,
+                            elevation = 6.sdp,
                         ) {
                             Box(modifier = Modifier
                                 .background(
@@ -287,7 +294,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Card(
                             modifier = Modifier
                                 .padding(6.dp),
-                            elevation = 8.sdp,
+                            elevation = 6.sdp,
                         ) {
                             Box(modifier = Modifier
                                 .background(if (selectedBoxIndex.value == 1) Color(0xFFE7EEFC) else Color.White)
@@ -312,7 +319,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Card(
                             modifier = Modifier
                                 .padding(6.dp),
-                            elevation = 8.sdp,
+                            elevation = 6.sdp,
                         ) {
                             Box(modifier = Modifier
                                 .background(
@@ -335,17 +342,22 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             }
                         }
 
+                        Box(
+                            Modifier
+                                .padding(start = 10.dp)
+                                .clickable {
+                                    navController.navigate(recentTransactions)
+                                }
+
+                        ) {
+                            Text(
+                                text = "More"
+                            )
+                        }
+
                     }
 
-                    Box(
-                        Modifier.clickable {
-                            navController.navigate(recentTransactions)
-                        }
-                    ) {
-                        Text(
-                            text = "More"
-                        )
-                    }
+
 
                     Box(
                         Modifier.clickable {
@@ -355,17 +367,22 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         }
                     ) {
                         Icon(
-                            painterResource(R.drawable.ic_transfers),
+                            painterResource(R.drawable.ic_refresh),
                             tint = colorResource(R.color.background_card_blue),
                             contentDescription = null,
-                            modifier = Modifier.padding(end = 10.sdp)
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .size(20.dp)
                         )
                     }
+
 
                 }
 
 
                 LazyColumn {
+
+
                     val groupedItems = recentData?.groupBy { it.trn_date }
 
                     groupedItems?.forEach { (dateStr, itemList) ->
@@ -377,7 +394,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     .padding(4.sdp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = dateStr)
+                                Text(text = Utils.formatInputDate(dateStr))
                             }
 
                             itemList.forEach { ops ->
@@ -856,8 +873,6 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
     }
 
 
-
-
     Card(
         modifier = Modifier
             .padding(vertical = 4.sdp, horizontal = 8.sdp)
@@ -921,7 +936,7 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
 
 
                 Text(
-                    "${data.trn_time}",
+                    Utils.convertToHourMinute(data.trn_time),
                     style = TextStyle(
                         fontSize = 12.sp,
                         lineHeight = 16.1.sp,

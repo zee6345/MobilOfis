@@ -16,7 +16,6 @@ import com.app.uikit.models.ExchangeRatesModel
 import com.app.uikit.models.FilterModel
 import com.app.uikit.models.FilterType
 import com.app.uikit.models.LoansData
-import com.app.uikit.models.MainCardTransfer
 import com.app.uikit.models.Task
 import com.app.uikit.models.TaskDate
 import com.app.uikit.models.TrustsData
@@ -135,6 +134,40 @@ object DataProvider {
         CardFilters(
             "Balance",
             R.drawable.ic_filter_sort
+        ),
+
+        )
+
+    val filtersRecentList = listOf(
+        CardFilters(
+            "All",
+            null
+        ),
+
+        CardFilters(
+            "Income",
+            null
+        ),
+
+        CardFilters(
+            "Expenditure",
+            null
+        ),
+
+
+        CardFilters(
+            "History",
+            R.drawable.ic_filter_drop_down
+        ),
+
+        CardFilters(
+            "Sender/Recipient",
+            R.drawable.ic_filter_search
+        ),
+
+        CardFilters(
+            "Amount",
+            R.drawable.ic_filter_drop_down
         ),
 
         )

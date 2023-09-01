@@ -1,11 +1,37 @@
 package com.app.uikit.utils
 
 import androidx.compose.ui.graphics.Color
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object Utils {
+
+
+    fun convertToHourMinute(inputTime: String): String {
+        try {
+            val inputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val time = inputFormat.parse(inputTime)
+            return outputFormat.format(time)
+        } catch (e: Exception) {
+            // Handle parsing or formatting errors here
+            return "Invalid Time"
+        }
+    }
+
+    fun formatInputDate(inputDate: String): String {
+        try {
+            val inputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val outputDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+            val date = inputDateFormat.parse(inputDate)
+            return outputDateFormat.format(date)
+        } catch (e: Exception) {
+            // Handle parsing or formatting errors here
+            return "Invalid Date"
+        }
+    }
 
     fun formattedDate(inputDateTimeString: String): String? {
         // Parse the input string using the given format
