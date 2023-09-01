@@ -35,9 +35,11 @@ import com.app.home.BottomNavItem
 import com.app.home.main.MenuScreen
 import com.app.home.main.account.AccountInformation
 import com.app.home.main.account.accountDetailsRoute
+import com.app.home.main.cards.CardDetailsNew
+import com.app.home.main.cards.CardDetailsOld
+import com.app.home.main.cards.homeToNewCardDetails
+import com.app.home.main.cards.homeToOldCardDetails
 
-import com.app.home.main.cards.CardDetails
-import com.app.home.main.cards.homeToCardDetails
 
 import com.app.home.main.loan.LoanInformationDetails
 import com.app.home.main.loan.homeToLoanInformation
@@ -93,8 +95,12 @@ fun NavigationGraph(navController: NavHostController) {
             AccountInformation(navController = navController)
         }
 
-        composable(homeToCardDetails) {
-            CardDetails(navController = navController)
+        composable(homeToOldCardDetails) {
+            CardDetailsOld(navController = navController)
+        }
+
+        composable(homeToNewCardDetails) {
+            CardDetailsNew(navController = navController)
         }
 
         composable(homeToLoanInformation) {

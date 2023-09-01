@@ -51,7 +51,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.cards.homeToCardDetails
+import com.app.home.main.cards.homeToNewCardDetails
+import com.app.home.main.cards.homeToOldCardDetails
+
 import com.app.home.main.isShowBalance
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -60,15 +62,18 @@ import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.MainCard
+import com.app.network.models.responseModels.MainCardX
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
 
-val selectedCard = mutableStateOf<MainCard?>(null)
+val selectedOldCard = mutableStateOf<MainCard?>(null)
+val selectedNewCard = mutableStateOf<MainCardX?>(null)
 
 @Composable
 fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -86,7 +91,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val isEmpty = remember { mutableStateOf(false) }
 
     val oldCards = remember { mutableListOf<MainCard>() }
-    val newCards = remember { mutableListOf<MainCard>() }
+    val newCards = remember { mutableListOf<MainCardX>() }
 
     val coroutine = rememberCoroutineScope()
 
@@ -160,7 +165,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
         if (!isEmpty.value) {
             LazyRow(
-                contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.sdp)
+                contentPadding = PaddingValues(horizontal = 10.sdp)
             ) {
                 items(items = cardFilters, itemContent = {
                     Row {
@@ -171,108 +176,27 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             }
         }
 
+        Spacer(modifier = Modifier.padding(bottom = 5.dp))
+
 
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 5.sdp, vertical = 10.sdp)
+                .padding(horizontal = 5.sdp, vertical = 5.sdp)
         ) {
 
-
-//        item {
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-//                verticalAlignment = Alignment.Top,
-//                modifier = Modifier.padding(top = 10.sdp)
-//            ) {
-//                Box(modifier = Modifier
-//                    .background(
-//                        if (selectedBoxIndex.value == 0) colorResource(R.color.background_card_blue) else colorResource(
-//                            R.color.border_grey
-//                        ),
-//                        shape = RoundedCornerShape(size = 6.dp)
-//                    )
-//                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
-//                    .clickable {
-//                        selectedBoxIndex.value = 0
-//                        viewModel.getOldBusinessCards(userDetails.customerNo)
-//                    }) {
-//                    Text(
-//                        stringResource(R.string.in_the_name_of_a_physical_person),
-//                        style = TextStyle(
-//                            fontSize = 12.sp,
-//                            color = if (selectedBoxIndex.value == 0) Color.White else colorResource(
-//                                R.color.background_card_blue
-//                            )
-//                        )
-//                    )
-//                }
-//
-//
-//
-//                Box(modifier = Modifier
-//                    .background(
-//                        if (selectedBoxIndex.value == 1) colorResource(R.color.background_card_blue) else colorResource(
-//                            R.color.border_grey
-//                        ),
-//                        shape = RoundedCornerShape(size = 6.dp)
-//                    )
-//                    .padding(vertical = 5.sdp, horizontal = 10.sdp)
-//                    .clickable {
-//                        selectedBoxIndex.value = 1
-//                        viewModel.getNewBusinessCards(userDetails.customerNo)
-//                    }) {
-//                    Text(
-//                        stringResource(R.string.tin_based), style = TextStyle(
-//                            fontSize = 12.sp,
-//                            color = if (selectedBoxIndex.value == 1) Color.White else colorResource(
-//                                R.color.background_card_blue
-//                            )
-//                        )
-//                    )
-//                }
-//
-//            }
-//
-//            Spacer(modifier = Modifier.size(width = 1.dp, height = 10.sdp))
-//        }
-//
-//
-//        item {
-//            if (!isEmpty.value) {
-//                LazyRow(
-//                    contentPadding = PaddingValues(vertical = 5.dp)
-//                ) {
-//                    items(items = cardFilters, itemContent = {
-//                        Row {
-//                            FilterView(filter = it)
-//                            Box(modifier = Modifier.padding(end = 5.sdp))
-//                        }
-//                    })
-//                }
-//            }
-//
-//
-//        }
-
-
             if (selectedBoxIndex.value == 0) {
+                //old cards
+
                 if (oldCards.isNotEmpty()) {
 
                     oldCards.forEachIndexed { index, mainCard ->
                         item {
-                            CardsListItem(obj = mainCard) {
-                                selectedCard.value = it
-                                navController.navigate(homeToCardDetails)
+                            OldCardsListItem(obj = mainCard) {
+                                selectedOldCard.value = it
+                                navController.navigate(homeToOldCardDetails)
                             }
                         }
                     }
-
-//                items(items = oldCards, itemContent = {
-//                    CardsListItem(obj = it) {
-//                        selectedCard.value = it
-//                        navController.navigate(homeToCardDetails)
-//                    }
-//                })
 
                     item {
                         Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
@@ -290,22 +214,21 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                         }
                     }
                 }
+
+
             } else if (selectedBoxIndex.value == 1) {
+
+                //new cards
+
                 if (newCards.isNotEmpty()) {
-                    newCards.forEachIndexed { index, mainCard ->
+                    newCards.forEachIndexed { index, mainCardX ->
                         item {
-                            CardsListItem(obj = mainCard) {
-                                selectedCard.value = it
-                                navController.navigate(homeToCardDetails)
+                            NewCardsListItem(obj = mainCardX) {
+                                selectedNewCard.value = it
+                                navController.navigate(homeToNewCardDetails)
                             }
                         }
                     }
-//                items(items = newCards, itemContent = {
-//                    CardsListItem(obj = it) {
-//                        selectedCard.value = it
-//                        navController.navigate(homeToCardDetails)
-//                    }
-//                })
 
                     item {
                         Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
@@ -396,7 +319,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
 
 @Composable
-fun CardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
+private fun OldCardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
 
     val amount: String = if (obj.Balance != null) {
         "${obj.Balance}"
@@ -532,6 +455,114 @@ fun CardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
 }
 
 @Composable
+private fun NewCardsListItem(obj: MainCardX, onCardClick: (MainCardX) -> Unit) {
+    Card(
+        modifier = Modifier
+            .padding(vertical = 5.dp, horizontal = 5.sdp)
+            .fillMaxWidth()
+            .clickable {
+                onCardClick(obj)
+            },
+        elevation = 1.dp,
+        backgroundColor = Color.White,
+        shape = RoundedCornerShape(corner = CornerSize(12.dp))
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.sdp, vertical = 5.sdp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .size(width = 36.dp, height = 24.dp)
+                    .background(Color.Transparent)
+                    .clip(RoundedCornerShape(5.dp))
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_master_card),
+                    contentDescription = "",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(width = 36.dp, height = 26.dp)
+                )
+            }
+
+//            Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp, top = 5.dp)
+            ) {
+                Text(
+                    text = if (obj.nickName == null) obj.Name else obj.nickName,
+                    style = TextStyle(fontSize = 14.sp),
+                    color = colorResource(R.color.background_card_blue),
+                    modifier = Modifier
+                        .padding(vertical = 5.dp)
+                        .fillMaxWidth()
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    AutoResizedText(
+                        text = "${obj.Iban}",
+                        style = TextStyle(fontSize = 14.sp),
+                        color = colorResource(R.color.background_card_blue),
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+
+                    Box(
+                        Modifier.padding(start = 4.sdp)
+                    ) {
+
+                    }
+
+                    if (obj.AdditionNumb > 0) {
+                        Box(
+                            Modifier
+                                .width(26.dp)
+                                .height(22.dp)
+                                .padding(2.dp)
+                                .background(
+                                    color = Color(0xFFF3F7FA),
+                                    shape = RoundedCornerShape(size = 30.dp)
+                                ), contentAlignment = Alignment.Center
+                        ) {
+                            AutoResizedText(
+                                text = "+ ${obj.AdditionNumb}", style = TextStyle(
+                                    fontSize = 14.sp, color = colorResource(R.color.grey_text)
+                                )
+
+                            )
+                        }
+                    }
+                }
+            }
+
+            Text(
+                text = if (isShowBalance.value) "****" else "0.00",
+                color = colorResource(R.color.background_card_blue),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontWeight = FontWeight(600),
+                    color = Color(0xFF223142),
+                    textAlign = TextAlign.Right,
+                )
+            )
+        }
+
+
+    }
+}
+
+@Composable
 private fun FilterView(filter: CardFilters) {
     Card(
         modifier = Modifier
@@ -567,53 +598,6 @@ private fun FilterView(filter: CardFilters) {
 
 
 }
-
-
-//@Composable
-//private fun Filters() {
-//
-////    val selectedBoxIndex = remember { mutableStateOf(-1) }
-////    val selectedBoxIndex = remember { mutableStateOf(0) }
-//
-//    Row(
-//        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-//        verticalAlignment = Alignment.Top,
-//    ) {
-//        Box(modifier = Modifier
-//            .background(
-//                if (selectedBoxIndex.value == 0) Color(0xFF223142) else Color(R.color.border_grey),
-//                shape = RoundedCornerShape(size = 6.dp)
-//            )
-//            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-//            .clickable { selectedBoxIndex.value = 0 }) {
-//            Text(
-//                stringResource(R.string.in_the_name_of_a_physical_person), style = TextStyle(
-//                    fontSize = 12.sp,
-//                    color = if (selectedBoxIndex.value == 0) Color.White else Color(0xFF223142)
-//                )
-//            )
-//        }
-//
-//
-//
-//        Box(modifier = Modifier
-//            .background(
-//                if (selectedBoxIndex.value == 1) Color(0xFF223142) else Color(R.color.border_grey),
-//                shape = RoundedCornerShape(size = 6.dp)
-//            )
-//            .padding(vertical = 5.sdp, horizontal = 10.sdp)
-//            .clickable { selectedBoxIndex.value = 1 }) {
-//            Text(
-//                stringResource(R.string.tin_based), style = TextStyle(
-//                    fontSize = 12.sp,
-//                    color = if (selectedBoxIndex.value == 1) Color.White else Color(0xFF223142)
-//                )
-//            )
-//        }
-//
-//    }
-//}
-
 
 @Preview(device = Devices.PIXEL_4)
 @Composable

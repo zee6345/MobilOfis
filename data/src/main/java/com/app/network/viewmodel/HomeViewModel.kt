@@ -1,7 +1,6 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.app.network.helper.Error.handleException
 import com.app.network.helper.Keys
 import com.app.network.helper.Session

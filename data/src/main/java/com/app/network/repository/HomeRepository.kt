@@ -19,7 +19,6 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Response
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val apiService: APIService)  {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
@@ -72,6 +73,7 @@ fun BusinessCardOptionsSheet(showModalBottomSheet: MutableState<Boolean>) {
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = !showModalBottomSheet.value },
         containerColor = Color.White,
+        shape = RoundedCornerShape(10.dp)
     ) {
         Column(
             Modifier.fillMaxWidth()

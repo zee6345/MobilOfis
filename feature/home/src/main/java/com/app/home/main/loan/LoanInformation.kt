@@ -43,18 +43,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
-import com.app.home.main.subviews.loansList
+import com.app.home.main.subviews.loanItem
 import com.app.network.models.responseModels.GetLoansItem
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
 import ir.kaaveh.sdpcompose.sdp
 
-const val homeToLoanInformation= "homeToLoanInformation"
+const val homeToLoanInformation = "homeToLoanInformation"
 
 @Composable
 fun LoanInformationDetails(navController: NavController) {
 
-    val data = loansList[0]
+    val data = loanItem.value
 
     Column(
         modifier = Modifier
@@ -112,7 +112,7 @@ fun LoanInformationDetails(navController: NavController) {
                 contentPadding = PaddingValues(bottom = 50.sdp),
             ) {
                 item {
-                    MainContent(navController, data)
+                    MainContent(navController, data!!)
                 }
             }
 
@@ -333,7 +333,8 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.NEXT_PAYMENT_DATE}", style = TextStyle(
+                        text = if (data.NEXT_PAYMENT_DATE != null) "${data.NEXT_PAYMENT_DATE}" else "",
+                        style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -559,7 +560,10 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.START_DATE}", style = TextStyle(
+                        text = if (data.START_DATE != null) "${data.START_DATE}".replace(
+                            "/",
+                            "."
+                        ) else "", style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -585,7 +589,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.END_DATE}", style = TextStyle(
+                        text = if (data.END_DATE != null) "${data.END_DATE}".replace("/", ".") else "", style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -633,10 +637,10 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                 }
 
 
-                Image(
-                    painter = painterResource(id = R.drawable.ic_share), contentDescription = "",
-                    Modifier.size(height = 20.dp, width = 20.dp)
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.ic_share), contentDescription = "",
+//                    Modifier.size(height = 20.dp, width = 20.dp)
+//                )
 
             }
 

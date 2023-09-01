@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,14 +62,15 @@ fun LoanInfoOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
 
 //    var switchCheckedState by remember { mutableStateOf(true) }
 
-    val rowModify = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 15.sdp, vertical = 5.sdp)
-        .dashedBorder(3.dp, Color(0x99C9CACC))
+//    val rowModify = Modifier
+//        .fillMaxWidth()
+//        .padding(horizontal = 15.sdp, vertical = 5.sdp)
+//        .dashedBorder(3.dp, Color(0x99C9CACC))
 
     if (showModalBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showModalBottomSheet.value = !showModalBottomSheet.value },
-        containerColor = Color.White
+        containerColor = Color.White,
+        shape = RoundedCornerShape(10.dp)
     ) {
         Column(
             Modifier
@@ -80,7 +82,7 @@ fun LoanInfoOptionSheet(showModalBottomSheet: MutableState<Boolean>) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, Color(0x99C9CACC))
+                    .dashedBorder(2.dp, Color(0x99C9CACC))
             ) {
                 Text(
                     text = stringResource(R.string.contract_payment_schedule),

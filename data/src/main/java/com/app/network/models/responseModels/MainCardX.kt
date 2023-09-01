@@ -1,7 +1,7 @@
 package com.app.network.models.responseModels
 
 data class MainCardX(
-    val AdditionCards: List<Any>,
+    val AdditionCards: List<AdditionCard>,
     val AdditionNumb: Int,
     val BlockedBy: String,
     val BlockedDate: Any,

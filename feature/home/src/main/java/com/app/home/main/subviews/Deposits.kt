@@ -1,5 +1,6 @@
 package com.app.home.main.subviews
 
+
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,7 +23,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +39,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,15 +53,12 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.isShowBalance
 import com.app.home.main.trust.homeToTrustDepositDetails
-
-
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetTrustsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
-import com.app.network.models.errorResponse.ErrorState
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
@@ -78,9 +78,10 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 
     val isLoading = remember { mutableStateOf(false) }
     val cardFilters = remember { DataProvider.filtersTrustsList }
-    val onFilter = remember { mutableStateOf("") }
+    val onFilter = remember { mutableStateOf("1") }
     val isEmpty = remember { mutableStateOf(false) }
     val coroutine = rememberCoroutineScope()
+    val selectedFilterIndex = remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         coroutine.launch {
@@ -99,69 +100,74 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 //        }
 //    } else {
 
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 10.sdp, vertical = 5.sdp)
-        ) {
+    LazyColumn(
+        modifier = Modifier.padding(horizontal = 10.sdp, vertical = 5.sdp)
+    ) {
 
-            item {
+        item {
 
+            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+
+            Filters(
+                onFilter = {
+                    onFilter.value = it
+                },
+                onSelectedFilter = {
+                    selectedFilterIndex.value = it
+                }
+            )
+        }
+
+        item {
+            if (!isEmpty.value) {
                 Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-                Filters() {
-                    onFilter.value = it
+                LazyRow(
+                    contentPadding = PaddingValues(vertical = 1.dp)
+                ) {
+                    items(items = cardFilters, itemContent = {
+                        Row {
+                            FilterView(filter = it)
+                            Box(modifier = Modifier.padding(end = 5.sdp))
+                        }
+
+                    })
                 }
             }
+        }
+
+
+        val filter = trustsList.filter {
+            it.STATUS.contains(onFilter.value, true)
+        }
+
+        if (!filter.isNullOrEmpty()) {
+            items(items = trustsList, itemContent = {
+                TrustsListItem(obj = it, navController)
+            })
 
             item {
-                if (!isEmpty.value) {
-                    Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
+                Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
+            }
 
-                    LazyRow(
-                        contentPadding = PaddingValues(vertical = 1.dp)
-                    ) {
-                        items(items = cardFilters, itemContent = {
-                            Row {
-                                FilterView(filter = it)
-                                Box(modifier = Modifier.padding(end = 5.sdp))
-                            }
-
-                        })
-                    }
+            isEmpty.value = false
+        } else {
+            item {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(20.sdp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(if (selectedFilterIndex.value == 0) "No current deposit found!" else "No closed deposit found!")
                 }
             }
 
-
-            val filter = trustsList.filter {
-                it.STATUS.contains(onFilter.value, true)
-            }
-
-            if (!filter.isNullOrEmpty()) {
-                items(items = trustsList, itemContent = {
-                    TrustsListItem(obj = it, navController)
-                })
-
-                item {
-                    Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
-                }
-
-                isEmpty.value = false
-            } else {
-                item {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(20.sdp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("No deposit found!")
-                    }
-                }
-
-                isEmpty.value = true
-            }
-
-
+            isEmpty.value = true
         }
+
+
+    }
 
 //    }
 
@@ -244,8 +250,10 @@ private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
                     text = if (isShowBalance.value) "****" else "${obj.BALANCE}",
                     style = TextStyle(
                         fontSize = 14.sp,
-                        color = Color(R.color.background_card_blue),
-                        textAlign = TextAlign.Right
+                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF223142),
+                        textAlign = TextAlign.Right,
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -312,7 +320,7 @@ private fun FilterView(filter: CardFilters) {
 
 
 @Composable
-private fun Filters(onFilter: (String) -> Unit) {
+private fun Filters(onFilter: (String) -> Unit, onSelectedFilter: (Int) -> Unit) {
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
 
@@ -331,6 +339,7 @@ private fun Filters(onFilter: (String) -> Unit) {
             .clickable {
                 selectedBoxIndex.value = 0
                 onFilter("1")
+                onSelectedFilter(selectedBoxIndex.value)
             }) {
             Text(
                 stringResource(R.string.current_deposits), style = TextStyle(
@@ -352,6 +361,7 @@ private fun Filters(onFilter: (String) -> Unit) {
             .clickable {
                 selectedBoxIndex.value = 1
                 onFilter("3")
+                onSelectedFilter(selectedBoxIndex.value)
             }) {
             Text(
                 stringResource(R.string.closed_deposits), style = TextStyle(

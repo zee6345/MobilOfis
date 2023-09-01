@@ -39,6 +39,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,7 +67,7 @@ import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
 
-val loansList = mutableListOf<GetLoansItem>()
+val loanItem = mutableStateOf<GetLoansItem?>(null)
 
 @Composable
 fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -77,7 +80,9 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(false) }
     val selectedFilter = remember { mutableStateOf("Gecikmədə deyil") }
+    val loansList = remember { mutableListOf<GetLoansItem>() }
     val coroutine = rememberCoroutineScope()
+    val selectedFilterIndex = remember { mutableStateOf(0) }
 
 
     LaunchedEffect(Unit) {
@@ -88,68 +93,75 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
         }
     }
 
-    LazyColumn(
-        modifier = Modifier.padding(horizontal = 10.sdp, vertical = 5.sdp)
-    ) {
+    Column {
+
+        Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+
+        Filters(onFilter = {
+            selectedFilter.value = it
+        }, onSelectedFilter = {
+            selectedFilterIndex.value = it
+        })
 
 
-        item {
+        if (!isEmpty.value) {
             Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-            Filters() {
-                selectedFilter.value = it
+            LazyRow(
+                contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+            ) {
+                items(items = cardFilters, itemContent = {
+                    Row {
+                        FilterView(filter = it)
+                        Box(modifier = Modifier.padding(end = 5.sdp))
+                    }
+
+                })
             }
         }
 
-        item {
-            if (!isEmpty.value) {
-                Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-                LazyRow(
-                    contentPadding = PaddingValues(vertical = 1.dp)
-                ) {
-                    items(items = cardFilters, itemContent = {
-                        Row {
-                            FilterView(filter = it)
-                            Box(modifier = Modifier.padding(end = 5.sdp))
-                        }
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = 10.sdp, vertical = 5.sdp)
+        ) {
 
-                    })
+
+            val filter = loansList.filter {
+                it.STATUS.contains(selectedFilter.value, true)
+            }
+
+            if (!filter.isNullOrEmpty()) {
+                items(items = filter, itemContent = {
+                    LoansListItem(obj = it) {
+                        loanItem.value = it
+                        navController.navigate(homeToLoanInformation)
+                    }
+                })
+
+                item {
+                    Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
                 }
-            }
-        }
 
-        val filter = loansList.filter {
-            it.STATUS.contains(selectedFilter.value, true)
-        }
-
-        if (!filter.isNullOrEmpty()) {
-            items(items = filter, itemContent = {
-                LoansListItem(obj = it, navController)
-            })
-
-            item {
-                Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
-            }
-
-            isEmpty.value = false
-        } else {
-            item {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(20.sdp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("No loan found!")
+                isEmpty.value = false
+            } else {
+                item {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(20.sdp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(if (selectedFilterIndex.value == 0) "No current loan found!" else "No closed load found!")
+                    }
                 }
+                isEmpty.value = true
             }
-            isEmpty.value = true
-        }
 
+
+        }
 
     }
-//    }
+
 
     customerLoans?.let {
         when (it) {
@@ -184,13 +196,13 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
 
 @Composable
-private fun LoansListItem(obj: GetLoansItem, navController: NavController) {
+private fun LoansListItem(obj: GetLoansItem, onSelectedLoan: (GetLoansItem) -> Unit) {
     Card(
         modifier = Modifier
-            .padding(vertical = 5.dp, horizontal = 2.dp)
+            .padding(vertical = 5.dp)
             .fillMaxWidth()
             .clickable {
-                navController.navigate(homeToLoanInformation)
+                onSelectedLoan(obj)
             },
         elevation = 1.dp,
         backgroundColor = Color.White,
@@ -270,8 +282,11 @@ private fun LoansListItem(obj: GetLoansItem, navController: NavController) {
             Text(
                 text = if (isShowBalance.value) "****" else "${obj.MAIN_BALANCE}",
                 style = TextStyle(
-                    fontSize = 14.sp, color = Color(R.color.background_card_blue),
-                    textAlign = TextAlign.End
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontWeight = FontWeight(600),
+                    color = Color(0xFF223142),
+                    textAlign = TextAlign.Right,
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -323,13 +338,13 @@ private fun FilterView(filter: CardFilters) {
 
 }
 
-
 @Composable
-private fun Filters(onFilter: (String) -> Unit) {
+private fun Filters(onFilter: (String) -> Unit, onSelectedFilter: (Int) -> Unit) {
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
 
     Row(
+        Modifier.padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
         verticalAlignment = Alignment.Top,
     ) {
@@ -344,6 +359,8 @@ private fun Filters(onFilter: (String) -> Unit) {
             .clickable {
                 selectedBoxIndex.value = 0
                 onFilter("Gecikmədə deyil")
+
+                onSelectedFilter(selectedBoxIndex.value)
             }
         ) {
             Text(
@@ -366,6 +383,8 @@ private fun Filters(onFilter: (String) -> Unit) {
             .clickable {
                 selectedBoxIndex.value = 1
                 onFilter("Ödənilibdir")
+
+                onSelectedFilter(selectedBoxIndex.value)
             }
         ) {
             Text(
