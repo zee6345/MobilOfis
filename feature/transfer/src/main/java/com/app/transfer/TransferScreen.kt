@@ -87,6 +87,7 @@ import com.app.uikit.models.FilterType
 import com.app.uikit.models.SignatureInfo
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
+import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.FiltersTopRow
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -132,6 +133,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val filterByAmount = remember { mutableStateOf("") }
     val filterByCurrency = remember { mutableStateOf("") }
     val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
+    val filterTypeList = remember { mutableListOf<String>() }
+    val filterCurrencyList = remember { mutableListOf<String>() }
 
     val headerList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
@@ -395,7 +398,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByStatus.value = it
     }
 
-    TypeBottomSheet(showTypeBottomSheet) {
+    TypeBottomSheet(showTypeBottomSheet, filterTypeList) {
         //on type click
         showTypeBottomSheet.value = false
 
@@ -406,7 +409,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByAmount.value = ((it.startAmount.toFloat() + it.endAmount.toFloat()) / 2).toString()
     }
 
-    CurrencyBottomSheet(showCurrencyBottomSheet) {
+    CurrencyBottomSheet(showCurrencyBottomSheet, filterCurrencyList) {
         filterByCurrency.value = it
 
         showCurrencyBottomSheet.value = false
@@ -465,7 +468,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         }
     }
 
-    transferList?.let {
+    transferList?.let { it ->
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
@@ -473,9 +476,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
             is DataState.Error -> {
                 isLoading.value = false
-
-//                ErrorState(context = context, it.errorMessage).handleError()
-
             }
 
             is DataState.Success -> {
@@ -487,6 +487,25 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     addAll(transferData)
                 }
 
+
+                //fetch trn type list
+                if (filterTypeList.isNotEmpty()) {
+                    filterTypeList.clear()
+                }
+
+                transferData.forEach { type ->
+                    filterTypeList.add(type.brTrnType)
+                }
+
+
+                //fetch currency  list
+                if (filterCurrencyList.isNotEmpty()) {
+                    filterCurrencyList.clear()
+                }
+
+                transferData.forEach { type ->
+                    filterCurrencyList.add(type.currency)
+                }
 
             }
         }
@@ -631,12 +650,13 @@ private fun TransferListItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
-                    Text(
-                        text = "${transfer.amount}",
+                    AutoResizedText(
+                        text = Utils.formatAmountWithSpaces(transfer.amount),
                         style = TextStyle(
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Right
                         ),
-                        modifier = Modifier.weight(0.2f)
+                        modifier = Modifier.weight(0.4f)
                     )
 
                 }

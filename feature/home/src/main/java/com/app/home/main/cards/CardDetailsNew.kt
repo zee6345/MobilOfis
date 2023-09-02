@@ -407,7 +407,7 @@ private fun MainContent(data: MainCardX) {
                     )
 
                     Text(
-                        text = "",
+                        text = "0.00",
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),

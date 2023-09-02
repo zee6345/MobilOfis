@@ -39,6 +39,7 @@ import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -148,7 +149,7 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
                         )
 
                         Text(
-                            text = blockedAmount.value, style = TextStyle(
+                            text = Utils.formatAmountWithSpaces(blockedAmount.value.toDouble()), style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                 color = colorResource(R.color.background_card_blue),

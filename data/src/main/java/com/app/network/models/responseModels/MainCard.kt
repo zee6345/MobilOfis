@@ -3,7 +3,7 @@ package com.app.network.models.responseModels
 data class MainCard(
     val AdditionCards: List<AdditionCard>,
     val AdditionNumb: Int,
-    val Balance: Any,
+    val Balance: Double?,
     val BlncBlockedBy: Any,
     val BlockedBy: String,
     val BlockedDate: Any,

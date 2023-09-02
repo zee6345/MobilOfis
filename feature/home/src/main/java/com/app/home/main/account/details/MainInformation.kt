@@ -44,6 +44,7 @@ import com.app.network.helper.Keys
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -321,7 +322,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                     )
 
                     Text(
-                        text = "${data.BALANCE}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.BALANCE.toDouble()), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -382,7 +383,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                     )
 
                     Text(
-                        text = "${data.BLOCKSAMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.BLOCKSAMOUNT.toDouble()), style = TextStyle(
                             fontSize = 14.sp,
                             color = colorResource(R.color.red_2)
 
@@ -407,7 +408,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                     )
 
                     Text(
-                        text = "${data.REAL_BALANCE}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.REAL_BALANCE.toDouble()), style = TextStyle(
                             fontSize = 14.sp,
                             color = if (data.REAL_BALANCE.startsWith("-")) colorResource(R.color.red_2) else colorResource(R.color.background_card_blue)
 
@@ -441,7 +442,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                     )
 
                     Text(
-                        text = "${data.WFA_AMOUNT}", style = TextStyle(
+                        text =Utils.formatAmountWithSpaces(data.WFA_AMOUNT.toDouble()) , style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -466,7 +467,7 @@ fun MainInformation(navController: NavController, viewModel: LoginViewModel = hi
                     )
 
                     Text(
-                        text = "${data.LAST_BALANCE}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.LAST_BALANCE.toDouble()), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),

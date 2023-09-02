@@ -8,6 +8,31 @@ import java.util.Locale
 
 object Utils {
 
+    fun formatAmountWithSpaces(amount: Double): String {
+
+        val isNegative = amount < 0
+        val absoluteAmount = if (isNegative) -amount else amount
+        val amountString = String.format("%.2f", absoluteAmount) // Format with two decimal places
+        val parts = amountString.split('.')
+        val integerPart = parts[0]
+        val decimalPart = parts.getOrElse(1) { "00" }
+
+        val length = integerPart.length
+        val result = StringBuilder()
+
+        for (i in 0 until length) {
+            val digit = integerPart[i]
+
+            if (i > 0 && (length - i) % 3 == 0) {
+                result.append(" ")
+            }
+
+            result.append(digit)
+        }
+
+        val formattedAmount = "${result.toString()}.${decimalPart}"
+        return if (isNegative) "-$formattedAmount" else formattedAmount
+    }
 
     fun convertToHourMinute(inputTime: String): String {
         try {

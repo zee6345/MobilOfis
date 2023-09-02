@@ -47,6 +47,7 @@ import com.app.home.main.subviews.loanItem
 import com.app.network.models.responseModels.GetLoansItem
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 
 const val homeToLoanInformation = "homeToLoanInformation"
@@ -333,7 +334,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = if (data.NEXT_PAYMENT_DATE != null) "${data.NEXT_PAYMENT_DATE}" else "",
+                        text = if (data.NEXT_PAYMENT_DATE != null) "${data.NEXT_PAYMENT_DATE}".replace("/", ".") else "",
                         style = TextStyle(
 
                             fontSize = 14.sp,
@@ -359,7 +360,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.NEXT_PAYMENT_AMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.NEXT_PAYMENT_AMOUNT), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -422,7 +423,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.MAIN_BALANCE}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.MAIN_BALANCE), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -497,8 +498,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.CREDIT_AMOUNT}", style = TextStyle(
-
+                        text = Utils.formatAmountWithSpaces(data.CREDIT_AMOUNT), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -671,7 +671,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.PAYMENT_ACC_BALANCE}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.PAYMENT_ACC_BALANCE), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -697,7 +697,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.CUR_INT_AMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.CUR_INT_AMOUNT), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -733,7 +733,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.CUR_INT_AMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.CUR_INT_AMOUNT), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -757,7 +757,7 @@ private fun MainContent(navController: NavController, data: GetLoansItem) {
                     )
 
                     Text(
-                        text = "${data.CUR_INT_AMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.CUR_INT_AMOUNT), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),

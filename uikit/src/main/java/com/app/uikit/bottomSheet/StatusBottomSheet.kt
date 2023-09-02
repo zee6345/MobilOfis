@@ -77,7 +77,7 @@ fun StatusBottomSheet(
     if (showStatusBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { showStatusBottomSheet.value = false },
-        shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        shape = RoundedCornerShape(10.dp),
 
         ) {
         Column {

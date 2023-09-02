@@ -56,6 +56,7 @@ import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Date
 
 
 private const val TAG = "MenuScreen"
@@ -76,7 +77,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(false) }
     val customerBalanceType = remember { mutableStateOf("Balance") }
-    val balance = remember { mutableStateOf("") }
+    val balance = remember { mutableStateOf("0.0") }
     val customerName = remember { mutableStateOf("") }
 
     val sheet = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
@@ -96,7 +97,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val currentDate = System.currentTimeMillis()
     val formattedDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
 
-    val startDateSelected = remember { mutableStateOf(formattedDate) }
+
+    val oneWeekLaterDate = Date(currentDate - 15 * 24 * 60 * 60 * 1000)
+    val dateWith15EarlyFromCurrent = SimpleDateFormat("dd.MM.yyyy").format(oneWeekLaterDate)
+
+    val startDateSelected = remember { mutableStateOf(dateWith15EarlyFromCurrent) }
     val endDateSelected = remember { mutableStateOf(formattedDate) }
 
     val coroutine = rememberCoroutineScope()
@@ -382,7 +387,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 LazyColumn {
 
-
                     val groupedItems = recentData?.groupBy { it.trn_date }
 
                     groupedItems?.forEach { (dateStr, itemList) ->
@@ -644,7 +648,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                             Row() {
                                 Text(
-                                    text = if (isShowBalance.value) "****" else balance.value,
+                                    text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(balance.value.toDouble()),
                                     modifier = Modifier.align(Top),
                                     style = TextStyle(
                                         fontSize = 32.sp,

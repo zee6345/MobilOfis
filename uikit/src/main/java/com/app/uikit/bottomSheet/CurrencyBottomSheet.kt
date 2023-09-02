@@ -26,17 +26,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.app.uikit.R
 import com.app.uikit.borders.dashedBorder
-import com.app.uikit.data.DataProvider
-import com.app.uikit.models.CurrencyModel
 import ir.kaaveh.sdpcompose.sdp
 
 
@@ -62,21 +61,22 @@ fun CurrencyBottomSheet() {
         )
     }
 
-    CurrencyBottomSheet(showCurrencyBottomSheet) {
-
-    }
+//    CurrencyBottomSheet(showCurrencyBottomSheet) {
+//
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrencyBottomSheet(
     showCurrencyBottomSheet: MutableState<Boolean>,
+    currencyList: MutableList<String>,
     onCurrencyClick: (String) -> Unit
 ) {
     if (showCurrencyBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,
         onDismissRequest = { showCurrencyBottomSheet.value = false },
-        shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        shape = RoundedCornerShape(10.dp),
     ) {
         Column {
             Row(
@@ -93,10 +93,14 @@ fun CurrencyBottomSheet(
             }
 
 
-            val menu = remember { DataProvider.currencyModelList }
+//            val menu = remember { DataProvider.currencyModelList }
+
+            val uniqueItems = remember(currencyList) { currencyList.distinctBy { it } }
+
+
             LazyColumn(
             ) {
-                items(items = menu, itemContent = {
+                items(items = uniqueItems, itemContent = {
                     CurrencyMenuItem(menuItem = it) { currency ->
                         onCurrencyClick(currency)
                     }
@@ -109,29 +113,29 @@ fun CurrencyBottomSheet(
 
 
 @Composable
-fun CurrencyMenuItem(menuItem: CurrencyModel, onCurrencyClick: (String) -> Unit) {
+fun CurrencyMenuItem(menuItem: String, onCurrencyClick: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
             .dashedBorder(3.dp, colorResource(R.color.border_grey))
             .clickable {
-                val data = if (menuItem.equals("ALL")) {
+                val data = if (menuItem == "ALL") {
                     ""
-                } else menuItem.title
+                } else menuItem
 
                 onCurrencyClick(data)
             }
     ) {
         Text(
-            text = menuItem.title,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.sdp, horizontal = 15.sdp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-            color = Color(0xFF223142)
+            text = menuItem,
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                fontWeight = FontWeight(400),
+                color = Color(0xFF223142),
+            ),
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
         )
     }
 }

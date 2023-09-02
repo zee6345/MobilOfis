@@ -63,6 +63,7 @@ import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -247,7 +248,7 @@ private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
             ) {
 
                 Text(
-                    text = if (isShowBalance.value) "****" else "${obj.BALANCE}",
+                    text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(obj.BALANCE.toDouble()),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),

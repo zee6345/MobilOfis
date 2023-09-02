@@ -3,5 +3,8 @@ package com.app.uikit.models
 enum class DateType {
     TODAY,
     YESTERDAY,
-    WEEK
+    THIS_WEEK,
+    LAST_WEEK,
+    THIS_MONTH,
+    LAST_MONTH,
 }

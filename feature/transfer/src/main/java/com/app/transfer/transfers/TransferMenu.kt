@@ -50,7 +50,7 @@ fun headerFilters(
                             var filter = ""
 
                             when (status) {
-                                "For signing" -> {
+                                "For my signing" -> {
                                     filter = "PENDING_SIGNER"
                                 }
 
@@ -89,10 +89,6 @@ fun headerFilters(
                                 "In process" -> {
                                     filter = "SEND_TO_BANK"
                                 }
-
-//                        "In process" -> {
-//                            filter = "EDITED"
-//                        }
 
                                 else -> {
                                     filter = ""

@@ -63,6 +63,7 @@ import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -280,7 +281,7 @@ private fun LoansListItem(obj: GetLoansItem, onSelectedLoan: (GetLoansItem) -> U
             }
 
             Text(
-                text = if (isShowBalance.value) "****" else "${obj.MAIN_BALANCE}",
+                text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(obj.MAIN_BALANCE),
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.roboto_medium)),

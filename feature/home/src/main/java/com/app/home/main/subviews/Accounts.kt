@@ -55,6 +55,7 @@ import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -236,7 +237,7 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController, viewMode
             }
 
             Text(
-                text = if (isShowBalance.value) "****" else "${obj.BALANCE} ₼",
+                text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(obj.BALANCE.toDouble()),
                 modifier = Modifier
                     .padding(vertical = 4.dp, horizontal = 10.dp),
                 style = TextStyle(

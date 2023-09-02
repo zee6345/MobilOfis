@@ -44,6 +44,7 @@ import com.app.home.main.subviews.trustsList
 import com.app.network.models.responseModels.GetTrustsItem
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 
 const val homeToTrustDepositDetails = "homeToTrustDepositDetails"
@@ -421,7 +422,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                     )
 
                     Text(
-                        text = "${data.BALANCE}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.BALANCE.toDouble()), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -446,7 +447,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                     )
 
                     Text(
-                        text = "${data.INITIALAMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.INITIALAMOUNT.toDouble()), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),
@@ -483,7 +484,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                     )
 
                     Text(
-                        text = "${data.INITIALAMOUNT}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.INITIALAMOUNT.toDouble()), style = TextStyle(
 
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -508,7 +509,7 @@ private fun MainContent(navController: NavController, data: GetTrustsItem) {
                     )
 
                     Text(
-                        text = "${data.taxAmount}", style = TextStyle(
+                        text = Utils.formatAmountWithSpaces(data.taxAmount.toDouble()), style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
                             color = colorResource(R.color.background_card_blue),

@@ -3,6 +3,7 @@ package com.app.uikit.bottomSheet
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -34,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,12 +47,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.network.helper.Session
 import com.app.uikit.R
+import com.app.uikit.data.DataProvider
 import com.app.uikit.models.DateType
+import com.app.uikit.models.DurationDateModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 
@@ -104,7 +106,7 @@ fun DateBottomSheet(
     val showEndDatePicker = remember { mutableStateOf(false) }
 
 //    val selectedDate = remember { mutableStateOf("") }
-    var selectedDateType by remember { mutableStateOf(DateType.TODAY) }
+    var selectedDateType by remember { mutableStateOf<DateType?>(null) }
     val currentDate = System.currentTimeMillis()
     val formattedCurrentDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
 
@@ -114,8 +116,8 @@ fun DateBottomSheet(
 
     if (showDateBottomSheet.value) ModalBottomSheet(
         onDismissRequest = { showDateBottomSheet.value = false },
-        shape = RoundedCornerShape(topStart = 12.sdp, topEnd = 12.sdp),
-        containerColor = Color(0xFFF3F7FA)
+        shape = RoundedCornerShape(10.dp),
+        containerColor = Color.White
 
     ) {
         Column(
@@ -124,34 +126,37 @@ fun DateBottomSheet(
         ) {
             Text(
                 text = stringResource(R.string.duration),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = Color(0xFF223142),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontWeight = FontWeight(600),
+                    color = Color(0xFF223142),
+                    textAlign = TextAlign.Center,
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
-            DateTypeMenu({
-                startDate.value = it
-            }, {
+            Spacer(modifier = Modifier.padding(vertical = 10.dp))
+
+            DateTypeMenu {
                 selectedDateType = it
-            })
+            }
 
+            Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
-            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
             Text(
                 text = stringResource(id = R.string.duration),
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 2.sdp),
-                fontWeight = FontWeight.Normal,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                color = Color(R.color.grey_text),
-                fontSize = 12.sp
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    lineHeight = 16.1.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF859DB5),
+                )
             )
-            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+
+            Spacer(modifier = Modifier.padding(vertical = 5.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -159,17 +164,25 @@ fun DateBottomSheet(
             ) {
 
 
-                Card(
+                Box(
                     modifier = Modifier
-                        .padding(2.dp)
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFE7EEFC),
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 5.dp)
                         .clickable {
                             showStartDatePicker.value = true
-                        },
-                    shape = RoundedCornerShape(5.dp)
+                        }
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp)
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 5.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Filled.DateRange,
@@ -200,29 +213,36 @@ fun DateBottomSheet(
                     }
                 }
 
-
                 Box(
                     modifier = Modifier
                         .width(10.sdp)
                         .height(1.sdp)
                         .background(
-                            color = Color(R.color.border_grey),
+                            color = colorResource(R.color.border_grey),
                             shape = RoundedCornerShape(size = 10.sdp)
                         )
                         .align(Alignment.CenterVertically)
                 )
 
-                Card(
+                Box(
                     modifier = Modifier
-                        .padding(2.dp)
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFE7EEFC),
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 5.dp)
                         .clickable {
                             showEndDatePicker.value = true
-                        },
-                    shape = RoundedCornerShape(5.dp)
+                        }
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp)
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 5.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Filled.DateRange,
@@ -257,7 +277,10 @@ fun DateBottomSheet(
             Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
 
             Row(
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp, vertical = 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ClickableText(
@@ -282,12 +305,11 @@ fun DateBottomSheet(
                     onClick = {
                         showDateBottomSheet.value = false
 
+                        startDate.value = handleDateWithFilter(selectedDateType).startDate
+                        endDate.value = handleDateWithFilter(selectedDateType).endDate
+
                         onSelectedDate(
-                            DateModel(
-                                startDate.value,
-                                endDate.value,
-                                selectedDateType
-                            )
+                            handleDateWithFilter(selectedDateType)
                         )
 
                     },
@@ -315,144 +337,145 @@ fun DateBottomSheet(
 data class DateModel(
     val startDate: String,
     val endDate: String,
-    val dateType: DateType
 )
 
 @Composable
-fun DateTypeMenu(selectedDate: (String) -> Unit, selectedDateType: (DateType) -> Unit) {
+private fun DateTypeMenu(selectedDateType: (DateType) -> Unit) {
 
-    val selectedBoxIndex = remember { mutableStateOf(0) }
-    var dateType by remember { mutableStateOf(DateType.TODAY) }
+    var isSelected by remember { mutableStateOf(DurationDateModel("Today", DateType.TODAY)) }
+    val dateList = remember { DataProvider.filterDateList }
 
-    val session = Session(LocalContext.current)
+    LazyRow {
+        dateList.forEachIndexed { index, durationDateModel ->
 
-    if (session.getInt("selected") != null) {
-        selectedBoxIndex.value = session.getInt("selected")
+            item {
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = if (isSelected == durationDateModel) 0.dp else 2.dp,
+                            color = Color(0xFFE7EEFC),
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .background(
+                            color = if (isSelected == durationDateModel) Color(0xFF0FBF1B) else Color(
+                                0xFFFFFFFF
+                            ),
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 5.dp)
+                        .clickable {
+                            selectedDateType(durationDateModel.dateType)
+
+                            isSelected = durationDateModel
+                        }
+                ) {
+                    Text(
+                        text = durationDateModel.title,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = if (isSelected == durationDateModel) Color(0xFFFFFFFF) else Color(
+                                0xFF223142
+                            ),
+                        ),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(horizontal = 3.dp))
+            }
+
+        }
     }
+}
 
-//    when (selectedBoxIndex.value) {
-//        0 -> dateType = DateType.TODAY
-//        1 -> dateType = DateType.YESTERDAY
-//        2 -> dateType = DateType.WEEK
-//    }
-
-
-    Row(
-        Modifier.fillMaxWidth()
-    ) {
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(horizontal = 4.dp)
-                .weight(1f)
-                .background(
-                    if (selectedBoxIndex.value == 0) Color(0xFF0FBF1B) else Color(
-                        0xFFFFFFFF
-                    ), shape = RoundedCornerShape(8.dp)
-                )
-                .clickable {
-                    selectedBoxIndex.value = 0
-
-                    session.put("selected", selectedBoxIndex.value)
-
-                    dateType = DateType.TODAY
-                },
-        ) {
-            androidx.compose.material.Text(
-                text = "Today",
-                modifier = Modifier.padding(horizontal = 15.dp, vertical = 8.dp),
-                fontSize = 12.ssp,
-                color = if (selectedBoxIndex.value == 0) Color(0xFFFFFFFF) else Color(0xFF223142)
-            )
-        }
-
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(horizontal = 4.dp)
-                .weight(1f)
-                .background(
-                    if (selectedBoxIndex.value == 1) Color(0xFF0FBF1B) else Color(
-                        0xFFFFFFFF
-                    ), shape = RoundedCornerShape(8.dp)
-                )
-                .clickable {
-                    selectedBoxIndex.value = 1
-
-                    session.put("selected", selectedBoxIndex.value)
-
-                    dateType = DateType.YESTERDAY
-                },
-
-            ) {
-            androidx.compose.material.Text(
-                text = "Yesterday",
-                modifier = Modifier
-                    .padding(
-                        horizontal = 15.dp,
-                        vertical = 8.dp
-                    ),
-                fontSize = 12.ssp,
-                color = if (selectedBoxIndex.value == 1) Color(0xFFFFFFFF) else Color(0xFF223142)
-            )
-        }
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(horizontal = 4.dp)
-                .weight(1f)
-                .background(
-                    if (selectedBoxIndex.value == 2) Color(0xFF0FBF1B) else Color(
-                        0xFFFFFFFF
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .clickable {
-                    selectedBoxIndex.value = 2
-
-                    session.put("selected", selectedBoxIndex.value)
-
-                    dateType = DateType.WEEK
-                },
-
-            ) {
-            androidx.compose.material.Text(
-                text = "This Week",
-                modifier = Modifier
-                    .padding(
-                        horizontal = 15.dp,
-                        vertical = 8.dp
-                    ),
-                fontSize = 12.ssp,
-                color = if (selectedBoxIndex.value == 2) Color(0xFFFFFFFF) else Color(0xFF223142)
-            )
-        }
-
-    }
-
+fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
     val currentDate = System.currentTimeMillis()
-    var finalDate = ""
-    when (selectedBoxIndex.value) {
-        0 -> {
-            finalDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+    var startDate = ""
+    var endDate = ""
+
+    when (selectedDateType) {
+        DateType.TODAY -> {
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
 
-        1 -> {
+        DateType.YESTERDAY -> {
             val yesterdayDate = Date(currentDate - 24 * 60 * 60 * 1000)
-            finalDate = SimpleDateFormat("dd.MM.yyyy").format(yesterdayDate)
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(yesterdayDate)
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
 
-        2 -> {
-            val oneWeekLaterDate = Date(currentDate - 7 * 24 * 60 * 60 * 1000)
-            finalDate = SimpleDateFormat("dd.MM.yyyy").format(oneWeekLaterDate)
+        DateType.THIS_WEEK -> {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = currentDate
+
+            val currentWeekEndDate = calendar.time
+
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            val currentWeekStartDate = calendar.time
+
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekEndDate)
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekStartDate)
+        }
+
+        DateType.LAST_WEEK -> {
+            val calendar = Calendar.getInstance()
+
+// Set the calendar to the current date
+            val currentDate = System.currentTimeMillis()
+            calendar.timeInMillis = currentDate
+
+// Find the most recent Sunday before the current date
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+            calendar.add(Calendar.DAY_OF_MONTH, -7)
+            val lastSunday = calendar.time
+
+// Calculate the start of the last week (last Monday)
+            calendar.add(Calendar.DAY_OF_WEEK, -6)
+            val lastMonday = calendar.time
+
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonday)
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(lastSunday)
+        }
+
+        DateType.THIS_MONTH -> {
+            val calendar = Calendar.getInstance()
+
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            val currentMonthStartDate = calendar.time
+
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentMonthStartDate)
+
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+        }
+
+        DateType.LAST_MONTH -> {
+
+            val calendar = Calendar.getInstance()
+
+            // Set the calendar to the first day of the current month
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+
+            // Move the calendar back one month to get the first day of last month
+            calendar.add(Calendar.MONTH, -1)
+            val lastMonthStartDate = calendar.time
+
+            // Move the calendar to the last day of last month
+            calendar.add(Calendar.MONTH, 1)
+            calendar.add(Calendar.DAY_OF_MONTH, -1)
+            val lastMonthEndDate = calendar.time
+
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonthStartDate)
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonthEndDate)
+        }
+
+        else -> {
+            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
     }
 
-    selectedDate(finalDate)
-    selectedDateType(dateType)
-
-
+    return DateModel(startDate, endDate)
 }

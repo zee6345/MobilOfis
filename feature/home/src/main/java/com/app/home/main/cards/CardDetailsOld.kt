@@ -59,6 +59,7 @@ import com.app.uikit.borders.rightVerticalDashedBorder
 import com.app.uikit.bottomSheet.BusinessCardOptionsSheet
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.CardFilters
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 
 
@@ -484,7 +485,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
                     )
 
                     Text(
-                        text = if (data.Balance != null) "${data.Balance}" else "",
+                        text = if (data.Balance != null) Utils.formatAmountWithSpaces(data.Balance!!) else "0.00",
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.roboto_regular)),

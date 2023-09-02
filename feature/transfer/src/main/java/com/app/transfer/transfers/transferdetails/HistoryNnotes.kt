@@ -56,6 +56,7 @@ import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -66,7 +67,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
     var expanded1 by remember { mutableStateOf(true) }
     var expanded2 by remember { mutableStateOf(true) }
-    val isLoading = remember { mutableStateOf(true) }
+    val isLoading = remember { mutableStateOf(false) }
     val history = remember { mutableListOf<HISTORYDETAILS>() }
     val isSigned = remember { mutableStateOf(false) }
 
@@ -81,136 +82,134 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     val coroutine = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        coroutine.launch{
+        coroutine.launch {
             viewModel.getTransactionDetails(ibankRef)
         }
     }
 
-    if (isLoading.value) {
+//    if (isLoading.value) {
+//
+//        Box(
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//        }
+//
+//    } else {
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
 
-    } else {
 
-        Column(
+        Card(
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier
-                .fillMaxSize()
-            ) {
+                .fillMaxWidth()
+                .padding(vertical = 5.sdp, horizontal = 10.sdp),
+            backgroundColor = Color.White
+        ) {
 
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
+            Row(
+                Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
+                androidx.compose.material.Text(
+                    text = stringResource(R.string.transfer_history),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(600),
+
+                        )
+                )
+
+
+                Image(
+                    if (expanded1) painterResource(id = R.drawable.ic_option_expand) else painterResource(
+                        id = R.drawable.ic_option_collapse
+                    ),
+                    contentDescription = "",
+                    modifier = Modifier.size(26.dp)
+                        .padding(3.dp)
                         .clickable {
                             expanded1 = !expanded1
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    androidx.compose.material.Text(
-                        text = stringResource(R.string.transfer_history),
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight(600),
-
-                            )
-                    )
-
-                    if (expanded1)
-                        Image(
-                            painterResource(id = R.drawable.ic_option_expand),
-                            contentDescription = "",
-                            modifier = Modifier.size(25.dp)
-                        ) else Image(
-                        painterResource(id = R.drawable.ic_option_collapse),
-                        contentDescription = "",
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-
-            }
-
-
-            if (expanded1)
-                LazyColumn() {
-                    items(items = history, itemContent = {
-                        CardInfo2(navController = navController, it)
-                    })
-                }
-
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
-            ) {
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                        .clickable {
-                            expanded2 = !expanded2
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    androidx.compose.material.Text(
-                        text = stringResource(R.string.notes),
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight(600),
-
-                            )
-                    )
-
-                    if (expanded2)
-                        Image(
-                            painterResource(id = R.drawable.ic_option_expand),
-                            contentDescription = "",
-                            modifier = Modifier.size(25.dp)
-                        ) else Image(
-                        painterResource(id = R.drawable.ic_option_collapse),
-                        contentDescription = "",
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-
-            }
-
-
-            if (expanded2)
-                LazyColumn() {
-                    items(items = history, itemContent = {
-                        CardInfo5(navController = navController, it)
-                    })
-                }
-
-
-            if (isSigned.value) {
-                CardInfo6(navController = navController)
+                        }
+                )
             }
 
         }
+
+
+        if (expanded1)
+            LazyColumn() {
+                items(items = history, itemContent = {
+                    CardInfo2(navController = navController, it)
+                })
+            }
+
+
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.sdp, horizontal = 10.sdp),
+            backgroundColor = Color.White
+        ) {
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                androidx.compose.material.Text(
+                    text = stringResource(R.string.notes),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(600),
+
+                        )
+                )
+
+
+                Image(
+                    if (expanded2) painterResource(id = R.drawable.ic_option_expand) else painterResource(
+                        id = R.drawable.ic_option_collapse
+                    ),
+                    contentDescription = "",
+                    modifier = Modifier.size(26.dp)
+                        .padding(3.dp)
+                        .clickable {
+                            expanded2 = !expanded2
+                        }
+                )
+            }
+
+        }
+
+
+        if (expanded2)
+            LazyColumn() {
+                items(items = history, itemContent = {
+                    CardInfo5(navController = navController, it)
+                })
+            }
+
+
+        if (isSigned.value) {
+            CardInfo6(navController = navController)
+        }
+
     }
+
 
     detailsData?.let {
         when (it) {
@@ -220,7 +219,6 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
             is DataState.Error -> {
                 isLoading.value = false
-//                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
@@ -240,6 +238,9 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
         }
     }
 
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
 
 }
 

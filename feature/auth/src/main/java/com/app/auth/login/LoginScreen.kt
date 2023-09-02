@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -145,11 +146,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 50.sdp,
-        sheetShape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
+        sheetShape = RoundedCornerShape(10.dp),
         sheetElevation = 20.sdp,
         sheetContent = {
 
-            Column(Modifier.fillMaxWidth()) {
+            Column(
+                Modifier.fillMaxWidth()
+
+            ) {
 
                 Spacer(modifier = Modifier.padding(top = 10.sdp))
 
@@ -549,13 +553,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                             inclusive = true
                                         }
                                     }
-                                }
+                                },
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_login_pin),
                                     contentDescription = "",
                                     Modifier.padding(2.dp)
-                                        .size(22.dp)
+                                        .size(26.dp)
                                 )
                                 Text(text = "Login with PIN code")
                             }

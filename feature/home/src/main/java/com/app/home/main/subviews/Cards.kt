@@ -67,6 +67,7 @@ import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
+import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -438,7 +439,7 @@ private fun OldCardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
             }
 
             Text(
-                text = if (isShowBalance.value) "****" else amount,
+                text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(amount.toDouble()),
                 color = colorResource(R.color.background_card_blue),
                 style = TextStyle(
                     fontSize = 14.sp,
@@ -546,7 +547,7 @@ private fun NewCardsListItem(obj: MainCardX, onCardClick: (MainCardX) -> Unit) {
             }
 
             Text(
-                text = if (isShowBalance.value) "****" else "0.00",
+                text = if (isShowBalance.value) "****" else "",
                 color = colorResource(R.color.background_card_blue),
                 style = TextStyle(
                     fontSize = 14.sp,
