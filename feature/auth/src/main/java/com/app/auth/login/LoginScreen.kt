@@ -2,6 +2,8 @@ package com.app.auth.login
 
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -65,6 +66,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -559,7 +561,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_login_pin),
                                     contentDescription = "",
-                                    Modifier.padding(2.dp)
+                                    Modifier
+                                        .padding(2.dp)
                                         .size(26.dp)
                                 )
                                 Text(text = "Login with PIN code")
@@ -697,16 +700,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     startMessage?.let {
         when (it) {
             is DataState.Loading -> {
-//                isLoading.value = true
             }
 
             is DataState.Error -> {
-//                isLoading.value = false
             }
 
             is DataState.Success -> {
-//                isLoading.value = false
-
                 val data = it.data as GetStartMessage
                 data?.apply {
 
@@ -729,14 +728,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     }
 
     if (showDialog.value) {
-//        CallTopAlertDialog(
-//            backgroundColor = colorResource(R.color.background_card_blue),
-//            cornerRadius = 12.dp,
-//            title = stringResource(R.string.attention),
-//            message = message.value,
-//            onClose = { showDialog.value = false }
-//        )
-
         showDialog(showDialog.value, message.value) {
             showDialog.value = false
         }
@@ -752,22 +743,6 @@ private fun showDialog(
     onClose: () -> Unit
 ) {
 
-//    val annotatedString = buildAnnotatedString {
-//        val startIndex = message.indexOf("|")
-//        val endIndex = message.lastIndexOf("|")
-//
-//        val linkText = message.substring(startIndex + 1, endIndex)
-//        val linkUrl = message.substring(endIndex + 1)
-//
-//        append(message.substring(0, startIndex))
-//        pushStringAnnotation("URL", linkUrl)
-//        withStyle(style = SpanStyle(color = Color.Blue)) {
-//            append(linkText)
-//        }
-//        pop()
-//        append(message.substring(endIndex + linkUrl.length + 2))
-//    }
-
     AnimatedVisibility(
         visible = shown,
         enter = slideInVertically(
@@ -780,10 +755,7 @@ private fun showDialog(
     ) {
 
         Box(
-            Modifier
-                .fillMaxSize()
-//                .clickable { onClose() }
-            ,
+            Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
 
@@ -830,37 +802,107 @@ private fun showDialog(
 
 
                     Box() {
-                        Text(
-                            text = message,
-                            style = TextStyle(
-                                color = Color.White
-                            )
-                        )
 
-//                        ClickableText(
-//                            text = annotatedString,
+                        ClickableLinkTextView(message)
+//                        Text(
+//                            text = message,
 //                            style = TextStyle(
 //                                color = Color.White
-//                            ),
-//                            onClick = { offset ->
-//                                annotatedString.getStringAnnotations(
-//                                    tag = "URL",
-//                                    start = offset,
-//                                    end = offset
-//                                ).firstOrNull()?.let { annotation ->
-//
-//                                }
-//                            },
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .padding(16.dp)
+//                            )
 //                        )
+
+
                     }
                 }
             }
         }
     }
 }
+
+@Composable
+fun ClickableLinkTextView(text: String) {
+    val context = LocalContext.current
+
+//    val annotatedString = buildAnnotatedString {
+//        val regex = """https?://\S+""".toRegex()
+//        val matches = regex.findAll(text)
+//
+//        var currentStart = 0
+//
+//        for (match in matches) {
+//            val linkText = match.value
+//            val linkStart = match.range.first
+//            val linkEnd = match.range.last + 1
+//
+//            // Append the text before the link
+//            append(text.subSequence(currentStart, linkStart))
+//
+//            // Append the link with a clickable annotation
+//            withStyle(style = SpanStyle(color = Color.Blue, fontSize = 16.sp)) {
+//                val startIndex = length
+//                append(linkText)
+//                addStringAnnotation("URL", linkText, startIndex, startIndex + linkText.length)
+//            }
+//
+//            currentStart = linkEnd
+//        }
+//
+//        // Append the remaining text after the last link
+//        if (currentStart < text.length) {
+//            append(text.subSequence(currentStart, text.length))
+//        }
+//    }
+
+    val annotatedString = buildAnnotatedString {
+        val regex = """https?://\S+""".toRegex()
+        val matches = regex.findAll(text)
+
+        var currentStart = 0
+
+        for (match in matches) {
+            val linkText = match.value
+            val linkStart = match.range.first
+            val linkEnd = match.range.last + 1
+
+            // Append the text before the link
+            append(text.subSequence(currentStart, linkStart))
+
+            // Append the link with a clickable annotation but no style changes
+            val startIndex = length
+            append(linkText)
+            addStringAnnotation("URL", linkText, startIndex, startIndex + linkText.length)
+
+            currentStart = linkEnd
+        }
+
+        // Append the remaining text after the last link
+        if (currentStart < text.length) {
+            append(text.subSequence(currentStart, text.length))
+        }
+    }
+
+
+    ClickableText(
+        text = annotatedString,
+        style = TextStyle(
+            color = Color.White
+        ),
+        onClick = { offset ->
+            val annotations = annotatedString.getStringAnnotations("URL", offset, offset)
+            if (annotations.isNotEmpty()) {
+                val clickedLink = annotations[0].item
+
+                // Handle the clicked link, e.g., open it in a web browser
+                // You can use clickedLink to determine which link was clicked.
+                // Example:
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(clickedLink))
+                context.startActivity(intent)
+            }
+        },
+        modifier = Modifier.padding(8.dp)
+    )
+}
+
 
 fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

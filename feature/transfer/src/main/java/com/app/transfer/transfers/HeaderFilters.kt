@@ -12,22 +12,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
+import com.app.transfer.R
 import com.app.transfer.isListEmpty
+import com.app.uikit.views.AutoResizedText
 
 //private var isSelected by mutableStateOf<TransferCountSummaryResponseItem?>(null)
 
@@ -103,7 +105,7 @@ fun headerFilters(
                             onFilterClick(filter)
                         }
 
-                        Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
+                        Spacer(modifier = Modifier.size(width = 8.dp, height = 1.dp))
 
                     }
                 }
@@ -184,10 +186,11 @@ private fun TransferMenuItemView(
     }
 
     Box(
-        modifier = Modifier.padding(vertical = 5.dp)
+        modifier = Modifier
+            .padding(vertical = 5.dp)
             .background(
 //                if (isSelected == menu) Color(0xFFE7EEFC) else
-                    Color.White,
+                Color.White,
                 shape = RoundedCornerShape(8.dp)
             ),
     ) {
@@ -203,16 +206,28 @@ private fun TransferMenuItemView(
                 modifier = Modifier
                     .padding(horizontal = 7.dp)
                     .align(Alignment.CenterVertically),
-                fontSize = 12.sp
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    lineHeight = 18.4.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF223142),
+                )
             )
-            Text(
+            AutoResizedText(
                 text = "${menu.count}", modifier = Modifier
                     .padding(16.dp)
                     .drawBehind {
                         drawCircle(
                             color = color, radius = 12.dp.toPx()
                         )
-                    }, fontSize = 14.sp, color = Color.White
+                    },
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    lineHeight = 18.4.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontWeight = FontWeight(400)
+                ), color = Color.White
             )
 
         }

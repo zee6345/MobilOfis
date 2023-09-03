@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -68,9 +70,9 @@ import kotlinx.coroutines.launch
 fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     val isLoading = remember { mutableStateOf(false) }
-    val isFieldExpanded = remember { mutableStateOf(true) }
-    var expanded = remember { mutableStateOf(false) }
-    val isExpanded = remember { mutableStateOf(false) }
+
+    var expanded by remember { mutableStateOf(true) }
+    var isExpanded by remember { mutableStateOf(true) }
 
 
     val detailsData by viewModel.getTransactionDetails.collectAsState()
@@ -334,17 +336,33 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
                         )
 
+//                        Icon(
+//                            painter = if (isExpanded) {
+//                                painterResource(id = R.drawable.ic_option_expand)
+//                            } else {
+//                                painterResource(id = R.drawable.ic_option_collapse)
+//                            },
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .padding(5.sdp)
+//                                .align(Alignment.CenterVertically)
+//                                .size(10.sdp, 10.sdp)
+//                                .clickable {
+//                                    isExpanded = !isExpanded
+//                                }
+//                        )
+
                         Image(
-                            painter = if (isExpanded.value) painterResource(id = R.drawable.ic_option_collapse) else painterResource(
+                            painter = if (isExpanded) painterResource(id = R.drawable.ic_option_collapse) else painterResource(
                                 id = R.drawable.ic_option_expand
                             ),
                             contentDescription = "",
                             Modifier
                                 .size(height = 26.dp, width = 26.dp)
-                                .padding(3.dp)
+                                .padding(4.dp)
                                 .clickable {
                                     coroutine.launch {
-                                        isExpanded.value = !isExpanded.value
+                                        isExpanded = !isExpanded
                                     }
                                 }
                         )
@@ -352,7 +370,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     }
 
 
-                    if (isExpanded.value) {
+                    if (isExpanded) {
 
                         Row(
                             Modifier
@@ -497,16 +515,16 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
 
                         Image(
-                            painter = if (expanded.value) painterResource(id = R.drawable.ic_option_collapse) else painterResource(
+                            painter = if (expanded) painterResource(id = R.drawable.ic_option_collapse) else painterResource(
                                 id = R.drawable.ic_option_expand
                             ),
                             contentDescription = "",
                             Modifier
                                 .size(height = 26.dp, width = 26.dp)
-                                .padding(3.dp)
+                                .padding(4.dp)
                                 .clickable {
                                     coroutine.launch {
-                                        expanded.value = !expanded.value
+                                        expanded = !expanded
                                     }
                                 }
                         )
@@ -514,7 +532,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     }
 
 
-                    if (expanded.value) {
+                    if (expanded) {
 
                         Row(
                             Modifier

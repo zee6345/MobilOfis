@@ -8,6 +8,18 @@ import java.util.Locale
 
 object Utils {
 
+    fun formatCardNumber(input: String): String {
+        val formatted = StringBuilder()
+        for (i in input.indices) {
+            if (i > 0 && i % 4 == 0) {
+                formatted.append(" ") // Add a space every 4 characters
+            }
+            formatted.append(input[i])
+        }
+        return formatted.toString()
+    }
+
+
     fun formatAmountWithSpaces(amount: Double): String {
 
         val isNegative = amount < 0

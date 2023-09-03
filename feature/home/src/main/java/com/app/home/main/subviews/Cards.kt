@@ -405,7 +405,7 @@ private fun OldCardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
                     )
 
                     Text(
-                        text = "${obj.EncryptedPan}",
+                        text = if (isShowBalance.value) "${obj.EncryptedPan}" else "${obj.Pan}",
                         style = TextStyle(fontSize = 14.sp),
                         color = colorResource(R.color.background_card_blue),
                         modifier = Modifier.padding(start = 4.dp)

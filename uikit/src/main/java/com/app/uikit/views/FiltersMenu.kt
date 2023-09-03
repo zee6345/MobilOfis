@@ -36,7 +36,7 @@ import com.app.uikit.models.FilterType
 import ir.kaaveh.sdpcompose.sdp
 
 
-val tarnsfersDate = mutableStateOf(DateModel("", "", DateType.TODAY))
+val tarnsfersDate = mutableStateOf(DateModel("", "", null))
 val tarnsfersType = mutableStateOf("Type")
 val tarnsfersCurrency = mutableStateOf("Currency")
 val tarnsfersStatus = mutableStateOf("Status")
@@ -71,7 +71,7 @@ fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
                             }
 
                             DateType.LAST_WEEK -> {
-                                "${tarnsfersDate.value!!.startDate} - ${tarnsfersDate.value!!.endDate}"
+                                "${tarnsfersDate.value.startDate} - ${tarnsfersDate.value!!.endDate}"
                             }
 
                             DateType.THIS_MONTH -> {

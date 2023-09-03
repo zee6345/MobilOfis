@@ -1,7 +1,7 @@
 package com.app.transfer
 
 import android.content.Context
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,20 +10,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -75,6 +78,7 @@ import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.bottomSheet.DateBottomSheet
 import com.app.uikit.bottomSheet.StatusBottomSheet
 import com.app.uikit.bottomSheet.TypeBottomSheet
+import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AccountsData
 import com.app.uikit.models.FilterType
@@ -88,6 +92,7 @@ import com.app.uikit.views.tarnsfersCurrency
 import com.app.uikit.views.tarnsfersStatus
 import com.app.uikit.views.tarnsfersType
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -111,6 +116,7 @@ private val filterByType = mutableStateOf("")
 private val filterByAccount = mutableStateOf("")
 private val filterByAmount = mutableStateOf("")
 private val filterByCurrency = mutableStateOf("")
+private val filterBySearch = mutableStateOf("")
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -122,6 +128,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
+//    val searchTransfer = remember { mutableStateOf("") }
+
 
     var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
 
@@ -130,6 +138,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val isLoading = remember { mutableStateOf(false) }
     val isSigned = remember { mutableStateOf(false) }
     val sendToBank = remember { mutableStateOf(false) }
+    val showDateError = remember { mutableStateOf(false) }
+    val isSearchEnable = remember { mutableStateOf(false) }
+    val closeSearch = remember { mutableStateOf(false) }
 
     val filterTypeList = remember { mutableListOf<String>() }
     val filterCurrencyList = remember { mutableListOf<String>() }
@@ -178,40 +189,119 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
                 .fillMaxWidth()
-                .weight(0.1f),
+                .then(Modifier.wrapContentHeight()),
             color = Color(0xFF203657),
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(horizontal = 10.dp, vertical = 5.dp),
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_back_arrow),
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 25.dp)
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            navController.popBackStack()
-                        },
-                    contentDescription = ""
-                )
-                Text(
-                    text = stringResource(R.string.transfers),
-                    style = TextStyle(color = Color.White, fontSize = 18.sp),
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(horizontal = 8.dp)
-                )
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_back_arrow),
+                            modifier = Modifier
+                                .size(width = 32.dp, height = 25.dp)
+                                .align(Alignment.CenterVertically)
+                                .clickable {
+                                    navController.popBackStack()
+                                },
+                            contentDescription = ""
+                        )
+                        Text(
+                            text = stringResource(R.string.transfers),
+                            style = TextStyle(color = Color.White, fontSize = 18.sp),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 8.dp)
+                        )
+                    }
+
+                    if (!isSearchEnable.value) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_tansfer_search),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                                .clickable {
+                                    isSearchEnable.value = true
+                                }
+                        )
+                    }
+
+                }
+
+
+                if (isSearchEnable.value) {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = filterBySearch.value,
+                            onValueChange = {
+                                filterBySearch.value = it
+
+                                closeSearch.value = it.isEmpty()
+                            },
+                            label = {
+                                androidx.compose.material3.Text(
+                                    text = "Search",
+                                    fontSize = 14.sp
+                                )
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    painter = if (!closeSearch.value) painterResource(id = R.drawable.ic_transfer_close) else painterResource(id = R.drawable.ic_tansfer_search),
+                                    contentDescription = null,
+                                    tint = Color.Black,
+                                    modifier = Modifier
+                                        .padding(horizontal = 10.dp)
+                                        .clickable {
+                                            isSearchEnable.value = false
+                                        }
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                backgroundColor = Color.White,
+                                focusedBorderColor = colorResource(R.color.background_card_blue),
+                                unfocusedBorderColor = colorResource(R.color.border_grey),
+                                unfocusedLabelColor = colorResource(R.color.grey_text),
+                                focusedLabelColor = colorResource(R.color.background_card_blue)
+                            ),
+                            singleLine = true,
+                            shape = RoundedCornerShape(8.dp),
+                            textStyle = TextStyle(
+                                fontSize = 12.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF223142),
+                            )
+                        )
+                    }
+
+                }
 
             }
+
         }
 
 
         Box(
             modifier = Modifier
-                .weight(0.9f)
+                .weight(0.8f)
                 .padding(horizontal = 10.dp)
         ) {
 
@@ -270,7 +360,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                         filterByType.value.isNotEmpty() or
                                         filterByAccount.value.isNotEmpty() or
                                         filterByCurrency.value.isNotEmpty() or
-                                        filterByAmount.value.isNotEmpty()
+                                        filterByAmount.value.isNotEmpty() or
+                                        filterBySearch.value.isNotEmpty()
                                     ) {
                                         items.asSequence()
                                             .filter {
@@ -278,16 +369,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                             }.filter {
                                                 it.brTrnType.contains(filterByType.value, true)
                                             }.filter {
-                                                it.customerAccount.contains(
-                                                    filterByAccount.value,
-                                                    true
-                                                )
+                                                it.customerAccount.contains(filterByAccount.value, true)
                                             }.filter {
                                                 it.currency.contains(filterByCurrency.value, true)
                                             }.filter {
-                                                it.amount.toString()
-                                                    .contains(filterByAmount.value, true)
-                                            }.toList()
+                                                it.amount.toString().contains(filterByAmount.value, true)
+                                            }.filter {
+                                                it.benefName.contains(filterBySearch.value, true)
+                                            }
+                                            .toList()
                                     } else {
                                         items
                                     }
@@ -389,51 +479,65 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
     DateBottomSheet(showDateBottomSheet,
-         onSelectedDate = {
+        onSelectedDate = {
             startDate = it.startDate
             endDate = it.endDate
+
+//            val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
+//
+//            // Parse the date strings into Date objects
+//            val startsDate = dateFormat.parse(startDate)
+//            val endsDate = dateFormat.parse(endDate)
+//
+//            // Check if the start date is greater than the end date
+//            if (startsDate.after(endsDate)) {
+//                showDateError.value = true
+//            } else {
+
+//                Log.e("mmmTAG", " date")
 
             coroutine.launch {
                 viewModel.getTransferCountSummary(startDate, endDate)
                 viewModel.getTransferList(startDate, endDate, 0)
             }
+//            }
         })
 
     AccountBottomSheet(showFromAccountBottomSheet, filterAccountList) {
 //        coroutine.launch {
 
 
-            //on account click
-            showFromAccountBottomSheet.value = false
+        //on account click
+        showFromAccountBottomSheet.value = false
 
-            filterByAccount.value = it.accountNum
+        filterByAccount.value = it.accountNum
 
-            //for filter title
-            tarnsfersAccount.value = it.accountNum
+        //for filter title
+        tarnsfersAccount.value = it.accountNum
 //        }
     }
 
     StatusBottomSheet(showStatusBottomSheet, filterStatusList) {
 //        coroutine.launch {
-            showStatusBottomSheet.value = false
+        showStatusBottomSheet.value = false
 
-            filterByStatus.value = it
+        filterByStatus.value = it
 
-            //for filter title
-            tarnsfersStatus.value = Utils.headerStatus(it).status
+        //for filter title
+        tarnsfersStatus.value = Utils.headerStatus(it).status
 
     }
 
     TypeBottomSheet(showTypeBottomSheet, filterTypeList) {
 //        coroutine.launch {
 
-            //on type click
-            showTypeBottomSheet.value = false
+        //on type click
+        showTypeBottomSheet.value = false
 
-            filterByType.value = it.prefix
+        filterByType.value = it.prefix
 
-            //show type to filters
-            tarnsfersType.value = it.prefix
+        //show type to filters
+        tarnsfersType.value = it.prefix
 
 
     }
@@ -444,12 +548,12 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     CurrencyBottomSheet(showCurrencyBottomSheet, filterCurrencyList) {
 
-            showCurrencyBottomSheet.value = false
+        showCurrencyBottomSheet.value = false
 
-            filterByCurrency.value = it
+        filterByCurrency.value = it
 
-            //for filter title
-            tarnsfersCurrency.value = it
+        //for filter title
+        tarnsfersCurrency.value = it
 
     }
 
@@ -506,7 +610,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val transferData = it.data as TransferListResponse
 
                 //transfer list
-                if (transferListResponse.isNotEmpty()){
+                if (transferListResponse.isNotEmpty()) {
                     transferListResponse.clear()
                 }
                 transferData.forEach {
@@ -514,47 +618,44 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 }
 
 
+                //fetch trn type list
+                if (filterTypeList.isNotEmpty()) {
+                    filterTypeList.clear()
+                }
 
-                    //fetch trn type list
-                    if (filterTypeList.isNotEmpty()) {
-                        filterTypeList.clear()
-                    }
-
-                    transferData.forEach { type ->
-                        filterTypeList.add(type.brTrnType)
-                    }
-
-
-                    //fetch currency  list
-                    if (filterCurrencyList.isNotEmpty()) {
-                        filterCurrencyList.clear()
-                    }
-
-                    transferData.forEach { type ->
-                        filterCurrencyList.add(type.currency)
-                    }
-
-
-                    //fetch status list
-                    if (filterStatusList.isNotEmpty()) {
-                        filterStatusList.clear()
-                    }
-
-                    transferData.forEach { type ->
-                        filterStatusList.add(type.status)
-                    }
-
-                    //fetch account list
-                    if (filterAccountList.isNotEmpty()) {
-                        filterAccountList.clear()
-                    }
-
-                    transferData.forEach { account ->
-                        filterAccountList.add(AccountsData(account.customerAccount, account.amount))
-                    }
+                transferData.forEach { type ->
+                    filterTypeList.add(type.brTrnType)
                 }
 
 
+                //fetch currency  list
+                if (filterCurrencyList.isNotEmpty()) {
+                    filterCurrencyList.clear()
+                }
+
+                transferData.forEach { type ->
+                    filterCurrencyList.add(type.currency)
+                }
+
+
+                //fetch status list
+                if (filterStatusList.isNotEmpty()) {
+                    filterStatusList.clear()
+                }
+
+                transferData.forEach { type ->
+                    filterStatusList.add(type.status)
+                }
+
+                //fetch account list
+                if (filterAccountList.isNotEmpty()) {
+                    filterAccountList.clear()
+                }
+
+                transferData.forEach { account ->
+                    filterAccountList.add(AccountsData(account.customerAccount, account.amount))
+                }
+            }
 
 
         }
@@ -579,6 +680,20 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     if (isLoading.value) {
         ShowProgressDialog(isLoading)
+    }
+
+    //show error on wrong date selection
+    if (showDateError.value) {
+        RoundedCornerToast(
+            "The beginning of the period cannot be later than the end",
+            Toast.LENGTH_SHORT,
+            context
+        )
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showDateError.value = false
+        }
     }
 
 }
@@ -864,6 +979,7 @@ private fun FilterListMenu() {
             filterByAccount.value = ""
             filterByCurrency.value = ""
             filterByAmount.value = ""
+            filterBySearch.value = ""
         }
 
     }

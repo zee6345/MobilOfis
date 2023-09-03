@@ -80,14 +80,14 @@ fun SelectCompanyBottomSheet(
         ) {
 
             Column(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)
+                modifier = Modifier.padding( vertical = 10.dp)
             ) {
 
                 Text(
                     text = stringResource(R.string.select_company),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 20.dp),
+                        .padding(bottom = 20.dp, start = 10.dp, end = 10.dp),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_bold)),

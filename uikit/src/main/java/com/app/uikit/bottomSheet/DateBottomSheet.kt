@@ -1,6 +1,7 @@
 package com.app.uikit.bottomSheet
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,11 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.uikit.R
 import com.app.uikit.data.DataProvider
+import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.models.DateType
 import com.app.uikit.models.DurationDateModel
 import com.app.uikit.views.tarnsfersDate
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -103,9 +108,11 @@ fun DateBottomSheet(
     datePickerStartBottomSheet = rememberSaveable { mutableStateOf(false) }
     datePickerEndBottomSheet = rememberSaveable { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    var showError by remember { mutableStateOf(false) }
+
     val showStartDatePicker = remember { mutableStateOf(false) }
     val showEndDatePicker = remember { mutableStateOf(false) }
-
 
     var selectedDateType by remember { mutableStateOf(DurationDateModel("Today", DateType.TODAY)) }
     val currentDate = System.currentTimeMillis()
@@ -304,18 +311,18 @@ fun DateBottomSheet(
                         fontSize = 14.ssp
                     ),
                     onClick = {
-                        showDateBottomSheet.value = false
 
-                        startDate.value = handleDateWithFilter(selectedDateType!!.dateType).startDate
-                        endDate.value = handleDateWithFilter(selectedDateType!!.dateType).endDate
+                            showDateBottomSheet.value = false
 
-                        onSelectedDate(
-                            handleDateWithFilter(selectedDateType!!.dateType)
-                        )
+                            startDate.value = handleDateWithFilter(selectedDateType!!.dateType).startDate
+                            endDate.value = handleDateWithFilter(selectedDateType!!.dateType).endDate
 
-                        //for filter title
-                        tarnsfersDate.value = handleDateWithFilter(selectedDateType!!.dateType)
+                            onSelectedDate(
+                                handleDateWithFilter(selectedDateType!!.dateType)
+                            )
 
+                            //for filter title
+                            tarnsfersDate.value = handleDateWithFilter(selectedDateType!!.dateType)
 
                     },
                 )
@@ -336,13 +343,31 @@ fun DateBottomSheet(
         showEndDatePicker.value = false
     }
 
+    if (startDate.value > endDate.value) {
+        showError = true
+    }
+
+    if (showError) {
+        RoundedCornerToast(
+            "The beginning of the period cannot be later than the end",
+            Toast.LENGTH_SHORT,
+            context
+        )
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showError = false
+        }
+    }
+
+
 }
 
 
 data class DateModel(
     val startDate: String,
     val endDate: String,
-    val type :DateType?
+    val type: DateType?
 )
 
 @Composable

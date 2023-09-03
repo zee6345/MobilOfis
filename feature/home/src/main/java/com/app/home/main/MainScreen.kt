@@ -438,7 +438,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 22.dp, end = 22.dp)
+                                .padding(start = 15.dp, end = 15.dp)
                         ) {
 
 
@@ -450,14 +450,15 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_business_icon),
                                     modifier = Modifier
-                                        .size(28.dp)
+                                        .size(26.dp)
+                                        .padding(1.dp)
                                         .align(Top)
                                         .clickable {
                                             coroutine.launch {
                                                 selectCompanyState.value = true
                                             }
                                         }
-                                        .weight(0.5f),
+                                        .weight(0.3f),
                                     contentDescription = "",
                                     tint = Color.White
                                 )
@@ -496,7 +497,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     modifier = Modifier
                                         .size(16.dp)
                                         .align(Top)
-                                        .weight(0.5f)
+                                        .weight(0.3f)
                                         .clickable {
                                             coroutine.launch {
                                                 selectCompanyState.value = true
