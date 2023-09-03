@@ -51,6 +51,7 @@ import com.app.uikit.R
 import com.app.uikit.data.DataProvider
 import com.app.uikit.models.DateType
 import com.app.uikit.models.DurationDateModel
+import com.app.uikit.views.tarnsfersDate
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 import java.text.SimpleDateFormat
@@ -91,11 +92,11 @@ fun DateBottomSheet() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateBottomSheet(
     showDateBottomSheet: MutableState<Boolean>,
+//    onSelectedType: (DurationDateModel) -> Unit,
     onSelectedDate: (DateModel) -> Unit,
 ) {
 
@@ -105,8 +106,8 @@ fun DateBottomSheet(
     val showStartDatePicker = remember { mutableStateOf(false) }
     val showEndDatePicker = remember { mutableStateOf(false) }
 
-//    val selectedDate = remember { mutableStateOf("") }
-    var selectedDateType by remember { mutableStateOf<DateType?>(null) }
+
+    var selectedDateType by remember { mutableStateOf(DurationDateModel("Today", DateType.TODAY)) }
     val currentDate = System.currentTimeMillis()
     val formattedCurrentDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
 
@@ -305,12 +306,16 @@ fun DateBottomSheet(
                     onClick = {
                         showDateBottomSheet.value = false
 
-                        startDate.value = handleDateWithFilter(selectedDateType).startDate
-                        endDate.value = handleDateWithFilter(selectedDateType).endDate
+                        startDate.value = handleDateWithFilter(selectedDateType!!.dateType).startDate
+                        endDate.value = handleDateWithFilter(selectedDateType!!.dateType).endDate
 
                         onSelectedDate(
-                            handleDateWithFilter(selectedDateType)
+                            handleDateWithFilter(selectedDateType!!.dateType)
                         )
+
+                        //for filter title
+                        tarnsfersDate.value = handleDateWithFilter(selectedDateType!!.dateType)
+
 
                     },
                 )
@@ -337,10 +342,11 @@ fun DateBottomSheet(
 data class DateModel(
     val startDate: String,
     val endDate: String,
+    val type :DateType?
 )
 
 @Composable
-private fun DateTypeMenu(selectedDateType: (DateType) -> Unit) {
+private fun DateTypeMenu(selectedDateType: (DurationDateModel) -> Unit) {
 
     var isSelected by remember { mutableStateOf(DurationDateModel("Today", DateType.TODAY)) }
     val dateList = remember { DataProvider.filterDateList }
@@ -364,7 +370,7 @@ private fun DateTypeMenu(selectedDateType: (DateType) -> Unit) {
                         )
                         .padding(horizontal = 12.dp, vertical = 5.dp)
                         .clickable {
-                            selectedDateType(durationDateModel.dateType)
+                            selectedDateType(durationDateModel)
 
                             isSelected = durationDateModel
                         }
@@ -477,5 +483,5 @@ fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
         }
     }
 
-    return DateModel(startDate, endDate)
+    return DateModel(startDate, endDate, selectedDateType!!)
 }

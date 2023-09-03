@@ -1,6 +1,5 @@
 package com.app.uikit.bottomSheet
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,11 +38,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.uikit.R
 import com.app.uikit.models.AmountModel
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -69,14 +70,17 @@ fun AmountBottomSheet() {
         )
     }
 
-    AmountBottomSheet(showAmountBottomSheet){
+    AmountBottomSheet(showAmountBottomSheet) {
 
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChanged: (AmountModel) -> Unit) {
+fun AmountBottomSheet(
+    showAmountBottomSheet: MutableState<Boolean>,
+    onValueChanged: (AmountModel) -> Unit
+) {
     val minAmountState = remember { mutableStateOf("1000") }
     val maxAmountState = remember { mutableStateOf("1000000") }
 
@@ -87,122 +91,148 @@ fun AmountBottomSheet(showAmountBottomSheet: MutableState<Boolean>, onValueChang
     ) {
         Column(
             modifier = Modifier
-                .padding(3.dp)
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 15.dp)
         ) {
 
-            Row(
+            Box(
                 modifier = Modifier.fillMaxWidth(),
-                Arrangement.Center
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = stringResource(R.string.amount),
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                    color = Color(0xFF223142)
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF223142),
+                        textAlign = TextAlign.Center,
+                    )
                 )
             }
 
-            Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
+
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth().padding(top=15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(horizontal = 8.sdp)
-                        .background(Color.White) // Background color of the box
                         .border(
-                            width = 1.dp,          // Outline width
-                            color = Color.Black.copy(0.4f),   // Outline color
-                            shape = RoundedCornerShape(8.dp) // Rounded corners
+                            width = 1.dp,
+                            color = Color(0xFFE7EEFC),
+                            shape = RoundedCornerShape(size = 6.dp)
+                        )
+                        .width(150.dp)
+                        .height(40.dp)
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(size = 6.dp)
                         ),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
-                        text = minAmountState.value,
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(16.dp)
+                        text = Utils.formatAmountWithSpaces(minAmountState.value.toDouble()),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
 
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.1f)
-                        .width(2.sdp)
-                        .height(2.sdp)
-                        .background(
-                            color = colorResource(R.color.border_grey),
-                            shape = RoundedCornerShape(size = 10.sdp)
-                        )
-                        .align(Alignment.CenterVertically)
+                    Modifier
+                        .padding(0.dp)
+                        .width(11.dp)
+                        .height(1.dp)
+                        .background(color = Color(0xFFE7EEFC))
                 )
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(horizontal = 8.sdp)
-                        .background(Color.White) // Background color of the box
                         .border(
-                            width = 1.dp,          // Outline width
-                            color = Color.Black.copy(0.4f),   // Outline color
-                            shape = RoundedCornerShape(8.dp) // Rounded corners
+                            width = 1.dp,
+                            color = Color(0xFFE7EEFC),
+                            shape = RoundedCornerShape(size = 6.dp)
+                        )
+                        .width(150.dp)
+                        .height(40.dp)
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(size = 6.dp)
                         ),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
-                        text = maxAmountState.value,
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(16.dp)
+                        text = Utils.formatAmountWithSpaces(maxAmountState.value.toDouble()),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
+
 
             Row(
-                Modifier.fillMaxWidth(),
+                Modifier.fillMaxWidth()
+                    .padding(top=20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
 
-                Text(text = "0",
+                Text(
+                    text = "0",
                     style = TextStyle(
-                        colorResource(id = R.color.grey_text)
-                    )
+                        fontSize = 12.sp,
+                        lineHeight = 16.1.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF859DB5),
+                    ),
+                    modifier = Modifier.padding(horizontal = 10.dp)
                 )
-                Text(text = "1 000 000",
+                Text(
+                    text = "1 000 000",
                     style = TextStyle(
-                        colorResource(id = R.color.grey_text)
-                    )
+                        fontSize = 12.sp,
+                        lineHeight = 16.1.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF859DB5),
+                    ),
+                    modifier = Modifier.padding(horizontal = 10.dp)
                 )
 
             }
 
-            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
+
 
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth().padding(top=15.dp, bottom = 15.dp),
                 contentAlignment = Alignment.Center
             ) {
 
                 RangeSeekBar() {
-                    minAmountState.value = it.startAmount.toString()
-                    maxAmountState.value = it.endAmount.toString()
+                    minAmountState.value = it.startAmount
+                    maxAmountState.value = it.endAmount
                 }
             }
 
-            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
+
 
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 3.sdp, horizontal = 5.sdp),
+                    .padding(vertical = 20.dp, horizontal = 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -249,14 +279,16 @@ fun RangeSeekBar(
             sliderValues = sliderValues_
         },
         valueRange = 0f..1000000f,
-        onValueChangeFinished = {},
+        onValueChangeFinished = {
+
+        },
         colors = SliderDefaults.colors(
             thumbColor = Color(0xFF203657),
             activeTrackColor = Color(0xFF203657),
             inactiveTrackColor = Color(0xFF859DB5)
         ),
         modifier = Modifier
-            .height(2.dp)
+            .height(1.dp)
     )
 
     onValueChanged(AmountModel(sliderValues.start.toString(), sliderValues.endInclusive.toString()))

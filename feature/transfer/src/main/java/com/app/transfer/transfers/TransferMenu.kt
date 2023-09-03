@@ -1,19 +1,23 @@
 package com.app.transfer.transfers
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -25,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.transfer.isListEmpty
 
+//private var isSelected by mutableStateOf<TransferCountSummaryResponseItem?>(null)
 
 @Composable
 fun headerFilters(
@@ -44,7 +49,7 @@ fun headerFilters(
                         Modifier.fillMaxWidth()
                     ) {
 
-//                    item {
+
                         TransferMenuItemView(menu = menu) { status ->
 
                             var filter = ""
@@ -99,75 +104,11 @@ fun headerFilters(
                         }
 
                         Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
-//                    }
 
                     }
                 }
             }
         }
-//            itemsIndexed(items = transferHeaderList) { index, menu ->
-//
-//                TransferMenuItemView(menu = menu) { status ->
-//
-//                    var filter = ""
-//
-//                    when (status) {
-//                        "For signing" -> {
-//                            filter = "PENDING_SIGNER"
-//                        }
-//
-//                        "Executed" -> {
-//                            filter = "CLOSED"
-//                        }
-//
-//                        "Sign and confirmation" -> {
-//                            filter = "PENDING_ALL"
-//                        }
-//
-//                        "Sent to the bank" -> {
-//                            filter = "BANK_SUCCESS"
-//                        }
-//
-//                        "Not processed" -> {
-//                            filter = "BANK_ERROR"
-//                        }
-//
-//                        "Deleted" -> {
-//                            filter = "DELETED"
-//                        }
-//
-//                        "Rejected" -> {
-//                            filter = "BANK_REJECTED"
-//                        }
-//
-//                        "For confirmation" -> {
-//                            filter = "PENDING_APPROVER"
-//                        }
-//
-//                        "Expired" -> {
-//                            filter = "EXPIRED"
-//                        }
-//
-//                        "In process" -> {
-//                            filter = "SEND_TO_BANK"
-//                        }
-//
-////                        "In process" -> {
-////                            filter = "EDITED"
-////                        }
-//
-//                        else -> {
-//                            filter = ""
-//                        }
-//                    }
-//
-//                    onFilterClick(filter)
-//                }
-//
-//                Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
-//
-//            }
-//        }
     }
 
 }
@@ -242,11 +183,19 @@ private fun TransferMenuItemView(
         }
     }
 
-    Card(
-        modifier = Modifier.padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
+    Box(
+        modifier = Modifier.padding(vertical = 5.dp)
+            .background(
+//                if (isSelected == menu) Color(0xFFE7EEFC) else
+                    Color.White,
+                shape = RoundedCornerShape(8.dp)
+            ),
     ) {
         Row(
-            Modifier.clickable { onFilterClick(status) },
+            Modifier.clickable {
+                onFilterClick(status)
+//                isSelected = menu
+            },
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(

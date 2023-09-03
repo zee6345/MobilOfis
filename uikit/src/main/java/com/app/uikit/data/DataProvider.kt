@@ -198,13 +198,14 @@ object DataProvider {
 
     val filtersModelList = listOf(
         FilterModel(FilterType.DATE, "Duration", Icons.Filled.ArrowDropDown, false),
+        FilterModel(FilterType.STATUS, "Status", Icons.Filled.ArrowDropDown, false),
         FilterModel(FilterType.ACCOUNT, "From the account", Icons.Filled.ArrowDropDown, false),
         FilterModel(FilterType.TYPE, "Type", Icons.Filled.ArrowDropDown, false),
         FilterModel(FilterType.FIELD, "Beneficiary", Icons.Filled.Search, false),
         FilterModel(FilterType.APPOINTMENT, "Details", Icons.Filled.Search, false),
         FilterModel(FilterType.AMOUNT, "Amount", Icons.Filled.Search, false),
         FilterModel(FilterType.CURRENCY, "Currency", Icons.Filled.ArrowDropDown, false),
-        FilterModel(FilterType.STATUS, "Status", Icons.Filled.ArrowDropDown, false)
+
     )
 
 

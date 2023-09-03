@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
@@ -61,20 +59,15 @@ import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.errorResponse.ErrorState
 import com.app.network.models.requestModels.FileDescriptor
 import com.app.network.models.requestModels.SendToBankModel
-import com.app.network.models.responseModels.GetAccounts
-import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.models.responseModels.MainCard
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.headerFilters
-
 import com.app.transfer.transfers.navigation.transferToDetails
 import com.app.uikit.bottomSheet.AccountBottomSheet
 import com.app.uikit.bottomSheet.AmountBottomSheet
@@ -83,12 +76,17 @@ import com.app.uikit.bottomSheet.DateBottomSheet
 import com.app.uikit.bottomSheet.StatusBottomSheet
 import com.app.uikit.bottomSheet.TypeBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.models.AccountsData
 import com.app.uikit.models.FilterType
 import com.app.uikit.models.SignatureInfo
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.FiltersTopRow
+import com.app.uikit.views.tarnsfersAccount
+import com.app.uikit.views.tarnsfersCurrency
+import com.app.uikit.views.tarnsfersStatus
+import com.app.uikit.views.tarnsfersType
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -107,6 +105,12 @@ private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
 
 var isListEmpty = mutableStateOf(false)
+
+private val filterByStatus = mutableStateOf("")
+private val filterByType = mutableStateOf("")
+private val filterByAccount = mutableStateOf("")
+private val filterByAmount = mutableStateOf("")
+private val filterByCurrency = mutableStateOf("")
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -127,21 +131,17 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val isSigned = remember { mutableStateOf(false) }
     val sendToBank = remember { mutableStateOf(false) }
 
-    val filterByStatus = remember { mutableStateOf("") }
-    val filterByType = remember { mutableStateOf("") }
-    val filterByAccount = remember { mutableStateOf("") }
-    val filterByAmount = remember { mutableStateOf("") }
-    val filterByCurrency = remember { mutableStateOf("") }
-    val accountFilterList = remember { mutableListOf<GetAccountsItem>() }
     val filterTypeList = remember { mutableListOf<String>() }
     val filterCurrencyList = remember { mutableListOf<String>() }
+    val filterStatusList = remember { mutableListOf<String>() }
+    val filterAccountList = remember { mutableListOf<AccountsData>() }
 
     val headerList = remember { mutableListOf<TransferCountSummaryResponseItem>() }
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
     val context: Context = LocalContext.current
     val businessDates by viewModel.businessDate.collectAsState()
-    val accountsList by viewModel.accountsData.collectAsState()
+
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState(initial = emptyList<TransferCountSummaryResponseItem>())
     val transferList by viewModel.transferList.collectAsState()
     val getSendToBank by viewModel.sendToBank.collectAsState()
@@ -243,8 +243,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                 }
 
-
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
+
                 FilterListMenu()
 
                 if (!transferListResponse.isNullOrEmpty()) {
@@ -263,19 +263,35 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         groupedItems.forEach { (date, items) ->
                             item {
 
-                                val filter = items.asSequence().filter {
-                                    it.status.contains(filterByStatus.value, true)
-                                }.filter {
-                                    it.brTrnType.contains(filterByType.value, true)
-                                }.filter {
-                                    it.customerAccount.contains(filterByAccount.value, true)
-                                }.filter {
-                                    it.currency.contains(filterByCurrency.value, true)
-                                }.filter {
-                                    it.amount.toString().contains(filterByAmount.value, true)
-                                }.toList()
 
-//                                Log.e("mmmmTAG", "$filter")
+                                val filter =
+                                    if (
+                                        filterByStatus.value.isNotEmpty() or
+                                        filterByType.value.isNotEmpty() or
+                                        filterByAccount.value.isNotEmpty() or
+                                        filterByCurrency.value.isNotEmpty() or
+                                        filterByAmount.value.isNotEmpty()
+                                    ) {
+                                        items.asSequence()
+                                            .filter {
+                                                it.status.contains(filterByStatus.value, true)
+                                            }.filter {
+                                                it.brTrnType.contains(filterByType.value, true)
+                                            }.filter {
+                                                it.customerAccount.contains(
+                                                    filterByAccount.value,
+                                                    true
+                                                )
+                                            }.filter {
+                                                it.currency.contains(filterByCurrency.value, true)
+                                            }.filter {
+                                                it.amount.toString()
+                                                    .contains(filterByAmount.value, true)
+                                            }.toList()
+                                    } else {
+                                        items
+                                    }
+
 
                                 // Display the date header if it's different from the last displayed date
                                 if (filter.isNotEmpty()) {
@@ -286,7 +302,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                         )
                                     )
 
-                                    DateHeader(date, isSigned.value)
+                                    DateHeader(date)
                                 }
 
 
@@ -294,7 +310,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                                     TransferListItem(
                                         item,
-                                        viewModel,
                                         selectedTransfer,
                                         navController,
                                         isSigned,
@@ -373,36 +388,54 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     }
 
-    DateBottomSheet(showDateBottomSheet) {
-        startDate = it.startDate
-        endDate = it.endDate
+    DateBottomSheet(showDateBottomSheet,
+         onSelectedDate = {
+            startDate = it.startDate
+            endDate = it.endDate
 
-        coroutine.launch {
-            viewModel.getTransferCountSummary(startDate, endDate)
-            viewModel.getTransferList(startDate, endDate, 0)
-        }
+            coroutine.launch {
+                viewModel.getTransferCountSummary(startDate, endDate)
+                viewModel.getTransferList(startDate, endDate, 0)
+            }
+        })
 
+    AccountBottomSheet(showFromAccountBottomSheet, filterAccountList) {
+//        coroutine.launch {
+
+
+            //on account click
+            showFromAccountBottomSheet.value = false
+
+            filterByAccount.value = it.accountNum
+
+            //for filter title
+            tarnsfersAccount.value = it.accountNum
+//        }
     }
 
+    StatusBottomSheet(showStatusBottomSheet, filterStatusList) {
+//        coroutine.launch {
+            showStatusBottomSheet.value = false
 
-    AccountBottomSheet(showFromAccountBottomSheet, accountFilterList) {
-        //on account click
-        showFromAccountBottomSheet.value = false
+            filterByStatus.value = it
 
-        filterByAccount.value = it.ACCOUNT_NO
-    }
+            //for filter title
+            tarnsfersStatus.value = Utils.headerStatus(it).status
 
-    StatusBottomSheet(showStatusBottomSheet) {
-        showStatusBottomSheet.value = false
-
-        filterByStatus.value = it
     }
 
     TypeBottomSheet(showTypeBottomSheet, filterTypeList) {
-        //on type click
-        showTypeBottomSheet.value = false
+//        coroutine.launch {
 
-        filterByType.value = it.prefix
+            //on type click
+            showTypeBottomSheet.value = false
+
+            filterByType.value = it.prefix
+
+            //show type to filters
+            tarnsfersType.value = it.prefix
+
+
     }
 
     AmountBottomSheet(showAmountBottomSheet) {
@@ -410,9 +443,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
     CurrencyBottomSheet(showCurrencyBottomSheet, filterCurrencyList) {
-        filterByCurrency.value = it
 
-        showCurrencyBottomSheet.value = false
+            showCurrencyBottomSheet.value = false
+
+            filterByCurrency.value = it
+
+            //for filter title
+            tarnsfersCurrency.value = it
+
     }
 
 
@@ -423,22 +461,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             is DataState.Success -> {
                 val dateEnd: String = it.data as String
                 endDate = dateEnd
-            }
-        }
-    }
-
-    accountsList?.let {
-        when (it) {
-            is DataState.Loading -> {}
-            is DataState.Error -> {}
-            is DataState.Success -> {
-                val userAccounts = it.data as GetAccounts
-
-                accountFilterList?.apply {
-                    clear()
-                    accountFilterList.addAll(userAccounts)
-                }
-
             }
         }
     }
@@ -482,32 +504,59 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 isLoading.value = false
 
                 val transferData = it.data as TransferListResponse
-                transferListResponse?.apply {
-                    clear()
-                    addAll(transferData)
+
+                //transfer list
+                if (transferListResponse.isNotEmpty()){
+                    transferListResponse.clear()
+                }
+                transferData.forEach {
+                    transferListResponse.add(it)
                 }
 
 
-                //fetch trn type list
-                if (filterTypeList.isNotEmpty()) {
-                    filterTypeList.clear()
+
+                    //fetch trn type list
+                    if (filterTypeList.isNotEmpty()) {
+                        filterTypeList.clear()
+                    }
+
+                    transferData.forEach { type ->
+                        filterTypeList.add(type.brTrnType)
+                    }
+
+
+                    //fetch currency  list
+                    if (filterCurrencyList.isNotEmpty()) {
+                        filterCurrencyList.clear()
+                    }
+
+                    transferData.forEach { type ->
+                        filterCurrencyList.add(type.currency)
+                    }
+
+
+                    //fetch status list
+                    if (filterStatusList.isNotEmpty()) {
+                        filterStatusList.clear()
+                    }
+
+                    transferData.forEach { type ->
+                        filterStatusList.add(type.status)
+                    }
+
+                    //fetch account list
+                    if (filterAccountList.isNotEmpty()) {
+                        filterAccountList.clear()
+                    }
+
+                    transferData.forEach { account ->
+                        filterAccountList.add(AccountsData(account.customerAccount, account.amount))
+                    }
                 }
 
-                transferData.forEach { type ->
-                    filterTypeList.add(type.brTrnType)
-                }
 
 
-                //fetch currency  list
-                if (filterCurrencyList.isNotEmpty()) {
-                    filterCurrencyList.clear()
-                }
 
-                transferData.forEach { type ->
-                    filterCurrencyList.add(type.currency)
-                }
-
-            }
         }
     }
 
@@ -528,7 +577,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         }
     }
 
-
     if (isLoading.value) {
         ShowProgressDialog(isLoading)
     }
@@ -536,7 +584,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 }
 
 @Composable
-private fun DateHeader(inputDateTimeString: LocalDate, value: Boolean) {
+private fun DateHeader(inputDateTimeString: LocalDate) {
     val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val formattedDate = inputDateTimeString.format(outputFormatter)
 
@@ -575,7 +623,6 @@ private fun DateHeader(inputDateTimeString: LocalDate, value: Boolean) {
 @Composable
 private fun TransferListItem(
     transfer: TransferListResponseItem,
-    viewModel: HomeViewModel,
     selectedTransfer: TransferListResponseItem?,
     navController: NavController,
     isSigned: MutableState<Boolean>,
@@ -779,140 +826,49 @@ private fun TransferListItem(
 
 @Composable
 private fun FilterListMenu() {
-    FiltersTopRow() {
-        when (it) {
-            FilterType.DATE -> {
-                showDateBottomSheet.value = !showDateBottomSheet.value
-            }
 
-            FilterType.TYPE -> {
-                showTypeBottomSheet.value = !showTypeBottomSheet.value
-            }
+    FiltersTopRow {
+        if (it != null) {
+            when (it) {
+                FilterType.DATE -> {
+                    showDateBottomSheet.value = !showDateBottomSheet.value
+                }
 
-            FilterType.ACCOUNT -> {
-                showFromAccountBottomSheet.value = !showFromAccountBottomSheet.value
-            }
+                FilterType.TYPE -> {
+                    showTypeBottomSheet.value = !showTypeBottomSheet.value
+                }
 
-            FilterType.AMOUNT -> {
-                showAmountBottomSheet.value = !showAmountBottomSheet.value
-            }
+                FilterType.ACCOUNT -> {
+                    showFromAccountBottomSheet.value = !showFromAccountBottomSheet.value
+                }
 
-            FilterType.CURRENCY -> {
-                showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
-            }
+                FilterType.AMOUNT -> {
+                    showAmountBottomSheet.value = !showAmountBottomSheet.value
+                }
 
-            FilterType.STATUS -> {
-                showStatusBottomSheet.value = !showStatusBottomSheet.value
-            }
+                FilterType.CURRENCY -> {
+                    showCurrencyBottomSheet.value = !showCurrencyBottomSheet.value
+                }
 
-            else -> {
+                FilterType.STATUS -> {
+                    showStatusBottomSheet.value = !showStatusBottomSheet.value
+                }
 
+                else -> {
+
+                }
             }
+        } else {
+            filterByStatus.value = ""
+            filterByType.value = ""
+            filterByAccount.value = ""
+            filterByCurrency.value = ""
+            filterByAmount.value = ""
         }
 
     }
 }
 
-@Composable
-private fun TransferMenuItemView(
-    menu: TransferCountSummaryResponseItem,
-    onFilterClick: (String) -> Unit
-) {
-
-    var status = ""
-    var color = Color(0xff268ED9)
-
-    when (menu.status) {
-        "PENDING_SIGNER" -> {
-            status = "For signing"
-            color = Color(0xff268ED9)
-        }
-
-        "CLOSED" -> {
-            status = "Executed"
-            color = Color(0xff26D978)
-        }
-
-        "PENDING_ALL" -> {
-            status = "Sign and confirmation"
-            color = Color(0xFFC74375)
-        }
-
-        "BANK_SUCCESS" -> {
-            status = "Sent to the bank"
-            color = Color(0xFFF48A1D)
-        }
-
-        "BANK_ERROR" -> {
-            status = "Not processed"
-            color = Color(0xff2CCAD3)
-        }
-
-        "DELETED" -> {
-            status = "Deleted"
-            color = Color(0xFFE91E63)
-        }
-
-        "BANK_REJECTED" -> {
-            status = "Rejected"
-            color = Color(0xFFE91E63)
-        }
-
-        "PENDING_APPROVER" -> {
-            status = "For confirmation"
-            color = Color(0xFFFF5722)
-        }
-
-        "EXPIRED" -> {
-            status = "Expired"
-            color = Color(0xFFF80658)
-        }
-
-        "SEND_TO_BANK" -> {
-            status = "In process"
-            color = Color(0xFFCDDC39)
-        }
-
-        "EDITED" -> {
-            status = "In process"
-            color = Color(0xFF009688)
-        }
-
-        else -> {
-            Log.e("mmmTAG", "${menu.status}")
-        }
-    }
-
-
-
-
-    Card(
-        modifier = Modifier.padding(vertical = 5.dp), shape = RoundedCornerShape(8.dp)
-    ) {
-        Row(
-            Modifier.clickable { onFilterClick(status) },
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Text(
-                text = status,
-                modifier = Modifier
-                    .padding(horizontal = 7.dp)
-                    .align(Alignment.CenterVertically),
-                fontSize = 12.sp
-            )
-            Text(
-                text = "${menu.count}", modifier = Modifier
-                    .padding(16.dp)
-                    .drawBehind {
-                        drawCircle(
-                            color = color, radius = 12.dp.toPx()
-                        )
-                    }, fontSize = 14.sp, color = Color.White
-            )
-
-        }
-    }
-}
 
 @Preview(device = Devices.PIXEL_4)
 @Composable

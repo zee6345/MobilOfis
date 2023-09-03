@@ -63,9 +63,9 @@ fun TypeBottomSheet() {
         )
     }
 
-    StatusBottomSheet(showAccountBottomSheet) {
-
-    }
+//    StatusBottomSheet(showAccountBottomSheet) {
+//
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,7 +75,6 @@ fun TypeBottomSheet(
     typeList: MutableList<String>,
     onTypeClick: (menuItem: TypeModel) -> Unit
 ) {
-//    val menu = remember { DataProvider.TypeModelList }
 
     if (showStatusBottomSheet.value) ModalBottomSheet(
         containerColor = Color.White,

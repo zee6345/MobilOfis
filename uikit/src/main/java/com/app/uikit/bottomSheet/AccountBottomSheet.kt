@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.uikit.R
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.models.AccountsData
 import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 
@@ -77,8 +79,8 @@ fun AccountBottomSheet() {
 @Composable
 fun AccountBottomSheet(
     showAccountBottomSheet: MutableState<Boolean>,
-    accounts: MutableList<GetAccountsItem>?,
-    onAccountClick: (accountItem: GetAccountsItem) -> Unit
+    accounts: MutableList<AccountsData>?,
+    onAccountClick: (accountItem: AccountsData) -> Unit
 ) {
 
 
@@ -88,12 +90,7 @@ fun AccountBottomSheet(
         shape = RoundedCornerShape(10.dp),
 
         ) {
-        Column(
-//            Modifier
-//                .fillMaxHeight(0.6f)
-//                .then(Modifier.weight(1f))
-
-        ) {
+        Column {
             Text(
                 text = stringResource(R.string.from_the_account),
                 textAlign = TextAlign.Center,
@@ -109,7 +106,7 @@ fun AccountBottomSheet(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
             ) {
 
                 Text(
@@ -126,10 +123,10 @@ fun AccountBottomSheet(
 
             Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
-            LazyColumn(
-//                Modifier.fillMaxHeight(0.6f)
-            ) {
-                items(items = accounts!!, itemContent = {
+            val unique = remember { accounts!! }.distinctBy { it.accountNum }
+
+            LazyColumn {
+                items(items = unique, itemContent = {
                     AccountMenuItem(accountItem = it) { account ->
                         onAccountClick(account)
                     }
@@ -142,22 +139,23 @@ fun AccountBottomSheet(
 
 @Composable
 fun AccountMenuItem(
-    accountItem: GetAccountsItem,
-    onAccountClick: (accountItem: GetAccountsItem) -> Unit
+    accountItem: AccountsData,
+    onAccountClick: (accountItem: AccountsData) -> Unit
 ) {
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(5.dp)
             .background(Color.White)
-            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+            .dashedBorder(2.dp, colorResource(R.color.border_grey))
             .clickable {
                 onAccountClick(accountItem)
             }
     ) {
 
         Text(
-            text = accountItem.IBAN,
+            text = accountItem.accountNum,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
@@ -173,7 +171,7 @@ fun AccountMenuItem(
         )
 
         Text(
-            text = Utils.formatAmountWithSpaces(accountItem.BALANCE.toDouble()),
+            text = Utils.formatAmountWithSpaces(accountItem.ammount),
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
