@@ -64,6 +64,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.MainCard
 import com.app.network.models.responseModels.MainCardX
 import com.app.network.viewmodel.HomeViewModel
+import com.app.uikit.bottomSheet.BottomSheetCardStatus
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
@@ -75,6 +76,7 @@ import kotlinx.coroutines.launch
 
 val selectedOldCard = mutableStateOf<MainCard?>(null)
 val selectedNewCard = mutableStateOf<MainCardX?>(null)
+private val filterByStatus = mutableStateOf("")
 
 @Composable
 fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -91,8 +93,12 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(false) }
 
+    val showStatusBottomSheet = remember { mutableStateOf(false) }
+
     val oldCards = remember { mutableListOf<MainCard>() }
     val newCards = remember { mutableListOf<MainCardX>() }
+
+    val cardStatusList = remember { mutableListOf<String>() }
 
     val coroutine = rememberCoroutineScope()
 
@@ -170,7 +176,9 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             ) {
                 items(items = cardFilters, itemContent = {
                     Row {
-                        FilterView(filter = it)
+                        FilterView(filter = it) {
+                            showStatusBottomSheet.value = true
+                        }
                         Box(modifier = Modifier.padding(end = 5.sdp))
                     }
                 })
@@ -190,7 +198,11 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
                 if (oldCards.isNotEmpty()) {
 
-                    oldCards.forEachIndexed { index, mainCard ->
+                    val filterList = oldCards.filter {
+                        it.CardStat.contains(filterByStatus.value, true)
+                    }.toList()
+
+                    filterList.forEachIndexed { index, mainCard ->
                         item {
                             OldCardsListItem(obj = mainCard) {
                                 selectedOldCard.value = it
@@ -222,6 +234,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                 //new cards
 
                 if (newCards.isNotEmpty()) {
+
                     newCards.forEachIndexed { index, mainCardX ->
                         item {
                             NewCardsListItem(obj = mainCardX) {
@@ -255,6 +268,13 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
     }
 
+    BottomSheetCardStatus(
+        showStatusBottomSheet = showStatusBottomSheet,
+        statusList = cardStatusList,
+        onStatusClick = {
+            showStatusBottomSheet.value = false
+            filterByStatus.value = it
+        })
 
     oldBusinessCards?.let {
         when (it) {
@@ -278,6 +298,17 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                     }
 
                     oldCards.addAll(cards.oldBusinessCards.MainCards)
+
+
+                    //card status
+                    if (cardStatusList.isNotEmpty()) {
+                        cardStatusList.clear()
+                    }
+
+                    cards.oldBusinessCards.MainCards.forEach {
+                        cardStatusList.add(it.CardStat)
+                    }
+
 
                 }
 
@@ -564,11 +595,12 @@ private fun NewCardsListItem(obj: MainCardX, onCardClick: (MainCardX) -> Unit) {
 }
 
 @Composable
-private fun FilterView(filter: CardFilters) {
+private fun FilterView(filter: CardFilters, onFilterClick: (CardFilters) -> Unit) {
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
             .clickable {
+                onFilterClick(filter)
             },
         elevation = 1.dp,
         backgroundColor = Color.White,

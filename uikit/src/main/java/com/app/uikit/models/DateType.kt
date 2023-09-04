@@ -7,4 +7,5 @@ enum class DateType {
     LAST_WEEK,
     THIS_MONTH,
     LAST_MONTH,
+    CUSTOM
 }

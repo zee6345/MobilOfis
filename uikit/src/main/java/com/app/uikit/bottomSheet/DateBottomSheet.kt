@@ -67,6 +67,11 @@ import java.util.Date
 lateinit var datePickerEndBottomSheet: MutableState<Boolean>
 lateinit var datePickerStartBottomSheet: MutableState<Boolean>
 
+private val currentDate = System.currentTimeMillis()
+private val formattedCurrentDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+private val startDate = mutableStateOf(formattedCurrentDate)
+private val endDate = mutableStateOf(formattedCurrentDate)
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
@@ -108,18 +113,9 @@ fun DateBottomSheet(
     datePickerStartBottomSheet = rememberSaveable { mutableStateOf(false) }
     datePickerEndBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    val context = LocalContext.current
-    var showError by remember { mutableStateOf(false) }
-
     val showStartDatePicker = remember { mutableStateOf(false) }
     val showEndDatePicker = remember { mutableStateOf(false) }
-
     var selectedDateType by remember { mutableStateOf(DurationDateModel("Today", DateType.TODAY)) }
-    val currentDate = System.currentTimeMillis()
-    val formattedCurrentDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
-
-    val startDate = remember { mutableStateOf(formattedCurrentDate) }
-    val endDate = remember { mutableStateOf(formattedCurrentDate) }
 
 
     if (showDateBottomSheet.value) ModalBottomSheet(
@@ -312,17 +308,18 @@ fun DateBottomSheet(
                     ),
                     onClick = {
 
-                            showDateBottomSheet.value = false
+                        showDateBottomSheet.value = false
 
-                            startDate.value = handleDateWithFilter(selectedDateType!!.dateType).startDate
-                            endDate.value = handleDateWithFilter(selectedDateType!!.dateType).endDate
+                        startDate.value =
+                            handleDateWithFilter(selectedDateType!!.dateType).startDate
+                        endDate.value = handleDateWithFilter(selectedDateType!!.dateType).endDate
 
-                            onSelectedDate(
-                                handleDateWithFilter(selectedDateType!!.dateType)
-                            )
+                        onSelectedDate(
+                            handleDateWithFilter(selectedDateType!!.dateType)
+                        )
 
-                            //for filter title
-                            tarnsfersDate.value = handleDateWithFilter(selectedDateType!!.dateType)
+                        //for filter title
+                        tarnsfersDate.value = handleDateWithFilter(selectedDateType!!.dateType)
 
                     },
                 )
@@ -336,29 +333,33 @@ fun DateBottomSheet(
     StartDatePicker(showStartDatePicker) {
         startDate.value = it
         showStartDatePicker.value = false
+
+        selectedDateType = DurationDateModel("", DateType.CUSTOM)
     }
 
     EndDatePicker(showEndDatePicker) {
         endDate.value = it
         showEndDatePicker.value = false
+
+        selectedDateType = DurationDateModel("", DateType.CUSTOM)
     }
 
-    if (startDate.value > endDate.value) {
-        showError = true
-    }
-
-    if (showError) {
-        RoundedCornerToast(
-            "The beginning of the period cannot be later than the end",
-            Toast.LENGTH_SHORT,
-            context
-        )
-
-        LaunchedEffect(Unit) {
-            delay(3000)
-            showError = false
-        }
-    }
+//    if (startDate.value > endDate.value) {
+//        showError = true
+//    }
+//
+//    if (showError) {
+//        RoundedCornerToast(
+//            "The beginning of the period cannot be later than the end",
+//            Toast.LENGTH_SHORT,
+//            context
+//        )
+//
+//        LaunchedEffect(Unit) {
+//            delay(3000)
+//            showError = false
+//        }
+//    }
 
 
 }
@@ -423,19 +424,19 @@ private fun DateTypeMenu(selectedDateType: (DurationDateModel) -> Unit) {
 
 fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
     val currentDate = System.currentTimeMillis()
-    var startDate = ""
-    var endDate = ""
+    var filterStartDate = ""
+    var filterEndDate = ""
 
     when (selectedDateType) {
         DateType.TODAY -> {
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
 
         DateType.YESTERDAY -> {
             val yesterdayDate = Date(currentDate - 24 * 60 * 60 * 1000)
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(yesterdayDate)
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(yesterdayDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
 
         DateType.THIS_WEEK -> {
@@ -447,28 +448,28 @@ fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
             val currentWeekStartDate = calendar.time
 
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekEndDate)
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekStartDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekEndDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekStartDate)
         }
 
         DateType.LAST_WEEK -> {
             val calendar = Calendar.getInstance()
 
-// Set the calendar to the current date
+            // Set the calendar to the current date
             val currentDate = System.currentTimeMillis()
             calendar.timeInMillis = currentDate
 
-// Find the most recent Sunday before the current date
+            // Find the most recent Sunday before the current date
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
             calendar.add(Calendar.DAY_OF_MONTH, -7)
             val lastSunday = calendar.time
 
-// Calculate the start of the last week (last Monday)
+            // Calculate the start of the last week (last Monday)
             calendar.add(Calendar.DAY_OF_WEEK, -6)
             val lastMonday = calendar.time
 
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonday)
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(lastSunday)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonday)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(lastSunday)
         }
 
         DateType.THIS_MONTH -> {
@@ -477,9 +478,8 @@ fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
             calendar.set(Calendar.DAY_OF_MONTH, 1)
             val currentMonthStartDate = calendar.time
 
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentMonthStartDate)
-
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(currentMonthStartDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
 
         DateType.LAST_MONTH -> {
@@ -498,15 +498,20 @@ fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
             calendar.add(Calendar.DAY_OF_MONTH, -1)
             val lastMonthEndDate = calendar.time
 
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonthStartDate)
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonthEndDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonthStartDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(lastMonthEndDate)
+        }
+
+        DateType.CUSTOM -> {
+            filterStartDate = startDate.value
+            filterEndDate = endDate.value
         }
 
         else -> {
-            startDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
-            endDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
         }
     }
 
-    return DateModel(startDate, endDate, selectedDateType!!)
+    return DateModel(filterStartDate, filterEndDate, selectedDateType!!)
 }

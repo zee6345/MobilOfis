@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun StatusBottomSheet() {
+fun BottomSheetCard() {
     val showAccountBottomSheet = rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -76,7 +76,7 @@ fun StatusBottomSheet() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatusBottomSheet(
+fun BottomSheetCardStatus(
     showStatusBottomSheet: MutableState<Boolean>,
     statusList: MutableList<String>,
     onStatusClick: (String) -> Unit
@@ -116,19 +116,9 @@ fun StatusBottomSheet(
     }
 }
 
-data class StatusModel(
-    val color: Color,
-    val title: String
-)
-
 
 @Composable
 private fun StatusMenuItem(status: String, onStatusClick: (String) -> Unit) {
-
-    val title = Utils.headerStatus(status).status
-    val color = Utils.headerStatus(status).color
-    val coroutine = rememberCoroutineScope()
-
 
 
     Row(
@@ -137,82 +127,12 @@ private fun StatusMenuItem(status: String, onStatusClick: (String) -> Unit) {
             .dashedBorder(2.dp, colorResource(R.color.border_grey))
             .padding(vertical = 10.dp, horizontal = 10.dp)
             .clickable {
-
-                coroutine.launch {
-
-
-                    val filter: String
-
-                    when (title) {
-                        "For my signing" -> {
-                            filter = "PENDING_SIGNER"
-                        }
-
-                        "Executed" -> {
-                            filter = "CLOSED"
-                        }
-
-                        "Sign and confirmation" -> {
-                            filter = "PENDING_ALL"
-                        }
-
-                        "Sent to the bank" -> {
-                            filter = "BANK_SUCCESS"
-                        }
-
-                        "Not processed" -> {
-                            filter = "BANK_ERROR"
-                        }
-
-                        "Deleted" -> {
-                            filter = "DELETED"
-                        }
-
-                        "Rejected" -> {
-                            filter = "BANK_REJECTED"
-                        }
-
-                        "For confirmation" -> {
-                            filter = "PENDING_APPROVER"
-                        }
-
-                        "Expired" -> {
-                            filter = "EXPIRED"
-                        }
-
-                        "In process" -> {
-                            filter = "SEND_TO_BANK"
-                        }
-
-                        else -> {
-                            filter = ""
-                        }
-                    }
-
-                    //callback
-                    onStatusClick(filter)
-
-                }
+                onStatusClick(status)
             }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-
-            Box(modifier = Modifier
-                .padding(2.dp)
-                .width(10.dp)
-                .height(10.dp)
-                .drawBehind {
-                    drawCircle(
-                        color = color,
-                        radius = 5.dp.toPx()
-                    )
-                }
-                .align(Alignment.CenterVertically)) {
-
-            }
 
             Spacer(
                 modifier = Modifier.size(
@@ -222,7 +142,7 @@ private fun StatusMenuItem(status: String, onStatusClick: (String) -> Unit) {
             )
 
             androidx.compose.material.Text(
-                text = title,
+                text = status,
                 style = TextStyle(
                     fontSize = 14.sp
                 )

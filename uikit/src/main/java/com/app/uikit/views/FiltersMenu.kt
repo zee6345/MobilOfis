@@ -82,6 +82,10 @@ fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
                                 "${tarnsfersDate.value!!.startDate} - ${tarnsfersDate.value!!.endDate}"
                             }
 
+                            DateType.CUSTOM->{
+                                "${tarnsfersDate.value!!.startDate} - ${tarnsfersDate.value!!.endDate}"
+                            }
+
                             else -> {
                                 "Duration"
                             }

@@ -168,6 +168,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     var startDate by remember { mutableStateOf(formattedDate) }
     var endDate by remember { mutableStateOf(formattedDate) }
+    var showError by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -261,13 +262,18 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                             },
                             trailingIcon = {
                                 Icon(
-                                    painter = if (!closeSearch.value) painterResource(id = R.drawable.ic_transfer_close) else painterResource(id = R.drawable.ic_tansfer_search),
+                                    painter = if (!closeSearch.value) painterResource(id = R.drawable.ic_transfer_close) else painterResource(
+                                        id = R.drawable.ic_tansfer_search
+                                    ),
                                     contentDescription = null,
                                     tint = Color.Black,
                                     modifier = Modifier
                                         .padding(horizontal = 10.dp)
                                         .clickable {
                                             isSearchEnable.value = false
+
+                                            //reset search filter
+                                            filterBySearch.value = ""
                                         }
                                 )
                             },
@@ -369,11 +375,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                             }.filter {
                                                 it.brTrnType.contains(filterByType.value, true)
                                             }.filter {
-                                                it.customerAccount.contains(filterByAccount.value, true)
+                                                it.customerAccount.contains(
+                                                    filterByAccount.value,
+                                                    true
+                                                )
                                             }.filter {
                                                 it.currency.contains(filterByCurrency.value, true)
                                             }.filter {
-                                                it.amount.toString().contains(filterByAmount.value, true)
+                                                it.amount.toString()
+                                                    .contains(filterByAmount.value, true)
                                             }.filter {
                                                 it.benefName.contains(filterBySearch.value, true)
                                             }
@@ -483,42 +493,30 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             startDate = it.startDate
             endDate = it.endDate
 
-//            val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
-//
-//            // Parse the date strings into Date objects
-//            val startsDate = dateFormat.parse(startDate)
-//            val endsDate = dateFormat.parse(endDate)
-//
-//            // Check if the start date is greater than the end date
-//            if (startsDate.after(endsDate)) {
-//                showDateError.value = true
-//            } else {
+            if (startDate > endDate) {
+                showError = true
+            } else {
+                showError = false
 
-//                Log.e("mmmTAG", " date")
-
-            coroutine.launch {
-                viewModel.getTransferCountSummary(startDate, endDate)
-                viewModel.getTransferList(startDate, endDate, 0)
+                coroutine.launch {
+                    viewModel.getTransferCountSummary(startDate, endDate)
+                    viewModel.getTransferList(startDate, endDate, 0)
+                }
             }
-//            }
+
         })
 
     AccountBottomSheet(showFromAccountBottomSheet, filterAccountList) {
-//        coroutine.launch {
-
-
-        //on account click
         showFromAccountBottomSheet.value = false
 
         filterByAccount.value = it.accountNum
 
         //for filter title
         tarnsfersAccount.value = it.accountNum
-//        }
+
     }
 
     StatusBottomSheet(showStatusBottomSheet, filterStatusList) {
-//        coroutine.launch {
         showStatusBottomSheet.value = false
 
         filterByStatus.value = it
@@ -529,8 +527,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     }
 
     TypeBottomSheet(showTypeBottomSheet, filterTypeList) {
-//        coroutine.launch {
-
         //on type click
         showTypeBottomSheet.value = false
 
@@ -682,8 +678,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         ShowProgressDialog(isLoading)
     }
 
-    //show error on wrong date selection
-    if (showDateError.value) {
+
+    if (showError) {
         RoundedCornerToast(
             "The beginning of the period cannot be later than the end",
             Toast.LENGTH_SHORT,
@@ -692,10 +688,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
         LaunchedEffect(Unit) {
             delay(3000)
-            showDateError.value = false
+            showError = false
         }
     }
-
 }
 
 @Composable
