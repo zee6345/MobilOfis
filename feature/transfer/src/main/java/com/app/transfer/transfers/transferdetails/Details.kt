@@ -22,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +61,8 @@ import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AuthType
 import com.app.uikit.models.SignInfo
 import com.app.uikit.utils.SharedModel
+import com.app.uikit.utils.Utils
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -83,8 +84,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val transferType = remember { mutableStateOf("") }
     val sender = remember { mutableStateOf("") }
     val fromAccount = remember { mutableStateOf("") }
-    val amount = remember { mutableStateOf("") }
-    val commAmount = remember { mutableStateOf("") }
+    val amount = remember { mutableStateOf("0.0") }
+    val commAmount = remember { mutableStateOf("0.0") }
     val purpose = remember { mutableStateOf("") }
     val note = remember { mutableStateOf("") }
     val bnfName = remember { mutableStateOf("") }
@@ -132,14 +133,14 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey)),
+                            .dashedBorder(2.dp, colorResource(R.color.border_grey)),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
                             Modifier
                                 .weight(0.5f)
                                 .rightVerticalDashedBorder(
-                                    3.dp,
+                                    2.dp,
                                     colorResource(R.color.border_grey)
                                 )
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp)
@@ -148,7 +149,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         ) {
 
                             Text(
-                                text = stringResource(R.string.source_of_origin),
+                                text = "Source of origin",
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -176,7 +177,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         ) {
 
                             Text(
-                                text = stringResource(R.string.document_no), style = TextStyle(
+                                text = "Document no", style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = colorResource(R.color.grey_text),
@@ -195,16 +196,13 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     }
 
 
-
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                            .dashedBorder(2.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-
                     ) {
 
                         Column {
@@ -231,16 +229,13 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     }
 
 
-
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                            .dashedBorder(2.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-
                     ) {
 
                         Column {
@@ -270,12 +265,9 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-
                     ) {
 
                         Column {
@@ -301,7 +293,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
                     }
 
-
                 }
             }
         }
@@ -321,14 +312,14 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                            .dashedBorder(2.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
                         Text(
-                            text = stringResource(R.string.field),
+                            text = "Beneficiary",
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight(600),
@@ -369,13 +360,12 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
                     }
 
-
                     if (isExpanded) {
 
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                .dashedBorder(2.dp, colorResource(R.color.border_grey))
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -408,16 +398,14 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
 
                         Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .dashedBorder(3.dp, colorResource(R.color.border_grey)),
+                            Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(
                                 Modifier
                                     .weight(0.7f)
                                     .rightVerticalDashedBorder(
-                                        3.dp,
+                                        2.dp,
                                         colorResource(R.color.border_grey)
                                     )
                                     .padding(horizontal = 10.sdp, vertical = 8.sdp)
@@ -435,10 +423,9 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                         )
                                 )
 
-                                Text(
+                                AutoResizedText(
                                     text = bnfAccount.value,
                                     style = TextStyle(
-
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF223142),
@@ -461,7 +448,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                     )
                                 )
 
-                                Text(
+                                AutoResizedText(
                                     text = bnfTIN.value, style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -474,7 +461,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
 
                     }
-
 
                 }
             }
@@ -498,14 +484,14 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                            .dashedBorder(2.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
                         Text(
-                            text = stringResource(R.string.alan_s_bank),
+                            text = "Beneficiary's Bank",
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight(600),
@@ -555,7 +541,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                     )
                                 )
 
-                                Text(
+                                AutoResizedText(
                                     text = "${bnfNameCode.value}",
                                     style = TextStyle(
                                         fontSize = 14.sp,
@@ -600,7 +586,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             Modifier
                                 .weight(0.7f)
                                 .rightVerticalDashedBorder(
-                                    3.dp,
+                                    2.dp,
                                     colorResource(R.color.border_grey)
                                 )
                                 .padding(horizontal = 10.sdp, vertical = 8.sdp)
@@ -618,7 +604,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${amount.value}", style = TextStyle(
+                                text = Utils.formatAmountWithSpaces(amount.value.toDouble()),
+                                style = TextStyle(
 
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -643,7 +630,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${commAmount.value}", style = TextStyle(
+                                text = Utils.formatAmountWithSpaces(commAmount.value.toDouble()),
+                                style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = Color(0xFF223142),
@@ -659,7 +647,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                            .dashedBorder(2.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -670,7 +658,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         Column {
 
                             Text(
-                                text = stringResource(R.string.the_purpose_of_the_payment),
+                                text = "Payment Purpose",
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -695,9 +683,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
                             .padding(horizontal = 10.sdp, vertical = 8.sdp),
-
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
 
@@ -706,7 +692,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         Column {
 
                             Text(
-                                text = stringResource(R.string.information_for_alan),
+                                text = "Information for Beneficiary",
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),

@@ -11,6 +11,7 @@ import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
+import com.app.network.models.responseModels.GetAccountBlocks
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetExchangeRates
@@ -113,7 +114,7 @@ interface APIService {
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int,
         @Path("iban") iban: String
-    ): Call<ResponseBody>
+    ): Call<GetAccountBlocks>
 
 
     @GET("brcards/get-old-business-cards-by-cif/{customerId}")

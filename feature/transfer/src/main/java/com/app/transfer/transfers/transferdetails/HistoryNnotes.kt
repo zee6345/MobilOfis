@@ -10,21 +10,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,23 +47,23 @@ import androidx.navigation.NavController
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.HISTORYDETAILS
-import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
 @Composable
 fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
-
     var expanded1 by remember { mutableStateOf(true) }
     var expanded2 by remember { mutableStateOf(true) }
     val isLoading = remember { mutableStateOf(false) }
     val history = remember { mutableListOf<HISTORYDETAILS>() }
+    val details = remember { mutableStateOf<GetTransactionDetails?>(null) }
     val isSigned = remember { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
@@ -87,126 +82,129 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
         }
     }
 
-//    if (isLoading.value) {
-//
-//        Box(
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//        }
-//
-//    } else {
+    LazyColumn {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-
-
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 5.sdp, horizontal = 10.sdp),
-            backgroundColor = Color.White
-        ) {
-
-            Row(
-                Modifier
+        item {
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                backgroundColor = Color.White
             ) {
 
-                androidx.compose.material.Text(
-                    text = stringResource(R.string.transfer_history),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(600),
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
 
-                        )
-                )
+                    Text(
+                        text = stringResource(R.string.transfer_history),
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(600),
+
+                            )
+                    )
 
 
-                Image(
-                    if (expanded1) painterResource(id = R.drawable.ic_option_expand) else painterResource(
-                        id = R.drawable.ic_option_collapse
-                    ),
-                    contentDescription = "",
-                    modifier = Modifier.size(26.dp)
-                        .padding(3.dp)
-                        .clickable {
-                            expanded1 = !expanded1
-                        }
-                )
+                    Image(
+                        if (expanded1) painterResource(id = R.drawable.ic_option_expand) else painterResource(
+                            id = R.drawable.ic_option_collapse
+                        ),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(26.dp)
+                            .padding(3.dp)
+                            .clickable {
+                                expanded1 = !expanded1
+                            }
+                    )
+                }
+
             }
 
-        }
 
+        }
 
         if (expanded1)
-            LazyColumn() {
-                items(items = history, itemContent = {
-                    CardInfo2(navController = navController, it)
-                })
+            history.forEachIndexed { index, historydetails ->
+                item {
+                    CardInfo2(navController = navController, historydetails)
+                }
             }
 
 
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 5.sdp, horizontal = 10.sdp),
-            backgroundColor = Color.White
-        ) {
 
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
 
-                androidx.compose.material.Text(
-                    text = stringResource(R.string.notes),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(600),
+        if ( details.value != null && details.value!!.NOTE != null) {
 
+            item {
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                    backgroundColor = Color.White
+                ) {
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        Text(
+                            text = stringResource(R.string.notes),
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight(600),
+
+                                )
                         )
-                )
 
 
-                Image(
-                    if (expanded2) painterResource(id = R.drawable.ic_option_expand) else painterResource(
-                        id = R.drawable.ic_option_collapse
-                    ),
-                    contentDescription = "",
-                    modifier = Modifier.size(26.dp)
-                        .padding(3.dp)
-                        .clickable {
-                            expanded2 = !expanded2
-                        }
-                )
+                        Image(
+                            if (expanded2) painterResource(id = R.drawable.ic_option_expand) else painterResource(
+                                id = R.drawable.ic_option_collapse
+                            ),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(26.dp)
+                                .padding(3.dp)
+                                .clickable {
+                                    expanded2 = !expanded2
+                                }
+                        )
+                    }
+
+                }
             }
 
+            if (expanded2)
+                history.forEachIndexed { index, historydetails ->
+                    item {
+                        CardInfo5(navController = navController, historydetails)
+                    }
+                }
+        }
+
+        item {
+            Spacer(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
         }
 
 
-        if (expanded2)
-            LazyColumn() {
-                items(items = history, itemContent = {
-                    CardInfo5(navController = navController, it)
-                })
+        item {
+            if (isSigned.value) {
+                CardInfo6(navController = navController)
             }
-
-
-        if (isSigned.value) {
-            CardInfo6(navController = navController)
         }
+
 
     }
 
@@ -227,7 +225,9 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
                 val data = it.data as GetTransactionDetails
                 data?.apply {
 
-                    history?.apply {
+                    details.value = this
+
+                    history.apply {
                         clear()
                         addAll(HISTORY_DETAILS)
                     }
@@ -247,8 +247,6 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 @Composable
 private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAILS) {
 
-    var expanded by remember { mutableStateOf(true) }
-
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
@@ -264,16 +262,13 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                    .clickable {
-                        expanded = !expanded
-                    },
+                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                androidx.compose.material.Text(
+                Text(
                     text = "${historydetails.userLongName}",
                     style = TextStyle(
                         fontSize = 14.sp,
@@ -283,7 +278,7 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
                 )
 
 
-                androidx.compose.material.Text(
+                Text(
                     text = "${historydetails.userName}",
                     style = TextStyle(
                         fontSize = 14.sp,
@@ -300,11 +295,7 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
-                    .padding(horizontal = 10.sdp, vertical = 8.sdp)
-                    .clickable {
-                        expanded = !expanded
-                    },
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -319,7 +310,9 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
                             .height(10.dp)
                             .drawBehind {
                                 drawCircle(
-                                    color = Color(0xFFD7C20A), radius = 5.dp.toPx()
+                                    color = Utils.headerStatus(
+                                        historydetails.trnStatusAfter
+                                    ).color, radius = 5.dp.toPx()
                                 )
                             }
                             .align(Alignment.CenterVertically)
@@ -330,8 +323,8 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
                     Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
 
-                    androidx.compose.material.Text(
-                        text = stringResource(R.string.sent_to_the_bank),
+                    Text(
+                        text = Utils.headerStatus(historydetails.trnStatusAfter).status,
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
@@ -345,7 +338,7 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
                 Row {
 
 
-                    androidx.compose.material.Text(
+                    Text(
                         text = "${historydetails.transactionDate}",
                         style = TextStyle(
                             fontSize = 14.sp,
@@ -359,7 +352,7 @@ private fun CardInfo2(navController: NavController, historydetails: HISTORYDETAI
                     Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
 
-                    androidx.compose.material.Text(
+                    Text(
                         text = "${historydetails.transactionTime}",
                         style = TextStyle(
                             fontSize = 14.sp,
@@ -411,7 +404,7 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    androidx.compose.material.Text(
+                    Text(
                         text = stringResource(R.string.not_sent),
                         style = TextStyle(
                             fontSize = 14.sp,
@@ -420,7 +413,7 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
                             )
                     )
 
-                    androidx.compose.material.Text(
+                    Text(
                         text = stringResource(R.string.samirmss),
                         style = TextStyle(
                             fontSize = 14.sp,
@@ -448,7 +441,7 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
 
                     Row {
 
-                        androidx.compose.material.Text(
+                        Text(
                             text = stringResource(R.string.please_resend),
                             style = TextStyle(
                                 fontSize = 14.sp,
@@ -463,7 +456,7 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
                     Row {
 
 
-                        androidx.compose.material.Text(
+                        Text(
                             text = stringResource(id = R.string._01_11_2021),
                             style = TextStyle(
                                 fontSize = 14.sp,
@@ -477,7 +470,7 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
                         Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
 
-                        androidx.compose.material.Text(
+                        Text(
                             text = stringResource(id = R.string._14_34),
                             style = TextStyle(
                                 fontSize = 14.sp,

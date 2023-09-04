@@ -8,6 +8,7 @@ import com.app.network.models.DataState
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.requestModels.SignApproveRequest
+import com.app.network.models.responseModels.GetAccountBlocks
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetLoans
@@ -42,6 +43,9 @@ class HomeViewModel @Inject constructor(
 
     private val _accountsData = MutableStateFlow<DataState<Any>?>(null)
     val accountsData: MutableStateFlow<DataState<Any>?> get() = _accountsData
+
+    private val _accountsBlockByIban = MutableStateFlow<DataState<Any>?>(null)
+    val accountsBlockByIban: MutableStateFlow<DataState<Any>?> get() = _accountsBlockByIban
 
     private val _oldBusinessCardsData = MutableStateFlow<DataState<Any>?>(null)
     val oldBusinessCards: MutableStateFlow<DataState<Any>?> get() = _oldBusinessCardsData
@@ -193,24 +197,24 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getAccountBlockByIBAN(customerId: Int, IBAN: String) {
-        _accountsData.value = DataState.Loading
+        _accountsBlockByIban.value = DataState.Loading
 
         CoroutineScope(Dispatchers.IO).launch {
             repository.getAccountBlockByIban(session[Keys.KEY_TOKEN]!!, customerId, IBAN)
-                .enqueue(object : Callback<ResponseBody> {
+                .enqueue(object : Callback<GetAccountBlocks> {
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                        call: Call<GetAccountBlocks>,
+                        response: Response<GetAccountBlocks>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _accountsData.value = DataState.Success(response.body()!!)
+                            _accountsBlockByIban.value = DataState.Success(response.body()!!)
                         } else {
-                            _accountsData.value = DataState.Error(response.errorBody()!!.string())
+                            _accountsBlockByIban.value = DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        _accountsData.value = DataState.Error(t.message.toString())
+                    override fun onFailure(call: Call<GetAccountBlocks>, t: Throwable) {
+                        _accountsBlockByIban.value = DataState.Error(t.message.toString())
                     }
                 })
         }

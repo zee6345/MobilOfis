@@ -35,6 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -149,10 +152,8 @@ private fun MainContentSource(navController: NavController) {
                         RoundedCornerShape(8.dp)
                     )
                     .clickable {
-
                         coroutineScope.launch {
                             selectedMain.value = false
-
                             pagerState.animateScrollToPage(0)
                         }
                     },
@@ -163,8 +164,11 @@ private fun MainContentSource(navController: NavController) {
                     modifier = Modifier.padding(vertical = 5.sdp),
                     text = stringResource(R.string.details),
                     style = TextStyle(
-                        color = Color(R.color.grey_text),
-                        textAlign = TextAlign.Center
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontWeight = FontWeight(600),
+                        color = if (!selectedMain.value) Color(0xFF203657) else Color(0xFF859DB5),
+                        textAlign = TextAlign.Center,
                     )
 
                 )
@@ -196,8 +200,11 @@ private fun MainContentSource(navController: NavController) {
                     text = stringResource(R.string.history_and_notes),
                     modifier = Modifier.padding(vertical = 5.sdp),
                     style = TextStyle(
-                        color = Color(R.color.grey_text),
-                        textAlign = TextAlign.Center
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontWeight = FontWeight(600),
+                        color = if (!selectedMain.value) Color(0xFF859DB5) else  Color(0xFF203657),
+                        textAlign = TextAlign.Center,
                     )
                 )
             }

@@ -3,9 +3,12 @@ package com.app.home.main.account.details
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -35,7 +38,8 @@ import com.app.home.R
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.errorResponse.ErrorState
+import com.app.network.models.responseModels.GetAccountBlocks
+import com.app.network.models.responseModels.GetAccountBlocksItem
 import com.app.network.models.responseModels.GetAccountsItem
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.dialogs.ShowProgressDialog
@@ -45,20 +49,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
-    val homeData by viewModel.accountsData.collectAsState()
+
+    val accountBlockByIban by viewModel.accountsBlockByIban.collectAsState()
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
 
     val str = viewModel.session[Keys.KEY_MAIN_INFO]
     val data = Converter.fromJson(str!!, GetAccountsItem::class.java)
 
-    val blockNumber = remember { mutableStateOf("") }
-    val blockedAmount = remember { mutableStateOf("") }
-    val blockDate = remember { mutableStateOf("") }
-    val blockReason = remember { mutableStateOf("") }
 
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(true) }
+
+    val accountBlock = remember { mutableListOf<GetAccountBlocksItem>() }
 
     LaunchedEffect(Unit) {
         coroutine.launch {
@@ -68,17 +71,6 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
             )
         }
     }
-
-//    if (isLoading.value) {
-//
-//        Box(
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//        }
-//
-//    } else {
 
     if (isEmpty.value) {
 
@@ -91,140 +83,25 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
 
     } else {
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 5.sdp, horizontal = 10.sdp),
-            backgroundColor = Color.White
-        ) {
-            Column(
-            ) {
 
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
+        LazyColumn {
 
-                        Text(
-                            text = stringResource(R.string.block_number), style = TextStyle(
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.grey_text),
-
-                                )
-                        )
-
-                        Text(
-                            text = blockNumber.value, style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.background_card_blue),
-
-                                )
-                        )
-                    }
+            accountBlock.forEachIndexed { index, getAccountBlocksItem ->
+                item {
+                    BlockItemView(getAccountBlocksItem)
                 }
-
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-//                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                        .padding(horizontal = 10.sdp, vertical = 5.sdp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-
-                        Text(
-                            text = stringResource(R.string.blocked_amount), style = TextStyle(
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.grey_text),
-
-                                )
-                        )
-
-                        Text(
-                            text = Utils.formatAmountWithSpaces(blockedAmount.value.toDouble()), style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.background_card_blue),
-
-                                )
-                        )
-                    }
-                }
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-//                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                        .padding(horizontal = 10.sdp, vertical = 5.sdp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-
-                        Text(
-                            text = stringResource(R.string.block_date), style = TextStyle(
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.grey_text),
-
-                                )
-                        )
-
-                        Text(
-                            text = blockDate.value, style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.background_card_blue),
-
-                                )
-                        )
-                    }
-                }
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-//                    .dashedBorder(3.dp, Color(0xFFE7EEFC))
-                        .padding(horizontal = 10.sdp, vertical = 5.sdp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-
-                        Text(
-                            text = stringResource(R.string.reason_for_blocking),
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.grey_text),
-
-                                )
-                        )
-
-                        Text(
-                            text = blockReason.value, style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                color = colorResource(R.color.background_card_blue),
-
-                                )
-                        )
-                    }
-                }
-
-
             }
+
+            item {
+                Spacer(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
+            }
+
         }
+
     }
 
 
-    homeData?.let {
+    accountBlockByIban?.let {
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
@@ -232,14 +109,26 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
             is DataState.Error -> {
                 isLoading.value = false
-
-//                ErrorState(context = context, it.errorMessage).handleError()
             }
 
             is DataState.Success -> {
                 isLoading.value = false
 
-                isEmpty.value = true
+
+                val data = it.data as GetAccountBlocks
+
+                if (data.isEmpty()) {
+                    isEmpty.value = true
+                } else {
+                    isEmpty.value = false
+
+                    if (accountBlock.isNotEmpty()) {
+                        accountBlock.clear()
+                    }
+                    data.forEach { block ->
+                        accountBlock.add(block)
+                    }
+                }
 
             }
         }
@@ -249,6 +138,137 @@ fun Blockages(navController: NavController, viewModel: HomeViewModel = hiltViewM
         ShowProgressDialog(isLoading)
     }
 
+}
+
+@Composable
+private fun BlockItemView(blockItem: GetAccountBlocksItem) {
+    Card(
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.sdp, horizontal = 10.sdp),
+        backgroundColor = Color.White
+    ) {
+        Column {
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+
+                    Text(
+                        text = stringResource(R.string.block_number), style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.grey_text),
+
+                            )
+                    )
+
+                    Text(
+                        text = blockItem.blockId.toString(), style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.background_card_blue),
+
+                            )
+                    )
+                }
+            }
+
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.sdp, vertical = 5.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+
+                    Text(
+                        text = stringResource(R.string.blocked_amount), style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.grey_text),
+
+                            )
+                    )
+
+                    Text(
+                        text = Utils.formatAmountWithSpaces(blockItem.blockAmount),
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.background_card_blue),
+
+                            )
+                    )
+                }
+            }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.sdp, vertical = 5.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+
+                    Text(
+                        text = stringResource(R.string.block_date), style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.grey_text),
+
+                            )
+                    )
+
+                    Text(
+                        text = blockItem.blockDate, style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.background_card_blue),
+
+                            )
+                    )
+                }
+            }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.sdp, vertical = 5.sdp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+
+                    Text(
+                        text = stringResource(R.string.reason_for_blocking),
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.grey_text),
+
+                            )
+                    )
+
+                    Text(
+                        text = blockItem.description, style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            color = colorResource(R.color.background_card_blue),
+
+                            )
+                    )
+                }
+            }
+
+
+        }
+    }
 }
 
 

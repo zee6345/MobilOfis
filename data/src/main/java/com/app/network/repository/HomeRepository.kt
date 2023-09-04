@@ -5,6 +5,7 @@ import com.app.network.models.requestModels.AccountNickNameRequest
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.requestModels.SignApproveRequest
+import com.app.network.models.responseModels.GetAccountBlocks
 import com.app.network.models.responseModels.GetAccounts
 import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetLoans
@@ -39,7 +40,7 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.setAccountNickName(token, accountNickNameRequest)
     }
 
-    fun getAccountBlockByIban(token: String, customerId: Int, iban: String): Call<ResponseBody> {
+    fun getAccountBlockByIban(token: String, customerId: Int, iban: String): Call<GetAccountBlocks> {
         return apiService.getAccountBlockByIBAN(token, customerId,iban)
     }
 
