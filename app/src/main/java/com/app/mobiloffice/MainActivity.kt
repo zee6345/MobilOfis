@@ -16,7 +16,6 @@ import com.app.mobiloffice.ui.theme.MobilOfficeTheme
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
 import com.app.network.models.DataState
-import com.app.network.retrofitClient.BaseRetrofitClient
 import com.app.network.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
@@ -93,9 +92,11 @@ class MainActivity : ComponentActivity() {
                 is DataState.Error -> {
                     Log.e("mTAG", "last login ")
                 }
+
                 is DataState.Success -> {
                     Log.e("mTAG", "last login success ")
                 }
+
                 else -> {}
             }
         }

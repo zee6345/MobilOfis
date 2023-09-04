@@ -34,6 +34,7 @@ import com.app.adjustment.R
 import com.app.adjustment.Switch
 import com.app.adjustment.changepassword.navigation.securityToChangePassword
 import com.app.adjustment.changepin.currentpin.navigation.adjustmentToCurrentPin
+import com.app.uikit.views.CustomSwitch
 
 @Composable
 fun SecurityScreen(navController: NavController) {
@@ -147,15 +148,17 @@ fun SecurityScreen(navController: NavController) {
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(R.string.fingerprint_login),
                         style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
                     )
-                    Switch()
+
+                    CustomSwitch()
                 }
             }
         }

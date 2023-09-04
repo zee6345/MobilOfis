@@ -54,15 +54,11 @@ import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetUserProfile
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.dialogs.ShowProgressDialog
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
-
-
-//lateinit var lang: MutableState<String>
 
 
 @Composable
@@ -85,23 +81,10 @@ fun UserProfileScreen(
 
 
     LaunchedEffect(Unit) {
-        //fetch accounts list
         viewModel.getUserInfo(
             userInfo.customerNo.toString()
         )
     }
-
-//    val userName = remember { mutableStateOf("") }
-//    val customerName = remember { mutableStateOf("") }
-//    val customerLastName = remember { mutableStateOf("") }
-//    val customerFatherName = remember { mutableStateOf("") }
-//    val lang = remember { mutableStateOf("") }
-//    val phoneNumber = remember { mutableStateOf("") }
-//    val email = remember { mutableStateOf("") }
-//    val TOTPEnabled = remember { mutableStateOf("") }
-//    val TOTPChangeDate = remember { mutableStateOf("") }
-//    val nonOtpEnabled = remember { mutableStateOf("") }
-
 
     Column(
         modifier = Modifier
@@ -142,7 +125,6 @@ fun UserProfileScreen(
         }
 
 
-
         Column(
             modifier = Modifier
                 .weight(0.9f)
@@ -155,8 +137,7 @@ fun UserProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
-
-                ) {
+            ) {
 
                 if (userData.value != null) {
 
@@ -167,14 +148,12 @@ fun UserProfileScreen(
                             .padding(vertical = 5.sdp),
                         backgroundColor = Color.White
                     ) {
-                        Column(
-
-                        ) {
+                        Column {
 
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -276,7 +255,7 @@ fun UserProfileScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -312,13 +291,13 @@ fun UserProfileScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(
                                     Modifier
-                                        .weight(0.5f)
+//                                        .weight(0.5f)
                                         .fillMaxWidth()
 
                                 ) {
@@ -347,34 +326,33 @@ fun UserProfileScreen(
                                 }
 
 
-
-                                Column(
-                                    Modifier
-                                        .weight(0.5f)
-                                        .fillMaxWidth()
-                                ) {
-
-                                    Text(
-                                        text = stringResource(R.string.easy_signature_mobile_number),
-                                        style = TextStyle(
-                                            fontSize = 12.sp,
-                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                            color = colorResource(R.color.grey_text),
-                                        )
-                                    )
-
-                                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
-
-
-                                    Text(
-                                        text = "${userData.value!!.phoneNumber}", style = TextStyle(
-                                            fontSize = 14.sp,
-                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                            color = Color(0xFF223142),
-
-                                            )
-                                    )
-                                }
+//                                Column(
+//                                    Modifier
+//                                        .weight(0.5f)
+//                                        .fillMaxWidth()
+//                                ) {
+//
+//                                    Text(
+//                                        text = stringResource(R.string.easy_signature_mobile_number),
+//                                        style = TextStyle(
+//                                            fontSize = 12.sp,
+//                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+//                                            color = colorResource(R.color.grey_text),
+//                                        )
+//                                    )
+//
+//                                    Spacer(modifier = Modifier.size(height = 8.dp, width = 1.dp))
+//
+//
+//                                    Text(
+//                                        text = "${userData.value!!.phoneNumber}", style = TextStyle(
+//                                            fontSize = 14.sp,
+//                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+//                                            color = Color(0xFF223142),
+//
+//                                            )
+//                                    )
+//                                }
 
 
                             }
@@ -385,7 +363,7 @@ fun UserProfileScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -421,7 +399,7 @@ fun UserProfileScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                                    .dashedBorder(2.dp, colorResource(R.color.border_grey))
                                     .padding(horizontal = 10.sdp, vertical = 8.sdp),
 
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -447,7 +425,6 @@ fun UserProfileScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .dashedBorder(3.dp, colorResource(R.color.border_grey))
                                     .padding(horizontal = 10.sdp, vertical = 10.sdp),
 
                                 horizontalArrangement = Arrangement.SpaceBetween,

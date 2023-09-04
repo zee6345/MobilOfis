@@ -175,8 +175,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         coroutine.launch {
             viewModel.getBusinessDate()
             viewModel.getAccounts(userDetails.customerNo)
-            viewModel.getTransferCountSummary(startDate, endDate)
-            viewModel.getTransferList(startDate, endDate, 0)
+//            viewModel.getTransferCountSummary(startDate, endDate)
+//            viewModel.getTransferList(startDate, endDate, 0)
         }
     }
 
@@ -561,6 +561,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             is DataState.Success -> {
                 val dateEnd: String = it.data as String
                 endDate = dateEnd
+                startDate = dateEnd
+
+                //initial api call to refresh data
+                LaunchedEffect(Unit){
+                    viewModel.getTransferCountSummary(startDate, endDate)
+                    viewModel.getTransferList(startDate, endDate, 0)
+                }
+
             }
         }
     }

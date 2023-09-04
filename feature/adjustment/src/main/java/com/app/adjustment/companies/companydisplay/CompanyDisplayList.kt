@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -64,15 +63,18 @@ fun CompanyDisplayList(
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp)
     ) {
-        items(items = companyList, itemContent = {
-            CompanyDisplayListItem(
-                company = it,
-                viewModel = viewModel,
-                selectedFavoriteCompany = selectedFavoriteCompany,
-                onFavoriteCompanySelected = {
-                    selectedFavoriteCompany = it
-                })
-        })
+
+        companyList.forEachIndexed { index, asanCustomer ->
+            item {
+                CompanyDisplayListItem(
+                    company = asanCustomer,
+                    viewModel = viewModel,
+                    selectedFavoriteCompany = selectedFavoriteCompany,
+                    onFavoriteCompanySelected = {
+                        selectedFavoriteCompany = it
+                    })
+            }
+        }
     }
 }
 
@@ -102,7 +104,8 @@ private fun CompanyDisplayListItem(
         Row(
             modifier = Modifier
                 .padding(horizontal = 10.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = Modifier
@@ -166,11 +169,6 @@ private fun CompanyDisplayListItem(
 
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
-
-                }
             }
 
             is DataState.Success -> {
@@ -182,6 +180,9 @@ private fun CompanyDisplayListItem(
     }
 
 
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
 }
 
 

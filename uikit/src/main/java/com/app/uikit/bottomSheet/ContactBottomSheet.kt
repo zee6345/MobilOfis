@@ -89,13 +89,13 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                 fontFamily = FontFamily(Font(R.font.roboto_medium)),
                 color = Color(0xFF223142)
             )
-            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
+            Spacer(modifier = Modifier.size(width = 5.sdp, height = 10.dp))
             Box(
                 Modifier
                     .fillMaxWidth()
                     .height(56.dp)
                     .border(
-                        border = BorderStroke(2.dp, Color(R.color.border_grey)),
+                        border = BorderStroke(1.dp, colorResource(R.color.border_grey)),
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(color = Color(0xFFFFFFFF)),
@@ -123,7 +123,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                         text = stringResource(R.string._144),
                         style = TextStyle(
                             color = Color(0xFF223142),
-                            fontSize = 22.sp,
+                            fontSize = 20.sp,
                             FontWeight.Bold
                         ),
                         modifier = Modifier.padding(horizontal = 12.dp)
@@ -141,7 +141,7 @@ fun ContactBottomSheet(contactSheet: MutableState<Boolean>) {
                     .fillMaxWidth()
                     .padding(vertical = 10.dp)
                     .border(
-                        border = BorderStroke(2.dp, Color(R.color.border_grey)),
+                        border = BorderStroke(1.dp, colorResource(R.color.border_grey)),
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(color = Color(0xFFFFFFFF)),

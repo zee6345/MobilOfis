@@ -1,4 +1,4 @@
-package com.app.mobiloffice
+package com.app.mobiloffice.app
 
 import android.app.Application
 

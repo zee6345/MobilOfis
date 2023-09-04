@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,23 +84,29 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
         Column(
             modifier = Modifier.padding(vertical = 12.dp)
         ) {
-            Text(
-                text = stringResource(R.string.about_the_bank),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 5.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                color = Color(0xFF223142)
-            )
-            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
+            Box(
+                Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = stringResource(R.string.about_the_bank),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF223142),
+                        textAlign = TextAlign.Center,
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.size(width = 5.sdp, height = 10.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .dashedBorder(
-                        3.dp, colorResource(R.color.border_grey)
+                        2.dp, colorResource(R.color.border_grey)
                     ),
                 horizontalArrangement = Arrangement.Start
 
@@ -106,27 +114,32 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
 
-                    Image(
+                    Icon(
                         painter = painterResource(id = R.drawable.ic_location),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .align(Alignment.CenterVertically)
-                            .padding(2.dp)
+                        modifier = Modifier.padding(2.dp)
+                            .size(26.dp)
                     )
+
                     androidx.compose.material.Text(
                         text = stringResource(R.string.branches_and_atms),
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
+            Spacer(modifier = Modifier.size(width = 5.sdp, height = 10.dp))
 
             Row(
                 modifier = Modifier
@@ -139,27 +152,32 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
 
-                    Image(
+                    Icon(
                         painter = painterResource(id = R.drawable.ic_tariff),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .align(Alignment.CenterVertically)
-                            .padding(2.dp)
+                        modifier = Modifier.padding(1.dp)
+                            .size(26.dp)
                     )
+
                     androidx.compose.material.Text(
                         text = stringResource(R.string.tariffs),
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
+            Spacer(modifier = Modifier.size(width = 5.sdp, height = 10.dp))
 
             Row(
                 modifier = Modifier
@@ -173,19 +191,25 @@ fun AboutBankSheet(aboutBankState: MutableState<Boolean>, navController: NavCont
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
+
+                    Icon(
                         painter = painterResource(id = R.drawable.ic_arrow),
                         contentDescription = "",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .align(Alignment.CenterVertically)
-                            .padding(vertical = 3.dp, horizontal = 7.dp)
+                        modifier = Modifier.padding(3.dp)
+                            .size(20.dp)
                     )
+
                     androidx.compose.material.Text(
                         text = stringResource(R.string.exchange_rates),
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF223142),
+                        ),
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                     )
                 }
