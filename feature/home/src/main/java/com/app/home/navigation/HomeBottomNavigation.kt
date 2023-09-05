@@ -6,7 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.app.adjustment.AdjustmentsScreen
 import com.app.adjustment.changepassword.ForgetPasswordScreen
-import com.app.adjustment.changepassword.navigation.securityToChangePassword
+import com.app.adjustment.changepassword.securityToChangePassword
+
 import com.app.adjustment.changepin.confirmpin.RepeatPin
 import com.app.adjustment.changepin.confirmpin.navigation.adjustmentToConfirmPin
 import com.app.adjustment.changepin.currentpin.CurrentPin

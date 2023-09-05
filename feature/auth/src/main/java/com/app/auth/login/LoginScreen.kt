@@ -126,8 +126,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
     val context = LocalContext.current
     val enableLoginWithPin = viewModel.session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)
-    val passwordVisualTransformation =
-        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation = if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()

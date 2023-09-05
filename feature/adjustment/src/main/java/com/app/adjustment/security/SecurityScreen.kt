@@ -32,7 +32,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.Switch
-import com.app.adjustment.changepassword.navigation.securityToChangePassword
+import com.app.adjustment.changepassword.securityToChangePassword
+
 import com.app.adjustment.changepin.currentpin.navigation.adjustmentToCurrentPin
 import com.app.uikit.views.CustomSwitch
 

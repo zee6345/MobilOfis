@@ -19,13 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -57,21 +54,24 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.otp.navigation.changePasswordToOTP
-import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.network.helper.Converter
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.ChangePasswordRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.helper.Converter
-import com.app.network.helper.Keys
 import com.app.network.utils.Message
 import com.app.network.viewmodel.AdjustmentViewModel
 import com.app.uikit.dialogs.RoundedCornerToast
-import ir.kaaveh.sdpcompose.sdp
+import com.app.uikit.dialogs.ShowProgressDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+const val securityToChangePassword = "securityToChangePassword"
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ForgetPasswordScreen(
     navController: NavController,
@@ -85,19 +85,27 @@ fun ForgetPasswordScreen(
     val pswdErrorCheck1 = remember { mutableStateOf(false) }
     val pswdErrorCheck2 = remember { mutableStateOf(false) }
     val pswdErrorCheck3 = remember { mutableStateOf(false) }
-    val errorCheck1 = remember { mutableStateOf("") }
-    val errorCheck2 = remember { mutableStateOf("") }
-    val errorCheck3 = remember { mutableStateOf("") }
+
+    val error = remember { mutableStateOf("") }
+
+
     val context: Context = LocalContext.current
     val isLoading = remember { mutableStateOf(false) }
 
     val changePassword by viewModel.changePassword.collectAsState()
     val coroutine = rememberCoroutineScope()
-//    val userDetails = viewModel.session.fetchUserDetails()
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
-
+    var isPswdVisible1 by remember { mutableStateOf(false) }
+    var isPswdVisible2 by remember { mutableStateOf(false) }
+    var isPswdVisible3 by remember { mutableStateOf(false) }
+    val passwordVisualTransformation1 =
+        if (isPswdVisible1) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation2 =
+        if (isPswdVisible2) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation3 =
+        if (isPswdVisible3) VisualTransformation.None else PasswordVisualTransformation()
 
     Column(
         modifier = Modifier
@@ -142,43 +150,176 @@ fun ForgetPasswordScreen(
                 .padding(horizontal = 12.dp), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column() {
-                TextFieldWithEndDrawable(
-                    stringResource(R.string.current_password),
-                    pswdErrorCheck1.value,
-                    errorCheck1.value
-                ) {
-                    currentPassword.value = it
+//                TextFieldWithEndDrawable(
+//                    stringResource(R.string.current_password),
+//                    pswdErrorCheck1.value,
+//                    errorCheck1.value
+//                ) {
+//                    currentPassword.value = it
+//
+//                    if (it.isNotEmpty()) {
+//                        if (pswdErrorCheck1.value)
+//                            pswdErrorCheck1.value = false
+//                    }
+//
+//                }
 
-                    if (it.isNotEmpty()) {
-                        if (pswdErrorCheck1.value)
-                            pswdErrorCheck1.value = false
-                    }
+                OutlinedTextField(
+                    value = currentPassword.value,
+                    onValueChange = { currentPassword.value = it },
+                    visualTransformation = passwordVisualTransformation1,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    label = {
+                        androidx.compose.material3.Text(
+                            text = stringResource(R.string.current_password), fontSize = 14.sp
+                        )
+                    },
+                    trailingIcon = {
+                        Image(
+                            painter = painterResource(id = if (isPswdVisible1) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
+                            contentDescription = if (isPswdVisible1) "Hide Password" else "Show Password",
+                            modifier = Modifier
+                                .pointerInteropFilter { event ->
+                                    when (event.action) {
+                                        MotionEvent.ACTION_DOWN -> isPswdVisible1 = true
+                                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isPswdVisible1 =
+                                            false
+                                    }
+                                    true
+                                }
+                        )
 
-                }
-                TextFieldWithEndDrawable(
-                    stringResource(R.string.new_password),
-                    pswdErrorCheck2.value,
-                    errorCheck2.value
-                ) {
-                    newPassword.value = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
+                        focusedBorderColor = colorResource(R.color.background_card_blue),
+                        unfocusedBorderColor = colorResource(R.color.border_grey),
+                        unfocusedLabelColor = colorResource(R.color.grey_text),
+                        focusedLabelColor = colorResource(R.color.background_card_blue)
+                    ),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp)
+                )
 
-                    if (it.isNotEmpty()) {
-                        if (pswdErrorCheck2.value)
-                            pswdErrorCheck2.value = false
-                    }
-                }
-                TextFieldWithEndDrawable(
-                    stringResource(R.string.repeat_the_new_password),
-                    pswdErrorCheck3.value,
-                    errorCheck3.value
-                ) {
-                    repeatPassword.value = it
 
-                    if (it.isNotEmpty()) {
-                        if (pswdErrorCheck3.value)
-                            pswdErrorCheck3.value = false
-                    }
-                }
+                OutlinedTextField(
+                    value = newPassword.value,
+                    onValueChange = { newPassword.value = it },
+                    visualTransformation = passwordVisualTransformation2,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    label = {
+                        androidx.compose.material3.Text(
+                            text = stringResource(R.string.new_password),
+                            fontSize = 14.sp
+                        )
+                    },
+                    trailingIcon = {
+
+                        Image(
+                            painter = painterResource(id = if (isPswdVisible2) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
+                            contentDescription = if (isPswdVisible2) "Hide Password" else "Show Password",
+                            modifier = Modifier
+                                .pointerInteropFilter { event ->
+                                    when (event.action) {
+                                        MotionEvent.ACTION_DOWN -> isPswdVisible2 = true
+                                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isPswdVisible2 =
+                                            false
+                                    }
+                                    true
+                                }
+                        )
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
+                        focusedBorderColor = colorResource(R.color.background_card_blue),
+                        unfocusedBorderColor = colorResource(R.color.border_grey),
+                        unfocusedLabelColor = colorResource(R.color.grey_text),
+                        focusedLabelColor = colorResource(R.color.background_card_blue)
+                    ),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp)
+                )
+
+//                TextFieldWithEndDrawable(
+//                    stringResource(R.string.new_password),
+//                    pswdErrorCheck2.value,
+//                    errorCheck2.value
+//                ) {
+//                    newPassword.value = it
+//
+//                    if (it.isNotEmpty()) {
+//                        if (pswdErrorCheck2.value)
+//                            pswdErrorCheck2.value = false
+//                    }
+//                }
+
+//                TextFieldWithEndDrawable(
+//                    stringResource(R.string.repeat_the_new_password),
+//                    pswdErrorCheck3.value,
+//                    errorCheck3.value
+//                ) {
+//                    repeatPassword.value = it
+//
+//                    if (it.isNotEmpty()) {
+//                        if (pswdErrorCheck3.value)
+//                            pswdErrorCheck3.value = false
+//                    }
+//                }
+
+                OutlinedTextField(
+                    value = repeatPassword.value,
+                    onValueChange = { repeatPassword.value = it },
+                    visualTransformation = passwordVisualTransformation3,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    label = {
+                        androidx.compose.material3.Text(
+                            text = stringResource(R.string.repeat_the_new_password),
+                            fontSize = 14.sp
+                        )
+                    },
+                    trailingIcon = {
+
+                        Image(
+                            painter = painterResource(id = if (isPswdVisible3) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
+                            contentDescription = if (isPswdVisible3) "Hide Password" else "Show Password",
+                            modifier = Modifier
+                                .pointerInteropFilter { event ->
+                                    when (event.action) {
+                                        MotionEvent.ACTION_DOWN -> isPswdVisible3 = true
+                                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isPswdVisible3 =
+                                            false
+                                    }
+                                    true
+                                }
+                        )
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
+                        focusedBorderColor = colorResource(R.color.background_card_blue),
+                        unfocusedBorderColor = colorResource(R.color.border_grey),
+                        unfocusedLabelColor = colorResource(R.color.grey_text),
+                        focusedLabelColor = colorResource(R.color.background_card_blue)
+                    ),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp)
+                )
             }
 
 
@@ -218,44 +359,56 @@ fun ForgetPasswordScreen(
                 Button(
                     onClick = {
 
-                        if (isPasswordValid(currentPassword.value)) {
-                            pswdErrorCheck1.value = false
-                            if (isPasswordValid(newPassword.value)) {
-                                pswdErrorCheck2.value = false
-                                if (isPasswordValid(repeatPassword.value)) {
-                                    pswdErrorCheck3.value = false
+                        val currentPasswordValid = isPasswordValid(currentPassword.value)
+                        val newPasswordValid = isPasswordValid(newPassword.value)
+                        val repeatPasswordValid = isPasswordValid(repeatPassword.value)
 
-
-                                    coroutine.launch {
-
-                                        viewModel.changePassword(
-                                            ChangePasswordRequest(
-                                                userDetails.userName,
-                                                currentPassword.value,
-                                                newPassword.value,
-                                                repeatPassword.value
-                                            )
-                                        )
-
-                                    }
-
-
-                                } else {
-                                    pswdErrorCheck3.value = true
-                                    errorCheck3.value =
-                                        "The password should contain at least 8 characters not more than 20: numerals (0-9), upper (A-Z) and lower (a-z) case letters of the Latin alphabet. Special characters may be used"
-                                }
-                            } else {
-                                pswdErrorCheck2.value = true
-                                errorCheck2.value =
-                                    "The password should contain at least 8 characters not more than 20: numerals (0-9), upper (A-Z) and lower (a-z) case letters of the Latin alphabet. Special characters may be used"
-                            }
-                        } else {
+                        if (currentPassword.value.isEmpty() or newPassword.value.isEmpty() or repeatPassword.value.isEmpty()) {
                             pswdErrorCheck1.value = true
-                            errorCheck1.value =
+                            error.value = "Please fill all fields"
+                            return@Button
+                        }
+
+                        if (!currentPasswordValid) {
+                            pswdErrorCheck2.value = true
+                            error.value =
                                 "The password should contain at least 8 characters not more than 20: numerals (0-9), upper (A-Z) and lower (a-z) case letters of the Latin alphabet. Special characters may be used"
+                            return@Button
+                        }
+
+                        if (!newPasswordValid || !repeatPasswordValid) {
+                            pswdErrorCheck3.value = true
+                            error.value =
+                                "The password should contain at least 8 characters not more than 20: numerals (0-9), upper (A-Z) and lower (a-z) case letters of the Latin alphabet. Special characters may be used"
+                            return@Button
+                        }
+
+//                        if (currentPassword.value != viewModel.session[Keys.KEY_USER_PIN]) {
+//                            pswdErrorCheck2.value = true
+//                            error.value = "Incorrect current"
+//                            return@Button
+//                        }
+
+                        if (newPassword.value != repeatPassword.value) {
+                            pswdErrorCheck3.value = true
+                            error.value = "New passwords do not match"
+                            return@Button
+                        }
+
+
+                        //change password
+                        CoroutineScope(Dispatchers.Main).launch {
+                            viewModel.changePassword(
+                                ChangePasswordRequest(
+                                    userDetails.userName,
+                                    currentPassword.value,
+                                    newPassword.value,
+                                    repeatPassword.value
+                                )
+                            )
 
                         }
+
 
                     },
                     shape = RoundedCornerShape(8.dp),
@@ -284,10 +437,10 @@ fun ForgetPasswordScreen(
 
     //show empty field toast
     if (pswdErrorCheck1.value or pswdErrorCheck2.value or pswdErrorCheck3.value) {
-        RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
+        RoundedCornerToast(error.value, Toast.LENGTH_SHORT, context)
 
         LaunchedEffect(Unit) {
-            delay(1000)
+            delay(3000)
 
             pswdErrorCheck1.value = false
             pswdErrorCheck2.value = false
@@ -301,9 +454,7 @@ fun ForgetPasswordScreen(
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    com.app.uikit.dialogs.ShowProgressDialog(isLoading)
-                }
+
             }
 
             is DataState.Error -> {
@@ -327,77 +478,12 @@ fun ForgetPasswordScreen(
             }
         }
     }
-}
 
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun TextFieldWithEndDrawable(
-    hint: String,
-    pswdErrorCheck: Boolean,
-    errorString: String,
-    onValueChange: (str: String) -> Unit
-) {
-
-    val textState = remember { mutableStateOf("") }
-    var isPswdVisible by remember { mutableStateOf(false) }
-    val passwordVisualTransformation =
-        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
-
-    Column {
-
-
-        OutlinedTextField(
-            value = textState.value,
-            onValueChange = { textState.value = it },
-            visualTransformation = passwordVisualTransformation,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            label = {
-                androidx.compose.material3.Text(
-                    text = hint,
-                    fontSize = 14.sp,
-                    style = TextStyle(
-                        color = Color(0xFF859DB5)
-                    )
-                )
-            }, trailingIcon = {
-
-                Icon(
-                    painter = painterResource(id = if (isPswdVisible) R.drawable.ic_pswd_visible else R.drawable.ic_pswd_visible),
-                    contentDescription = if (isPswdVisible) "Hide Password" else "Show Password",
-                    modifier = Modifier
-                        .pointerInteropFilter { event ->
-                            when (event.action) {
-                                MotionEvent.ACTION_DOWN -> isPswdVisible = true
-                                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isPswdVisible =
-                                    false
-                            }
-                            true
-                        }
-                )
-
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = Color.White,
-                focusedBorderColor = Color(0xFF223142),
-                unfocusedBorderColor = Color(0xFFE7EEFC),
-                unfocusedLabelColor = Color(0xFF859DB5),
-                focusedLabelColor = Color(0xFF223142)
-            ),
-
-            singleLine = true,
-            shape = RoundedCornerShape(10.sdp)
-        )
-
-//        if (pswdErrorCheck)
-//            Text(errorString)
-
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
     }
-    onValueChange(textState.value)
 }
+
 
 private fun isPasswordValid(password: String): Boolean {
     val regex =
