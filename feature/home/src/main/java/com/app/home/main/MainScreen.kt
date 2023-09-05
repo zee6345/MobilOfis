@@ -53,7 +53,11 @@ import com.app.transfer.transfers.headerFilters
 import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.Utils
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -78,6 +82,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val isEmpty = remember { mutableStateOf(false) }
     val customerBalanceType = remember { mutableStateOf("Balance") }
     val balance = remember { mutableStateOf("0.0") }
+    val symbol = remember { mutableStateOf("") }
     val customerName = remember { mutableStateOf("") }
 
     val sheet = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
@@ -113,10 +118,12 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
 
-    //default name
+    //set default company name
     customerName.value = userDetails.customerName
+    viewModel.session.put("customer", customerName.value)
 
 
+    //initial API calls
     LaunchedEffect(Unit) {
         coroutine.launch {
             viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
@@ -209,7 +216,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         )
 
                         Text(
-                            text = "${sumDR}",
+                            text = "${Utils.formatAmount(sumDR!!)}",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 18.4.sp,
@@ -243,7 +250,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                         Text(
-                            text = if (sumCR == 0.0) "$sumCR" else "- $sumCR",
+                            text = if (sumCR == 0.0) "${Utils.formatAmount(sumCR)}" else "- ${Utils.formatAmount(sumCR!!)}",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 18.4.sp,
@@ -366,7 +373,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                     Box(
                         Modifier.clickable {
-                            coroutine.launch {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 viewModel.getRecentOps(userDetails.customerNo, "")
                             }
                         }
@@ -404,7 +411,12 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             itemList.forEach { ops ->
                                 CardsItem(ops, navController)
                             }
+
                         }
+                    }
+
+                    item{
+                        Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     }
 
                 }
@@ -647,9 +659,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             }
 
 
-                            Row() {
+                            Row {
                                 Text(
-                                    text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(balance.value.toDouble()),
+                                    text = if (isShowBalance.value) "****" else "${
+                                        Utils.formatAmountWithSpaces(
+                                            balance.value.toDouble()
+                                        )
+                                    } ${symbol.value}",
                                     modifier = Modifier.align(Top),
                                     style = TextStyle(
                                         fontSize = 32.sp,
@@ -658,17 +674,17 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     color = Color.White
                                 )
 
-                                if (!isShowBalance.value) {
-                                    Text(
-                                        text = stringResource(R.string.text_currency_type),
-                                        modifier = Modifier
-                                            .padding(end = 22.dp)
-                                            .padding(3.dp)
-                                            .align(Bottom),
-                                        style = TextStyle(fontSize = 24.sp),
-                                        color = Color.White
-                                    )
-                                }
+//                                if (!isShowBalance.value) {
+//                                    Text(
+//                                        text = Utils.formatCurrency(),
+//                                        modifier = Modifier
+//                                            .padding(end = 22.dp)
+//                                            .padding(3.dp)
+//                                            .align(Bottom),
+//                                        style = TextStyle(fontSize = 24.sp),
+//                                        color = Color.White
+//                                    )
+//                                }
                             }
 
                         }
@@ -700,8 +716,20 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
+
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-        viewModel.setCustomerName(ChangeCompanyName(it))
+//        viewModel.setCustomerName(ChangeCompanyName(it))
+
+        CoroutineScope(Dispatchers.Main).launch {
+            // Call setCustomerName with the first value
+            viewModel.setCustomerName(ChangeCompanyName(it))
+
+
+            delay(1000) // Delay for 2 seconds (adjust the duration as needed)
+
+            // Call setCustomerName with the second value
+            viewModel.setCustomerName(ChangeCompanyName(it))
+        }
     }
 
     if (customerBalance.isNotEmpty() && customerBalance != null) {
@@ -731,6 +759,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         clear()
                         addAll(data)
                     }
+
+                    symbol.value = Utils.formatCurrency(customerBalance[0].CCY_NAME)
                 }
             }
 
@@ -759,25 +789,27 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     val str = Converter.toJson(this)
                     viewModel.session.put(Keys.KEY_USER_DETAILS, str)
 
-
                     customerName.value = this.customerName
                     viewModel.session.put("customer", this.customerName)
 
                     LaunchedEffect(Unit) {
 
-                        coroutine.launch {
+                        //main
+                        viewModel.getBalance(userDetails.customerNo)
+                        viewModel.getRecentOps(userDetails.customerNo, "")
 
-                            //refresh APIs
-                            viewModel.getTransferCountSummary(
-                                startDateSelected.value,
-                                endDateSelected.value
-                            )
+                        //accounts
+                        viewModel.getAccounts(userDetails.customerNo)
 
-                            viewModel.getBalance(userDetails.customerNo)
-                            viewModel.getRecentOps(userDetails.customerNo, "")
-                            viewModel.getAccounts(userDetails.customerNo)
+                        //cards
+                        viewModel.getOldBusinessCards(userDetails.customerNo)
+                        viewModel.getNewBusinessCards(userDetails.customerNo)
 
-                        }
+                        //loans
+                        viewModel.getLoans(userDetails.customerNo)
+
+                        //deposits
+                        viewModel.getTrusts(userDetails.customerNo)
 
                     }
 
@@ -818,7 +850,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             else -> {}
         }
     }
-
 
     recentOps?.let {
         when (it) {
@@ -861,8 +892,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     }
 
 
-
-
 }
 
 
@@ -871,18 +900,20 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
 
     var isCredit by remember { mutableStateOf(false) }
 
+    val symbol = Utils.formatCurrency(data.currency_name)
+
     isCredit = data.debit_credit_flag != "DR"
 
     val amount = if (isCredit) {
-        "-${data.amount} ₼"
+        "-${data.amount} ${symbol}"
     } else {
-        "${data.amount} ₼"
+        "${data.amount} ${symbol}"
     }
 
 
     Card(
         modifier = Modifier
-            .padding(vertical = 4.sdp, horizontal = 8.sdp)
+            .padding(vertical = 4.sdp, horizontal = 10.sdp)
             .fillMaxWidth()
             .clickable {
                 recentDetail.value = data
@@ -927,7 +958,7 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
                     .weight(0.3f)
             ) {
 
-                Text(
+                AutoResizedText(
                     text = if (isShowBalance.value) "****" else amount,
                     style = TextStyle(
                         fontSize = 14.sp,

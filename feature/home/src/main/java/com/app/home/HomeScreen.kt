@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -38,6 +39,7 @@ import java.util.TimerTask
 @Composable
 fun MainScreenView(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val navController = rememberNavController()
+    val lastLogin by viewModel.lastLogin.collectAsState()
 
     val signInfo = SharedModel.init().signInfo
 
@@ -54,14 +56,14 @@ fun MainScreenView(navController: NavController, viewModel: LoginViewModel = hil
     }
 
 
-    val lastLogin by viewModel.lastLogin.collectAsState()
-
-    val timer = Timer()
-    timer.schedule(object : TimerTask() {
-        override fun run() {
-            viewModel.lastLogin()
-        }
-    }, 0, 30000)
+    LaunchedEffect(Unit) {
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                viewModel.lastLogin()
+            }
+        }, 0, 30000)
+    }
 
     lastLogin?.let {
         when (it) {

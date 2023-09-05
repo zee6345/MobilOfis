@@ -748,6 +748,7 @@ private fun TransferListItem(
 ) {
 
     val formattedTime = Utils.formattedTime(transfer.trnDateTime)
+    val symbol = Utils.formatCurrency(transfer.currency)
 
 
     Row(
@@ -816,7 +817,7 @@ private fun TransferListItem(
                         modifier = Modifier.weight(1f)
                     )
                     AutoResizedText(
-                        text = Utils.formatAmountWithSpaces(transfer.amount),
+                        text = "${Utils.formatAmountWithSpaces(transfer.amount)} $symbol",
                         style = TextStyle(
                             fontSize = 14.sp,
                             textAlign = TextAlign.Right

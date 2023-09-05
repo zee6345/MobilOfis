@@ -64,6 +64,7 @@ import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import com.app.uikit.utils.Utils
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -210,6 +211,9 @@ fun TrustsList(navController: NavController, viewModel: HomeViewModel = hiltView
 
 @Composable
 private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
+
+    val symbol = Utils.formatCurrency(obj.CCY_NAME)
+
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
@@ -247,8 +251,8 @@ private fun TrustsListItem(obj: GetTrustsItem, navController: NavController) {
 
             ) {
 
-                Text(
-                    text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(obj.BALANCE.toDouble()),
+                AutoResizedText(
+                    text = if (isShowBalance.value) "****" else "${Utils.formatAmountWithSpaces(obj.BALANCE.toDouble())} $symbol",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),

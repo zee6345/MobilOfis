@@ -92,7 +92,9 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val bnfAccount = remember { mutableStateOf("") }
     val bnfTIN = remember { mutableStateOf("") }
     val bnfNameCode = remember { mutableStateOf("") }
+    val symbol = remember { mutableStateOf("") }
     val isSigned = remember { mutableStateOf(false) }
+
 
     val signBottomSheet = remember { mutableStateOf(false) }
 
@@ -282,7 +284,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${fromAccount.value}",
+                                text = "${fromAccount.value} ${symbol.value}",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -604,7 +606,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = Utils.formatAmountWithSpaces(amount.value.toDouble()),
+                                text = "${Utils.formatAmountWithSpaces(amount.value.toDouble())} ${symbol.value}",
                                 style = TextStyle(
 
                                     fontSize = 14.sp,
@@ -630,7 +632,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = Utils.formatAmountWithSpaces(commAmount.value.toDouble()),
+                                text = "${Utils.formatAmountWithSpaces(commAmount.value.toDouble())} ${symbol.value}",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -701,7 +703,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${note.value}",
+                                text = if (note.value == null) "" else "${note.value}",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -806,6 +808,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     bnfTIN.value = "$BENEFTAXID"
                     bnfAccount.value = "$BENEFACC"
                     bnfNameCode.value = "$BENEFBANKCODE - $BENEFBANKNAME"
+                    symbol.value = Utils.formatCurrency(ccyType)
                 }
 
             }

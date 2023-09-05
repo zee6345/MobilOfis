@@ -168,7 +168,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                     )
 
                     Text(
-                        text = "${sumDR}",
+                        text = "${Utils.formatAmount(sumDR!!)}",
                         style = TextStyle(
                             fontSize = 14.sp,
                             lineHeight = 18.4.sp,
@@ -200,7 +200,11 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
 
 
                     Text(
-                        text = if (sumCR == 0.0) "$sumCR" else "- $sumCR",
+                        text = if (sumCR == 0.0) "${Utils.formatAmount(sumCR!!)}" else "- ${
+                            Utils.formatAmount(
+                                sumCR!!
+                            )
+                        }",
                         style = TextStyle(
                             fontSize = 14.sp,
                             lineHeight = 18.4.sp,

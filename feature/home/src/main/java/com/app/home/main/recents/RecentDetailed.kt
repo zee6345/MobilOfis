@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import com.app.home.R
 import com.app.home.main.recentDetail
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
 
 const val recentToDetails = "recentToDetails"
@@ -47,6 +48,8 @@ fun RecentDetailed(navController: NavController) {
     var isCredit by remember { mutableStateOf(false) }
 
     isCredit = recent!!.debit_credit_flag != "DR"
+
+    val symbol = Utils.formatCurrency(recent.currency_name)
 
     Column(
         modifier = Modifier
@@ -269,7 +272,7 @@ fun RecentDetailed(navController: NavController) {
                                         .padding(horizontal = 10.sdp)
                                 ) {
                                     Text(
-                                        text = if (isCredit) "-${recent.amount} ₼" else "${recent.amount} ₼",
+                                        text = if (isCredit) "-${recent.amount} $symbol" else "${recent.amount} $symbol",
                                         style = TextStyle(
                                             color = if (isCredit) Color(0xFFFF4E57) else Color(
                                                 0xFF203657

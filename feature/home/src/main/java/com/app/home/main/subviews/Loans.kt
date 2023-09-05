@@ -64,6 +64,7 @@ import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import com.app.uikit.utils.Utils
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -198,6 +199,9 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
 @Composable
 private fun LoansListItem(obj: GetLoansItem, onSelectedLoan: (GetLoansItem) -> Unit) {
+
+    val symbol = Utils.formatCurrency(obj.CCY_NAME)
+
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
@@ -263,7 +267,7 @@ private fun LoansListItem(obj: GetLoansItem, onSelectedLoan: (GetLoansItem) -> U
 
                     Spacer(modifier = Modifier.size(width = 5.dp, height = 1.dp))
 
-                    Text(
+                    AutoResizedText(
                         text = if (obj.nickName != null) obj.nickName.toString() else "SME Loan",
                         style = TextStyle(fontSize = 14.sp),
                         modifier = Modifier.fillMaxWidth()
@@ -280,8 +284,8 @@ private fun LoansListItem(obj: GetLoansItem, onSelectedLoan: (GetLoansItem) -> U
                 )
             }
 
-            Text(
-                text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(obj.MAIN_BALANCE),
+            AutoResizedText(
+                text = if (isShowBalance.value) "****" else "${Utils.formatAmountWithSpaces(obj.MAIN_BALANCE)} $symbol",
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.roboto_medium)),

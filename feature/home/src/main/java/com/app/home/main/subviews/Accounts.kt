@@ -1,5 +1,6 @@
 package com.app.home.main.subviews
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +57,7 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.Utils
+import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -142,6 +144,9 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
 fun AccountListItem(obj: GetAccountsItem, navController: NavController, viewModel: HomeViewModel) {
 
     var isCardAccount by remember { mutableStateOf(false) }
+    val context: Context = LocalContext.current
+
+    val symbol = Utils.formatCurrency(obj.CCY_NAME)
 
     var title = ""
     if (obj.ACCOUNT_TYPE != null) {
@@ -236,8 +241,8 @@ fun AccountListItem(obj: GetAccountsItem, navController: NavController, viewMode
 
             }
 
-            Text(
-                text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(obj.BALANCE.toDouble()),
+            AutoResizedText(
+                text = if (isShowBalance.value) "****" else "${Utils.formatAmountWithSpaces(obj.BALANCE.toDouble())} $symbol",
                 modifier = Modifier
                     .padding(vertical = 4.dp, horizontal = 10.dp),
                 style = TextStyle(

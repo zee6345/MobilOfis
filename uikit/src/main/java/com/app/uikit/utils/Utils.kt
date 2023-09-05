@@ -1,12 +1,118 @@
 package com.app.uikit.utils
 
+import android.content.Context
+import android.content.res.Resources
+import android.util.Log
 import androidx.compose.ui.graphics.Color
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+
 object Utils {
+
+    private var currencyHashMap: Map<String, Map<String, Any>>? = null
+
+     fun loadCurrencyData(context: Context) {
+        val resources: Resources = context.resources
+
+        // Get the resource ID of your JSON file (assuming it's named "currencies.json")
+        val resourceId = resources.getIdentifier("currencies", "raw", context.packageName)
+
+        // Check if the currencyHashMap is null or needs to be refreshed
+        if (currencyHashMap == null) {
+            // Read the JSON file
+            val inputStream = resources.openRawResource(resourceId)
+            val inputStreamReader = InputStreamReader(inputStream)
+            val bufferedReader = BufferedReader(inputStreamReader)
+            val stringBuilder = StringBuilder()
+            var line: String?
+            try {
+                while (bufferedReader.readLine().also { line = it } != null) {
+                    stringBuilder.append(line)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            val jsonContent = stringBuilder.toString().trimIndent()
+
+            val jsonObject = JSONObject(jsonContent)
+            currencyHashMap = mutableMapOf()
+
+            for (currencyCode in jsonObject.keys()) {
+                val currencyInfo = jsonObjectToMap(jsonObject.getJSONObject(currencyCode))
+                (currencyHashMap as MutableMap<String, Map<String, Any>>)[currencyCode] = currencyInfo
+            }
+        }
+    }
+
+    fun formatCurrency(currency: String): String {
+        val currencyInfo = currencyHashMap?.get(currency)
+        return currencyInfo?.get("symbolNative").toString()
+    }
+
+    private fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {
+        val map = mutableMapOf<String, Any>()
+
+        jsonObject.keys().forEach { key ->
+            val value = jsonObject[key]
+            if (value is JSONObject) {
+                map[key] = jsonObjectToMap(value)
+            } else {
+                map[key] = value
+            }
+        }
+
+        return map
+    }
+
+    fun formatAmount(amount:Double): String {
+        return "%.2f".format(amount)
+    }
+
+//    fun formatCurrency(currency: String, context: Context): String {
+//
+//        val resources: Resources = context.resources
+//
+//        // Get the resource ID of your JSON file (assuming it's named "my_json_file.json")
+//        val resourceId = resources.getIdentifier("currencies", "raw", context.packageName)
+//
+//        // Read the JSON file
+//        val inputStream = resources.openRawResource(resourceId)
+//        val inputStreamReader = InputStreamReader(inputStream)
+//        val bufferedReader = BufferedReader(inputStreamReader)
+//        val stringBuilder = java.lang.StringBuilder()
+//        var line: String?
+//        try {
+//            while (bufferedReader.readLine().also { line = it } != null) {
+//                stringBuilder.append(line)
+//            }
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//
+//        val jsonContent = stringBuilder.toString().trimIndent()
+//
+//        val jsonObject = JSONObject(jsonContent)
+//        val currencyHashMap = mutableMapOf<String, Map<String, Any>>()
+//
+//        for (currencyCode in jsonObject.keys()) {
+//            val currencyInfo = jsonObjectToMap(jsonObject.getJSONObject(currencyCode))
+//            currencyHashMap[currencyCode] = currencyInfo
+//        }
+//
+//        // Now you can access currency information using currency codes like this:
+//        val currencyInfo = currencyHashMap[currency]
+//
+//        return currencyInfo?.get("symbol").toString()
+//
+//    }
 
     fun formatCardNumber(input: String): String {
         val formatted = StringBuilder()
@@ -42,7 +148,8 @@ object Utils {
             result.append(digit)
         }
 
-        val formattedAmount = "${result.toString()}.${decimalPart}"
+        val formattedAmount = "$result.${decimalPart}"
+
         return if (isNegative) "-$formattedAmount" else formattedAmount
     }
 

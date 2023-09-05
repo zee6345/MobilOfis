@@ -8,12 +8,14 @@ import com.app.network.helper.Converter
 
 private const val SESSION = "SESSION_EVENTS"
 
-class ErrorState(private val context: Context, error: String) {
+class ErrorState(private val context: Context, private val error: String) {
 
-    private val errorResponse: ErrorResponse = Converter.fromJson(error, ErrorResponse::class.java)
+
 
     fun handleError() {
         try {
+
+            val errorResponse: ErrorResponse = Converter.fromJson(error, ErrorResponse::class.java)
 
             if (errorResponse.code.equals(
                     "ERROR.SESSION_EXPIRE",

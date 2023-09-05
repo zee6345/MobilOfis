@@ -353,6 +353,9 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 @Composable
 private fun OldCardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
 
+
+    val symbol = Utils.formatCurrency(obj.Currency)
+
     val amount: String = if (obj.Balance != null) {
         "${obj.Balance}"
     } else {
@@ -469,8 +472,8 @@ private fun OldCardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
                 }
             }
 
-            Text(
-                text = if (isShowBalance.value) "****" else Utils.formatAmountWithSpaces(amount.toDouble()),
+            AutoResizedText(
+                text = if (isShowBalance.value) "****" else "${Utils.formatAmountWithSpaces(amount.toDouble())} $symbol",
                 color = colorResource(R.color.background_card_blue),
                 style = TextStyle(
                     fontSize = 14.sp,
@@ -488,6 +491,9 @@ private fun OldCardsListItem(obj: MainCard, onCardClick: (MainCard) -> Unit) {
 
 @Composable
 private fun NewCardsListItem(obj: MainCardX, onCardClick: (MainCardX) -> Unit) {
+
+    val symbol = Utils.formatCurrency(obj.Currency)
+
     Card(
         modifier = Modifier
             .padding(vertical = 5.dp, horizontal = 5.sdp)
@@ -577,7 +583,7 @@ private fun NewCardsListItem(obj: MainCardX, onCardClick: (MainCardX) -> Unit) {
                 }
             }
 
-            Text(
+            AutoResizedText(
                 text = if (isShowBalance.value) "****" else "",
                 color = colorResource(R.color.background_card_blue),
                 style = TextStyle(
