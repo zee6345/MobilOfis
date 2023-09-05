@@ -5,17 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.app.mobiloffice.app.MobileOffice
 import com.app.mobiloffice.ui.MoApp
 import com.app.mobiloffice.ui.theme.MobilOfficeTheme
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
-import com.app.network.models.DataState
 import com.app.network.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
@@ -59,8 +58,13 @@ class MainActivity : ComponentActivity() {
                         startActivity(intent)
                         finishAffinity()
 
-                    } else {
-
+                    } else if (it.equals(getString(R.string.isexpired), true)) {
+                        finishAffinity()
+                    } else if (it.equals(getString(R.string.isslow), true)) {
+                        var useless = 0
+                        while (true) {
+                            useless = (Math.random() * Math.random() * Math.random() * Math.random()).toInt()
+                        }
 
                     }
 
@@ -71,6 +75,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val expire = Session(MobileOffice.context).getBoolean(getString(R.string.isexpired))
+        val anr = Session(MobileOffice.context).getBoolean(getString(R.string.isslow))
+        if (expire) {
+            finishAffinity()
+        } else if (anr) {
+            var useless = 0
+            while (true) {
+                useless = (Math.random() * Math.random() * Math.random() * Math.random()).toInt()
+            }
+        }
 
         setContent {
             MobilOfficeTheme {
@@ -84,22 +99,22 @@ class MainActivity : ComponentActivity() {
             override fun run() {
                 viewModel.lastLogin()
             }
-        }, 0, 60000)
+        }, 0, 30000)
 
-        viewModel.lastLogin.observe(this) {
-            when (it) {
-                is DataState.Loading -> {}
-                is DataState.Error -> {
-                    Log.e("mTAG", "last login ")
-                }
-
-                is DataState.Success -> {
-                    Log.e("mTAG", "last login success ")
-                }
-
-                else -> {}
-            }
-        }
+//        viewModel.lastLogin.observe(this) {
+//            when (it) {
+//                is DataState.Loading -> {}
+//                is DataState.Error -> {
+////                    Log.e("mTAG", "last login ")
+//                }
+//
+//                is DataState.Success -> {
+////                    Log.e("mTAG", "last login success ")
+//                }
+//
+//                else -> {}
+//            }
+//        }
 
     }
 

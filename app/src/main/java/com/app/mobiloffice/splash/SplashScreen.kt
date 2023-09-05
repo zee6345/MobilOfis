@@ -137,12 +137,6 @@ fun SplashScreen(navController: NavController) {
         }
     }
 
-
-
-
-
-
-
     LaunchedEffect(Unit) {
         delay(2000)
 

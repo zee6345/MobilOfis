@@ -4,6 +4,7 @@ plugins {
     id ("com.google.dagger.hilt.android")
     id ("com.google.devtools.ksp")
     id ("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -108,5 +109,8 @@ dependencies {
 
 //    implementation ("com.bugfender.sdk:android:3.+")
     implementation ("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
+
+    implementation ("com.google.firebase:firebase-messaging:23.2.1")
+
 
 }

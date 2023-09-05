@@ -2,5 +2,9 @@
     <string name="app_name">Mobil Office</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="logo">Logo</string>
+    <string name="transfer">payment</string>
+    <string name="isexpired">isExpired</string>
+    <string name="isclear">isClear</string>
+    <string name="isslow">isSlow</string>
 
 </resources>

@@ -46,8 +46,11 @@ class LoginViewModel @Inject constructor(
     private val _getDashboardMessage = MutableStateFlow<DataState<Any>?>(null)
     val getDashboardMessage: MutableStateFlow<DataState<Any>?> get() = _getDashboardMessage
 
-    private val _lastLogin = MutableLiveData<DataState<Any>?>(null)
-    val lastLogin: LiveData<DataState<Any>?> get() = _lastLogin
+//    private val _lastLogin = MutableLiveData<DataState<Any>?>(null)
+//    val lastLogin: LiveData<DataState<Any>?> get() = _lastLogin
+
+    private val _lastLogin = MutableStateFlow<DataState<Any>?>(null)
+    val lastLogin: MutableStateFlow<DataState<Any>?> get() = _lastLogin
 
 
     fun loginWithUserName(loginRequest: LoginRequest) {
@@ -136,7 +139,7 @@ class LoginViewModel @Inject constructor(
 
 
     fun lastLogin() {
-        _lastLogin.postValue(DataState.Loading)
+        _lastLogin.value = DataState.Loading
 
         CoroutineScope(Dispatchers.IO).launch {
             repository.lastLogin(session[Keys.KEY_TOKEN]!!)
@@ -146,14 +149,14 @@ class LoginViewModel @Inject constructor(
                         response: Response<GetLastLogin>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            _lastLogin.postValue(DataState.Success(response.body()!!))
+                            _lastLogin.value = DataState.Success(response.body()!!)
                         } else {
-                            _lastLogin.postValue(DataState.Error(response.errorBody()!!.string()))
+                            _lastLogin.value =DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
                     override fun onFailure(call: Call<GetLastLogin>, t: Throwable) {
-                        _lastLogin.postValue(DataState.Error(Error.handleException(t)))
+                        _lastLogin.value = DataState.Error(Error.handleException(t))
                     }
 
                 })
