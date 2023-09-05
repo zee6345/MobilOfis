@@ -435,6 +435,10 @@ fun AdjustmentsScreen(navController: NavController) {
 
     }
 
+
+
+    //testtsye
+
     AboutBankSheet(aboutBankState, navController) {
         navController.navigate(adjustmentToExchangeRates)
     }
