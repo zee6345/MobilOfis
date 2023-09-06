@@ -11,6 +11,7 @@ import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
 import com.app.network.models.requestModels.VerifyRequest
+import com.app.network.models.requestModels.VerifySecretRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetAccountBlocks
 import com.app.network.models.responseModels.GetAccounts
@@ -26,6 +27,7 @@ import com.app.network.models.responseModels.GetStartMessage
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserProfile
+import com.app.network.models.responseModels.GetVerify2FA
 import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -197,7 +199,14 @@ interface APIService {
     fun verify2FA(
         @Header("Auth_token") token: String,
         @Body verify2FARequest:VerifyRequest
-    ):Call<ResponseBody>
+    ):Call<GetVerify2FA>
+
+
+    @POST("auth/totp-register/verify")
+    fun verify2FASecret(
+        @Header("Auth_token") token: String,
+        @Body verifySecretRequest: VerifySecretRequest
+    ):Call<GetVerify2FA>
 
     @GET("exchange/exchange/listrates")
     fun getExchangeList(

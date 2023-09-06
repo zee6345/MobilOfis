@@ -38,6 +38,7 @@
     <string name="skip">Skip</string>
     <string name="repeat_pin">Repeat PIN</string>
     <string name="successful_registration">Successful Registration!</string>
+    <string name="google_auth_activate">Google Authenticator has been activated successfully.</string>
     <string name="pin_set">PIN set</string>
     <string name="pin_change">PIN has been changed</string>
     <string name="text_continue">Continue</string>

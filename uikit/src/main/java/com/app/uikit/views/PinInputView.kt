@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 fun PinInputView(
     length: Int,
     onPinEntered: (String) -> Unit,
-    onKeyEntered: (String) -> Unit
+    onKeyEntered: (String) -> Unit,
+    resetPin:Boolean = false,
 ) {
     val pinValue = remember { mutableStateOf("") }
 
@@ -50,5 +51,10 @@ fun PinInputView(
         if (pinValue.value.length == length) {
             onPinEntered(pinValue.value)
         }
+    }
+
+
+    if (resetPin){
+        pinValue.value = ""
     }
 }

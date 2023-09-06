@@ -1,5 +1,10 @@
 package com.app.adjustment.googleauth
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,27 +28,64 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
+import com.app.network.helper.Converter
+import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorResponse
+import com.app.network.models.requestModels.VerifyRequest
+import com.app.network.models.requestModels.VerifySecretRequest
+import com.app.network.viewmodel.AdjustmentViewModel
+import com.app.uikit.bottomSheet.GAuthActiveBottomSheet
+import com.app.uikit.dialogs.RoundedCornerToast
+import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.views.OtpView
+import kotlinx.coroutines.delay
+
 
 const val otpToConfirmGoogleAuthOtp = "otpToConfirmGoogleAuthOtp"
 
+val secretMessage = mutableStateOf("")
+
 @Composable
-fun ConfirmSMSCodeScreen(navController: NavHostController) {
+fun ConfirmSMSCodeScreen(
+    navController: NavHostController,
+    viewModel: AdjustmentViewModel = hiltViewModel()
+) {
+
+    val context = LocalContext.current
+
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    val otpValue = remember { mutableStateOf("") }
+    val verifySecret = viewModel.verify2FASecret.collectAsState()
+    val isLoading = remember { mutableStateOf(false) }
+    var successSheet = remember{ mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +107,7 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                 Image(
                     painter = painterResource(id = R.drawable.back_icon),
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(height = 26.dp, width = 32.dp)
                         .align(CenterVertically)
                         .clickable {
                             navController.popBackStack()
@@ -108,18 +150,19 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                                 .padding(top = 22.dp)
 
                         )
-                        Box(modifier = Modifier
-                            .padding(22.dp)
-                            .fillMaxWidth()
-                            .background(
-                                Color.White
-                            )
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFFE7EEFC),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .clickable {}) {
+                        Box(
+                            modifier = Modifier
+                                .padding(22.dp)
+                                .fillMaxWidth()
+                                .background(
+                                    Color.White
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFFE7EEFC),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                        ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -128,10 +171,8 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 val scrollState = rememberScrollState()
-                                val textValue =
-                                    "sdvs76876 üf7 76fgbasf7 768b"
                                 Text(
-                                    text = textValue,
+                                    text = secretMessage.value,
                                     maxLines = 1,
                                     modifier = Modifier
                                         .weight(1f)
@@ -144,7 +185,28 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                                 )
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_copy),
-                                    modifier = Modifier.align(CenterVertically),
+                                    modifier = Modifier
+                                        .align(CenterVertically)
+                                        .clickable {
+
+                                            try {
+                                                val clipboardManager: ClipboardManager? =
+                                                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                                                val clipData = ClipData.newPlainText(
+                                                    "Copied!",
+                                                    secretMessage.value
+                                                )
+                                                clipboardManager!!.setPrimaryClip(clipData)
+
+                                                errorMessage = "Copied!"
+                                                showError = true
+
+
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
+
+                                        },
                                     contentDescription = ""
                                 )
                             }
@@ -165,17 +227,49 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                     Column {
                         Text(
                             text = "After the new line containing the 6-digit code is added in the Google Authenticator app, please enter it and click \"Confirm\".\n\nEnter the Google code",
-                            style = TextStyle(fontSize = 16.sp),
-                            color = Color(0xff223142),
-                            modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp)
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF223142),
+                            ),
+                            modifier = Modifier
+                                .padding(horizontal = 22.dp)
+                                .padding(top = 22.dp)
 
                         )
-//                        OtpViewSix()
-                        OtpView(viewCount = 6, onValueChange = {
 
-                        })
+                        OtpView(viewCount = 6) {
+                            otpValue.value = it
+                        }
+
                         Button(
-                            onClick = { },
+                            onClick = {
+
+                                if (otpValue.value.isNotEmpty()) {
+                                    if (otpValue.value.length == 6) {
+
+
+                                        viewModel.verify2FASecret(
+                                            VerifySecretRequest(
+                                                secretMessage.value,
+                                                otpValue.value
+                                            )
+                                        )
+
+
+                                    } else {
+                                        errorMessage = "OTP must be 6 digit.."
+                                        showError = true
+                                    }
+
+                                } else {
+                                    errorMessage = "Please add your OTP.."
+                                    showError = true
+
+                                }
+
+                            },
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color(0xFF203657), // Change the background color here
@@ -205,6 +299,58 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
 
         }
 
+    }
+
+    verifySecret.value?.let {
+        when (it) {
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
+
+            is DataState.Error -> {
+                isLoading.value = false
+
+                val errorResponse: ErrorResponse =
+                    Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                if (errorResponse.code.equals("ERROR.TOTP_NOT_VALID", true)) {
+
+                    errorMessage = "Wrong Google Authenticator code"
+                    showError = true
+
+                } else {
+
+                }
+            }
+
+            is DataState.Success -> {
+                isLoading.value = false
+//                val data = it.data
+
+                successSheet.value = true
+
+
+            }
+        }
+    }
+
+
+    GAuthActiveBottomSheet(successSheet){
+        (context as ComponentActivity).finish()
+    }
+
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
+
+    if (showError) {
+        RoundedCornerToast(errorMessage, Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showError = false
+
+        }
     }
 }
 

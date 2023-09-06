@@ -50,7 +50,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
 import com.app.adjustment.googleauth.ActivateAuth
-import com.app.adjustment.googleauth.userProfileToGoogleAuth
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -458,7 +457,7 @@ fun UserProfileScreen(
                                             bottom = 5.dp
                                         )
                                         .clickable {
-                                            if (userData.value!!.TOTPEnabled != null) {
+                                            if (userData.value!!.TOTPEnabled == null) {
                                                 coroutineScope.launch {
                                                     viewModel.enable2FA()
                                                 }
@@ -471,7 +470,7 @@ fun UserProfileScreen(
 
                                 ) {
                                     Text(
-                                        text = if (userData.value!!.TOTPEnabled != null) stringResource(
+                                        text = if (userData.value!!.TOTPEnabled == null) stringResource(
                                             R.string.activate
                                         ) else stringResource(
                                             R.string.deactivate
@@ -535,14 +534,17 @@ fun UserProfileScreen(
     userDisable2FA?.let {
         when (it) {
             is DataState.Loading -> {
-
+                isLoading.value = false
             }
 
             is DataState.Error -> {
+                isLoading.value = false
 //                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
+                isLoading.value = true
+
 
             }
         }
@@ -551,14 +553,18 @@ fun UserProfileScreen(
     userEnable2FA?.let {
         when (it) {
             is DataState.Loading -> {
-
+                isLoading.value = true
             }
 
             is DataState.Error -> {
+                isLoading.value = false
 //                Message.showMessage(context, it.errorMessage)
             }
 
             is DataState.Success -> {
+
+                isLoading.value = false
+
                 LaunchedEffect(Unit) {
 //                    navController.navigate(userProfileToGoogleAuth)
                     val intent = Intent(context, ActivateAuth::class.java)

@@ -5,9 +5,11 @@ import com.app.network.models.requestModels.ChangePasswordRequest
 import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
 import com.app.network.models.requestModels.VerifyRequest
+import com.app.network.models.requestModels.VerifySecretRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetExchangeRates
 import com.app.network.models.responseModels.GetUserProfile
+import com.app.network.models.responseModels.GetVerify2FA
 import com.app.network.models.responseModels.VerifyChangePasswordResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -27,8 +29,12 @@ class AdjustmentRepository @Inject constructor(private val apiService: APIServic
         return apiService.enable2FA(token)
     }
 
-    fun verify2FA(token: String, verifyRequest: VerifyRequest):Call<ResponseBody>{
+    fun verify2FA(token: String, verifyRequest: VerifyRequest):Call<GetVerify2FA>{
         return  apiService.verify2FA(token, verifyRequest)
+    }
+
+    fun verify2FASecret(token: String, verifyRequest: VerifySecretRequest):Call<GetVerify2FA>{
+        return  apiService.verify2FASecret(token, verifyRequest)
     }
 
     fun getExchangeList(token: String): Call<GetExchangeRates> {

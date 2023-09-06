@@ -66,6 +66,7 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val isPinMatched = remember { mutableStateOf(false) }
+    var resetPin by remember{ mutableStateOf(false) }
 
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
     val userDetails = Converter.fromJson(str!!, LoginVerifyResponse::class.java)
@@ -162,11 +163,13 @@ fun WelcomePinScreen(navController: NavController, viewModel: LoginViewModel = h
                         } else {
 //                            Message.showMessage(context, "Wrong pin entered!")
                             isPinMatched.value = true
+
+                            resetPin = true
                         }
                     }
                 }, {
                     showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
-                })
+                }, resetPin)
 
             }
             Column(

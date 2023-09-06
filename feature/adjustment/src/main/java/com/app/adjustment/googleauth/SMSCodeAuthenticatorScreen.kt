@@ -1,6 +1,7 @@
 package com.app.adjustment.googleauth
 
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,8 +52,10 @@ import com.app.adjustment.R
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.errorResponse.ErrorResponse
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
 import com.app.network.models.requestModels.VerifyRequest
+import com.app.network.models.responseModels.GetVerify2FA
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.AdjustmentViewModel
 import com.app.uikit.dialogs.RoundedCornerToast
@@ -102,10 +105,10 @@ fun SMSCodeAuthenticatorScreen(
                     .padding(20.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
-                        .size(28.dp)
-                        .align(CenterVertically)
+                        .size(height = 25.dp, width = 32.dp)
+                        .align(Alignment.CenterVertically)
                         .clickable {
                             navController.popBackStack()
                         },
@@ -137,7 +140,7 @@ fun SMSCodeAuthenticatorScreen(
                 backgroundColor = Color.White
             ) {
 
-                Column() {
+                Column {
 
 
                     Text(
@@ -194,7 +197,6 @@ fun SMSCodeAuthenticatorScreen(
                                     coroutine.launch {
                                         errorMessage = "OTP send again!"
                                         showError = true
-//                                            Message.showMessage(context, "OTP send again!")
                                     }
                                 }
 
@@ -207,7 +209,6 @@ fun SMSCodeAuthenticatorScreen(
 
                             if (otpValue.value.isNotEmpty()) {
                                 if (otpValue.value.length == 5) {
-
 
                                     viewModel.verify2FA(
                                         VerifyRequest(
@@ -267,11 +268,27 @@ fun SMSCodeAuthenticatorScreen(
 
             is DataState.Error -> {
                 isLoading.value = false
+
+                val errorResponse: ErrorResponse =
+                    Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                if (errorResponse.code.equals("ERROR.SMS_2FA_VERIFICATION_NOT_MATCH", true)) {
+
+                    errorMessage = "Invalid SMS Code"
+                    showError = true
+
+                } else {
+
+                }
             }
 
             is DataState.Success -> {
                 isLoading.value = false
 
+                val data = it.data as GetVerify2FA
+
+                data?.apply {
+                    secretMessage.value = messages[0].MESSAGE
+                }
 
                 navController.navigate(otpToConfirmGoogleAuthOtp)
 

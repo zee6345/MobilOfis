@@ -129,7 +129,8 @@ fun ActivateGoogleAuthenticatorScreen(navController: NavHostController) {
                     Button(
                         onClick = {
 
-                            val url = "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+                            val url =
+                                "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
                             val i = Intent(Intent.ACTION_VIEW)
                             i.data = Uri.parse(url)
                             startActivity(context, i, null)
@@ -155,7 +156,7 @@ fun ActivateGoogleAuthenticatorScreen(navController: NavHostController) {
                     }
                     Button(
                         onClick = {
-                                  navController.navigate(googleAuthToOtpVerify)
+                            navController.navigate(googleAuthToOtpVerify)
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(

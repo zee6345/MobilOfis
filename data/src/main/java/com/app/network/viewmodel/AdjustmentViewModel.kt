@@ -14,6 +14,8 @@ import com.app.network.helper.Keys
 import com.app.network.helper.Session
 import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.VerifyRequest
+import com.app.network.models.requestModels.VerifySecretRequest
+import com.app.network.models.responseModels.GetVerify2FA
 import com.app.network.repository.AdjustmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -45,6 +47,9 @@ class AdjustmentViewModel @Inject constructor(
 
     private val _verify2FA = MutableStateFlow<DataState<Any>?>(null)
     val verify2FA: MutableStateFlow<DataState<Any>?> get() = _verify2FA
+
+    private val _verify2FASecret = MutableStateFlow<DataState<Any>?>(null)
+    val verify2FASecret: MutableStateFlow<DataState<Any>?> get() = _verify2FASecret
 
     private val _exchangeRates = MutableStateFlow<DataState<Any>?>(null)
     val exchangeRates: MutableStateFlow<DataState<Any>?> get() = _exchangeRates
@@ -143,10 +148,10 @@ class AdjustmentViewModel @Inject constructor(
         _verify2FA.value = DataState.Loading
 
         repository.verify2FA(session[Keys.KEY_TOKEN]!!, verifyRequest)
-            .enqueue(object : Callback<ResponseBody> {
+            .enqueue(object : Callback<GetVerify2FA> {
                 override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
+                    call: Call<GetVerify2FA>,
+                    response: Response<GetVerify2FA>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
                         _verify2FA.value = DataState.Success(response.body()!!)
@@ -155,8 +160,31 @@ class AdjustmentViewModel @Inject constructor(
                     }
                 }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                override fun onFailure(call: Call<GetVerify2FA>, t: Throwable) {
                     _verify2FA.value = DataState.Error(Error.handleException(t))
+                }
+
+            })
+    }
+
+    fun verify2FASecret(verifySecretRequest: VerifySecretRequest) {
+        _verify2FASecret.value = DataState.Loading
+
+        repository.verify2FASecret(session[Keys.KEY_TOKEN]!!, verifySecretRequest)
+            .enqueue(object : Callback<GetVerify2FA> {
+                override fun onResponse(
+                    call: Call<GetVerify2FA>,
+                    response: Response<GetVerify2FA>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        _verify2FASecret.value = DataState.Success(response.body()!!)
+                    } else {
+                        _verify2FASecret.value = DataState.Error(response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<GetVerify2FA>, t: Throwable) {
+                    _verify2FASecret.value = DataState.Error(Error.handleException(t))
                 }
 
             })

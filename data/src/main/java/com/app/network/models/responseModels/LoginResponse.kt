@@ -21,7 +21,7 @@ data class LoginResponse(
     val trnDetails: String?
 )
 
-data class Message(
-    @SerializedName("MESSAGE")
-    val MESSAGE: String
-)
+//data class Message(
+//    @SerializedName("MESSAGE")
+//    val MESSAGE: String
+//)
