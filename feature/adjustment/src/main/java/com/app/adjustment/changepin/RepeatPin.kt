@@ -1,6 +1,8 @@
-package com.app.auth.pin
+package com.app.adjustment.changepin
 
+import android.content.Context
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +34,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,12 +45,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.auth.pin.navigation.successfulRegistration
+
+import com.app.uikit.bottomSheet.PinChangedBottomSheet
 import com.app.network.helper.Keys
-import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
-import com.app.uikit.bottomSheet.FingerPrintModalBottomSheet
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.PinInputView
@@ -53,17 +57,22 @@ import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
 
+const val adjustmentToConfirmPin = "adjustmentToConfirmPin"
+
 @Composable
-fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
+fun RepeatPin(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
-    val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     var enteredPin by remember { mutableStateOf("") }
-    val isPinMatched = remember{ mutableStateOf(false) }
-    val context = LocalContext.current
+    val context: Context = LocalContext.current
+    val pinChanged = rememberSaveable { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var errorsMessage by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()
-        .background(color = Color(0xFFF3F7FA))) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFF3F7FA))
+    ) {
         Surface(
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
@@ -71,7 +80,6 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-
 
             Column(Modifier.fillMaxSize()) {
 
@@ -89,46 +97,48 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
                     )
 
                 }
-
                 Box(
-                    Modifier
-                        .fillMaxSize()
-                        .weight(0.2f)
-                        .padding(start = 20.sdp, end = 20.sdp, top = 5.sdp, bottom = 10.sdp)
-                        .background(color = Color(0xFF203657))
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(20.dp)
+
                 ) {
 
                     Row(
                         Modifier
-                            .align(Alignment.CenterStart)
+                            .align(Alignment.BottomStart)
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
 
                     ) {
 
-//                        Image(
-//                            painterResource(id = R.drawable.ic_back_arrow),
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .size(width = 32.dp, height = 25.dp)
-//                                .clickable { navController.popBackStack() }
-//                        )
+                        Image(
+                            painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(width = 32.dp, height = 25.dp)
+                                .clickable { navController.popBackStack() }
+                        )
+
+                        Spacer(modifier = Modifier.padding(horizontal = 10.sdp))
 
                         AutoResizedText(
                             modifier = Modifier
-                                .padding(horizontal = 12.sdp),
-                            text = stringResource(com.app.auth.R.string.repeat_pin),
-                            style = TextStyle(color = Color.White, fontSize = 22.sp)
+                                .padding(12.dp),
+                            text = stringResource(R.string.repeat_the_pin),
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                lineHeight = 30.1.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontWeight = FontWeight(500),
+                                color = Color(0xFFFFFFFF),
+                            )
                         )
 
                     }
                 }
-
             }
-
         }
-
-
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -143,73 +153,49 @@ fun RepeatPin(navController: NavController, loginViewModel: LoginViewModel = hil
                 enteredPin = pin
 
                 if (pin.isNotEmpty() && pin.length == 5) {
+                    val firstPin = viewModel.session[Keys.KEY_PIN]
 
-                    val firstPin = loginViewModel.session[Keys.KEY_PIN]
-                    if (firstPin.equals(pin)) {
+                    if (pin == firstPin) {
 
-                        enteredPin = pin
+                        //store new pin
+                        viewModel.session.put(Keys.KEY_USER_PIN, pin)
 
-                        showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
+                        pinChanged.value = true
+
 
                     } else {
-
-//                        loginViewModel.session.delete(Keys.KEY_PIN)
-
-                        isPinMatched.value = true
-
+                        errorsMessage = "Pin not matched!"
+                        showError = true
+//                        Message.showMessage(context, "Pin not matched")
                     }
 
+                } else {
+                    errorsMessage = "Pin must be 5 digit!"
+                    showError = true
+//                    Message.showMessage(context, "Pin must be 5 digit!")
                 }
+
             }, {
-                showForgetPassBottomSheetSheet.value = !showForgetPassBottomSheetSheet.value
+
             })
 
         }
 
     }
 
-    FingerPrintModalBottomSheet(showForgetPassBottomSheetSheet, onClickThen = {
-        loginViewModel.session.delete(Keys.KEY_PIN)
-        loginViewModel.session.put(Keys.KEY_USER_PIN, enteredPin)
-
-        //enable login with pin
-        loginViewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
+    PinChangedBottomSheet(pinChanged){
+        (context as ComponentActivity).finish()
+    }
 
 
-        navController.navigate(successfulRegistration){
-            popUpTo(navController.graph.id) {
-                inclusive = true
-            }
-        }
-
-    }, onClickYes = {
-
-        loginViewModel.session.delete(Keys.KEY_PIN)
-        loginViewModel.session.put(Keys.KEY_USER_PIN, enteredPin)
-
-        //enable login with pin
-        loginViewModel.session.put(Keys.KEY_ENABLE_PIN_LOGIN, true)
-
-        navController.navigate(successfulRegistration){
-            popUpTo(navController.graph.id) {
-                inclusive = true
-            }
-        }
-
-    })
-
-
-    //show empty field toast
-    if (isPinMatched.value) {
-        RoundedCornerToast("Pin not matched", Toast.LENGTH_SHORT, context)
+    if (showError) {
+        RoundedCornerToast(errorsMessage, Toast.LENGTH_SHORT, context)
 
         LaunchedEffect(Unit) {
             delay(3000)
-            isPinMatched.value = false
+            showError = false
         }
-
     }
-
 
 }
 

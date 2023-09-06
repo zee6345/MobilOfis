@@ -1,7 +1,8 @@
-package com.app.adjustment.otp
+package com.app.adjustment.changepassword
 
 
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +43,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.changepassword.securityToChangePassword
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -365,7 +365,8 @@ fun OtpVerifyScreen(
             is DataState.Error -> {
                 isLoading.value = false
 
-                val errorResponse: ErrorResponse = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                val errorResponse: ErrorResponse =
+                    Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
                 if (errorResponse.code.equals("ERROR.TOTP_2FA_VERIFICATION_NOT_MATCH", true)) {
                     errorMessage = "Incorrect Google Authenticator Code"
                     showError = true
@@ -376,7 +377,7 @@ fun OtpVerifyScreen(
                 } else if (errorResponse.code.equals("ERROR.FREE_TEXT", true)) {
                     errorMessage = "Wrong current password"
                     showError = true
-                }else{
+                } else {
 
                 }
             }
@@ -395,7 +396,9 @@ fun OtpVerifyScreen(
         }
     }
 
-    PassChangedBottomSheet(passChanged, navController)
+    PassChangedBottomSheet(passChanged) {
+        (context as ComponentActivity).finish()
+    }
 
     if (isLoading.value) {
         ShowProgressDialog(isLoading)

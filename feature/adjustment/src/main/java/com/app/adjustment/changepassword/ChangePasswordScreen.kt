@@ -3,6 +3,7 @@ package com.app.adjustment.changepassword
 import android.content.Context
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,7 +54,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.otp.changePasswordToOTP
 
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -131,7 +131,10 @@ fun ForgetPasswordScreen(
                     modifier = Modifier
                         .size(height = 25.dp, width = 32.dp)
                         .align(Alignment.CenterVertically)
-                        .clickable { navController.popBackStack() },
+                        .clickable {
+//                            navController.popBackStack()
+                            (context as ComponentActivity).finish()
+                        },
                     contentDescription = ""
                 )
                 Text(
@@ -289,7 +292,7 @@ fun ForgetPasswordScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 70.dp),
+                    .padding(top = 12.dp, bottom = 20.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Button(

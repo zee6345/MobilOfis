@@ -2,6 +2,7 @@ package com.app.adjustment.googleauth
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -68,12 +69,14 @@ fun ActivateGoogleAuthenticatorScreen(navController: NavHostController) {
                     .padding(20.dp),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.back_icon),
+                    painter = painterResource(id = R.drawable.ic_back_arrow),
                     modifier = Modifier
                         .size(height = 25.dp, width = 32.dp)
                         .align(Alignment.CenterVertically)
                         .clickable {
-                            navController.popBackStack()
+//                            navController.popBackStack()
+
+                            (context as ComponentActivity).finish()
                         },
                     contentDescription = ""
                 )

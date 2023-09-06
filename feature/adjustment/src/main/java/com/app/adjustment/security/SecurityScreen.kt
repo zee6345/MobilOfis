@@ -1,5 +1,7 @@
 package com.app.adjustment.security
 
+
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,14 +34,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-
-import com.app.adjustment.changepassword.securityToChangePassword
-
-import com.app.adjustment.changepin.currentpin.navigation.adjustmentToCurrentPin
+import com.app.adjustment.changepassword.ChangePassword
+import com.app.adjustment.changepin.ChangePin
 import com.app.uikit.views.CustomSwitch
 
 @Composable
 fun SecurityScreen(navController: NavController) {
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,7 +92,11 @@ fun SecurityScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 10.dp)
                     .clickable {
-                        navController.navigate(securityToChangePassword)
+//                        navController.navigate(securityToChangePassword)
+                        val changePswdIntent = Intent(context, ChangePassword::class.java)
+                        changePswdIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        context.startActivity(changePswdIntent)
+
                     },
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -123,7 +131,11 @@ fun SecurityScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            navController.navigate(adjustmentToCurrentPin)
+//                            navController.navigate(adjustmentToCurrentPin)
+                            val changePinIntent = Intent(context, ChangePin::class.java)
+                            changePinIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(changePinIntent)
+
                         },
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {

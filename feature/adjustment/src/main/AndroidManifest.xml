@@ -7,6 +7,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MobilOffice" />
+        android:theme="@style/Theme.MobilOffice">
+
+        <activity
+            android:name=".changepin.ChangePin"
+            android:exported="false" />
+
+        <activity
+            android:name=".changepassword.ChangePassword"
+            android:exported="false" />
+
+        <activity
+            android:name=".googleauth.ActivateAuth"
+            android:exported="false" />
+
+    </application>
+
 
 </manifest>

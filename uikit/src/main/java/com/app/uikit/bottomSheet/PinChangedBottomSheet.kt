@@ -57,12 +57,14 @@ fun PinChangeSheet(navController: NavController) {
         )
     }
 
-    PinChangedBottomSheet(aboutBankState, navController)
+    PinChangedBottomSheet(aboutBankState){
+
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: NavController) {
+fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, onClick:()->Unit) {
     if (aboutBankState.value) ModalBottomSheet(
         onDismissRequest = { aboutBankState.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
@@ -101,11 +103,14 @@ fun PinChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: 
             }
             Button(
                 onClick = {
-                    navController.navigate("adjustment"){
-                        popUpTo("adjustment"){
-                            inclusive = true
-                        }
-                    }
+                          onClick()
+//                    navController.navigate("adjustment"){
+//                        popUpTo("adjustment"){
+//                            inclusive = true
+//                        }
+//                    }
+
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.White,

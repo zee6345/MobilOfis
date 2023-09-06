@@ -10,6 +10,7 @@ import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
+import com.app.network.models.requestModels.VerifyRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetAccountBlocks
 import com.app.network.models.responseModels.GetAccounts
@@ -191,6 +192,12 @@ interface APIService {
     fun enable2FA(
         @Header("Auth_token") token: String,
     ): Call<ResponseBody>
+
+    @POST("auth/totp-register/status")
+    fun verify2FA(
+        @Header("Auth_token") token: String,
+        @Body verify2FARequest:VerifyRequest
+    ):Call<ResponseBody>
 
     @GET("exchange/exchange/listrates")
     fun getExchangeList(

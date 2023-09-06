@@ -13,6 +13,7 @@ import com.app.network.helper.Error
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
 import com.app.network.models.requestModels.SetFavCustomer
+import com.app.network.models.requestModels.VerifyRequest
 import com.app.network.repository.AdjustmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +42,9 @@ class AdjustmentViewModel @Inject constructor(
 
     private val _enable2FA = MutableStateFlow<DataState<Any>?>(null)
     val enable2FA: MutableStateFlow<DataState<Any>?> get() = _enable2FA
+
+    private val _verify2FA = MutableStateFlow<DataState<Any>?>(null)
+    val verify2FA: MutableStateFlow<DataState<Any>?> get() = _verify2FA
 
     private val _exchangeRates = MutableStateFlow<DataState<Any>?>(null)
     val exchangeRates: MutableStateFlow<DataState<Any>?> get() = _exchangeRates
@@ -133,6 +137,29 @@ class AdjustmentViewModel @Inject constructor(
 
                 })
         }
+    }
+
+    fun verify2FA(verifyRequest: VerifyRequest) {
+        _verify2FA.value = DataState.Loading
+
+        repository.verify2FA(session[Keys.KEY_TOKEN]!!, verifyRequest)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        _verify2FA.value = DataState.Success(response.body()!!)
+                    } else {
+                        _verify2FA.value = DataState.Error(response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    _verify2FA.value = DataState.Error(Error.handleException(t))
+                }
+
+            })
     }
 
     fun getExchangeRates() {

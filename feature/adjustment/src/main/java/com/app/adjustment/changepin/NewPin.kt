@@ -1,6 +1,7 @@
-package com.app.adjustment.changepin.newpin
+package com.app.adjustment.changepin
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,8 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,18 +44,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.changepin.confirmpin.navigation.adjustmentToConfirmPin
-import com.app.adjustment.changepin.currentpin.PinInputView
-import com.app.network.helper.Keys
-import com.app.network.utils.Message
-import com.app.network.viewmodel.LoginViewModel
 
+
+import com.app.network.helper.Keys
+import com.app.network.viewmodel.LoginViewModel
+import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.dialogs.RoundedCornerToast
+import com.app.uikit.views.AutoResizedText
+import com.app.uikit.views.PinInputView
+import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
+
+const val adjustmentToNewPin = "homeToNewPin"
 
 @Composable
-fun NewPin(navController: NavController, viewModel: LoginViewModel= hiltViewModel()) {
+fun NewPin(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
     val context: Context = LocalContext.current
     var enteredPin by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var errorsMessage by remember { mutableStateOf("") }
 
 
     Column(
@@ -66,38 +78,66 @@ fun NewPin(navController: NavController, viewModel: LoginViewModel= hiltViewMode
                 .weight(0.2f),
             color = Color(0xFF203657),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp)
 
-            ) {
+            Column(Modifier.fillMaxSize()) {
 
-                Row(
+                Box(
                     Modifier
-                        .align(Alignment.BottomStart)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize()
+                        .weight(0.1f)
 
                 ) {
 
-                    Image(
-                        painterResource(id = R.drawable.ic_back_arrow),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(width = 32.dp, height = 25.dp)
-                            .clickable { navController.popBackStack() }
-                    )
 
-                    Text(
-                        modifier = Modifier
-                            .padding(12.dp),
-                        text = stringResource(R.string.set_a_new_pin),
-                        style = TextStyle(color = Color.White, fontSize = 22.sp)
+                    CurvedBottomBox(
+                        color = Color(0xff334b66),
+                        curveHeight = 30.dp
                     )
 
                 }
 
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(20.dp)
+
+                ) {
+
+                    Row(
+                        Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+
+                        Image(
+                            painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(width = 32.dp, height = 25.dp)
+                                .clickable { navController.popBackStack() }
+                        )
+
+                        Spacer(modifier = Modifier.padding(horizontal = 10.sdp))
+
+                        AutoResizedText(
+                            modifier = Modifier
+                                .padding(12.dp),
+                            text = stringResource(R.string.set_a_new_pin),
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                lineHeight = 30.1.sp,
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontWeight = FontWeight(500),
+                                color = Color(0xFFFFFFFF),
+                            )
+                        )
+
+                    }
+
+                }
             }
         }
         Column(
@@ -110,7 +150,7 @@ fun NewPin(navController: NavController, viewModel: LoginViewModel= hiltViewMode
             Spacer(modifier = Modifier.height(20.dp))
 
 
-            PinInputView(navController, length = 5) { pin ->
+            PinInputView(length = 5, { pin ->
                 enteredPin = pin
 
                 if (pin.isNotEmpty() && pin.length == 5) {
@@ -120,13 +160,27 @@ fun NewPin(navController: NavController, viewModel: LoginViewModel= hiltViewMode
                     navController.navigate(adjustmentToConfirmPin)
 
                 } else {
-                    Message.showMessage(context, "Pin must be 5 digit!")
+                    errorsMessage = "Pin must be 5 digits!"
+                    showError = true
+//                    Message.showMessage(context, "Pin must be 5 digit!")
                 }
 
-            }
+            }, {
+
+            })
 
         }
 
+    }
+
+
+    if (showError) {
+        RoundedCornerToast(errorsMessage, Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showError = false
+        }
     }
 
 }

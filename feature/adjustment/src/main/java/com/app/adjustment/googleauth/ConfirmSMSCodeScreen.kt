@@ -66,7 +66,7 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.back_icon),
                     modifier = Modifier
                         .size(28.dp)
-                        .align(Alignment.CenterVertically)
+                        .align(CenterVertically)
                         .clickable {
                             navController.popBackStack()
                         },
@@ -76,7 +76,7 @@ fun ConfirmSMSCodeScreen(navController: NavHostController) {
                     text = "Google Authenticator",
                     style = TextStyle(color = Color.White, fontSize = 18.sp),
                     modifier = Modifier
-                        .align(Alignment.CenterVertically)
+                        .align(CenterVertically)
                         .padding(horizontal = 8.dp)
                 )
 

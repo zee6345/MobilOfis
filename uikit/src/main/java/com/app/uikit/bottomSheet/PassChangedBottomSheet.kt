@@ -57,12 +57,14 @@ fun PassChangeSheet(navController: NavController) {
         )
     }
 
-    PassChangedBottomSheet(aboutBankState, navController)
+    PassChangedBottomSheet(aboutBankState){
+
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PassChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController: NavController) {
+fun PassChangedBottomSheet(aboutBankState: MutableState<Boolean>, onClick:()->Unit) {
     if (aboutBankState.value) ModalBottomSheet(
         onDismissRequest = { aboutBankState.value = false },
         shape = RoundedCornerShape(topStart = 16.sdp, topEnd = 16.sdp),
@@ -101,11 +103,13 @@ fun PassChangedBottomSheet(aboutBankState: MutableState<Boolean>, navController:
             }
             Button(
                 onClick = {
-                    navController.navigate("adjustment"){
-                        popUpTo("adjustment"){
-                            inclusive = true
-                        }
-                    }
+//                    navController.navigate("adjustment"){
+//                        popUpTo("adjustment"){
+//                            inclusive = true
+//                        }
+//                    }
+
+                          onClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.White,

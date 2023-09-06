@@ -4,6 +4,7 @@ import com.app.network.retrofitClient.APIService
 import com.app.network.models.requestModels.ChangePasswordRequest
 import com.app.network.models.requestModels.SetFavCustomer
 import com.app.network.models.requestModels.VerifyChangePasswordRequest
+import com.app.network.models.requestModels.VerifyRequest
 import com.app.network.models.responseModels.ChangePasswordResponse
 import com.app.network.models.responseModels.GetExchangeRates
 import com.app.network.models.responseModels.GetUserProfile
@@ -24,6 +25,10 @@ class AdjustmentRepository @Inject constructor(private val apiService: APIServic
 
     fun enable2FA(token: String): Call<ResponseBody> {
         return apiService.enable2FA(token)
+    }
+
+    fun verify2FA(token: String, verifyRequest: VerifyRequest):Call<ResponseBody>{
+        return  apiService.verify2FA(token, verifyRequest)
     }
 
     fun getExchangeList(token: String): Call<GetExchangeRates> {

@@ -1,6 +1,7 @@
 package com.app.adjustment.userprofile
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,6 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
+import com.app.adjustment.googleauth.ActivateAuth
 import com.app.adjustment.googleauth.userProfileToGoogleAuth
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -456,7 +458,7 @@ fun UserProfileScreen(
                                             bottom = 5.dp
                                         )
                                         .clickable {
-                                            if (userData.value!!.TOTPEnabled == null) {
+                                            if (userData.value!!.TOTPEnabled != null) {
                                                 coroutineScope.launch {
                                                     viewModel.enable2FA()
                                                 }
@@ -469,7 +471,7 @@ fun UserProfileScreen(
 
                                 ) {
                                     Text(
-                                        text = if (userData.value!!.TOTPEnabled == null) stringResource(
+                                        text = if (userData.value!!.TOTPEnabled != null) stringResource(
                                             R.string.activate
                                         ) else stringResource(
                                             R.string.deactivate
@@ -558,7 +560,11 @@ fun UserProfileScreen(
 
             is DataState.Success -> {
                 LaunchedEffect(Unit) {
-                    navController.navigate(userProfileToGoogleAuth)
+//                    navController.navigate(userProfileToGoogleAuth)
+                    val intent = Intent(context, ActivateAuth::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intent)
+
                 }
             }
         }
