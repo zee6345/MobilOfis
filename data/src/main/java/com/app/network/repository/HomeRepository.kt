@@ -12,6 +12,7 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
+import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -20,6 +21,7 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val apiService: APIService)  {
@@ -66,6 +68,10 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
 
     fun getRecentOps(token: String, customerId: Int, incomeFlag:String):Call<GetRecentOps>{
         return apiService.getRecentOps(token, customerId, incomeFlag)
+    }
+
+    suspend fun getRecentOps(token: String, customerId: Int, page: Int): Response<List<GetRecentOpsItem>> {
+        return apiService.getRecentOps(token, customerId, page)
     }
 
     fun setCustomerName(token: String, changeCompanyName: ChangeCompanyName): Call<LoginVerifyResponse> {

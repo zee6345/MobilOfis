@@ -118,9 +118,13 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
+
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
+
     var isPswdVisible by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var errorsMessage by remember { mutableStateOf("") }
     val isLoading = remember { mutableStateOf(false) }
     val message = remember { mutableStateOf("") }
 
@@ -579,17 +583,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     ForgetPasswordModalBottomSheet(showForgetPassBottomSheetSheet)
 
 
-    //show empty field toast
-    if (userErrorCheck or pswdErrorCheck) {
-        RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
 
-        LaunchedEffect(Unit) {
-            delay(3000)
-            userErrorCheck = false
-            pswdErrorCheck = false
-        }
-
-    }
 
 
     /**
@@ -610,10 +604,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 errorMessage?.let { error ->
                     if (error.code.equals("ERROR.FREE_TEXT", true)) {
 
-                        LaunchedEffect(error.code) {
-                            showMessage(context, "Wrong username or password!")
-                        }
+//                        LaunchedEffect(error.code) {
+//                            showMessage(context, "Wrong username or password!")
+//                        }
 
+                        errorsMessage = "Wrong username or password!"
+                        showError = true
 
                     }
                 }
@@ -656,9 +652,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
                 errorMessage?.let { error ->
                     if (error.code.equals("ERROR.FREE_TEXT", true)) {
-                        LaunchedEffect(error.code) {
-                            showMessage(context, "Wrong username or password!")
-                        }
+//                        LaunchedEffect(error.code) {
+//                            showMessage(context, "Wrong username or password!")
+//                        }
+
+                        errorsMessage = "Wrong username or password!"
+                        showError = true
                     }
                 }
             }
@@ -729,6 +728,27 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     if (showDialog.value) {
         showDialog(showDialog.value, message.value) {
             showDialog.value = false
+        }
+    }
+
+    //show empty field toast
+    if (userErrorCheck or pswdErrorCheck) {
+        RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            userErrorCheck = false
+            pswdErrorCheck = false
+        }
+    }
+
+
+    if (showError) {
+        RoundedCornerToast(errorsMessage, Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showError = false
         }
     }
 

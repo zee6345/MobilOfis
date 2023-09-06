@@ -70,4 +70,8 @@ dependencies {
     kapt (Hilt.compiler)
     implementation(Hilt.hilt_compose)
 
+    //paging
+    implementation(Compose.compose_pager)
+    implementation(Compose.compose_paging)
+
 }

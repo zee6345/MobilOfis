@@ -1,10 +1,14 @@
 package com.app.home.main
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -33,6 +37,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import androidx.paging.compose.itemsIndexed
 import com.app.home.R
 import com.app.home.main.recents.recentToDetails
 import com.app.home.main.recents.recentTransactions
@@ -69,6 +81,7 @@ private const val TAG = "MenuScreen"
 val recentDetail = mutableStateOf<GetRecentOpsItem?>(null)
 var isShowBalance = mutableStateOf(false)
 
+@SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -112,6 +125,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val coroutine = rememberCoroutineScope()
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
+
+    val pagedRecentOps = viewModel.pagedRecentOps.collectAsLazyPagingItems()
+//    val lazyPagingItems = viewModel.lazyPagingItems.collectAsLazyPagingItems()
 
 
     val context = LocalContext.current
@@ -250,7 +266,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
                         Text(
-                            text = if (sumCR == 0.0) "${Utils.formatAmount(sumCR)}" else "- ${Utils.formatAmount(sumCR!!)}",
+                            text = if (sumCR == 0.0) "${Utils.formatAmount(sumCR)}" else "- ${
+                                Utils.formatAmount(
+                                    sumCR!!
+                                )
+                            }",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 18.4.sp,
@@ -394,28 +414,80 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 LazyColumn {
 
-                    val groupedItems = recentData?.groupBy { it.trn_date }
+                    when (val state = pagedRecentOps.loadState.prepend) {
+                        is LoadState.NotLoading -> Unit
+                        is LoadState.Loading -> {
+                            isLoading.value = true
+                        }
 
-                    groupedItems?.forEach { (dateStr, itemList) ->
-
-                        item {
-                            Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.sdp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(text = Utils.formatInputDate(dateStr))
-                            }
-
-                            itemList.forEach { ops ->
-                                CardsItem(ops, navController)
-                            }
-
+                        is LoadState.Error -> {
+                            Log.e("mmTAG", state.error.message.toString())
+//                            Error(message = state.error.message ?: "")
                         }
                     }
 
-                    item{
+                    when (val state = pagedRecentOps.loadState.refresh) {
+                        is LoadState.NotLoading -> Unit
+                        is LoadState.Loading -> {
+                            isLoading.value = true
+                        }
+
+                        is LoadState.Error -> {
+                            Log.e("mmTAG", state.error.message.toString())
+//                            Error(message = state.error.message ?: "")
+                        }
+                    }
+
+                    itemsIndexed(
+                        items = pagedRecentOps
+                    ) { index, item ->
+                        CardsItem(data = item!!, navController)
+                    }
+
+//                    pagedRecentOps.itemSnapshotList.forEachIndexed { index, getRecentOpsItem ->
+//                        item {
+//                            CardsItem(data = getRecentOpsItem!!, navController = navController)
+//                        }
+//                    }
+
+
+
+                    when (val state = pagedRecentOps.loadState.append) {
+                        is LoadState.NotLoading -> Unit
+                        is LoadState.Loading -> {
+                            isLoading.value = true
+                        }
+
+                        is LoadState.Error -> {
+                            Log.e("mmTAG", state.error.message.toString())
+//                            Error(message = state.error.message ?: "")
+                        }
+                    }
+
+//                    val groupedItems = lazyPagingItems.itemSnapshotList.groupBy { it!!.trn_date }
+//                    val groupedItems = recentData.groupBy { it!!.trn_date }
+//
+//                    groupedItems?.forEach { (dateStr, itemList) ->
+//
+//                        item {
+//                            Box(
+//                                Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(4.sdp),
+//                                contentAlignment = Alignment.Center
+//                            ) {
+//                                Text(text = Utils.formatInputDate(dateStr))
+//                            }
+//
+//                            itemList.forEach { ops ->
+//                                CardsItem(ops!!, navController)
+//                            }
+//
+//                        }
+//                    }
+
+
+                    item {
                         Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     }
 
@@ -434,7 +506,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                 modifier = Modifier
                     .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
                     .fillMaxWidth()
-                    .weight(0.25f),
+                    .weight(0.23f),
             ) {
                 Column(
                     modifier = Modifier.fillMaxHeight()
@@ -470,7 +542,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                                 selectCompanyState.value = true
                                             }
                                         }
-                                        .weight(0.3f),
+                                        .weight(0.2f),
                                     contentDescription = "",
                                     tint = Color.White
                                 )
@@ -509,7 +581,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                     modifier = Modifier
                                         .size(16.dp)
                                         .align(Top)
-                                        .weight(0.3f)
                                         .clickable {
                                             coroutine.launch {
                                                 selectCompanyState.value = true
@@ -696,7 +767,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
             Column(
                 modifier = Modifier
-                    .weight(0.75f)
+                    .weight(0.8f)
             ) {
 
                 Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
@@ -913,7 +984,7 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
 
     Card(
         modifier = Modifier
-            .padding(vertical = 4.sdp, horizontal = 10.sdp)
+            .padding(vertical = 4.sdp, horizontal = 15.sdp)
             .fillMaxWidth()
             .clickable {
                 recentDetail.value = data

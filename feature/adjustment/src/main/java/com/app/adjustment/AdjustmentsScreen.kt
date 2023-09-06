@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +61,8 @@ import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.companies.companydisplay.navigation.displayDuringLogin
 import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
 import com.app.adjustment.navigation.securityScreen
-import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
+import com.app.adjustment.userprofile.adjustmentToUserProfile
+
 import com.app.uikit.bottomSheet.AboutBankSheet
 import com.app.uikit.views.CustomSwitch
 
@@ -80,39 +83,68 @@ fun AdjustmentsScreen(navController: NavController) {
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
                 .fillMaxWidth()
-                .weight(0.1f),
+                .then(Modifier.wrapContentHeight()),
             color = Color(0xFF203657),
         ) {
+
             Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(20.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_back_arrow),
-                    modifier = Modifier
-                        .size(width = 32.dp, height = 25.dp)
-                        .align(CenterVertically)
-                        .clickable {
-                            navController.popBackStack()
-                        },
-                    contentDescription = ""
-                )
-                Text(
-                    text = stringResource(R.string.adjustments),
-                    style = TextStyle(color = Color.White, fontSize = 18.sp),
-                    modifier = Modifier
-                        .align(CenterVertically)
-                        .padding(horizontal = 8.dp)
-                )
-
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                        modifier = Modifier
+                            .size(width = 32.dp, height = 25.dp)
+                            .align(Alignment.CenterVertically)
+                            .clickable {
+                                navController.popBackStack()
+                            },
+                        contentDescription = ""
+                    )
+                    Text(
+                        text = stringResource(R.string.adjustments),
+                        style = TextStyle(color = Color.White, fontSize = 18.sp),
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(horizontal = 8.dp)
+                    )
+                }
 
             }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxHeight()
+//                    .padding(20.dp),
+//            ) {
+//                Image(
+//                    painter = painterResource(id = R.drawable.ic_back_arrow),
+//                    modifier = Modifier
+//                        .size(width = 32.dp, height = 25.dp)
+//                        .align(CenterVertically)
+//                        .clickable {
+//                            navController.popBackStack()
+//                        },
+//                    contentDescription = ""
+//                )
+//                Text(
+//                    text = stringResource(R.string.adjustments),
+//                    style = TextStyle(color = Color.White, fontSize = 18.sp),
+//                    modifier = Modifier
+//                        .align(CenterVertically)
+//                        .padding(horizontal = 8.dp)
+//                )
+//
+//
+//            }
         }
         Column(
             modifier = Modifier
-                .weight(0.9f)
-                .padding(horizontal = 12.dp),
+                .weight(0.8f)
+                .padding(horizontal = 10.dp),
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
@@ -444,23 +476,23 @@ fun AdjustmentsScreen(navController: NavController) {
 }
 
 
-@Composable
-fun Switch() {
-    var switchCheckedState by remember { mutableStateOf(false) }
-
-    Switch(
-        checked = switchCheckedState,
-        onCheckedChange = { switchCheckedState = it },
-        colors = SwitchDefaults.colors(
-            checkedThumbColor = Color.White,
-            checkedTrackColor = Color(0xFF1DD580),
-            uncheckedThumbColor = Color.White,
-            uncheckedTrackColor = colorResource(R.color.border_grey),
-
-            )
-    )
-
-}
+//@Composable
+//fun Switch() {
+//    var switchCheckedState by remember { mutableStateOf(false) }
+//
+//    Switch(
+//        checked = switchCheckedState,
+//        onCheckedChange = { switchCheckedState = it },
+//        colors = SwitchDefaults.colors(
+//            checkedThumbColor = Color.White,
+//            checkedTrackColor = Color(0xFF1DD580),
+//            uncheckedThumbColor = Color.White,
+//            uncheckedTrackColor = colorResource(R.color.border_grey),
+//
+//            )
+//    )
+//
+//}
 
 
 @Composable

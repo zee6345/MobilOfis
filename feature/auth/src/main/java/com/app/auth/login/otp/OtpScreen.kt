@@ -1,5 +1,6 @@
 package com.app.auth.login.otp
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -52,12 +53,14 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
 import com.app.network.viewmodel.LoginViewModel
 import com.app.uikit.borders.CurvedBottomBox
+import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.OtpView
 import com.app.uikit.views.TimerTextsView
 import com.app.uikit.views.TimerTextsView20S
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -80,7 +83,14 @@ fun OtpScreen(
     val otpCount = remember { mutableStateOf(6) }
     val coroutine = rememberCoroutineScope()
 
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
     val loginType = SharedModel.init().loginType.value
+
+    //store login type
+    viewModel.session.put(Keys.KEY_LOGIN_TYPE, loginType)
+
 
     //set initial value for OTP view
     when (loginType) {
@@ -366,11 +376,14 @@ fun OtpScreen(
 //                ErrorState(context, it.errorMessage).handleError()
                 if (errorResponse.code.equals("ERROR.TOTP_2FA_VERIFICATION_NOT_MATCH", true)) {
 
-                    LaunchedEffect(Unit) {
-                        coroutine.launch {
-                            Message.showMessage(context, "Incorrect Google Authenticator Code")
-                        }
-                    }
+//                    LaunchedEffect(Unit) {
+//                        coroutine.launch {
+//                            Message.showMessage(context, "Incorrect Google Authenticator Code")
+//                        }
+//                    }
+
+                    errorMessage = "Incorrect Google Authenticator Code"
+                    showError= true
                 } else {
 
                 }
@@ -421,6 +434,15 @@ fun OtpScreen(
 
     if (isLoading.value) {
         ShowProgressDialog(isLoading)
+    }
+
+    if (showError) {
+        RoundedCornerToast(errorMessage, Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showError = false
+        }
     }
 
 }

@@ -76,6 +76,10 @@ dependencies {
     implementation(Compose.compose_tooling_preview)
     debugImplementation(Compose.composeTooling)
 
+    //paging
+    implementation(Compose.compose_pager)
+    implementation(Compose.compose_paging)
+
 
     //Navigation
     implementation (Compose.composeNavigation)

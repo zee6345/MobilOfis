@@ -20,6 +20,7 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
+import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetStartMessage
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
@@ -33,6 +34,7 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -158,6 +160,14 @@ interface APIService {
         @Path("customerId") customerId: Int
     ): Call<GetRecentOps>
 
+    @GET("customers/{customerId}/activities-byfilter")
+    suspend fun getRecentOps(
+        @Header("Auth_token") token: String,
+        @Path("customerId") customerId: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 20
+    ): Response<List<GetRecentOpsItem>>
+
 //    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
 //    fun getRecentOpsIncome(
 //        @Header("Auth_token") token: String,
@@ -272,28 +282,28 @@ interface APIService {
     @GET("transaction/getransactionbyibankref/{ibankRef}")
     fun transactionDetails(
         @Header("Auth_token") token: String,
-        @Path("ibankRef") ibankRef:String
-    ):Call<GetTransactionDetails>
+        @Path("ibankRef") ibankRef: String
+    ): Call<GetTransactionDetails>
 
     @POST("transaction/approve")
     fun signOrApprove(
         @Header("Auth_token") token: String,
         @Body signApproveRequest: SignApproveRequest
-    ):Call<SignApproveResponse>
+    ): Call<SignApproveResponse>
 
     @GET("transaction/status/{code}")
     fun transactionStatus(
-        @Header("Auth_token")token: String,
-        @Path("code")code:Int
-    ):Call<SignApproveResponse>
+        @Header("Auth_token") token: String,
+        @Path("code") code: Int
+    ): Call<SignApproveResponse>
 
     @POST("transaction/send-to-bank")
     fun sendToBankAPI(
-        @Header("Auth_token")token: String,
+        @Header("Auth_token") token: String,
         @Body sendToBank: SendToBankModel
-    ):Call<SignApproveResponse>
+    ): Call<SignApproveResponse>
 
     @GET("bank/dashboardMessage")
-    fun getDashBoardMessage():Call<GetStartMessage>
+    fun getDashBoardMessage(): Call<GetStartMessage>
 
 }

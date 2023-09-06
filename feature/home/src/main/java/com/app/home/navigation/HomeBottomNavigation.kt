@@ -28,10 +28,12 @@ import com.app.adjustment.googleauth.otpToConfirmGoogleAuthOtp
 import com.app.adjustment.googleauth.userProfileToGoogleAuth
 import com.app.adjustment.navigation.securityScreen
 import com.app.adjustment.otp.OtpVerifyScreen
-import com.app.adjustment.otp.navigation.changePasswordToOTP
+import com.app.adjustment.otp.changePasswordToOTP
+
 import com.app.adjustment.security.SecurityScreen
 import com.app.adjustment.userprofile.UserProfileScreen
-import com.app.adjustment.userprofile.navigation.adjustmentToUserProfile
+import com.app.adjustment.userprofile.adjustmentToUserProfile
+
 import com.app.home.BottomNavItem
 import com.app.home.main.MenuScreen
 import com.app.home.main.account.AccountInformation

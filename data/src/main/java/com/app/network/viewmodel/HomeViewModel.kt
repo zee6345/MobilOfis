@@ -1,6 +1,10 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.app.network.helper.Error.handleException
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
@@ -15,6 +19,7 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
+import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -90,6 +95,21 @@ class HomeViewModel @Inject constructor(
 
     private val _transactionStatus = MutableStateFlow<DataState<Any>?>(null)
     val getTransactionStatus: MutableStateFlow<DataState<Any>?> get() = _transactionStatus
+
+//    private val pagingConfig = PagingConfig(
+//        pageSize = 20,
+//        enablePlaceholders = false
+//    )
+//
+//    private val pager = Pager(
+//        config = pagingConfig,
+//        pagingSourceFactory = { RecentOpsPagingSource(session, repository) }
+//    ).flow
+
+    val pagedRecentOps = Pager(
+        pagingSourceFactory = { RecentOpsPagingSource(session, repository) },
+        config = PagingConfig(pageSize = 20)
+    ).flow.cachedIn(viewModelScope)
 
     fun getAccounts(customerId: Int) {
 
@@ -209,7 +229,8 @@ class HomeViewModel @Inject constructor(
                         if (response.isSuccessful && response.body() != null) {
                             _accountsBlockByIban.value = DataState.Success(response.body()!!)
                         } else {
-                            _accountsBlockByIban.value = DataState.Error(response.errorBody()!!.string())
+                            _accountsBlockByIban.value =
+                                DataState.Error(response.errorBody()!!.string())
                         }
                     }
 
@@ -314,6 +335,14 @@ class HomeViewModel @Inject constructor(
                     })
             }
         }
+    }
+
+    suspend fun getRecentOps(
+        customerId: Int,
+        page: Int,
+        limit: Int
+    ): Response<List<GetRecentOpsItem>> {
+        return repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page)
     }
 
     fun setCustomerName(changeCompanyName: ChangeCompanyName) {
@@ -457,7 +486,6 @@ class HomeViewModel @Inject constructor(
 
 
     }
-
 
     fun signOrApprove(signApproveRequest: SignApproveRequest) {
         _getSignOrApprove.value = DataState.Loading

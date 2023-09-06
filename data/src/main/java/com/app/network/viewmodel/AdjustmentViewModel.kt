@@ -109,7 +109,6 @@ class AdjustmentViewModel @Inject constructor(
         }
     }
 
-
     fun enable2FA() {
         _enable2FA.value = DataState.Loading
 

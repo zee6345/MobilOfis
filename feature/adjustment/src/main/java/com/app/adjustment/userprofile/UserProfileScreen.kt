@@ -60,6 +60,7 @@ import com.app.uikit.dialogs.ShowProgressDialog
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
+const val adjustmentToUserProfile = "adjustmentToUserProfile"
 
 @Composable
 fun UserProfileScreen(

@@ -53,7 +53,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.otp.navigation.changePasswordToOTP
+import com.app.adjustment.otp.changePasswordToOTP
+
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -107,6 +108,7 @@ fun ForgetPasswordScreen(
     val passwordVisualTransformation3 =
         if (isPswdVisible3) VisualTransformation.None else PasswordVisualTransformation()
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -150,19 +152,6 @@ fun ForgetPasswordScreen(
                 .padding(horizontal = 12.dp), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column() {
-//                TextFieldWithEndDrawable(
-//                    stringResource(R.string.current_password),
-//                    pswdErrorCheck1.value,
-//                    errorCheck1.value
-//                ) {
-//                    currentPassword.value = it
-//
-//                    if (it.isNotEmpty()) {
-//                        if (pswdErrorCheck1.value)
-//                            pswdErrorCheck1.value = false
-//                    }
-//
-//                }
 
                 OutlinedTextField(
                     value = currentPassword.value,
@@ -250,32 +239,6 @@ fun ForgetPasswordScreen(
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp)
                 )
-
-//                TextFieldWithEndDrawable(
-//                    stringResource(R.string.new_password),
-//                    pswdErrorCheck2.value,
-//                    errorCheck2.value
-//                ) {
-//                    newPassword.value = it
-//
-//                    if (it.isNotEmpty()) {
-//                        if (pswdErrorCheck2.value)
-//                            pswdErrorCheck2.value = false
-//                    }
-//                }
-
-//                TextFieldWithEndDrawable(
-//                    stringResource(R.string.repeat_the_new_password),
-//                    pswdErrorCheck3.value,
-//                    errorCheck3.value
-//                ) {
-//                    repeatPassword.value = it
-//
-//                    if (it.isNotEmpty()) {
-//                        if (pswdErrorCheck3.value)
-//                            pswdErrorCheck3.value = false
-//                    }
-//                }
 
                 OutlinedTextField(
                     value = repeatPassword.value,

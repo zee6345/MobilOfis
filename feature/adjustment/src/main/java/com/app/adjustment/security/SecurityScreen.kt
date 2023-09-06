@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.adjustment.R
-import com.app.adjustment.Switch
+
 import com.app.adjustment.changepassword.securityToChangePassword
 
 import com.app.adjustment.changepin.currentpin.navigation.adjustmentToCurrentPin
@@ -87,7 +87,9 @@ fun SecurityScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
-                    .clickable { navController.navigate(securityToChangePassword) },
+                    .clickable {
+                        navController.navigate(securityToChangePassword)
+                    },
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -149,7 +151,8 @@ fun SecurityScreen(navController: NavController) {
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 10.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
