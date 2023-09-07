@@ -36,11 +36,12 @@ import com.app.uikit.models.FilterType
 import ir.kaaveh.sdpcompose.sdp
 
 
-val tarnsfersDate = mutableStateOf(DateModel("", "", null))
-val tarnsfersType = mutableStateOf("Type")
-val tarnsfersCurrency = mutableStateOf("Currency")
-val tarnsfersStatus = mutableStateOf("Status")
-val tarnsfersAccount = mutableStateOf("From the account")
+val transfersDate = mutableStateOf(DateModel("", "", null))
+val transfersType = mutableStateOf("Type")
+val transfersBeneficiary = mutableStateOf("Beneficiary")
+val transfersCurrency = mutableStateOf("Currency")
+val transfersStatus = mutableStateOf("Status")
+val transfersAccount = mutableStateOf("From the account")
 
 @Composable
 fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
@@ -57,7 +58,7 @@ fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
 
                 filterTitle = when (index) {
                     0 -> {
-                        when (tarnsfersDate.value.type) {
+                        when (transfersDate.value.type) {
                             DateType.TODAY -> {
                                 "Today"
                             }
@@ -71,19 +72,19 @@ fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
                             }
 
                             DateType.LAST_WEEK -> {
-                                "${tarnsfersDate.value.startDate} - ${tarnsfersDate.value!!.endDate}"
+                                "${transfersDate.value.startDate} - ${transfersDate.value!!.endDate}"
                             }
 
                             DateType.THIS_MONTH -> {
-                                "${tarnsfersDate.value!!.startDate} - ${tarnsfersDate.value!!.endDate}"
+                                "${transfersDate.value!!.startDate} - ${transfersDate.value!!.endDate}"
                             }
 
                             DateType.LAST_MONTH -> {
-                                "${tarnsfersDate.value!!.startDate} - ${tarnsfersDate.value!!.endDate}"
+                                "${transfersDate.value!!.startDate} - ${transfersDate.value!!.endDate}"
                             }
 
-                            DateType.CUSTOM->{
-                                "${tarnsfersDate.value!!.startDate} - ${tarnsfersDate.value!!.endDate}"
+                            DateType.CUSTOM -> {
+                                "${transfersDate.value!!.startDate} - ${transfersDate.value!!.endDate}"
                             }
 
                             else -> {
@@ -94,19 +95,23 @@ fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
                     }
 
                     1 -> {
-                        tarnsfersStatus.value
+                        transfersStatus.value
                     }
 
                     2 -> {
-                        tarnsfersAccount.value
+                        transfersAccount.value
                     }
 
                     3 -> {
-                        tarnsfersType.value
+                        transfersType.value
+                    }
+
+                    4 -> {
+                        transfersBeneficiary.value
                     }
 
                     7 -> {
-                        tarnsfersCurrency.value
+                        transfersCurrency.value
                     }
 
                     else -> {
@@ -161,13 +166,12 @@ fun FiltersTopRow(onFilterClick: (FilterType?) -> Unit) {
 
                                     onFilterClick(null)
 
-
                                     // Reset all filters to original values when isSelected is null
-                                    tarnsfersDate.value = DateModel("", "", null)
-                                    tarnsfersAccount.value = "From the account"
-                                    tarnsfersStatus.value = "Status"
-                                    tarnsfersType.value = "Type"
-                                    tarnsfersCurrency.value = "Currency"
+                                    transfersDate.value = DateModel("", "", null)
+                                    transfersAccount.value = "From the account"
+                                    transfersStatus.value = "Status"
+                                    transfersType.value = "Type"
+                                    transfersCurrency.value = "Currency"
 
 
                                 }

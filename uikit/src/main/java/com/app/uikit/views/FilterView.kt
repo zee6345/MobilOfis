@@ -58,6 +58,4 @@ fun FilterView(filter: CardFilters, onFilterClick: (CardFilters) -> Unit) {
             }
         }
     }
-
-
 }

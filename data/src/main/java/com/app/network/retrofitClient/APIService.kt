@@ -168,7 +168,8 @@ interface APIService {
         @Header("Auth_token") token: String,
         @Path("customerId") customerId: Int,
         @Query("page") page: Int,
-        @Query("limit") limit: Int = 20
+        @Query("limit") limit: Int = 20,
+        @Query("debit_credit_flag") flag: String
     ): Response<List<GetRecentOpsItem>>
 
 //    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
@@ -198,15 +199,15 @@ interface APIService {
     @POST("auth/totp-register/status")
     fun verify2FA(
         @Header("Auth_token") token: String,
-        @Body verify2FARequest:VerifyRequest
-    ):Call<GetVerify2FA>
+        @Body verify2FARequest: VerifyRequest
+    ): Call<GetVerify2FA>
 
 
     @POST("auth/totp-register/verify")
     fun verify2FASecret(
         @Header("Auth_token") token: String,
         @Body verifySecretRequest: VerifySecretRequest
-    ):Call<GetVerify2FA>
+    ): Call<GetVerify2FA>
 
     @GET("exchange/exchange/listrates")
     fun getExchangeList(

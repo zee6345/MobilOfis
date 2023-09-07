@@ -87,10 +87,10 @@ import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.FiltersTopRow
-import com.app.uikit.views.tarnsfersAccount
-import com.app.uikit.views.tarnsfersCurrency
-import com.app.uikit.views.tarnsfersStatus
-import com.app.uikit.views.tarnsfersType
+import com.app.uikit.views.transfersAccount
+import com.app.uikit.views.transfersCurrency
+import com.app.uikit.views.transfersStatus
+import com.app.uikit.views.transfersType
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -118,6 +118,8 @@ private val filterByAmount = mutableStateOf("")
 private val filterByCurrency = mutableStateOf("")
 private val filterBySearch = mutableStateOf("")
 
+private val isSearchEnable = mutableStateOf(false)
+
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
@@ -136,7 +138,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val isSigned = remember { mutableStateOf(false) }
     val sendToBank = remember { mutableStateOf(false) }
     val showDateError = remember { mutableStateOf(false) }
-    val isSearchEnable = remember { mutableStateOf(false) }
+
     val closeSearch = remember { mutableStateOf(false) }
 
     val filterTypeList = remember { mutableListOf<String>() }
@@ -509,7 +511,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByAccount.value = it.accountNum
 
         //for filter title
-        tarnsfersAccount.value = it.accountNum
+        transfersAccount.value = it.accountNum
 
     }
 
@@ -519,7 +521,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByStatus.value = it
 
         //for filter title
-        tarnsfersStatus.value = Utils.headerStatus(it).status
+        transfersStatus.value = Utils.headerStatus(it).status
 
     }
 
@@ -530,7 +532,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByType.value = it.prefix
 
         //show type to filters
-        tarnsfersType.value = it.prefix
+        transfersType.value = it.prefix
 
 
     }
@@ -546,7 +548,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         filterByCurrency.value = it
 
         //for filter title
-        tarnsfersCurrency.value = it
+        transfersCurrency.value = it
 
     }
 
@@ -561,7 +563,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 startDate = dateEnd
 
                 //initial api call to refresh data
-                LaunchedEffect(Unit){
+                LaunchedEffect(Unit) {
                     viewModel.getTransferCountSummary(startDate, endDate)
                     viewModel.getTransferList(startDate, endDate, 0)
                 }
@@ -960,6 +962,10 @@ private fun FilterListMenu() {
 
                 FilterType.AMOUNT -> {
                     showAmountBottomSheet.value = !showAmountBottomSheet.value
+                }
+
+                FilterType.BENEFICIARY -> {
+                    isSearchEnable.value = true
                 }
 
                 FilterType.CURRENCY -> {

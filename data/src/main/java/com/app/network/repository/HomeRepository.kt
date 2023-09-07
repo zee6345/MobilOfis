@@ -1,6 +1,5 @@
 package com.app.network.repository
 
-import com.app.network.retrofitClient.APIService
 import com.app.network.models.requestModels.AccountNickNameRequest
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.requestModels.SendToBankModel
@@ -19,12 +18,13 @@ import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
+import com.app.network.retrofitClient.APIService
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor(private val apiService: APIService)  {
+class HomeRepository @Inject constructor(private val apiService: APIService) {
 
     fun getAccounts(token: String, customerId: Int): Call<GetAccounts> {
         return apiService.getAccounts(token, customerId)
@@ -34,16 +34,23 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
 //        return apiService.getLastLogin(token)
 //    }
 
-   fun getUserBalance(token: String, customerId: Int):Call<GetCustomerBalance> {
-        return apiService.getBalance(token,customerId)
+    fun getUserBalance(token: String, customerId: Int): Call<GetCustomerBalance> {
+        return apiService.getBalance(token, customerId)
     }
 
-    suspend fun setUserNickName(token: String, accountNickNameRequest: AccountNickNameRequest):ResponseBody{
+    suspend fun setUserNickName(
+        token: String,
+        accountNickNameRequest: AccountNickNameRequest
+    ): ResponseBody {
         return apiService.setAccountNickName(token, accountNickNameRequest)
     }
 
-    fun getAccountBlockByIban(token: String, customerId: Int, iban: String): Call<GetAccountBlocks> {
-        return apiService.getAccountBlockByIBAN(token, customerId,iban)
+    fun getAccountBlockByIban(
+        token: String,
+        customerId: Int,
+        iban: String
+    ): Call<GetAccountBlocks> {
+        return apiService.getAccountBlockByIBAN(token, customerId, iban)
     }
 
     fun getOldBusinessCards(token: String, customerId: Int): Call<GetOldCards> {
@@ -54,27 +61,40 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
         return apiService.getNewBusinessCards(token, customerId)
     }
 
-    fun getLoans(token: String, customerId: Int):Call<GetLoans>{
+    fun getLoans(token: String, customerId: Int): Call<GetLoans> {
         return apiService.getLoans(token, customerId)
     }
 
-    fun getTrusts(token: String, customerId: Int):Call<GetTrusts>{
+    fun getTrusts(token: String, customerId: Int): Call<GetTrusts> {
         return apiService.getTrusts(token, customerId)
     }
 
-    fun getRecentOps(token: String, customerId: Int):Call<GetRecentOps>{
+    fun getRecentOps(token: String, customerId: Int): Call<GetRecentOps> {
         return apiService.getRecentOps(token, customerId)
     }
 
-    fun getRecentOps(token: String, customerId: Int, incomeFlag:String):Call<GetRecentOps>{
+    fun getRecentOps(token: String, customerId: Int, incomeFlag: String): Call<GetRecentOps> {
         return apiService.getRecentOps(token, customerId, incomeFlag)
     }
 
-    suspend fun getRecentOps(token: String, customerId: Int, page: Int): Response<List<GetRecentOpsItem>> {
-        return apiService.getRecentOps(token, customerId, page)
-    }
+//    suspend fun getRecentOps(
+//        token: String,
+//        customerId: Int,
+//        page: Int,
+//        incomeFlag: String = ""
+//    ): Response<List<GetRecentOpsItem>> {
+//        return apiService.getRecentOps(
+//            token = token,
+//            customerId = customerId,
+//            page = page,
+//            flag = incomeFlag
+//        )
+//    }
 
-    fun setCustomerName(token: String, changeCompanyName: ChangeCompanyName): Call<LoginVerifyResponse> {
+    fun setCustomerName(
+        token: String,
+        changeCompanyName: ChangeCompanyName
+    ): Call<LoginVerifyResponse> {
         return apiService.setCompanyName(token, changeCompanyName)
     }
 
@@ -83,28 +103,40 @@ class HomeRepository @Inject constructor(private val apiService: APIService)  {
     }
 
 
-    fun getTransferCountSummary(token: String,startDate: String,endDate: String): Call<TransferCountSummaryResponse> {
-        return apiService.getTransferCountSummary(token,startDate,endDate)
+    fun getTransferCountSummary(
+        token: String,
+        startDate: String,
+        endDate: String
+    ): Call<TransferCountSummaryResponse> {
+        return apiService.getTransferCountSummary(token, startDate, endDate)
     }
 
-    fun getTransferList(token: String, startDate: String, endDate: String, page: Int): Call<TransferListResponse> {
-        return apiService.getTransferList(token,startDate,endDate, page)
+    fun getTransferList(
+        token: String,
+        startDate: String,
+        endDate: String,
+        page: Int
+    ): Call<TransferListResponse> {
+        return apiService.getTransferList(token, startDate, endDate, page)
     }
 
-    fun getTransactionDetails(token: String, ibankRef:String):Call<GetTransactionDetails>{
+    fun getTransactionDetails(token: String, ibankRef: String): Call<GetTransactionDetails> {
         return apiService.transactionDetails(token, ibankRef)
     }
 
-    fun signOrApprove(token: String,signApproveRequest: SignApproveRequest):Call<SignApproveResponse>{
-        return apiService.signOrApprove(token,signApproveRequest)
+    fun signOrApprove(
+        token: String,
+        signApproveRequest: SignApproveRequest
+    ): Call<SignApproveResponse> {
+        return apiService.signOrApprove(token, signApproveRequest)
     }
 
-    fun transactionStatus(token: String,code: Int):Call<SignApproveResponse>{
-        return apiService.transactionStatus(token,code)
+    fun transactionStatus(token: String, code: Int): Call<SignApproveResponse> {
+        return apiService.transactionStatus(token, code)
     }
 
-    fun sendToBankAPI(token: String,sendToBankModel: SendToBankModel):Call<SignApproveResponse>{
-        return apiService.sendToBankAPI(token,sendToBankModel)
+    fun sendToBankAPI(token: String, sendToBankModel: SendToBankModel): Call<SignApproveResponse> {
+        return apiService.sendToBankAPI(token, sendToBankModel)
     }
 
 }

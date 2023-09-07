@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -65,14 +64,12 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetLoansItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
-
 import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.FilterView
-import com.app.uikit.views.tarnsfersCurrency
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -153,7 +150,6 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                             Box(modifier = Modifier.padding(end = 5.sdp))
                         }
                     }
-
                 }
             }
         }

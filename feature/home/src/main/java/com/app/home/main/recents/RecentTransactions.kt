@@ -1,5 +1,6 @@
 package com.app.home.main.recents
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,21 +13,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,13 +35,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,14 +63,17 @@ import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
+import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
-import com.app.uikit.models.CardFilters
 import com.app.uikit.utils.Utils
+import com.app.uikit.views.FilterView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
 const val recentTransactions = "RecentTransactions"
+private val isSearchEnable = mutableStateOf(false)
+private val filterBySearch = mutableStateOf("")
 
 @Composable
 fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -79,6 +86,12 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
     val isLoading = remember { mutableStateOf(false) }
     val coroutine = rememberCoroutineScope()
     val cardFilters = remember { DataProvider.filtersRecentList }
+    val closeSearch = remember { mutableStateOf(false) }
+
+    val showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val filterCurrencyList = remember { mutableListOf<String>() }
+    val filterByCurrency = remember { mutableStateOf("") }
+    val context = LocalContext.current
 
 
     LaunchedEffect(Unit) {
@@ -101,32 +114,116 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
             modifier = Modifier
                 .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
                 .fillMaxWidth()
-                .weight(0.1f),
+                .then(Modifier.wrapContentHeight()),
             color = Color(0xFF203657),
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(15.dp),
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_back_arrow),
-                    modifier = Modifier
-                        .size(height = 25.dp, width = 32.dp)
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            navController.popBackStack()
-                        },
-                    contentDescription = ""
-                )
-                Text(
-                    text = "Recent operations on accounts",
-                    style = TextStyle(color = Color.White, fontSize = 18.sp),
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(horizontal = 8.dp)
-                )
 
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row {
+                        Image(
+                            painter = painterResource(id = com.app.transfer.R.drawable.ic_back_arrow),
+                            modifier = Modifier
+                                .size(width = 32.dp, height = 25.dp)
+                                .align(Alignment.CenterVertically)
+                                .clickable {
+                                    (context as ComponentActivity).finish()
+                                },
+                            contentDescription = ""
+                        )
+                        Text(
+                            text = "Recent operations on accounts",
+                            style = TextStyle(color = Color.White, fontSize = 18.sp),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 8.dp)
+                        )
+                    }
+
+                    if (!isSearchEnable.value) {
+                        androidx.compose.material3.Icon(
+                            painter = painterResource(id = com.app.transfer.R.drawable.ic_tansfer_search),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                                .clickable {
+                                    isSearchEnable.value = true
+                                }
+                        )
+                    }
+
+                }
+
+
+                if (isSearchEnable.value) {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = filterBySearch.value,
+                            onValueChange = {
+                                filterBySearch.value = it
+
+                                closeSearch.value = it.isEmpty()
+                            },
+                            label = {
+                                androidx.compose.material3.Text(
+                                    text = "Search",
+                                    fontSize = 14.sp
+                                )
+                            },
+                            trailingIcon = {
+                                androidx.compose.material3.Icon(
+                                    painter = if (!closeSearch.value) painterResource(id = com.app.transfer.R.drawable.ic_transfer_close) else painterResource(
+                                        id = com.app.transfer.R.drawable.ic_tansfer_search
+                                    ),
+                                    contentDescription = null,
+                                    tint = Color.Black,
+                                    modifier = Modifier
+                                        .padding(horizontal = 10.dp)
+                                        .clickable {
+                                            isSearchEnable.value = false
+
+                                            //reset search filter
+                                            filterBySearch.value = ""
+                                        }
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                backgroundColor = Color.White,
+                                focusedBorderColor = colorResource(com.app.transfer.R.color.background_card_blue),
+                                unfocusedBorderColor = colorResource(com.app.transfer.R.color.border_grey),
+                                unfocusedLabelColor = colorResource(com.app.transfer.R.color.grey_text),
+                                focusedLabelColor = colorResource(com.app.transfer.R.color.background_card_blue)
+                            ),
+                            singleLine = true,
+                            shape = RoundedCornerShape(8.dp),
+                            textStyle = TextStyle(
+                                fontSize = 12.sp,
+                                fontFamily = FontFamily(Font(com.app.transfer.R.font.roboto_regular)),
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF223142),
+                            )
+                        )
+                    }
+
+                }
 
             }
         }
@@ -135,7 +232,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
         //main content
         Column(
             modifier = Modifier
-                .weight(0.9f)
+                .weight(0.8f)
         ) {
 
             Row(
@@ -223,39 +320,96 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 10.sdp)
             ) {
-                items(items = cardFilters, itemContent = {
-                    Row {
-                        FilterView(filter = it)
-                        Box(modifier = Modifier.padding(end = 5.sdp))
+                cardFilters.forEachIndexed { index, cardFilters ->
+
+                    item {
+                        Row {
+                            FilterView(filter = cardFilters) {
+                                when (index) {
+                                    0 -> {
+                                        viewModel.getRecentOps(userDetails.customerNo, "")
+                                    }
+
+                                    1 -> {
+                                        viewModel.getRecentOps(userDetails.customerNo, "CR")
+                                    }
+
+                                    2 -> {
+                                        viewModel.getRecentOps(userDetails.customerNo, "DR")
+                                    }
+
+                                    3 -> {
+
+                                    }
+
+                                    4 -> {
+                                        isSearchEnable.value = true
+                                    }
+
+                                    5 -> {
+                                        showCurrencyBottomSheet.value = true
+                                    }
+                                }
+                            }
+
+                            Box(modifier = Modifier.padding(end = 5.sdp))
+                        }
                     }
-                })
+                }
+
+
             }
 
 
             LazyColumn {
                 val groupedItems = recentData.groupBy { it.trn_date }
 
-                groupedItems.forEach { (dateStr, itemList) ->
-
+                if (groupedItems.isEmpty()) {
                     item {
                         Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(4.sdp),
+                            Modifier.fillMaxWidth()
+                                .padding(20.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = Utils.formatInputDate(dateStr))
+                            Text(text = "No recent operation found!")
                         }
+                    }
+                } else {
 
-                        itemList.forEach { ops ->
-                            CardsItem(ops, navController)
+
+
+                    groupedItems.forEach { (dateStr, itemList) ->
+
+                        item {
+
+
+                            val filter = itemList.filter {
+                                it.receiver_name.contains(filterBySearch.value, true)
+                            }.filter {
+                                it.currency_name.contains(filterByCurrency.value, true)
+                            }.toList()
+
+                            if (filter.isNotEmpty()) {
+                                Box(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.sdp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(text = Utils.formatInputDate(dateStr))
+                                }
+                            }
+
+                            filter.forEach { ops ->
+                                CardsItem(ops, navController)
+                            }
+
                         }
-
                     }
                 }
 
                 item {
-                    Spacer(modifier = Modifier.size(height = 80.dp, width = 1.dp))
+                    Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
                 }
 
             }
@@ -276,18 +430,25 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
             is DataState.Success -> {
                 isLoading.value = false
 
-                try {
-                    val data = it.data as GetRecentOps
 
-                    if (!recentData.isNullOrEmpty()) {
-                        recentData.clear()
-                    }
+                val data = it.data as GetRecentOps
 
-                    recentData.addAll(data)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                if (recentData.isNotEmpty()) {
+                    recentData.clear()
                 }
+                recentData.addAll(data)
+
+
+                //currency
+
+                if (filterCurrencyList.isNotEmpty()) {
+                    filterCurrencyList.clear()
+                }
+
+                data.forEach {
+                    filterCurrencyList.add(it.currency_name)
+                }
+
 
             }
         }
@@ -298,14 +459,25 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
         ShowProgressDialog(isLoading = isLoading)
     }
 
+
+    CurrencyBottomSheet(showCurrencyBottomSheet, filterCurrencyList) {
+
+        showCurrencyBottomSheet.value = false
+
+        filterByCurrency.value = it
+
+    }
+
 }
 
 @Composable
 private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
 
     var isCredit by remember { mutableStateOf(false) }
-
     isCredit = data.debit_credit_flag != "DR"
+
+    val symbol = Utils.formatCurrency(data.currency_name)
+
 
     Card(
         modifier = Modifier
@@ -317,14 +489,15 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
 //            }
         ,
         elevation = 1.dp,
-        backgroundColor = Color(0xFFF3F7FA),
+//        backgroundColor = Color(0xFFF3F7FA),
+        backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(12.dp))
     ) {
 
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.sdp, vertical = 5.sdp),
+                .padding(horizontal = 15.sdp, vertical = 5.sdp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -356,7 +529,7 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
             ) {
 
                 Text(
-                    if (isCredit) "-${data.amount} ₼" else "${data.amount} ₼",
+                    if (isCredit) "-${data.amount} $symbol" else "${data.amount} $symbol",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.roboto_medium)),
@@ -387,43 +560,4 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
             }
         }
     }
-}
-
-@Composable
-private fun FilterView(filter: CardFilters) {
-    Card(
-        modifier = Modifier
-            .padding(vertical = 5.dp)
-            .clickable {
-            },
-        elevation = 1.dp,
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(corner = CornerSize(8.dp))
-
-    ) {
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(6.sdp)
-        ) {
-
-            Text(
-                text = filter.filterName, style = TextStyle(fontSize = 12.sp)
-            )
-
-            if (filter.filterIcon != null) {
-                Image(
-                    painter = painterResource(id = filter.filterIcon!!),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(1.dp)
-                        .width(14.dp)
-                        .height(14.dp)
-                )
-            }
-        }
-    }
-
-
 }

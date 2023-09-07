@@ -4,6 +4,8 @@ enum class FilterType {
     DATE,
     ACCOUNT,
     TYPE,
+    BENEFICIARY,
+    DETAILS,
     FIELD,
     APPOINTMENT,
     AMOUNT,

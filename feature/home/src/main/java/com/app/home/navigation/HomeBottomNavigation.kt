@@ -12,8 +12,6 @@ import com.app.adjustment.companies.companylist.Companies
 import com.app.adjustment.companies.companylist.navigation.companiesDisplayToCompanies
 import com.app.adjustment.exchangerate.ExchangeRatesScreen
 import com.app.adjustment.exchangerate.navigation.adjustmentToExchangeRates
-import com.app.adjustment.googleauth.ConfirmSMSCodeScreen
-import com.app.adjustment.googleauth.otpToConfirmGoogleAuthOtp
 import com.app.adjustment.navigation.securityScreen
 import com.app.adjustment.security.SecurityScreen
 import com.app.adjustment.userprofile.UserProfileScreen

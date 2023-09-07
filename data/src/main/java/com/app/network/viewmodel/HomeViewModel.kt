@@ -106,10 +106,10 @@ class HomeViewModel @Inject constructor(
 //        pagingSourceFactory = { RecentOpsPagingSource(session, repository) }
 //    ).flow
 
-    val pagedRecentOps = Pager(
-        pagingSourceFactory = { RecentOpsPagingSource(session, repository) },
-        config = PagingConfig(pageSize = 20)
-    ).flow.cachedIn(viewModelScope)
+//    val pagedRecentOps = Pager(
+//        pagingSourceFactory = { RecentOpsPagingSource(session, repository) },
+//        config = PagingConfig(pageSize = 20)
+//    ).flow.cachedIn(viewModelScope)
 
     fun getAccounts(customerId: Int) {
 
@@ -289,6 +289,45 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+//    fun getRecentOps(customerId: Int, page: Int) {
+//        _recentOps.value = DataState.Loading
+//
+//        viewModelScope.launch {
+//            try {
+//
+//                val response = repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page)
+//                if (response.isSuccessful && response.body() != null) {
+//                    _recentOps.value = DataState.Success(response.body()!!)
+//                } else {
+//                    _recentOps.value = DataState.Error(response.errorBody()!!.string())
+//                }
+//
+//            } catch (e: Exception) {
+//                _recentOps.value = DataState.Error(e.message.toString())
+//            }
+//        }
+//    }
+//
+//    fun getRecentOps(customerId: Int, page: Int, incomeFlag: String) {
+//        _recentOps.value = DataState.Loading
+//
+//        viewModelScope.launch {
+//            try {
+//
+//                val response =
+//                    repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page, incomeFlag)
+//                if (response.isSuccessful && response.body() != null) {
+//                    _recentOps.value = DataState.Success(response.body()!!)
+//                } else {
+//                    _recentOps.value = DataState.Error(response.errorBody()!!.string())
+//                }
+//
+//            } catch (e: Exception) {
+//                _recentOps.value = DataState.Error(e.message.toString())
+//            }
+//        }
+//    }
+
     fun getRecentOps(customerId: Int, incomeFlag: String) {
         _recentOps.value = DataState.Loading
 
@@ -337,13 +376,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getRecentOps(
-        customerId: Int,
-        page: Int,
-        limit: Int
-    ): Response<List<GetRecentOpsItem>> {
-        return repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page)
-    }
+//    suspend fun getRecentOps(
+//        customerId: Int,
+//        page: Int,
+//        limit: Int
+//    ): Response<List<GetRecentOpsItem>> {
+//        return repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page)
+//    }
 
     fun setCustomerName(changeCompanyName: ChangeCompanyName) {
         _setCustomerName.value = DataState.Loading

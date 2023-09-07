@@ -1,7 +1,7 @@
 package com.app.home.main
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,14 +36,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
 import com.app.home.R
 import com.app.home.main.model.Search
 import com.app.home.main.model.SearchBy
+import com.app.home.main.recents.RecentOps
 import com.app.home.main.recents.recentToDetails
-import com.app.home.main.recents.recentTransactions
 import com.app.home.main.subviews.TabLayoutMenu
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
@@ -88,6 +86,8 @@ val search = mutableStateOf("")
 val searchFrom = mutableStateOf<Search?>(null)
 val searchBy = mutableStateOf<SearchBy?>(null)
 
+val PAGE_SIZE = 20
+
 @SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -131,7 +131,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
 
-    val pagedRecentOps = viewModel.pagedRecentOps.collectAsLazyPagingItems()
+//    val pagedRecentOps = viewModel.pagedRecentOps.collectAsLazyPagingItems()
+//    val pagedData by viewModel.pagedRecentOps.collectAsState(emptyList())
 //    val lazyPagingItems = viewModel.lazyPagingItems.collectAsLazyPagingItems()
 
 
@@ -144,6 +145,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     viewModel.session.put("customer", customerName.value)
 
 
+    //search params
     when (searchFrom.value) {
         Search.FromCards -> {
             when (searchBy.value) {
@@ -266,11 +268,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    val sumDR = recentData?.filter { it.debit_credit_flag == "DR" }
-                        ?.sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
+                    val sumDR = recentData.filter { it.debit_credit_flag == "DR" }
+                        .sumByDouble { it.amount?.toDoubleOrNull() ?: 0.0 }
 
-                    val sumCR = recentData?.filter { it.debit_credit_flag == "CR" }
-                        ?.sumByDouble { it.amount.toDoubleOrNull() ?: 0.0 }
+                    val sumCR = recentData.filter { it.debit_credit_flag == "CR" }
+                        .sumByDouble { it.amount?.toDoubleOrNull() ?: 0.0 }
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -364,7 +366,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 )
                                 .clickable {
                                     selectedBoxIndex.value = 0
+
                                     viewModel.getRecentOps(userDetails.customerNo, "")
+
                                 }) {
                                 Text(
                                     text = "All",
@@ -388,7 +392,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 .background(if (selectedBoxIndex.value == 1) Color(0xFFE7EEFC) else Color.White)
                                 .clickable {
                                     selectedBoxIndex.value = 1
+
                                     viewModel.getRecentOps(userDetails.customerNo, "CR")
+
                                 }) {
                                 Text(
                                     text = "Income",
@@ -415,7 +421,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 )
                                 .clickable {
                                     selectedBoxIndex.value = 2
+
                                     viewModel.getRecentOps(userDetails.customerNo, "DR")
+
                                 }) {
                                 Text(
                                     text = "Expenditure",
@@ -434,7 +442,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             Modifier
                                 .padding(start = 10.dp)
                                 .clickable {
-                                    navController.navigate(recentTransactions)
+//                                    navController.navigate(recentTransactions)
+                                    val recentOpsDetails = Intent(context, RecentOps::class.java)
+                                    recentOpsDetails.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                    context.startActivity(recentOpsDetails)
+
                                 }
 
                         ) {
@@ -470,74 +482,36 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 LazyColumn {
 
-                    when (val state = pagedRecentOps.loadState.prepend) {
-                        is LoadState.NotLoading -> Unit
-                        is LoadState.Loading -> {
-                            isLoading.value = true
+                    if (isEmpty.value) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(15.dp),
+                                contentAlignment = Center
+                            ) {
+                                Text(text = "No recent transaction found!")
+                            }
                         }
 
-                        is LoadState.Error -> {
-                            Log.e("mmTAG", state.error.message.toString())
-//                            Error(message = state.error.message ?: "")
-                        }
-                    }
-
-                    when (val state = pagedRecentOps.loadState.refresh) {
-                        is LoadState.NotLoading -> Unit
-                        is LoadState.Loading -> {
-                            isLoading.value = true
-                        }
-
-                        is LoadState.Error -> {
-                            Log.e("mmTAG", state.error.message.toString())
-//                            Error(message = state.error.message ?: "")
+                    } else {
+                        recentData.forEachIndexed { index, getRecentOpsItem ->
+                            item {
+                                CardsItem(data = getRecentOpsItem!!, navController = navController)
+                            }
                         }
                     }
 
-                    itemsIndexed(
-                        items = pagedRecentOps
-                    ) { index, item ->
-                        CardsItem(data = item!!, navController)
-                    }
 
-//                    pagedRecentOps.itemSnapshotList.forEachIndexed { index, getRecentOpsItem ->
-//                        item {
-//                            CardsItem(data = getRecentOpsItem!!, navController = navController)
+//                    when (pagedRecentOps.loadState.append) {
+//                        is LoadState.NotLoading -> Unit
+//
+//                        LoadState.Loading -> {
+//                            isLoading.value = true
 //                        }
-//                    }
-
-
-                    when (val state = pagedRecentOps.loadState.append) {
-                        is LoadState.NotLoading -> Unit
-                        is LoadState.Loading -> {
-                            isLoading.value = true
-                        }
-
-                        is LoadState.Error -> {
-                            Log.e("mmTAG", state.error.message.toString())
-//                            Error(message = state.error.message ?: "")
-                        }
-                    }
-
-//                    val groupedItems = lazyPagingItems.itemSnapshotList.groupBy { it!!.trn_date }
-//                    val groupedItems = recentData.groupBy { it!!.trn_date }
 //
-//                    groupedItems?.forEach { (dateStr, itemList) ->
-//
-//                        item {
-//                            Box(
-//                                Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(4.sdp),
-//                                contentAlignment = Alignment.Center
-//                            ) {
-//                                Text(text = Utils.formatInputDate(dateStr))
-//                            }
-//
-//                            itemList.forEach { ops ->
-//                                CardsItem(ops!!, navController)
-//                            }
-//
+//                        is LoadState.Error -> {
+//                            isLoading.value = false
 //                        }
 //                    }
 
@@ -547,6 +521,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     }
 
                 }
+
+
+//                val listState = rememberLazyListState()
+//                val isScrolledToEnd = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == pagedData.size - 1
+//                if (isScrolledToEnd) {
+//                    viewModel.getRecentOps(pagedData.size / PAGE_SIZE + 1)
+//                }
             }
 
 
@@ -1113,15 +1094,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 val data = it.data as GetRecentOps
 
-                if (data.isNotEmpty()) {
-                    recentData?.apply {
-                        clear()
-                        addAll(data)
-                    }
-                    isEmpty.value = false
-                } else {
-                    isEmpty.value = true
+                recentData?.apply {
+                    clear()
+                    addAll(data)
                 }
+
+
+                isEmpty.value = !data.isNotEmpty()
 
 
             }
