@@ -128,9 +128,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-//    val searchTransfer = remember { mutableStateOf("") }
-
-
     var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
 
     val coroutine = rememberCoroutineScope()

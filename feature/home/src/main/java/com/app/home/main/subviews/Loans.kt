@@ -1,7 +1,6 @@
 package com.app.home.main.subviews
 
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,13 +29,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -51,8 +50,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.home.R
+import com.app.home.main.enableSearch
 import com.app.home.main.isShowBalance
 import com.app.home.main.loan.homeToLoanInformation
+import com.app.home.main.model.Search
+import com.app.home.main.model.SearchBy
+import com.app.home.main.searchBy
+import com.app.home.main.searchContract
+import com.app.home.main.searchFrom
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -60,11 +65,14 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetLoansItem
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.viewmodel.HomeViewModel
+
+import com.app.uikit.bottomSheet.CurrencyBottomSheet
 import com.app.uikit.data.DataProvider
 import com.app.uikit.dialogs.ShowProgressDialog
-import com.app.uikit.models.CardFilters
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
+import com.app.uikit.views.FilterView
+import com.app.uikit.views.tarnsfersCurrency
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -85,6 +93,9 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val loansList = remember { mutableListOf<GetLoansItem>() }
     val coroutine = rememberCoroutineScope()
     val selectedFilterIndex = remember { mutableStateOf(0) }
+    val showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val filterCurrencyList = remember { mutableListOf<String>() }
+    val filterByCurrency = remember { mutableStateOf("") }
 
 
     LaunchedEffect(Unit) {
@@ -112,13 +123,38 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             LazyRow(
                 contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
             ) {
-                items(items = cardFilters, itemContent = {
-                    Row {
-                        FilterView(filter = it)
-                        Box(modifier = Modifier.padding(end = 5.sdp))
+//                items(items = cardFilters, itemContent = {
+//                    Row {
+//                        FilterView(filter = it)
+//                        Box(modifier = Modifier.padding(end = 5.sdp))
+//                    }
+//
+//                })
+
+                cardFilters.forEachIndexed { index, cardFilters ->
+
+                    item {
+                        Row {
+                            FilterView(filter = cardFilters) {
+
+                                when (index) {
+                                    0 -> {
+                                        enableSearch.value = true
+                                        searchFrom.value = Search.FromLoans
+                                        searchBy.value = SearchBy.ByAgreement
+                                    }
+
+                                    1 -> {
+                                        showCurrencyBottomSheet.value = true
+                                    }
+                                }
+
+                            }
+                            Box(modifier = Modifier.padding(end = 5.sdp))
+                        }
                     }
 
-                })
+                }
             }
         }
 
@@ -130,15 +166,31 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
             val filter = loansList.filter {
                 it.STATUS.contains(selectedFilter.value, true)
-            }
-
-            if (!filter.isNullOrEmpty()) {
-                items(items = filter, itemContent = {
-                    LoansListItem(obj = it) {
-                        loanItem.value = it
-                        navController.navigate(homeToLoanInformation)
+            }.filter {
+                when (searchBy.value) {
+                    SearchBy.ByAgreement -> {
+                        it.CONTRACT.contains(searchContract.value, true)
                     }
-                })
+
+                    else -> {
+                        true
+                    }
+                }
+            }.filter {
+                it.CCY_NAME.contains(filterByCurrency.value, true)
+            }.toList()
+
+            if (filter.isNotEmpty()) {
+
+                filter.forEachIndexed { index, getLoansItem ->
+                    item {
+                        LoansListItem(obj = getLoansItem) {
+                            loanItem.value = it
+                            navController.navigate(homeToLoanInformation)
+                        }
+                    }
+                }
+
 
                 item {
                     Spacer(modifier = Modifier.size(width = 1.dp, height = 50.sdp))
@@ -185,8 +237,25 @@ fun LoansList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                     loansList.addAll(data)
                 }
 
+                //currency filter
+                if (filterCurrencyList.isNotEmpty()) {
+                    filterCurrencyList.clear()
+                }
+
+                loansList.forEach { loan ->
+                    filterCurrencyList.add(loan.CCY_NAME)
+                }
+
             }
         }
+
+    }
+
+    CurrencyBottomSheet(showCurrencyBottomSheet, filterCurrencyList) {
+
+        showCurrencyBottomSheet.value = false
+
+        filterByCurrency.value = it
 
     }
 
@@ -303,47 +372,6 @@ private fun LoansListItem(obj: GetLoansItem, onSelectedLoan: (GetLoansItem) -> U
         }
 
     }
-}
-
-@Composable
-private fun FilterView(filter: CardFilters) {
-    Card(
-        modifier = Modifier
-            .padding(vertical = 5.dp)
-            .clickable {
-
-            },
-        elevation = 1.dp,
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(corner = CornerSize(8.dp))
-
-    ) {
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(6.sdp)
-        ) {
-
-            Text(
-                text = filter.filterName, style = TextStyle(fontSize = 12.sp)
-            )
-
-            if(filter.filterIcon != null) {
-
-                Image(
-                    painter = painterResource(id = filter.filterIcon!!),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(1.dp)
-                        .width(14.dp)
-                        .height(14.dp)
-                )
-            }
-        }
-    }
-
-
 }
 
 @Composable

@@ -106,12 +106,6 @@ fun NavigationGraph(navController: NavHostController) {
             UserProfileScreen(navController)
         }
 
-//        composable(
-//            securityToChangePassword,
-//        ) {
-//            ForgetPasswordScreen(navController)
-//        }
-
         composable(adjustmentToExchangeRates) {
             ExchangeRatesScreen(navController)
         }
@@ -119,40 +113,6 @@ fun NavigationGraph(navController: NavHostController) {
         composable(adjustmentToExchangeRates) {
             ExchangeRatesScreen(navController)
         }
-
-//        composable(
-//            adjustmentToCurrentPin,
-//        ) {
-//            CurrentPin(navController)
-//        }
-//
-//        composable(
-//            adjustmentToNewPin,
-//        ) {
-//            NewPin(navController)
-//        }
-//
-//        composable(
-//            adjustmentToConfirmPin,
-//        ) {
-//            RepeatPin(navController)
-//        }
-
-//        composable(changePasswordToOTP) {
-//            OtpVerifyScreen(navController)
-//        }
-
-//        composable(userProfileToGoogleAuth) {
-//            ActivateGoogleAuthenticatorScreen(navController)
-//        }
-
-//        composable(googleAuthToOtpVerify) {
-//            SMSCodeAuthenticatorScreen(navController)
-//        }
-
-//        composable(otpToConfirmGoogleAuthOtp) {
-//            ConfirmSMSCodeScreen(navController)
-//        }
 
         composable(recentToDetails) {
             RecentDetailed(navController)

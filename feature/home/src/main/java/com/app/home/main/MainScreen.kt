@@ -7,8 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -38,14 +36,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import androidx.paging.compose.itemsIndexed
 import com.app.home.R
+import com.app.home.main.model.Search
+import com.app.home.main.model.SearchBy
 import com.app.home.main.recents.recentToDetails
 import com.app.home.main.recents.recentTransactions
 import com.app.home.main.subviews.TabLayoutMenu
@@ -81,14 +76,24 @@ private const val TAG = "MenuScreen"
 val recentDetail = mutableStateOf<GetRecentOpsItem?>(null)
 var isShowBalance = mutableStateOf(false)
 
+val enableSearch = mutableStateOf(false)
+val disableSearch = mutableStateOf(false)
+val searchIban = mutableStateOf("")
+val searchUser = mutableStateOf("")
+val searchContract = mutableStateOf("")
+val searchDepositName = mutableStateOf("")
+val searchAccountNo = mutableStateOf("")
+val search = mutableStateOf("")
+
+val searchFrom = mutableStateOf<Search?>(null)
+val searchBy = mutableStateOf<SearchBy?>(null)
+
 @SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
 
     val selectCompanyState = remember { mutableStateOf(false) }
-
-//    val showBalance = remember { mutableStateOf(false) }
 
     val balancePopup = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
@@ -137,6 +142,57 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     //set default company name
     customerName.value = userDetails.customerName
     viewModel.session.put("customer", customerName.value)
+
+
+    when (searchFrom.value) {
+        Search.FromCards -> {
+            when (searchBy.value) {
+                SearchBy.ByIBAN -> {
+                    searchIban.value = search.value
+                }
+
+                SearchBy.ByUser -> {
+                    searchUser.value = search.value
+                }
+
+                else -> {
+                    search.value = search.value
+                }
+            }
+        }
+
+        Search.FromLoans -> {
+            when (searchBy.value) {
+                SearchBy.ByAgreement -> {
+                    searchContract.value = search.value
+                }
+
+                else -> {
+                    search.value = search.value
+                }
+            }
+        }
+
+        Search.FromDeposits -> {
+            when (searchBy.value) {
+                SearchBy.ByDepositName -> {
+                    searchDepositName.value = search.value
+                }
+
+                SearchBy.ByAccount -> {
+                    searchAccountNo.value = search.value
+                }
+
+                else -> {
+                    search.value = search.value
+                }
+            }
+        }
+
+        else -> {
+            search.value
+        }
+    }
 
 
     //initial API calls
@@ -451,7 +507,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 //                    }
 
 
-
                     when (val state = pagedRecentOps.loadState.append) {
                         is LoadState.NotLoading -> Unit
                         is LoadState.Loading -> {
@@ -509,119 +564,232 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     .weight(0.23f),
             ) {
                 Column(
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(color = Color(0xFF203657).copy(alpha = 0.9f)),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 15.dp, end = 15.dp)
+                    if (enableSearch.value) {
+
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .background(color = Color(0xFF203657)),
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
 
-
-                            Row(
+                            Box(
                                 modifier = Modifier
-                                    .weight(0.6f),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = 15.dp,
+                                        end = 15.dp,
+                                        bottom = 15.dp,
+                                        top = 20.dp
+                                    )
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_business_icon),
-                                    modifier = Modifier
-                                        .size(26.dp)
-                                        .padding(1.dp)
-                                        .align(Top)
-                                        .clickable {
-                                            coroutine.launch {
-                                                selectCompanyState.value = true
-                                            }
-                                        }
-                                        .weight(0.2f),
-                                    contentDescription = "",
-                                    tint = Color.White
-                                )
-
-                                Column(
-                                    Modifier
-                                        .padding(start = 5.dp)
-                                        .weight(1f)
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
 
                                     Text(
-                                        modifier = Modifier.clickable {
-                                            coroutine.launch {
-                                                selectCompanyState.value = true
-                                            }
-                                        },
-                                        text = customerName.value,
-                                        style = TextStyle(color = Color.White, fontSize = 14.sp),
-                                        maxLines = 2,
+                                        text = "Home",
+                                        style = TextStyle(color = Color.White, fontSize = 18.sp),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 8.dp)
                                     )
 
-                                    Text(
-                                        text = "${userDetails.userName}",
-                                        style = TextStyle(
-                                            color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
-                                        ),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1,
-                                        modifier = Modifier.padding(top = 5.dp)
+                                    Icon(
+                                        painter = painterResource(id = com.app.transfer.R.drawable.ic_tansfer_search),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .padding(horizontal = 10.dp)
+                                            .clickable {
+                                                enableSearch.value = false
+                                            }
                                     )
+
                                 }
 
 
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_business_expand),
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .align(Top)
-                                        .clickable {
-                                            coroutine.launch {
-                                                selectCompanyState.value = true
-                                            }
-                                        },
-                                    contentDescription = "",
-
-                                    )
                             }
 
-                            Row(
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(0.4f)
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Top
+                                    .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
                             ) {
-                                Icon(
-//                                    painter = if (showBalance.value) painterResource(id = com.app.transfer.R.drawable.ic_pswd_visible) else painterResource(id = com.app.transfer.R.drawable.ic_pswd_visible),
-                                    painter = painterResource(id = com.app.transfer.R.drawable.ic_pswd_visible),
+                                OutlinedTextField(
+                                    value = search.value,
+                                    onValueChange = {
+                                        search.value = it
+                                        disableSearch.value = it.isEmpty()
+                                    },
+                                    label = {
+                                        androidx.compose.material3.Text(
+                                            text = "Search",
+                                            fontSize = 14.sp
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        androidx.compose.material3.Icon(
+                                            painter = if (!disableSearch.value) painterResource(id = com.app.transfer.R.drawable.ic_transfer_close) else painterResource(
+                                                id = com.app.transfer.R.drawable.ic_tansfer_search
+                                            ),
+                                            contentDescription = null,
+                                            tint = Color.Black,
+                                            modifier = Modifier
+                                                .padding(horizontal = 10.dp)
+                                                .clickable {
+                                                    enableSearch.value = false
+
+                                                    //reset search filter
+                                                    search.value = ""
+                                                }
+                                        )
+                                    },
                                     modifier = Modifier
-                                        .size(22.dp)
-                                        .align(Top)
-                                        .clickable {
-                                            isShowBalance.value = !isShowBalance.value
-                                        },
-                                    contentDescription = "",
-                                    tint = Color.White
-                                )
-                                Spacer(modifier = Modifier.width(20.dp))
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_option_icon),
-                                    modifier = Modifier
-                                        .size(22.dp)
-                                        .align(Top),
-                                    contentDescription = ""
+                                        .fillMaxWidth()
+                                        .wrapContentHeight(),
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        backgroundColor = Color.White,
+                                        focusedBorderColor = colorResource(com.app.transfer.R.color.background_card_blue),
+                                        unfocusedBorderColor = colorResource(com.app.transfer.R.color.border_grey),
+                                        unfocusedLabelColor = colorResource(com.app.transfer.R.color.grey_text),
+                                        focusedLabelColor = colorResource(com.app.transfer.R.color.background_card_blue)
+                                    ),
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(8.dp),
+                                    textStyle = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(com.app.transfer.R.font.roboto_regular)),
+                                        fontWeight = FontWeight(400),
+                                        color = Color(0xFF223142),
+                                    )
                                 )
                             }
 
                         }
+
+
+                    } else {
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .background(color = Color(0xFF203657).copy(alpha = 0.9f)),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp)
+                            ) {
+
+
+                                Row(
+                                    modifier = Modifier
+                                        .weight(0.6f),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_business_icon),
+                                        modifier = Modifier
+                                            .size(26.dp)
+                                            .padding(1.dp)
+                                            .align(Top)
+                                            .clickable {
+                                                coroutine.launch {
+                                                    selectCompanyState.value = true
+                                                }
+                                            }
+                                            .weight(0.2f),
+                                        contentDescription = "",
+                                        tint = Color.White
+                                    )
+
+                                    Column(
+                                        Modifier
+                                            .padding(start = 5.dp)
+                                            .weight(1f)
+                                    ) {
+
+                                        Text(
+                                            modifier = Modifier.clickable {
+                                                coroutine.launch {
+                                                    selectCompanyState.value = true
+                                                }
+                                            },
+                                            text = customerName.value,
+                                            style = TextStyle(
+                                                color = Color.White,
+                                                fontSize = 14.sp
+                                            ),
+                                            maxLines = 2,
+                                        )
+
+                                        Text(
+                                            text = "${userDetails.userName}",
+                                            style = TextStyle(
+                                                color = Color.White.copy(alpha = 0.5f),
+                                                fontSize = 14.sp
+                                            ),
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 1,
+                                            modifier = Modifier.padding(top = 5.dp)
+                                        )
+                                    }
+
+
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_business_expand),
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                            .align(Top)
+                                            .clickable {
+                                                coroutine.launch {
+                                                    selectCompanyState.value = true
+                                                }
+                                            },
+                                        contentDescription = "",
+
+                                        )
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(0.4f)
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Top
+                                ) {
+                                    Icon(
+//                                    painter = if (showBalance.value) painterResource(id = com.app.transfer.R.drawable.ic_pswd_visible) else painterResource(id = com.app.transfer.R.drawable.ic_pswd_visible),
+                                        painter = painterResource(id = com.app.transfer.R.drawable.ic_pswd_visible),
+                                        modifier = Modifier
+                                            .size(22.dp)
+                                            .align(Top)
+                                            .clickable {
+                                                isShowBalance.value = !isShowBalance.value
+                                            },
+                                        contentDescription = "",
+                                        tint = Color.White
+                                    )
+                                    Spacer(modifier = Modifier.width(20.dp))
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_option_icon),
+                                        modifier = Modifier
+                                            .size(22.dp)
+                                            .align(Top),
+                                        contentDescription = ""
+                                    )
+                                }
+
+                            }
 
 //                        Box(
 //                            modifier = Modifier
@@ -637,113 +805,116 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 //                                maxLines = 1
 //                            )
 //                        }
-                    }
+                        }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(color = Color(0xFF203657)),
-                        verticalArrangement = Arrangement.Center
-                    ) {
                         Column(
-                            Modifier.padding(horizontal = 22.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .background(color = Color(0xFF203657)),
                             verticalArrangement = Arrangement.Center
-
                         ) {
-                            val annotatedString = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        Color.White.copy(0.5f),
-                                        fontSize = 14.sp
-                                    )
-                                ) {
-                                    append(stringResource(R.string.total_accounts) + " ")
-                                }
-                                withStyle(style = SpanStyle(Color.White, fontSize = 14.sp)) {
-                                    append(customerBalanceType.value)
-                                }
-                            }
+                            Column(
+                                Modifier.padding(horizontal = 22.dp),
+                                verticalArrangement = Arrangement.Center
 
-                            Row() {
-                                Text(
-                                    text = annotatedString,
-                                    modifier = Modifier
-                                        .align(Bottom)
-                                        .padding(end = 8.dp, top = 3.dp)
-                                        .clickable {
-                                            balancePopup.value = !balancePopup.value
-                                        }
-                                )
-                                Box(
-                                    Modifier.align(Bottom)
-                                ) {
+                            ) {
+                                val annotatedString = buildAnnotatedString {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            Color.White.copy(0.5f),
+                                            fontSize = 14.sp
+                                        )
+                                    ) {
+                                        append(stringResource(R.string.total_accounts) + " ")
+                                    }
+                                    withStyle(style = SpanStyle(Color.White, fontSize = 14.sp)) {
+                                        append(customerBalanceType.value)
+                                    }
+                                }
 
-                                    Image(
-                                        painter = painterResource(id = R.drawable.ic_business_expand),
+                                Row() {
+                                    Text(
+                                        text = annotatedString,
                                         modifier = Modifier
-                                            .size(16.dp)
+                                            .align(Bottom)
+                                            .padding(end = 8.dp, top = 3.dp)
                                             .clickable {
                                                 balancePopup.value = !balancePopup.value
-                                            },
-                                        contentDescription = ""
+                                            }
                                     )
+                                    Box(
+                                        Modifier.align(Bottom)
+                                    ) {
 
-                                    if (customerBalance.isNotEmpty()) {
-                                        DropDownPopup(expanded = balancePopup) {
-                                            when (it) {
-                                                Balance.BLOCKED -> {
-                                                    balance.value = customerBalance[0].BLOCK_BALANCE
-                                                    customerBalanceType.value = "Blocked"
+                                        Image(
+                                            painter = painterResource(id = R.drawable.ic_business_expand),
+                                            modifier = Modifier
+                                                .size(16.dp)
+                                                .clickable {
+                                                    balancePopup.value = !balancePopup.value
+                                                },
+                                            contentDescription = ""
+                                        )
+
+                                        if (customerBalance.isNotEmpty()) {
+                                            DropDownPopup(expanded = balancePopup) {
+                                                when (it) {
+                                                    Balance.BLOCKED -> {
+                                                        balance.value =
+                                                            customerBalance[0].BLOCK_BALANCE
+                                                        customerBalanceType.value = "Blocked"
+                                                    }
+
+                                                    Balance.FREE_BALANCE -> {
+                                                        balance.value =
+                                                            customerBalance[0].AVAIL_BALANCE
+                                                        customerBalanceType.value = "Free Balance"
+                                                    }
+
+                                                    Balance.BANK_EXECUTION -> {
+                                                        balance.value =
+                                                            customerBalance[0].WAITING_BALANCE
+                                                        customerBalanceType.value = "Bank Execution"
+                                                    }
+
+                                                    Balance.AFTER_EXECUTION -> {
+                                                        balance.value =
+                                                            customerBalance[0].AFTERAPPROVE_BALANCE
+                                                        customerBalanceType.value =
+                                                            "After Execution"
+                                                    }
+
+                                                    Balance.BALANCE -> {
+                                                        balance.value = customerBalance[0].BALANCE
+                                                        customerBalanceType.value = "Balance"
+                                                    }
+
                                                 }
-
-                                                Balance.FREE_BALANCE -> {
-                                                    balance.value = customerBalance[0].AVAIL_BALANCE
-                                                    customerBalanceType.value = "Free Balance"
-                                                }
-
-                                                Balance.BANK_EXECUTION -> {
-                                                    balance.value =
-                                                        customerBalance[0].WAITING_BALANCE
-                                                    customerBalanceType.value = "Bank Execution"
-                                                }
-
-                                                Balance.AFTER_EXECUTION -> {
-                                                    balance.value =
-                                                        customerBalance[0].AFTERAPPROVE_BALANCE
-                                                    customerBalanceType.value = "After Execution"
-                                                }
-
-                                                Balance.BALANCE -> {
-                                                    balance.value = customerBalance[0].BALANCE
-                                                    customerBalanceType.value = "Balance"
-                                                }
-
                                             }
                                         }
+
+
                                     }
 
 
                                 }
 
 
-                            }
-
-
-                            Row {
-                                Text(
-                                    text = if (isShowBalance.value) "****" else "${
-                                        Utils.formatAmountWithSpaces(
-                                            balance.value.toDouble()
-                                        )
-                                    } ${symbol.value}",
-                                    modifier = Modifier.align(Top),
-                                    style = TextStyle(
-                                        fontSize = 32.sp,
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    color = Color.White
-                                )
+                                Row {
+                                    Text(
+                                        text = if (isShowBalance.value) "****" else "${
+                                            Utils.formatAmountWithSpaces(
+                                                balance.value.toDouble()
+                                            )
+                                        } ${symbol.value}",
+                                        modifier = Modifier.align(Top),
+                                        style = TextStyle(
+                                            fontSize = 32.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        color = Color.White
+                                    )
 
 //                                if (!isShowBalance.value) {
 //                                    Text(
@@ -756,9 +927,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 //                                        color = Color.White
 //                                    )
 //                                }
-                            }
+                                }
 
+                            }
                         }
+
                     }
 
                 }

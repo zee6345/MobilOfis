@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -29,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,8 +53,14 @@ import androidx.navigation.compose.rememberNavController
 import com.app.home.R
 import com.app.home.main.cards.homeToNewCardDetails
 import com.app.home.main.cards.homeToOldCardDetails
-
+import com.app.home.main.enableSearch
 import com.app.home.main.isShowBalance
+import com.app.home.main.model.Search
+import com.app.home.main.model.SearchBy
+import com.app.home.main.searchBy
+import com.app.home.main.searchFrom
+import com.app.home.main.searchIban
+import com.app.home.main.searchUser
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
@@ -70,6 +76,7 @@ import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.CardFilters
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
+import com.app.uikit.views.FilterView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -92,14 +99,14 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     val cardFilters = remember { DataProvider.filtersList }
     val isLoading = remember { mutableStateOf(false) }
     val isEmpty = remember { mutableStateOf(false) }
+    var sortByEndDate by remember { mutableStateOf(false) }
+    var sortByBalance by remember { mutableStateOf(false) }
 
     val showStatusBottomSheet = remember { mutableStateOf(false) }
 
     val oldCards = remember { mutableListOf<MainCard>() }
     val newCards = remember { mutableListOf<MainCardX>() }
-
     val cardStatusList = remember { mutableListOf<String>() }
-
     val coroutine = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -174,14 +181,48 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 10.sdp)
             ) {
-                items(items = cardFilters, itemContent = {
-                    Row {
-                        FilterView(filter = it) {
-                            showStatusBottomSheet.value = true
+
+                cardFilters.forEachIndexed { index, cardFilters ->
+
+                    item {
+                        Row {
+                            FilterView(filter = cardFilters) {
+
+                                when (index) {
+                                    0 -> {
+                                        enableSearch.value = true
+                                        searchFrom.value = Search.FromCards
+                                        searchBy.value = SearchBy.ByIBAN
+                                    }
+
+                                    1 -> {
+                                        enableSearch.value = true
+                                        searchFrom.value = Search.FromCards
+                                        searchBy.value = SearchBy.ByUser
+                                    }
+
+                                    2 -> {
+                                        showStatusBottomSheet.value = true
+                                    }
+
+                                    3 -> {
+                                        sortByEndDate = true
+                                    }
+
+                                    4 -> {
+                                        sortByBalance = true
+                                    }
+
+                                }
+
+                            }
+                            Box(modifier = Modifier.padding(end = 5.sdp))
                         }
-                        Box(modifier = Modifier.padding(end = 5.sdp))
                     }
-                })
+
+                }
+
+
             }
         }
 
@@ -198,11 +239,36 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
                 if (oldCards.isNotEmpty()) {
 
+                    //filter by card status
                     val filterList = oldCards.filter {
                         it.CardStat.contains(filterByStatus.value, true)
+                    }.filter {
+                        when (searchBy.value) {
+                            SearchBy.ByIBAN -> {
+                                it.Iban.contains(searchIban.value, true)
+                            }
+
+                            SearchBy.ByUser -> {
+                                it.Name.contains(searchUser.value, true)
+                            }
+
+                            else -> {
+                                true
+                            }
+                        }
                     }.toList()
 
-                    filterList.forEachIndexed { index, mainCard ->
+                    //sort list by end date
+                    val sortedList = if (sortByEndDate) {
+                        filterList.sortedBy { it.ExpDate }
+                    } else if (sortByBalance) {
+                        filterList.sortedBy { it.Balance }
+                    } else {
+                        filterList
+                    }
+
+
+                    sortedList.forEachIndexed { index, mainCard ->
                         item {
                             OldCardsListItem(obj = mainCard) {
                                 selectedOldCard.value = it
@@ -235,7 +301,38 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
                 if (newCards.isNotEmpty()) {
 
-                    newCards.forEachIndexed { index, mainCardX ->
+                    //filter by card status
+                    val filterList = newCards.filter {
+                        it.IBANStat.contains(filterByStatus.value, true)
+                    }.filter {
+                        when (searchBy.value) {
+                            SearchBy.ByIBAN -> {
+                                it.Iban.contains(searchIban.value, true)
+                            }
+
+                            SearchBy.ByUser -> {
+                                it.Name.contains(searchUser.value, true)
+                            }
+
+                            else -> {
+                                true
+                            }
+                        }
+                    }.toList()
+
+                    //sort list by end date
+                    val sortedList = if (sortByEndDate) {
+                        filterList.sortedBy { it.OpenDate }
+                    }
+//                    else if (sortByBalance) {
+//                        filterList.sortedBy { it.Balance }
+//                    }
+                    else {
+                        filterList
+                    }
+
+
+                    sortedList.forEachIndexed { index, mainCardX ->
                         item {
                             NewCardsListItem(obj = mainCardX) {
                                 selectedNewCard.value = it
@@ -338,6 +435,15 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                     newCards.addAll(cards.newBusinessCards.MainCards)
                 }
 
+                //card status
+                if (cardStatusList.isNotEmpty()) {
+                    cardStatusList.clear()
+                }
+
+                cards.newBusinessCards.MainCards.forEach {
+                    cardStatusList.add(it.IBANStat)
+                }
+
             }
         }
 
@@ -348,6 +454,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     }
 
 }
+
 
 
 @Composable
@@ -600,45 +707,6 @@ private fun NewCardsListItem(obj: MainCardX, onCardClick: (MainCardX) -> Unit) {
     }
 }
 
-@Composable
-private fun FilterView(filter: CardFilters, onFilterClick: (CardFilters) -> Unit) {
-    Card(
-        modifier = Modifier
-            .padding(vertical = 5.dp)
-            .clickable {
-                onFilterClick(filter)
-            },
-        elevation = 1.dp,
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(corner = CornerSize(8.dp))
-
-    ) {
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(6.sdp)
-        ) {
-
-            Text(
-                text = filter.filterName, style = TextStyle(fontSize = 12.sp)
-            )
-
-            if (filter.filterIcon != null) {
-                Image(
-                    painter = painterResource(id = filter.filterIcon!!),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(1.dp)
-                        .width(14.dp)
-                        .height(14.dp)
-                )
-            }
-        }
-    }
-
-
-}
 
 @Preview(device = Devices.PIXEL_4)
 @Composable

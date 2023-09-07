@@ -71,7 +71,7 @@ fun TabLayoutMenu(navController: NavController) {
             state = pagerState,
             pageSpacing = 0.dp,
 
-            userScrollEnabled = true,
+            userScrollEnabled = false,
             reverseLayout = false,
             contentPadding = PaddingValues(0.dp),
             beyondBoundsPageCount = 0,
