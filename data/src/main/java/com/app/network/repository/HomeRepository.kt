@@ -2,6 +2,7 @@ package com.app.network.repository
 
 import com.app.network.models.requestModels.AccountNickNameRequest
 import com.app.network.models.requestModels.ChangeCompanyName
+import com.app.network.models.requestModels.GetPdfList
 import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.GetAccountBlocks
@@ -10,6 +11,7 @@ import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
+import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetTransactionDetails
@@ -120,8 +122,8 @@ class HomeRepository @Inject constructor(private val apiService: APIService) {
         return apiService.getTransferList(token, startDate, endDate, page)
     }
 
-    fun getTransferPdfList(token: String, iban: String):Call<ResponseBody>{
-        return apiService.getTransferPdfList(token, iban)
+    fun getTransferPdfList(token: String, getPdfList: GetPdfList):Call<GetPdfResponse>{
+        return apiService.getTransferPdfList(token, getPdfList)
     }
 
     fun getTransactionDetails(token: String, ibankRef: String): Call<GetTransactionDetails> {

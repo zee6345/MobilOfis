@@ -7,6 +7,7 @@ import com.app.network.helper.Keys
 import com.app.network.helper.Session
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.ChangeCompanyName
+import com.app.network.models.requestModels.GetPdfList
 import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.GetAccountBlocks
@@ -15,6 +16,7 @@ import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
+import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
@@ -494,15 +496,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getTransferPdfList(ibankRef: String) {
+    fun getTransferPdfList(getPdfList: GetPdfList) {
         _getTransactionPdf.value = DataState.Loading
 
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getTransferPdfList(session[Keys.KEY_TOKEN]!!, ibankRef)
-                .enqueue(object : Callback<ResponseBody> {
+            repository.getTransferPdfList(session[Keys.KEY_TOKEN]!!, getPdfList)
+                .enqueue(object : Callback<GetPdfResponse> {
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                        call: Call<GetPdfResponse>,
+                        response: Response<GetPdfResponse>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
                             _getTransactionPdf.value = DataState.Success(response.body()!!)
@@ -512,7 +514,7 @@ class HomeViewModel @Inject constructor(
                         }
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<GetPdfResponse>, t: Throwable) {
                         _getTransactionPdf.value = DataState.Error(Error.handleException(t))
                     }
 

@@ -1,5 +1,6 @@
 package com.app.transfer.transfers
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,8 +51,12 @@ import com.app.uikit.models.TabItem
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
+const val transferToDetails = "transferToDetails"
+
 @Composable
 fun TransferDetailsInformation(navController: NavController) {
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -79,7 +85,8 @@ fun TransferDetailsInformation(navController: NavController) {
                         .size(height = 25.dp, width = 32.dp)
                         .align(Alignment.CenterVertically)
                         .clickable {
-                            navController.popBackStack()
+//                            navController.popBackStack()
+                            (context as ComponentActivity).finish()
                         },
                     contentDescription = ""
                 )

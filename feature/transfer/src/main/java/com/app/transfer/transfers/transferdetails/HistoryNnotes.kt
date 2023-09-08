@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -82,65 +83,11 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
         }
     }
 
-    LazyColumn {
-
-        item {
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.sdp, horizontal = 10.sdp),
-                backgroundColor = Color.White
-            ) {
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.sdp, vertical = 8.sdp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text(
-                        text = stringResource(R.string.transfer_history),
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight(600),
-
-                            )
-                    )
 
 
-                    Image(
-                        if (expanded1) painterResource(id = R.drawable.ic_option_expand) else painterResource(
-                            id = R.drawable.ic_option_collapse
-                        ),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(26.dp)
-                            .padding(3.dp)
-                            .clickable {
-                                expanded1 = !expanded1
-                            }
-                    )
-                }
+    if(history.isNotEmpty()) {
 
-            }
-
-
-        }
-
-        if (expanded1)
-            history.forEachIndexed { index, historydetails ->
-                item {
-                    CardInfo2(navController = navController, historydetails)
-                }
-            }
-
-
-
-
-        if ( details.value != null && details.value!!.NOTE != null) {
+        LazyColumn {
 
             item {
                 Card(
@@ -160,7 +107,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
                     ) {
 
                         Text(
-                            text = stringResource(R.string.notes),
+                            text = stringResource(R.string.transfer_history),
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight(600),
@@ -170,7 +117,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
 
                         Image(
-                            if (expanded2) painterResource(id = R.drawable.ic_option_expand) else painterResource(
+                            if (expanded1) painterResource(id = R.drawable.ic_option_expand) else painterResource(
                                 id = R.drawable.ic_option_collapse
                             ),
                             contentDescription = "",
@@ -178,34 +125,101 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
                                 .size(26.dp)
                                 .padding(3.dp)
                                 .clickable {
-                                    expanded2 = !expanded2
+                                    expanded1 = !expanded1
                                 }
                         )
                     }
 
                 }
+
+
             }
 
-            if (expanded2)
+            if (expanded1)
                 history.forEachIndexed { index, historydetails ->
                     item {
-                        CardInfo5(navController = navController, historydetails)
+                        CardInfo2(navController = navController, historydetails)
                     }
                 }
-        }
-
-        item {
-            Spacer(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
-        }
 
 
-        item {
-            if (isSigned.value) {
-                CardInfo6(navController = navController)
+
+
+            if (details.value != null && details.value!!.NOTE != null) {
+
+                item {
+                    Card(
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.sdp, horizontal = 10.sdp),
+                        backgroundColor = Color.White
+                    ) {
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.sdp, vertical = 8.sdp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Text(
+                                text = stringResource(R.string.notes),
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight(600),
+
+                                    )
+                            )
+
+
+                            Image(
+                                if (expanded2) painterResource(id = R.drawable.ic_option_expand) else painterResource(
+                                    id = R.drawable.ic_option_collapse
+                                ),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(26.dp)
+                                    .padding(3.dp)
+                                    .clickable {
+                                        expanded2 = !expanded2
+                                    }
+                            )
+                        }
+
+                    }
+                }
+
+                if (expanded2)
+                    history.forEachIndexed { index, historydetails ->
+                        item {
+                            CardInfo5(navController = navController, historydetails)
+                        }
+                    }
             }
+
+            item {
+                Spacer(modifier = Modifier.size(height = 50.sdp, width = 1.sdp))
+            }
+
+
+            item {
+                if (isSigned.value) {
+                    CardInfo6(navController = navController)
+                }
+            }
+
+
         }
-
-
+    }
+    else {
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "No transaction history found!")
+        }
     }
 
 

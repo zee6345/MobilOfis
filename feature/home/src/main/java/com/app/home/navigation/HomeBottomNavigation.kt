@@ -46,7 +46,8 @@ import com.app.transfer.signatureauth.navigation.signatureFailed
 import com.app.transfer.signatureauth.navigation.signatureHome
 import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.transfer.transfers.TransferDetailsInformation
-import com.app.transfer.transfers.navigation.transferToDetails
+import com.app.transfer.transfers.transferToDetails
+
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {

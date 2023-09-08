@@ -443,8 +443,8 @@ fun handleDateWithFilter(selectedDateType: DateType?): DateModel {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
             val currentWeekStartDate = calendar.time
 
-            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekEndDate)
-            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekStartDate)
+            filterStartDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekStartDate)
+            filterEndDate = SimpleDateFormat("dd.MM.yyyy").format(currentWeekEndDate)
         }
 
         DateType.LAST_WEEK -> {

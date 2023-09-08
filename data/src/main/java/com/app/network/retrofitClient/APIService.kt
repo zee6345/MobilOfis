@@ -3,6 +3,7 @@ package com.app.network.retrofitClient
 import com.app.network.models.requestModels.AccountNickNameRequest
 import com.app.network.models.requestModels.ChangeCompanyName
 import com.app.network.models.requestModels.ChangePasswordRequest
+import com.app.network.models.requestModels.GetPdfList
 import com.app.network.models.requestModels.LoginAsanRequest
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
@@ -21,6 +22,7 @@ import com.app.network.models.responseModels.GetLastLogin
 import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
+import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetStartMessage
@@ -251,11 +253,20 @@ interface APIService {
         @Query("page") page: Int
     ): Call<TransferListResponse> // transfer list response
 
-    @GET("file/getAllFilesByIbankref/{iban}")
+//    @GET("file/getAllFilesByIbankref/{iban}")
+//    fun getTransferPdfList(
+//        @Header("Auth_token") token: String,
+//        @Path("iban") iban: String,
+//    ): Call<ResponseBody>
+
+
+    @POST("file/get-list-payment-order-pdf")
     fun getTransferPdfList(
         @Header("Auth_token") token: String,
-        @Path("iban") iban: String,
-    ): Call<ResponseBody>
+        @Body getPdfList:GetPdfList
+    ): Call<GetPdfResponse>
+
+
 
 
     fun getTransferListFilter(

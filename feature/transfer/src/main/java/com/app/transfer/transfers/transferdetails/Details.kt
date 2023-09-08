@@ -1,6 +1,7 @@
 package com.app.transfer.transfers.transferdetails
 
 import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +55,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.network.models.DataState
+import com.app.network.models.requestModels.FileDetails
+import com.app.network.models.requestModels.GetPdfList
+import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
@@ -76,33 +81,17 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
     var expanded by remember { mutableStateOf(true) }
     var isExpanded by remember { mutableStateOf(true) }
-
+    val isSigned = remember { mutableStateOf(false) }
+    val signBottomSheet = remember { mutableStateOf(false) }
 
     val detailsData by viewModel.getTransactionDetails.collectAsState()
     val pdfList by viewModel.getTransactionPdf.collectAsState()
+    val detail = remember { mutableStateOf<GetTransactionDetails?>(null) }
+    val fileDetailList =
+        remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
+    val transferDetails = detail.value
 
     val context: Context = LocalContext.current
-
-    val transferDetails by remember { mutableStateOf<GetTransactionDetails?>(null) }
-
-//    val sourceOfOrigin = remember { mutableStateOf("") }
-//    val documentNo = remember { mutableStateOf("") }
-//    val transferType = remember { mutableStateOf("") }
-//    val sender = remember { mutableStateOf("") }
-//    val fromAccount = remember { mutableStateOf("") }
-//    val amount = remember { mutableStateOf("0.0") }
-//    val commAmount = remember { mutableStateOf("0.0") }
-//    val purpose = remember { mutableStateOf("") }
-//    val note = remember { mutableStateOf("") }
-//    val bnfName = remember { mutableStateOf("") }
-//    val bnfAccount = remember { mutableStateOf("") }
-//    val bnfTIN = remember { mutableStateOf("") }
-//    val bnfNameCode = remember { mutableStateOf("") }
-//    val symbol = remember { mutableStateOf("") }
-    val isSigned = remember { mutableStateOf(false) }
-
-
-    val signBottomSheet = remember { mutableStateOf(false) }
 
     //fetch item data
     val data = SharedModel.init().signatureData.value
@@ -111,23 +100,24 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val coroutine = rememberCoroutineScope()
 
 
-//    val pdfList  = remember { mutableListOf(Any) }
-
     LaunchedEffect(Unit) {
         coroutine.launch {
             viewModel.getTransactionDetails(ibankRef)
-            viewModel.getTransferPdfList(ibankRef)
+            viewModel.getTransferPdfList(
+                GetPdfList(
+                    listOf(FileDetails(ibankRef.toInt()))
+                )
+            )
         }
-
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-    ) {
+    if (transferDetails != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
 
-        if (transferDetails != null) {
 
             Card(
                 shape = RoundedCornerShape(10.dp),
@@ -194,7 +184,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${tran documentNo.value}", style = TextStyle(
+                                text = "${transferDetails!!.PMTCUSTID}", style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = Color(0xFF223142),
@@ -226,7 +216,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${transferType.value}", style = TextStyle(
+                                text = "${transferDetails!!.trnType}", style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = Color(0xFF223142),
@@ -258,7 +248,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${sender.value}",
+                                text = "${transferDetails!!.CUSTNAME}",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -291,7 +281,11 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${fromAccount.value} ${symbol.value}",
+                                text = "${transferDetails!!.BENEFACC} ${
+                                    Utils.formatCurrency(
+                                        transferDetails!!.ccyType
+                                    )
+                                }",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -304,10 +298,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
                 }
             }
-        }
-
-
-        if (bnfName.value != null) {
 
             Card(
                 shape = RoundedCornerShape(10.dp),
@@ -335,22 +325,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
                                 )
                         )
-
-//                        Icon(
-//                            painter = if (isExpanded) {
-//                                painterResource(id = R.drawable.ic_option_expand)
-//                            } else {
-//                                painterResource(id = R.drawable.ic_option_collapse)
-//                            },
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .padding(5.sdp)
-//                                .align(Alignment.CenterVertically)
-//                                .size(10.sdp, 10.sdp)
-//                                .clickable {
-//                                    isExpanded = !isExpanded
-//                                }
-//                        )
 
                         Image(
                             painter = if (isExpanded) painterResource(id = R.drawable.ic_option_collapse) else painterResource(
@@ -393,7 +367,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 Text(
-                                    text = "${bnfName.value}",
+                                    text = transferDetails!!.BENEFNAME ?: "-",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -433,7 +407,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 AutoResizedText(
-                                    text = bnfAccount.value,
+                                    text = transferDetails!!.BENEFACC ?: "-",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -458,7 +432,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 AutoResizedText(
-                                    text = bnfTIN.value, style = TextStyle(
+                                    text = transferDetails!!.BENEFTAXID ?: "-", style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                         color = Color(0xFF223142),
@@ -474,10 +448,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                 }
             }
 
-        }
-
-
-        if (bnfNameCode.value != null) {
             Card(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
@@ -485,9 +455,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     .padding(vertical = 5.sdp, horizontal = 10.sdp),
                 backgroundColor = Color.White
             ) {
-                Column(
-
-                ) {
+                Column {
 
 
                     Row(
@@ -551,7 +519,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                 )
 
                                 AutoResizedText(
-                                    text = "${bnfNameCode.value}",
+                                    text = "${transferDetails!!.BENEFBANKCODE ?: ""} - ${transferDetails!!.BENEFBANKNAME ?: ""}",
                                     style = TextStyle(
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -569,10 +537,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
                 }
             }
-        }
 
-
-        if (amount.value != null) {
             Card(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
@@ -580,9 +545,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     .padding(vertical = 5.sdp, horizontal = 10.sdp),
                 backgroundColor = Color.White
             ) {
-                Column(
-
-                ) {
+                Column {
 
 
                     Row(
@@ -613,9 +576,12 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${Utils.formatAmountWithSpaces(amount.value.toDouble())} ${symbol.value}",
+                                text = "${Utils.formatAmountWithSpaces(transferDetails!!.AMOUNT)} ${
+                                    Utils.formatCurrency(
+                                        transferDetails!!.ccyType
+                                    )
+                                }",
                                 style = TextStyle(
-
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = Color(0xFF223142),
@@ -639,7 +605,11 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${Utils.formatAmountWithSpaces(commAmount.value.toDouble())} ${symbol.value}",
+                                text = "${Utils.formatAmountWithSpaces(transferDetails!!.COMMAMOUNT)} ${
+                                    Utils.formatCurrency(
+                                        transferDetails!!.ccyType
+                                    )
+                                }",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -676,7 +646,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${purpose.value}",
+                                text = transferDetails!!.PMTDET ?: "-",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -710,7 +680,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = if (note.value.isNullOrEmpty()) "-" else "${note.value}",
+                                text = transferDetails!!.NOTE ?: "-",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -720,8 +690,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         }
 
                     }
-
-//                if (!transactionDetails.PDF_LIST.isEmpty()) {
 
                     Row(
                         Modifier
@@ -747,43 +715,67 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
 
-                            LazyRow(
-                                contentPadding = PaddingValues(vertical = 5.dp, horizontal = 5.dp)
+                            if (transferDetails.PDF_LIST.isNotEmpty()) {
+                                LazyRow(
+                                    contentPadding = PaddingValues(
+                                        vertical = 5.dp,
+                                        horizontal = 5.dp
+                                    )
 
-                            ) {
+                                ) {
 
-                                item {
-                                    PdfAttachmentItem(stringResource(R.string.salary_template_value_132_pdf))
-                                }
-
-                                item {
-                                    PdfAttachmentItem(stringResource(R.string.salary_template_value_133_pdf))
+                                    transferDetails.PDF_LIST.forEachIndexed { index, fileDetails ->
+                                        item {
+                                            PdfItem(fileDetails)
+                                        }
+                                    }
                                 }
                             }
-
 
                         }
 
                     }
                 }
 
-
-//                }
             }
+
+
+            if (fileDetailList.isNotEmpty()) {
+                LazyRow(
+                    contentPadding = PaddingValues(
+                        vertical = 5.dp,
+                        horizontal = 5.dp
+                    )
+                ) {
+                    fileDetailList.forEachIndexed { index, fileDetails ->
+                        item {
+                            PdfItem(fileDetails)
+                        }
+                    }
+                }
+            }
+
+
+
+            if (isSigned.value) {
+                CardInfo6(navController = navController) {
+                    signBottomSheet.value = true
+                }
+            } else {
+                CardInfo5(navController = navController)
+            }
+
+            Spacer(modifier = Modifier.size(height = 100.dp, width = 1.dp))
+
         }
 
-        PdfAttachmentItem(stringResource(R.string.pdf))
-
-        if (isSigned.value) {
-            CardInfo6(navController = navController) {
-                signBottomSheet.value = true
-            }
-        } else {
-            CardInfo5(navController = navController)
+    } else {
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "No transaction details found!")
         }
-
-        Spacer(modifier = Modifier.size(height = 100.dp, width = 1.dp))
-
     }
 
 
@@ -800,25 +792,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
             is DataState.Success -> {
                 isLoading.value = false
 
-                val data = it.data as GetTransactionDetails
-                transferDetails = data
-//                data?.apply {
-
-//                    sourceOfOrigin.value = source
-//                    documentNo.value = PMTCUSTID
-//                    transferType.value = trnType
-//                    sender.value = CUSTNAME
-//                    fromAccount.value = BENEFACC
-//                    amount.value = "$AMOUNT"
-//                    commAmount.value = "$COMMAMOUNT"
-//                    purpose.value = PMTDET
-//                    note.value = "$NOTE"
-//                    bnfName.value = "$BENEFNAME"
-//                    bnfTIN.value = "$BENEFTAXID"
-//                    bnfAccount.value = "$BENEFACC"
-//                    bnfNameCode.value = "$BENEFBANKCODE - $BENEFBANKNAME"
-//                    symbol.value = Utils.formatCurrency(ccyType)
-//                }
+                val response = it.data as GetTransactionDetails
+                detail.value = response
 
             }
         }
@@ -826,17 +801,27 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
 
     pdfList?.let {
-        when(it){
-            is DataState.Loading->{
+        when (it) {
+            is DataState.Loading -> {
                 isLoading.value = true
             }
-            is DataState.Error->{
+
+            is DataState.Error -> {
                 isLoading.value = false
 
             }
-            is DataState.Success ->{
+
+            is DataState.Success -> {
                 isLoading.value = false
 
+
+                val data = it.data as GetPdfResponse
+                data?.let {
+                    fileDetailList.apply {
+                        clear()
+                        addAll(it.data.fileDetailsList)
+                    }
+                }
 
             }
         }
@@ -871,14 +856,13 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 }
 
 @Composable
-private fun PdfAttachmentItem(title: String) {
+private fun PdfItem(fileDetails: com.app.network.models.responseModels.FileDetails) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 5.dp)
-
+        modifier = Modifier
+            .padding(horizontal = 5.dp)
     ) {
-
 
         Box(
             Modifier
@@ -904,18 +888,37 @@ private fun PdfAttachmentItem(title: String) {
 
         Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
-        Text(
-            text = title,
-            style = TextStyle(
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                fontWeight = FontWeight(500),
-                color = Color(0xFFAEAFC9),
-                textAlign = TextAlign.Center,
-            ),
-            modifier = Modifier.width(100.dp)
-        )
+        Row {
+            Text(
+                text = fileDetails.fileName ?: "-",
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    lineHeight = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontWeight = FontWeight(500),
+                    color = Color(0xFFAEAFC9),
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.width(100.dp).padding(horizontal = 5.dp),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+
+//            Text(
+//                text =  fileDetails.fileName.split(".")[1] ?: "-",
+//                style = TextStyle(
+//                    fontSize = 12.sp,
+//                    lineHeight = 14.sp,
+//                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+//                    fontWeight = FontWeight(500),
+//                    color = Color(0xFFAEAFC9),
+//                    textAlign = TextAlign.Center
+//                ),
+//                modifier = Modifier.width(100.dp),
+//                overflow = TextOverflow.Ellipsis,
+//                maxLines = 1
+//            )
+        }
 
     }
 
@@ -957,6 +960,8 @@ private fun CardInfo5(navController: NavController) {
 @Composable
 private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
 
+    val context = LocalContext.current
+
     Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
     Row(
@@ -964,7 +969,10 @@ private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = {
+//                navController.popBackStack()
+                (context as ComponentActivity).finish()
+            },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFFF3F7FA),
@@ -1018,8 +1026,6 @@ private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
             )
         }
     }
-
-
 }
 
 @Preview(showBackground = true, showSystemUi = true)

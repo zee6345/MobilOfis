@@ -1,6 +1,7 @@
 package com.app.transfer
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,8 +71,8 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.viewmodel.HomeViewModel
+import com.app.transfer.transfers.TransferDetails
 import com.app.transfer.transfers.headerFilters
-import com.app.transfer.transfers.navigation.transferToDetails
 import com.app.uikit.bottomSheet.AccountBottomSheet
 import com.app.uikit.bottomSheet.AmountBottomSheet
 import com.app.uikit.bottomSheet.CurrencyBottomSheet
@@ -456,7 +457,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                             } else {
                                 SharedModel.init().signatureData.value =
                                     SignatureInfo(true, selectedTransfer!!)
-                                navController.navigate(transferToDetails)
+//                                navController.navigate(transferToDetails)
+                                val intent = Intent(context, TransferDetails::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(intent)
+
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -746,6 +751,7 @@ private fun TransferListItem(
     onTransferSelected: (TransferListResponseItem) -> Unit
 ) {
 
+    val context = LocalContext.current
     val formattedTime = Utils.formattedTime(transfer.trnDateTime)
     val symbol = Utils.formatCurrency(transfer.currency)
 
@@ -787,7 +793,10 @@ private fun TransferListItem(
                 .padding(vertical = 5.sdp)
                 .clickable {
                     SharedModel.init().signatureData.value = SignatureInfo(false, transfer)
-                    navController.navigate(transferToDetails)
+//                    navController.navigate(transferToDetails)
+                    val intent = Intent(context, TransferDetails::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intent)
                 },
             backgroundColor = Color.White
         ) {
@@ -809,7 +818,7 @@ private fun TransferListItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${transfer.benefName}",
+                        text = transfer.benefName ?: "",
                         style = TextStyle(fontSize = 14.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -856,7 +865,7 @@ private fun TransferListItem(
                                 )
                         ) {
                             Text(
-                                text = "${transfer.brTrnType}",
+                                text = transfer.brTrnType ?: "",
                                 style = TextStyle(
                                     color = colorResource(R.color.grey_text),
                                     fontSize = 12.sp
@@ -886,7 +895,7 @@ private fun TransferListItem(
                                 )
                         ) {
                             Text(
-                                text = "$formattedTime",
+                                text = formattedTime ?: "",
                                 style = TextStyle(
                                     color = colorResource(R.color.grey_text),
                                     fontSize = 12.sp
