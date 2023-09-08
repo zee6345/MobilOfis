@@ -120,6 +120,10 @@ class HomeRepository @Inject constructor(private val apiService: APIService) {
         return apiService.getTransferList(token, startDate, endDate, page)
     }
 
+    fun getTransferPdfList(token: String, iban: String):Call<ResponseBody>{
+        return apiService.getTransferPdfList(token, iban)
+    }
+
     fun getTransactionDetails(token: String, ibankRef: String): Call<GetTransactionDetails> {
         return apiService.transactionDetails(token, ibankRef)
     }

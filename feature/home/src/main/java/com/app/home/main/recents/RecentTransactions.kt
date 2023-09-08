@@ -542,7 +542,6 @@ private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
                         .fillMaxWidth()
                 )
 
-
                 Text(
                     "${data.trn_time}",
                     style = TextStyle(

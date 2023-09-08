@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -77,22 +79,26 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
 
     val detailsData by viewModel.getTransactionDetails.collectAsState()
+    val pdfList by viewModel.getTransactionPdf.collectAsState()
+
     val context: Context = LocalContext.current
 
-    val sourceOfOrigin = remember { mutableStateOf("") }
-    val documentNo = remember { mutableStateOf("") }
-    val transferType = remember { mutableStateOf("") }
-    val sender = remember { mutableStateOf("") }
-    val fromAccount = remember { mutableStateOf("") }
-    val amount = remember { mutableStateOf("0.0") }
-    val commAmount = remember { mutableStateOf("0.0") }
-    val purpose = remember { mutableStateOf("") }
-    val note = remember { mutableStateOf("") }
-    val bnfName = remember { mutableStateOf("") }
-    val bnfAccount = remember { mutableStateOf("") }
-    val bnfTIN = remember { mutableStateOf("") }
-    val bnfNameCode = remember { mutableStateOf("") }
-    val symbol = remember { mutableStateOf("") }
+    val transferDetails by remember { mutableStateOf<GetTransactionDetails?>(null) }
+
+//    val sourceOfOrigin = remember { mutableStateOf("") }
+//    val documentNo = remember { mutableStateOf("") }
+//    val transferType = remember { mutableStateOf("") }
+//    val sender = remember { mutableStateOf("") }
+//    val fromAccount = remember { mutableStateOf("") }
+//    val amount = remember { mutableStateOf("0.0") }
+//    val commAmount = remember { mutableStateOf("0.0") }
+//    val purpose = remember { mutableStateOf("") }
+//    val note = remember { mutableStateOf("") }
+//    val bnfName = remember { mutableStateOf("") }
+//    val bnfAccount = remember { mutableStateOf("") }
+//    val bnfTIN = remember { mutableStateOf("") }
+//    val bnfNameCode = remember { mutableStateOf("") }
+//    val symbol = remember { mutableStateOf("") }
     val isSigned = remember { mutableStateOf(false) }
 
 
@@ -110,6 +116,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     LaunchedEffect(Unit) {
         coroutine.launch {
             viewModel.getTransactionDetails(ibankRef)
+            viewModel.getTransferPdfList(ibankRef)
         }
 
     }
@@ -120,7 +127,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
             .verticalScroll(rememberScrollState()),
     ) {
 
-        if (sourceOfOrigin.value != null) {
+        if (transferDetails != null) {
 
             Card(
                 shape = RoundedCornerShape(10.dp),
@@ -161,7 +168,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = if ("${sourceOfOrigin.value}" == "WEB") "Internet Office" else "${sourceOfOrigin.value}",
+                                text = if ("${transferDetails!!.source}" == "WEB") "Internet Office" else "${transferDetails!!.source}",
                                 style = TextStyle(
 
                                     fontSize = 14.sp,
@@ -187,7 +194,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = "${documentNo.value}", style = TextStyle(
+                                text = "${tran documentNo.value}", style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
                                     color = Color(0xFF223142),
@@ -703,7 +710,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             )
 
                             Text(
-                                text = if (note.value == null) "" else "${note.value}",
+                                text = if (note.value.isNullOrEmpty()) "-" else "${note.value}",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -715,53 +722,53 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     }
 
 //                if (!transactionDetails.PDF_LIST.isEmpty()) {
-//
-//                    Row(
-//                        Modifier
-//                            .fillMaxWidth()
-//                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
-//                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
-//
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        verticalAlignment = Alignment.CenterVertically
-//
-//                    ) {
-//
-//                        Column {
-//
-//                            Text(
-//                                text = stringResource(R.string.attached_pdf), style = TextStyle(
-//                                    fontSize = 12.sp,
-//                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-//                                    color = colorResource(R.color.grey_text),
-//                                )
-//                            )
-//
-//                            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
-//
-//
-//                            LazyRow(
-//                                contentPadding = PaddingValues(vertical = 5.dp, horizontal = 5.dp)
-//
-//                            ) {
-//
-//                                item {
-//                                    PdfAttachmentItem(stringResource(R.string.salary_template_value_132_pdf))
-//                                }
-//
-//                                item {
-//                                    PdfAttachmentItem(stringResource(R.string.salary_template_value_133_pdf))
-//                                }
-//                            }
-//
-//
-//                        }
-//
-//                    }
-//                }
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .dashedBorder(3.dp, colorResource(R.color.border_grey))
+                            .padding(horizontal = 10.sdp, vertical = 8.sdp),
+
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+
+                        Column {
+
+                            Text(
+                                text = stringResource(R.string.attached_pdf), style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                    color = colorResource(R.color.grey_text),
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
 
+                            LazyRow(
+                                contentPadding = PaddingValues(vertical = 5.dp, horizontal = 5.dp)
+
+                            ) {
+
+                                item {
+                                    PdfAttachmentItem(stringResource(R.string.salary_template_value_132_pdf))
+                                }
+
+                                item {
+                                    PdfAttachmentItem(stringResource(R.string.salary_template_value_133_pdf))
+                                }
+                            }
+
+
+                        }
+
+                    }
                 }
+
+
+//                }
             }
         }
 
@@ -794,26 +801,47 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                 isLoading.value = false
 
                 val data = it.data as GetTransactionDetails
-                data?.apply {
-                    sourceOfOrigin.value = source
-                    documentNo.value = PMTCUSTID
-                    transferType.value = trnType
-                    sender.value = CUSTNAME
-                    fromAccount.value = BENEFACC
-                    amount.value = "$AMOUNT"
-                    commAmount.value = "$COMMAMOUNT"
-                    purpose.value = PMTDET
-                    note.value = "$NOTE"
-                    bnfName.value = "$BENEFNAME"
-                    bnfTIN.value = "$BENEFTAXID"
-                    bnfAccount.value = "$BENEFACC"
-                    bnfNameCode.value = "$BENEFBANKCODE - $BENEFBANKNAME"
-                    symbol.value = Utils.formatCurrency(ccyType)
-                }
+                transferDetails = data
+//                data?.apply {
+
+//                    sourceOfOrigin.value = source
+//                    documentNo.value = PMTCUSTID
+//                    transferType.value = trnType
+//                    sender.value = CUSTNAME
+//                    fromAccount.value = BENEFACC
+//                    amount.value = "$AMOUNT"
+//                    commAmount.value = "$COMMAMOUNT"
+//                    purpose.value = PMTDET
+//                    note.value = "$NOTE"
+//                    bnfName.value = "$BENEFNAME"
+//                    bnfTIN.value = "$BENEFTAXID"
+//                    bnfAccount.value = "$BENEFACC"
+//                    bnfNameCode.value = "$BENEFBANKCODE - $BENEFBANKNAME"
+//                    symbol.value = Utils.formatCurrency(ccyType)
+//                }
 
             }
         }
     }
+
+
+    pdfList?.let {
+        when(it){
+            is DataState.Loading->{
+                isLoading.value = true
+            }
+            is DataState.Error->{
+                isLoading.value = false
+
+            }
+            is DataState.Success ->{
+                isLoading.value = false
+
+
+            }
+        }
+    }
+
 
 
     BankSignBottomSheet(signBottomSheet) {

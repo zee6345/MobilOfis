@@ -251,6 +251,12 @@ interface APIService {
         @Query("page") page: Int
     ): Call<TransferListResponse> // transfer list response
 
+    @GET("file/getAllFilesByIbankref/{iban}")
+    fun getTransferPdfList(
+        @Header("Auth_token") token: String,
+        @Path("iban") iban: String,
+    ): Call<ResponseBody>
+
 
     fun getTransferListFilter(
         @Header("Auth_token") token: String,

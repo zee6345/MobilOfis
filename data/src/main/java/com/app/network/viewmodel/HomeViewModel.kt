@@ -1,10 +1,7 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
+import com.app.network.helper.Error
 import com.app.network.helper.Error.handleException
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
@@ -19,7 +16,6 @@ import com.app.network.models.responseModels.GetLoans
 import com.app.network.models.responseModels.GetNewCards
 import com.app.network.models.responseModels.GetOldCards
 import com.app.network.models.responseModels.GetRecentOps
-import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.LoginVerifyResponse
@@ -86,6 +82,9 @@ class HomeViewModel @Inject constructor(
 
     private val _getTransactionDetails = MutableStateFlow<DataState<Any>?>(null)
     val getTransactionDetails: MutableStateFlow<DataState<Any>?> get() = _getTransactionDetails
+
+    private val _getTransactionPdf = MutableStateFlow<DataState<Any>?>(null)
+    val getTransactionPdf: MutableStateFlow<DataState<Any>?> get() = _getTransactionPdf
 
     private val _getSignOrApprove = MutableStateFlow<DataState<Any>?>(null)
     val getSignOrApprove: MutableStateFlow<DataState<Any>?> get() = _getSignOrApprove
@@ -492,6 +491,32 @@ class HomeViewModel @Inject constructor(
 
                 })
 
+        }
+    }
+
+    fun getTransferPdfList(ibankRef: String) {
+        _getTransactionPdf.value = DataState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.getTransferPdfList(session[Keys.KEY_TOKEN]!!, ibankRef)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _getTransactionPdf.value = DataState.Success(response.body()!!)
+                        } else {
+                            _getTransactionPdf.value =
+                                DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        _getTransactionPdf.value = DataState.Error(Error.handleException(t))
+                    }
+
+                })
         }
     }
 
