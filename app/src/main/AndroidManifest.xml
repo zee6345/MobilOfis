@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".app.MobileOffice"
@@ -11,6 +13,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobilOffice"
@@ -18,8 +21,7 @@
         <activity
             android:name=".splash.Splash"
             android:exported="true"
-            android:theme="@style/Theme.MobilOffice"
-            >
+            android:theme="@style/Theme.MobilOffice">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,13 +32,13 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <service
             android:name=".app.App"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 

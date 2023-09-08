@@ -2,23 +2,78 @@ package com.app.uikit.utils
 
 import android.content.Context
 import android.content.res.Resources
+
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.IOException
+
 import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
 import java.util.Locale
+import android.os.Environment
+import android.util.Base64
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 object Utils {
 
+    suspend fun downloadPDF(base64PDF: String, fileName: String, message:(String)->Unit): Boolean {
+        if (base64PDF.isEmpty() || fileName.isEmpty()) {
+            message("Invalid file type")
+            return false // Invalid parameters
+        }
+
+        return try {
+            // Decode Base64 to binary
+            val pdfData = Base64.decode(base64PDF, Base64.DEFAULT)
+
+            // Check if external storage is writable
+            val state = Environment.getExternalStorageState()
+            if (state != Environment.MEDIA_MOUNTED) {
+                return false // External storage is not available
+            }
+
+            // Get the external storage directory
+            val storageDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+            // Create a file for the PDF
+            val pdfFile = File(storageDir, fileName)
+
+            // Check if the file already exists
+            if (pdfFile.exists()) {
+                message("File already exists")
+                return false // File already exists
+            }
+
+            // Write the binary PDF data to the file
+            withContext(Dispatchers.IO) {
+                pdfFile.outputStream().use { fos ->
+                    fos.write(pdfData)
+                }
+            }
+
+            message("File saved to ${pdfFile.absolutePath}")
+            true
+        } catch (e: IOException) {
+            Log.e("DownloadPDFCoroutine", "Error downloading PDF", e)
+            message("Error downloading PDF")
+            false // Error occurred
+        }
+    }
+
     private var currencyHashMap: Map<String, Map<String, Any>>? = null
 
-     fun loadCurrencyData(context: Context) {
+    fun loadCurrencyData(context: Context) {
         val resources: Resources = context.resources
 
         // Get the resource ID of your JSON file (assuming it's named "currencies.json")
@@ -47,7 +102,8 @@ object Utils {
 
             for (currencyCode in jsonObject.keys()) {
                 val currencyInfo = jsonObjectToMap(jsonObject.getJSONObject(currencyCode))
-                (currencyHashMap as MutableMap<String, Map<String, Any>>)[currencyCode] = currencyInfo
+                (currencyHashMap as MutableMap<String, Map<String, Any>>)[currencyCode] =
+                    currencyInfo
             }
         }
     }
@@ -72,7 +128,7 @@ object Utils {
         return map
     }
 
-    fun formatAmount(amount:Double): String {
+    fun formatAmount(amount: Double): String {
         return "%.2f".format(amount)
     }
 

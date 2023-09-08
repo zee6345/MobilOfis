@@ -1,6 +1,9 @@
 package com.app.transfer.transfers.transferdetails
 
 import android.content.Context
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -67,11 +70,15 @@ import com.app.uikit.bottomSheet.BankSignBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AuthType
 import com.app.uikit.models.SignInfo
+import com.app.uikit.utils.DownloadPDFAsyncTask
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
 import ir.kaaveh.sdpcompose.sdp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.logging.Handler
 
 
 @Composable
@@ -726,7 +733,39 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
                                     transferDetails.PDF_LIST.forEachIndexed { index, fileDetails ->
                                         item {
-                                            PdfItem(fileDetails)
+                                            PdfItem(fileDetails) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    Utils.downloadPDF(
+                                                        fileDetails.fileBase64,
+                                                        fileDetails.fileName
+                                                    ){
+                                                        android.os.Handler(Looper.getMainLooper()).post {
+                                                            Toast.makeText(context, it, Toast.LENGTH_SHORT)
+                                                                .show()
+                                                        }
+                                                    }
+
+//                                                    CoroutineScope(Dispatchers.Default).launch {
+//
+//                                                        val message = if (check) {
+//                                                            "File saved to Downloads!"
+//                                                        } else {
+//                                                            "Failed to save file!"
+//                                                        }
+//
+//                                                        android.os.Handler(Looper.getMainLooper())
+//                                                            .post {
+//                                                                Toast.makeText(
+//                                                                    context,
+//                                                                    message,
+//                                                                    Toast.LENGTH_SHORT
+//                                                                ).show()
+//                                                            }
+//
+//                                                    }
+
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -749,7 +788,36 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                 ) {
                     fileDetailList.forEachIndexed { index, fileDetails ->
                         item {
-                            PdfItem(fileDetails)
+                            PdfItem(fileDetails) {
+//                                val task = DownloadPDFAsyncTask()
+//                                task.execute(fileDetails.fileBase64, fileDetails.fileName)
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    Utils.downloadPDF(
+                                        fileDetails.fileBase64,
+                                        fileDetails.fileName
+                                    ){
+                                        android.os.Handler(Looper.getMainLooper()).post {
+                                            Toast.makeText(context, it, Toast.LENGTH_SHORT)
+                                                .show()
+                                        }
+                                    }
+
+//                                    CoroutineScope(Dispatchers.Default).launch {
+//
+//                                        val message = if (check) {
+//                                            "File saved to Downloads!"
+//                                        } else {
+//                                            "Failed to save file!"
+//                                        }
+//
+//
+//
+//                                    }
+
+                                }
+
+                            }
                         }
                     }
                 }
@@ -765,7 +833,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                 CardInfo5(navController = navController)
             }
 
-            Spacer(modifier = Modifier.size(height = 100.dp, width = 1.dp))
+            Spacer(modifier = Modifier.size(height = 20.dp, width = 1.dp))
 
         }
 
@@ -856,12 +924,18 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 }
 
 @Composable
-private fun PdfItem(fileDetails: com.app.network.models.responseModels.FileDetails) {
+private fun PdfItem(
+    fileDetails: com.app.network.models.responseModels.FileDetails,
+    onPdfClick: () -> Unit
+) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(horizontal = 5.dp)
+            .clickable {
+                onPdfClick()
+            }
     ) {
 
         Box(
@@ -899,7 +973,9 @@ private fun PdfItem(fileDetails: com.app.network.models.responseModels.FileDetai
                     color = Color(0xFFAEAFC9),
                     textAlign = TextAlign.Center
                 ),
-                modifier = Modifier.width(100.dp).padding(horizontal = 5.dp),
+                modifier = Modifier
+                    .width(100.dp)
+                    .padding(horizontal = 5.dp),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
@@ -1027,6 +1103,7 @@ private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
