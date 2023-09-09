@@ -338,25 +338,6 @@ fun DateBottomSheet(
 
         selectedDateType = DurationDateModel("", DateType.CUSTOM)
     }
-
-//    if (startDate.value > endDate.value) {
-//        showError = true
-//    }
-//
-//    if (showError) {
-//        RoundedCornerToast(
-//            "The beginning of the period cannot be later than the end",
-//            Toast.LENGTH_SHORT,
-//            context
-//        )
-//
-//        LaunchedEffect(Unit) {
-//            delay(3000)
-//            showError = false
-//        }
-//    }
-
-
 }
 
 

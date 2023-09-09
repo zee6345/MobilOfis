@@ -1,4 +1,4 @@
-package com.app.transfer.transfers
+package com.app.transfer.transfers.transferdetails
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -45,8 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.app.transfer.R
-import com.app.transfer.transfers.transferdetails.Details
-import com.app.transfer.transfers.transferdetails.HistoryNnotes
 import com.app.uikit.models.TabItem
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch

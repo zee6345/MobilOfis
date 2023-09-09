@@ -2,6 +2,7 @@ package com.app.home.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.home.BottomNavItem
 import com.app.home.R
 import com.app.home.main.model.Search
 import com.app.home.main.model.SearchBy
@@ -50,15 +52,22 @@ import com.app.network.models.responseModels.GetCustomerBalance
 import com.app.network.models.responseModels.GetCustomerBalanceItem
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
+import com.app.network.models.responseModels.GetUserRoles
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.viewmodel.HomeViewModel
-import com.app.transfer.transfers.headerFilters
+import com.app.transfer.transfers.endDateSelected
+import com.app.transfer.transfers.fromMain
+import com.app.transfer.transfers.startDateSelected
+
 import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.models.UserRoles
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
+import com.app.uikit.views.HeaderFilters
+import com.app.uikit.views.userRole
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -86,7 +95,6 @@ val search = mutableStateOf("")
 val searchFrom = mutableStateOf<Search?>(null)
 val searchBy = mutableStateOf<SearchBy?>(null)
 
-val PAGE_SIZE = 20
 
 @SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterialApi::class)
@@ -113,8 +121,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val accountBalance by viewModel.accountBalance.collectAsState()
     val setCustomerName by viewModel.setCustomerName.collectAsState()
     val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
-
     val recentOps by viewModel.recentOps.collectAsState()
+    val userRoles by viewModel.getUserRoles.collectAsState()
+    val businessDates by viewModel.businessDate.collectAsState()
 
     //set initial dates
     val currentDate = System.currentTimeMillis()
@@ -124,16 +133,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val oneWeekLaterDate = Date(currentDate - 15 * 24 * 60 * 60 * 1000)
     val dateWith15EarlyFromCurrent = SimpleDateFormat("dd.MM.yyyy").format(oneWeekLaterDate)
 
-    val startDateSelected = remember { mutableStateOf(dateWith15EarlyFromCurrent) }
-    val endDateSelected = remember { mutableStateOf(formattedDate) }
+    //set date 15 days early for main
+    startDateSelected = remember { mutableStateOf(dateWith15EarlyFromCurrent) }
+    endDateSelected = remember { mutableStateOf(formattedDate) }
 
     val coroutine = rememberCoroutineScope()
 
     val selectedBoxIndex = remember { mutableStateOf(0) }
-
-//    val pagedRecentOps = viewModel.pagedRecentOps.collectAsLazyPagingItems()
-//    val pagedData by viewModel.pagedRecentOps.collectAsState(emptyList())
-//    val lazyPagingItems = viewModel.lazyPagingItems.collectAsLazyPagingItems()
 
 
     val context = LocalContext.current
@@ -144,66 +150,25 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     customerName.value = userDetails.customerName
     viewModel.session.put("customer", customerName.value)
 
+    handleUserRoles(userDetails)
 
     //search params
-    when (searchFrom.value) {
-        Search.FromCards -> {
-            when (searchBy.value) {
-                SearchBy.ByIBAN -> {
-                    searchIban.value = search.value
-                }
-
-                SearchBy.ByUser -> {
-                    searchUser.value = search.value
-                }
-
-                else -> {
-                    search.value = search.value
-                }
-            }
-        }
-
-        Search.FromLoans -> {
-            when (searchBy.value) {
-                SearchBy.ByAgreement -> {
-                    searchContract.value = search.value
-                }
-
-                else -> {
-                    search.value = search.value
-                }
-            }
-        }
-
-        Search.FromDeposits -> {
-            when (searchBy.value) {
-                SearchBy.ByDepositName -> {
-                    searchDepositName.value = search.value
-                }
-
-                SearchBy.ByAccount -> {
-                    searchAccountNo.value = search.value
-                }
-
-                else -> {
-                    search.value = search.value
-                }
-            }
-        }
-
-        else -> {
-            search.value
-        }
-    }
+    handleSearchParams()
 
 
     //initial API calls
     LaunchedEffect(Unit) {
         coroutine.launch {
-            viewModel.getTransferCountSummary(startDateSelected.value, endDateSelected.value)
+
+            viewModel.getBusinessDate()
+
             viewModel.getBalance(userDetails.customerNo)
             viewModel.getRecentOps(userDetails.customerNo, "")
+
+            //user roles
+            viewModel.getUserRoles()
         }
+
     }
 
     BottomSheetScaffold(
@@ -475,10 +440,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 .size(20.dp)
                         )
                     }
-
-
                 }
-
 
                 LazyColumn {
 
@@ -503,31 +465,10 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     }
 
 
-//                    when (pagedRecentOps.loadState.append) {
-//                        is LoadState.NotLoading -> Unit
-//
-//                        LoadState.Loading -> {
-//                            isLoading.value = true
-//                        }
-//
-//                        is LoadState.Error -> {
-//                            isLoading.value = false
-//                        }
-//                    }
-
-
                     item {
                         Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     }
-
                 }
-
-
-//                val listState = rememberLazyListState()
-//                val isScrolledToEnd = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == pagedData.size - 1
-//                if (isScrolledToEnd) {
-//                    viewModel.getRecentOps(pagedData.size / PAGE_SIZE + 1)
-//                }
             }
 
 
@@ -772,20 +713,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                             }
 
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(start = 100.dp),
-//                        ) {
-//                            Text(
-//                                text = "${userDetails.userName}",
-//                                style = TextStyle(
-//                                    color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp
-//                                ),
-//                                overflow = TextOverflow.Ellipsis,
-//                                maxLines = 1
-//                            )
-//                        }
                         }
 
                         Column(
@@ -897,17 +824,6 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                         color = Color.White
                                     )
 
-//                                if (!isShowBalance.value) {
-//                                    Text(
-//                                        text = Utils.formatCurrency(),
-//                                        modifier = Modifier
-//                                            .padding(end = 22.dp)
-//                                            .padding(3.dp)
-//                                            .align(Bottom),
-//                                        style = TextStyle(fontSize = 24.sp),
-//                                        color = Color.White
-//                                    )
-//                                }
                                 }
 
                             }
@@ -926,9 +842,14 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
-                Box(Modifier.padding(horizontal = 10.dp)) {
-                    headerFilters(transferHeaderList) {
+                if (transferHeaderList.isNotEmpty()) {
+                    Box(Modifier.padding(horizontal = 10.dp)) {
+                        HeaderFilters(transferHeaderList) {
 
+                            fromMain.value = true
+                            navController.navigate(BottomNavItem.Transfers.screen_route)
+
+                        }
                     }
                 }
 
@@ -943,16 +864,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 
     SelectCompanyBottomSheet(selectCompanyState, userDetails.customers) {
-//        viewModel.setCustomerName(ChangeCompanyName(it))
-
         CoroutineScope(Dispatchers.Main).launch {
-            // Call setCustomerName with the first value
             viewModel.setCustomerName(ChangeCompanyName(it))
 
+            delay(1000)
 
-            delay(1000) // Delay for 2 seconds (adjust the duration as needed)
-
-            // Call setCustomerName with the second value
             viewModel.setCustomerName(ChangeCompanyName(it))
         }
     }
@@ -1036,6 +952,9 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         //deposits
                         viewModel.getTrusts(userDetails.customerNo)
 
+                        //headers
+                        viewModel.getBusinessDate()
+
                     }
 
                 }
@@ -1063,12 +982,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 val data = it.data as TransferCountSummaryResponse
 
-                if (data.isNotEmpty()) {
-                    transferHeaderList.apply {
-                        clear()
-                        addAll(data)
-                    }
+                transferHeaderList.apply {
+                    clear()
+                    addAll(data)
                 }
+
 
             }
 
@@ -1110,11 +1028,122 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     }
 
+    userRoles?.let {
+        when (it) {
+            is DataState.Loading -> {}
+            is DataState.Error -> {}
+            is DataState.Success -> {
+                val data = it.data as GetUserRoles
+
+//                LaunchedEffect(Unit) {
+//                    Log.e("mmTAG", "${data.toString()}")
+//                }
+
+
+            }
+        }
+    }
+
+    businessDates?.let {
+        when (it) {
+            is DataState.Error -> {}
+            is DataState.Loading -> {}
+            is DataState.Success -> {
+                val dateEnd: String = it.data as String
+
+                val oneWeekLaterDate = Date(currentDate - 15 * 24 * 60 * 60 * 1000)
+                val dateWith15EarlyFromCurrent =
+                    SimpleDateFormat("dd.MM.yyyy").format(oneWeekLaterDate)
+
+                startDateSelected.value = dateWith15EarlyFromCurrent
+                endDateSelected.value = dateEnd
+
+                //initial api call to refresh data
+                LaunchedEffect(Unit) {
+                    viewModel.getTransferCountSummary(
+                        startDateSelected.value,
+                        endDateSelected.value
+                    )
+                }
+
+            }
+        }
+    }
+
     if (isLoading.value) {
         ShowProgressDialog(isLoading)
     }
 
 
+}
+
+private fun handleUserRoles(userDetails: LoginVerifyResponse) {
+    when (userDetails.role) {
+        1 -> {
+            userRole.value = UserRoles.MAKER
+        }
+
+        2 -> {
+            userRole.value = UserRoles.SIGNER
+        }
+
+        3 -> {
+            userRole.value = UserRoles.APPROVER
+        }
+    }
+
+}
+
+private fun handleSearchParams() {
+    when (searchFrom.value) {
+        Search.FromCards -> {
+            when (searchBy.value) {
+                SearchBy.ByIBAN -> {
+                    searchIban.value = search.value
+                }
+
+                SearchBy.ByUser -> {
+                    searchUser.value = search.value
+                }
+
+                else -> {
+                    search.value = search.value
+                }
+            }
+        }
+
+        Search.FromLoans -> {
+            when (searchBy.value) {
+                SearchBy.ByAgreement -> {
+                    searchContract.value = search.value
+                }
+
+                else -> {
+                    search.value = search.value
+                }
+            }
+        }
+
+        Search.FromDeposits -> {
+            when (searchBy.value) {
+                SearchBy.ByDepositName -> {
+                    searchDepositName.value = search.value
+                }
+
+                SearchBy.ByAccount -> {
+                    searchAccountNo.value = search.value
+                }
+
+                else -> {
+                    search.value = search.value
+                }
+            }
+        }
+
+        else -> {
+            search.value
+        }
+    }
 }
 
 

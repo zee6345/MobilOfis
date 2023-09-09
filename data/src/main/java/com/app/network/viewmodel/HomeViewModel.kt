@@ -1,7 +1,6 @@
 package com.app.network.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.app.network.helper.Error
 import com.app.network.helper.Error.handleException
 import com.app.network.helper.Keys
 import com.app.network.helper.Session
@@ -20,6 +19,7 @@ import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
+import com.app.network.models.responseModels.GetUserRoles
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
@@ -97,20 +97,9 @@ class HomeViewModel @Inject constructor(
     private val _transactionStatus = MutableStateFlow<DataState<Any>?>(null)
     val getTransactionStatus: MutableStateFlow<DataState<Any>?> get() = _transactionStatus
 
-//    private val pagingConfig = PagingConfig(
-//        pageSize = 20,
-//        enablePlaceholders = false
-//    )
-//
-//    private val pager = Pager(
-//        config = pagingConfig,
-//        pagingSourceFactory = { RecentOpsPagingSource(session, repository) }
-//    ).flow
+    private val _userRoles = MutableStateFlow<DataState<Any>?>(null)
+    val getUserRoles: MutableStateFlow<DataState<Any>?> get() = _userRoles
 
-//    val pagedRecentOps = Pager(
-//        pagingSourceFactory = { RecentOpsPagingSource(session, repository) },
-//        config = PagingConfig(pageSize = 20)
-//    ).flow.cachedIn(viewModelScope)
 
     fun getAccounts(customerId: Int) {
 
@@ -290,45 +279,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-//    fun getRecentOps(customerId: Int, page: Int) {
-//        _recentOps.value = DataState.Loading
-//
-//        viewModelScope.launch {
-//            try {
-//
-//                val response = repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page)
-//                if (response.isSuccessful && response.body() != null) {
-//                    _recentOps.value = DataState.Success(response.body()!!)
-//                } else {
-//                    _recentOps.value = DataState.Error(response.errorBody()!!.string())
-//                }
-//
-//            } catch (e: Exception) {
-//                _recentOps.value = DataState.Error(e.message.toString())
-//            }
-//        }
-//    }
-//
-//    fun getRecentOps(customerId: Int, page: Int, incomeFlag: String) {
-//        _recentOps.value = DataState.Loading
-//
-//        viewModelScope.launch {
-//            try {
-//
-//                val response =
-//                    repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page, incomeFlag)
-//                if (response.isSuccessful && response.body() != null) {
-//                    _recentOps.value = DataState.Success(response.body()!!)
-//                } else {
-//                    _recentOps.value = DataState.Error(response.errorBody()!!.string())
-//                }
-//
-//            } catch (e: Exception) {
-//                _recentOps.value = DataState.Error(e.message.toString())
-//            }
-//        }
-//    }
-
     fun getRecentOps(customerId: Int, incomeFlag: String) {
         _recentOps.value = DataState.Loading
 
@@ -376,14 +326,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-//    suspend fun getRecentOps(
-//        customerId: Int,
-//        page: Int,
-//        limit: Int
-//    ): Response<List<GetRecentOpsItem>> {
-//        return repository.getRecentOps(session[Keys.KEY_TOKEN]!!, customerId, page)
-//    }
 
     fun setCustomerName(changeCompanyName: ChangeCompanyName) {
         _setCustomerName.value = DataState.Loading
@@ -496,6 +438,30 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getUserRoles() {
+        _userRoles.value = DataState.Loading
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.userRoles(session[Keys.KEY_TOKEN]!!)
+                .enqueue(object : Callback<GetUserRoles> {
+                    override fun onResponse(
+                        call: Call<GetUserRoles>,
+                        response: Response<GetUserRoles>
+                    ) {
+                        if (response.isSuccessful && response.body() != null) {
+                            _userRoles.value = DataState.Success(response.body()!!)
+                        } else {
+                            _userRoles.value = DataState.Error(response.errorBody()!!.string())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetUserRoles>, t: Throwable) {
+                        _userRoles.value = DataState.Error(handleException(t))
+                    }
+                })
+        }
+    }
+
     fun getTransferPdfList(getPdfList: GetPdfList) {
         _getTransactionPdf.value = DataState.Loading
 
@@ -515,7 +481,7 @@ class HomeViewModel @Inject constructor(
                     }
 
                     override fun onFailure(call: Call<GetPdfResponse>, t: Throwable) {
-                        _getTransactionPdf.value = DataState.Error(Error.handleException(t))
+                        _getTransactionPdf.value = DataState.Error(handleException(t))
                     }
 
                 })

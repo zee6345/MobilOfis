@@ -1,4 +1,4 @@
-package com.app.transfer
+package com.app.transfer.transfers
 
 import android.content.Context
 import android.content.Intent
@@ -71,8 +71,9 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.viewmodel.HomeViewModel
-import com.app.transfer.transfers.TransferDetails
-import com.app.transfer.transfers.headerFilters
+import com.app.transfer.R
+import com.app.transfer.transfers.transferdetails.TransferDetails
+
 import com.app.uikit.bottomSheet.AccountBottomSheet
 import com.app.uikit.bottomSheet.AmountBottomSheet
 import com.app.uikit.bottomSheet.CurrencyBottomSheet
@@ -88,6 +89,7 @@ import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
 import com.app.uikit.views.FiltersTopRow
+import com.app.uikit.views.HeaderFilters
 import com.app.uikit.views.transfersAccount
 import com.app.uikit.views.transfersCurrency
 import com.app.uikit.views.transfersStatus
@@ -99,7 +101,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-
 
 const val SESSION = "SESSION_EVENTS"
 
@@ -120,6 +121,13 @@ private val filterByCurrency = mutableStateOf("")
 private val filterBySearch = mutableStateOf("")
 
 private val isSearchEnable = mutableStateOf(false)
+
+val fromMain = mutableStateOf(false)
+
+var startDateSelected = mutableStateOf("")
+var endDateSelected = mutableStateOf("")
+
+
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -157,6 +165,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val transferList by viewModel.transferList.collectAsState()
     val getSendToBank by viewModel.sendToBank.collectAsState()
 
+    var showError by remember { mutableStateOf(false) }
 
     //fetch data
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
@@ -166,17 +175,27 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val currentDate = System.currentTimeMillis()
     val formattedDate = SimpleDateFormat("dd.MM.yyyy").format(currentDate)
 
-    var startDate by remember { mutableStateOf(formattedDate) }
-    var endDate by remember { mutableStateOf(formattedDate) }
-    var showError by remember { mutableStateOf(false) }
+    var startDate by remember { mutableStateOf("") }
+    var endDate by remember { mutableStateOf("") }
 
+    if (fromMain.value) {
+        startDate = startDateSelected.value
+        endDate = endDateSelected.value
+    } else {
+        startDate = formattedDate
+        endDate = formattedDate
+    }
 
     LaunchedEffect(Unit) {
         coroutine.launch {
-            viewModel.getBusinessDate()
-            viewModel.getAccounts(userDetails.customerNo)
-//            viewModel.getTransferCountSummary(startDate, endDate)
-//            viewModel.getTransferList(startDate, endDate, 0)
+            if (!fromMain.value) {
+                viewModel.getBusinessDate()
+                viewModel.getAccounts(userDetails.customerNo)
+            } else {
+                viewModel.getAccounts(userDetails.customerNo)
+                viewModel.getTransferCountSummary(startDate, endDate)
+                viewModel.getTransferList(startDate, endDate, 0)
+            }
         }
     }
 
@@ -205,12 +224,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row {
+
                         Image(
                             painter = painterResource(id = R.drawable.ic_back_arrow),
                             modifier = Modifier
                                 .size(width = 32.dp, height = 25.dp)
                                 .align(Alignment.CenterVertically)
                                 .clickable {
+                                    fromMain.value = false
                                     navController.popBackStack()
                                 },
                             contentDescription = ""
@@ -316,34 +337,38 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                 Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
 
-                headerFilters(headerList) { filter ->
-                    filterByStatus.value = filter
+                if (transferListResponse.isNotEmpty()) {
 
-                    //if filter clicked enable check
-                    if (filter.contains("PENDING_SIGNER", true)) {
-                        isSigned.value = true
+                    HeaderFilters(headerList) { filter ->
+                        filterByStatus.value = filter
 
-                        SharedModel.init().isForSigning.value = true
+                        //if filter clicked enable check
+                        if (filter.contains("PENDING_SIGNER", true)) {
+                            isSigned.value = true
 
-                    } else if (filter.contains("PENDING_APPROVER", true)) {
-                        isSigned.value = true
+                            SharedModel.init().isForSigning.value = true
 
-                        SharedModel.init().isForSigning.value = false
+                        } else if (filter.contains("PENDING_APPROVER", true)) {
+                            isSigned.value = true
 
-                    } else if (filter.contains("SEND_TO_BANK", true)) {
-                        isSigned.value = true
-                        sendToBank.value = true
-                    } else {
-                        isSigned.value = false
+                            SharedModel.init().isForSigning.value = false
+
+                        } else if (filter.contains("SEND_TO_BANK", true)) {
+                            isSigned.value = true
+                            sendToBank.value = true
+                        } else {
+                            isSigned.value = false
+                        }
+
                     }
+
+                    Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
 
                 }
 
-                Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
-
                 FilterListMenu()
 
-                if (!transferListResponse.isNullOrEmpty()) {
+                if (transferListResponse.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.padding(bottom = 50.sdp)
                     ) {
@@ -492,7 +517,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
     }
 
-    DateBottomSheet(showDateBottomSheet,
+    DateBottomSheet(
+        showDateBottomSheet,
         onSelectedDate = {
             startDate = it.startDate
             endDate = it.endDate
@@ -585,17 +611,11 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 val data = it.data as TransferCountSummaryResponse
 
                 if (data.isNotEmpty()) {
-
                     headerList.apply {
                         clear()
                         addAll(data)
                     }
-
-                    isListEmpty.value = false
-                } else {
-                    isListEmpty.value = true
                 }
-
             }
 
             else -> {}

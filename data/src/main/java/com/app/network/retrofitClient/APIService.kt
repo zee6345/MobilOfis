@@ -29,6 +29,7 @@ import com.app.network.models.responseModels.GetStartMessage
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserProfile
+import com.app.network.models.responseModels.GetUserRoles
 import com.app.network.models.responseModels.GetVerify2FA
 import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
@@ -165,29 +166,6 @@ interface APIService {
         @Path("customerId") customerId: Int
     ): Call<GetRecentOps>
 
-    @GET("customers/{customerId}/activities-byfilter")
-    suspend fun getRecentOps(
-        @Header("Auth_token") token: String,
-        @Path("customerId") customerId: Int,
-        @Query("page") page: Int,
-        @Query("limit") limit: Int = 20,
-        @Query("debit_credit_flag") flag: String
-    ): Response<List<GetRecentOpsItem>>
-
-//    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20")
-//    fun getRecentOpsIncome(
-//        @Header("Auth_token") token: String,
-//        @Path("customerId") customerId: Int,
-//        @Query("debit_credit_flag") flag: String
-//    ): Call<GetRecentOps>
-//
-//    @GET("customers/{customerId}/activities-byfilter?page=1&limit=20&debit_credit_flag=DR")
-//    fun getRecentOpsExpenditure(
-//        @Header("Auth_token") token: String,
-//        @Path("customerId") customerId: Int
-//    ): Call<GetRecentOps>
-
-
     @POST("auth/totp-register/disable")
     fun disable2FA(
         @Header("Auth_token") token: String,
@@ -235,16 +213,6 @@ interface APIService {
         @Query("enddate") endDate: String
     ): Call<TransferCountSummaryResponse> // transfer count summary response
 
-    @GET("transaction/transfer-count-summary")
-    fun getTransferCountSummaryAccountStatus(
-        @Header("Auth_token") token: String,
-        @Query("startdate") startDate: String,
-        @Query("enddate") endDate: String,
-        @Query("account") account: String,
-        @Query("status") status: String
-    ): Call<ResponseBody> // transfer count summary response
-
-
     @GET("transaction/transfer-list/{startDate}/{endDate}")
     fun getTransferList(
         @Header("Auth_token") token: String,
@@ -253,71 +221,22 @@ interface APIService {
         @Query("page") page: Int
     ): Call<TransferListResponse> // transfer list response
 
-//    @GET("file/getAllFilesByIbankref/{iban}")
-//    fun getTransferPdfList(
-//        @Header("Auth_token") token: String,
-//        @Path("iban") iban: String,
-//    ): Call<ResponseBody>
-
-
     @POST("file/get-list-payment-order-pdf")
     fun getTransferPdfList(
         @Header("Auth_token") token: String,
-        @Body getPdfList:GetPdfList
+        @Body getPdfList: GetPdfList
     ): Call<GetPdfResponse>
-
-
-
-
-    fun getTransferListFilter(
-        @Header("Auth_token") token: String,
-        @Path("startDate") startDate: String,
-        @Path("endDate") endDate: String,
-        @Query("page") page: Int,
-        @Query("filter") filter: String
-    ): Call<TransferListResponse> // transfer list response
-
-    fun getTransferListFilterByAccount(
-        @Header("Auth_token") token: String,
-        @Path("startDate") startDate: String,
-        @Path("endDate") endDate: String,
-        @Query("page") page: Int,
-        @Query("account") account: String,
-        @Query("status") status: String
-    ): Call<ResponseBody> // transfer list response
-
-    @GET("exchange/exchange/listrates")
-    fun getExchangeListRates(
-        @Header("Auth_token") token: String
-    ): Call<ResponseBody>
-
-    @GET("moneytransfer/moneytransfer/bankcodes")
-    fun getBankCodes(
-        @Header("Auth_token") token: String
-    ): Call<ResponseBody>
-
-    @GET("moneytransfer/moneytransfer/mtcountries")
-    fun getMTCountries(
-        @Header("Auth_token") token: String
-    ): Call<ResponseBody>
-
-    @GET("moneytransfer/moneytransfer/paymentsubject")
-    fun getPaymentSubject(
-        @Header("Auth_token") token: String
-    ): Call<ResponseBody>
-
-    @GET("moneytransfer/moneytransfer/paymenttype")
-    fun paymentType(@Header("Auth_token") token: String): Call<ResponseBody>
-
-    @GET("moneytransfer/moneytransfer/mttype")
-    fun mtType(@Header("Auth_token") token: String): Call<ResponseBody>
-
 
     @GET("transaction/getransactionbyibankref/{ibankRef}")
     fun transactionDetails(
         @Header("Auth_token") token: String,
         @Path("ibankRef") ibankRef: String
     ): Call<GetTransactionDetails>
+
+    @POST("auth/rule-transaction-button")
+    fun userRoles(
+        @Header("Auth_token") token: String,
+    ):Call<GetUserRoles>
 
     @POST("transaction/approve")
     fun signOrApprove(

@@ -1,4 +1,4 @@
-package com.app.transfer.transfers
+package com.app.transfer.transfers.transferdetails
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

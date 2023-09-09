@@ -91,6 +91,9 @@ dependencies {
     //Constraint Layout
     implementation (Compose.compose_constraints)
 
+    implementation (Compose.swipeable_card)
+    implementation (Compose.swipeable_cards)
+
     implementation ("androidx.compose.foundation:foundation:1.5.0-alpha04")
 
     implementation(Network.NETWORK_RETROFIT)

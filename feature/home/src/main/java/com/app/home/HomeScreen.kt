@@ -1,7 +1,6 @@
 package com.app.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -67,14 +66,12 @@ fun MainScreenView(navController: NavController, viewModel: LoginViewModel = hil
 
     lastLogin?.let {
         when (it) {
-            is DataState.Loading -> {}
+            is DataState.Loading -> Unit
             is DataState.Error -> {
                 ErrorState(LocalContext.current, it.errorMessage).handleError()
             }
 
-            is DataState.Success -> {
-                Log.e("mmmTAG", "login success")
-            }
+            is DataState.Success -> Unit
         }
     }
 
@@ -88,73 +85,7 @@ fun BottomNavigation(navController: NavController) {
         BottomNavItem.Transfers,
         BottomNavItem.Adjustments,
     )
-//    BottomNavigation(
-//        backgroundColor = Color.White,
-//        contentColor = Color.Black
-//    ) {
-//        val navBackStackEntry by navController.currentBackStackEntryAsState()
-//        val currentRoute = navBackStackEntry?.destination?.route
-//        items.forEach { item ->
-//
-//            BottomNavigationItem(
-//                icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
-//                label = {
-//                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                        Spacer(modifier = Modifier.height(3.dp)) // Add space at the top
-//                        Text(
-//                            text = item.title,
-//                            fontSize = 9.sp
-//                        )
-//                    }
-//                },
-//                selectedContentColor = Color.Black,
-//                unselectedContentColor = Color.Black.copy(0.4f),
-//                alwaysShowLabel = true,
-//                selected = currentRoute == item.screen_route,
-//                onClick = {
-//                    navController.navigate(item.screen_route) {
-//
-//                        navController.graph.startDestinationRoute?.let { screen_route ->
-//                            popUpTo(screen_route) {
-//                                saveState = true
-//                            }
-//                        }
-//                        launchSingleTop = true
-//                        restoreState = true
-//                    }
-//                }
-//            )
-//
-//
-//            // Draw the line indicator on top of the selected item
-//            Canvas(
-//                modifier = Modifier.fillMaxWidth().height(2.dp),
-//                onDraw = {
-//                    val selectedItemIndex = items.indexOfFirst { it.screen_route == currentRoute }
-//                    if (selectedItemIndex != -1) {
-//                        val selectedItemWidth = size.width / items.size
-//                        val indicatorLeft = selectedItemIndex * selectedItemWidth
-//                        val indicatorRight = (selectedItemIndex + 1) * selectedItemWidth
-//                        val indicatorTop = 0f
-//                        val indicatorBottom = size.height
-//                        val indicatorColor = Color.Blue // Change this to your desired color
-//
-//                        this.drawLine(
-//                            color = indicatorColor,
-//                            start = Offset(indicatorLeft, indicatorTop),
-//                            end = Offset(indicatorRight, indicatorTop),
-//                            strokeWidth = 2.dp.toPx(),
-//                            cap = StrokeCap.Round
-//                        )
-//                    }
-//                }
-//            )
-//        }
-//    }
-
     val currentRoute by rememberUpdatedState(navController.currentBackStackEntryAsState().value?.destination?.route)
-
-
 
     BottomNavigation(
         backgroundColor = Color.White

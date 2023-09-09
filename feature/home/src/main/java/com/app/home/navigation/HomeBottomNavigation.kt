@@ -32,7 +32,7 @@ import com.app.home.main.recents.recentToDetails
 import com.app.home.main.recents.recentTransactions
 import com.app.home.main.trust.DepositDetails
 import com.app.home.main.trust.homeToTrustDepositDetails
-import com.app.transfer.TransferScreen
+import com.app.transfer.transfers.TransferScreen
 import com.app.transfer.signatureauth.SignAsanImza
 import com.app.transfer.signatureauth.SignAuth
 import com.app.transfer.signatureauth.SignAuthGoogle
@@ -45,8 +45,8 @@ import com.app.transfer.signatureauth.navigation.signatureAuthGoogle
 import com.app.transfer.signatureauth.navigation.signatureFailed
 import com.app.transfer.signatureauth.navigation.signatureHome
 import com.app.transfer.signatureauth.navigation.signatureSuccess
-import com.app.transfer.transfers.TransferDetailsInformation
-import com.app.transfer.transfers.transferToDetails
+import com.app.transfer.transfers.transferdetails.TransferDetailsInformation
+import com.app.transfer.transfers.transferdetails.transferToDetails
 
 
 @Composable

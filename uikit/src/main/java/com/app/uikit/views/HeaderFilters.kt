@@ -1,4 +1,4 @@
-package com.app.transfer.transfers
+package com.app.uikit.views
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -27,87 +29,83 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
-import com.app.transfer.R
-import com.app.transfer.isListEmpty
-import com.app.uikit.views.AutoResizedText
+import com.app.uikit.R
 
-//private var isSelected by mutableStateOf<TransferCountSummaryResponseItem?>(null)
+import com.app.uikit.models.UserRoles
+
+val userRole = mutableStateOf<UserRoles?>(null)
+var isHeaderSelected = mutableStateOf<TransferCountSummaryResponseItem?>(null)
+
 
 @Composable
-fun headerFilters(
+fun HeaderFilters(
     transferHeaderList: MutableList<TransferCountSummaryResponseItem>,
     onFilterClick: (String) -> Unit
 ) {
 
-    if (!isListEmpty.value) {
+    LaunchedEffect(Unit) {
+        Log.e("mmmTAG", "${userRole.value}")
+    }
 
-        LazyRow {
+    val sortedList = when (userRole.value) {
+        UserRoles.MAKER -> {
+            transferHeaderList.sortedBy { it.status }
+        }
 
-            item {
+        UserRoles.SIGNER -> {
+            transferHeaderList.sortedBy { item ->
+                when (item.status) {
+                    "PENDING_SIGNER" -> 0
+                    else -> 1
+                }
+            }
+        }
 
-                transferHeaderList.forEachIndexed { index, menu ->
+        UserRoles.APPROVER -> {
+            transferHeaderList.sortedBy { item ->
+                when (item.status) {
+                    "PENDING_APPROVER" -> 0
+                    else -> 1
+                }
+            }
+        }
 
-                    Row(
-                        Modifier.fillMaxWidth()
-                    ) {
+        else -> {
+            transferHeaderList
+        }
+    }
 
 
-                        TransferMenuItemView(menu = menu) { status ->
+    LazyRow {
 
-                            var filter = ""
+        item {
 
-                            when (status) {
-                                "For my signing" -> {
-                                    filter = "PENDING_SIGNER"
-                                }
+            sortedList.forEachIndexed { index, menu ->
 
-                                "Executed" -> {
-                                    filter = "CLOSED"
-                                }
+                Row(
+                    Modifier.fillMaxWidth()
+                ) {
 
-                                "Sign and confirmation" -> {
-                                    filter = "PENDING_ALL"
-                                }
-
-                                "Sent to the bank" -> {
-                                    filter = "BANK_SUCCESS"
-                                }
-
-                                "Not processed" -> {
-                                    filter = "BANK_ERROR"
-                                }
-
-                                "Deleted" -> {
-                                    filter = "DELETED"
-                                }
-
-                                "Rejected" -> {
-                                    filter = "BANK_REJECTED"
-                                }
-
-                                "For confirmation" -> {
-                                    filter = "PENDING_APPROVER"
-                                }
-
-                                "Expired" -> {
-                                    filter = "EXPIRED"
-                                }
-
-                                "In process" -> {
-                                    filter = "SEND_TO_BANK"
-                                }
-
-                                else -> {
-                                    filter = ""
-                                }
-                            }
-
-                            onFilterClick(filter)
+                    TransferMenuItemView(menu = menu) { status ->
+                        val filter = when (status) {
+                            "For my signing" -> "PENDING_SIGNER"
+                            "Executed" -> "CLOSED"
+                            "Sign and confirmation" -> "PENDING_ALL"
+                            "Sent to the bank" -> "BANK_SUCCESS"
+                            "Not processed" -> "BANK_ERROR"
+                            "Deleted" -> "DELETED"
+                            "Rejected" -> "BANK_REJECTED"
+                            "For my confirmation" -> "PENDING_APPROVER"
+                            "Expired" -> "EXPIRED"
+                            "In process" -> "SEND_TO_BANK"
+                            else -> ""
                         }
 
-                        Spacer(modifier = Modifier.size(width = 8.dp, height = 1.dp))
-
+                        onFilterClick(filter)
                     }
+
+                    Spacer(modifier = Modifier.size(width = 8.dp, height = 1.dp))
+
                 }
             }
         }
@@ -126,7 +124,7 @@ private fun TransferMenuItemView(
 
     when (menu.status) {
         "PENDING_SIGNER" -> {
-            status = "For signing"
+            status = "For my signing"
             color = Color(0xff268ED9)
         }
 
@@ -161,7 +159,7 @@ private fun TransferMenuItemView(
         }
 
         "PENDING_APPROVER" -> {
-            status = "For confirmation"
+            status = "For my confirmation"
             color = Color(0xFFFF5722)
         }
 
@@ -189,15 +187,14 @@ private fun TransferMenuItemView(
         modifier = Modifier
             .padding(vertical = 5.dp)
             .background(
-//                if (isSelected == menu) Color(0xFFE7EEFC) else
-                Color.White,
+                if (isHeaderSelected.value == menu) Color(0xFFE7EEFC) else Color.White,
                 shape = RoundedCornerShape(8.dp)
             ),
     ) {
         Row(
             Modifier.clickable {
                 onFilterClick(status)
-//                isSelected = menu
+                isHeaderSelected.value = menu
             },
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -237,6 +234,6 @@ private fun TransferMenuItemView(
 
 @Preview(device = Devices.PIXEL_4)
 @Composable
-fun MenuPreview() {
+private fun MenuPreview() {
 //    TransferTopMenu(transferHeaderList)
 }

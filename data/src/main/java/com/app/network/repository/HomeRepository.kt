@@ -16,6 +16,7 @@ import com.app.network.models.responseModels.GetRecentOps
 import com.app.network.models.responseModels.GetRecentOpsItem
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.GetTrusts
+import com.app.network.models.responseModels.GetUserRoles
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.SignApproveResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
@@ -124,6 +125,10 @@ class HomeRepository @Inject constructor(private val apiService: APIService) {
 
     fun getTransferPdfList(token: String, getPdfList: GetPdfList):Call<GetPdfResponse>{
         return apiService.getTransferPdfList(token, getPdfList)
+    }
+
+    fun userRoles(token: String): Call<GetUserRoles> {
+        return apiService.userRoles(token)
     }
 
     fun getTransactionDetails(token: String, ibankRef: String): Call<GetTransactionDetails> {

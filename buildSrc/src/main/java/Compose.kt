@@ -21,6 +21,8 @@ object Compose {
 
     const val compose_pager = "androidx.paging:paging-runtime:3.1.1"
     const val compose_paging = "androidx.paging:paging-compose:1.0.0-alpha16"
+    const val swipeable_card = "com.github.Amrjyniat:Swipeable-Card:1.0.0"
+    const val swipeable_cards = "me.saket.swipe:swipe:1.2.0"
 
     // const val compose_pager = "com.google.accompanist:accompanist-pager:0.23.1"
     // const val compose_foundation ="androidx.compose.foundation$foundation"

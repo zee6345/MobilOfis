@@ -2,31 +2,30 @@ package com.app.uikit.utils
 
 import android.content.Context
 import android.content.res.Resources
-
+import android.os.Environment
+import android.util.Base64
 import android.util.Log
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.BufferedReader
-
+import java.io.File
+import java.io.IOException
 import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
 import java.util.Locale
-import android.os.Environment
-import android.util.Base64
-
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 
 object Utils {
 
-    suspend fun downloadPDF(base64PDF: String, fileName: String, message:(String)->Unit): Boolean {
+    suspend fun downloadPDF(
+        base64PDF: String,
+        fileName: String,
+        message: (String) -> Unit
+    ): Boolean {
         if (base64PDF.isEmpty() || fileName.isEmpty()) {
             message("Invalid file type")
             return false // Invalid parameters

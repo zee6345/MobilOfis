@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -44,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -70,6 +67,7 @@ import com.app.uikit.utils.Utils
 import com.app.uikit.views.FilterView
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
+import me.saket.swipe.SwipeableActionsBox
 
 const val recentTransactions = "RecentTransactions"
 private val isSearchEnable = mutableStateOf(false)
@@ -92,6 +90,7 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
     val filterCurrencyList = remember { mutableListOf<String>() }
     val filterByCurrency = remember { mutableStateOf("") }
     val context = LocalContext.current
+
 
 
     LaunchedEffect(Unit) {
@@ -364,10 +363,13 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
             LazyColumn {
                 val groupedItems = recentData.groupBy { it.trn_date }
 
+
+
                 if (groupedItems.isEmpty()) {
                     item {
                         Box(
-                            Modifier.fillMaxWidth()
+                            Modifier
+                                .fillMaxWidth()
                                 .padding(20.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -377,11 +379,9 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                 } else {
 
 
-
                     groupedItems.forEach { (dateStr, itemList) ->
 
                         item {
-
 
                             val filter = itemList.filter {
                                 it.receiver_name.contains(filterBySearch.value, true)
@@ -400,8 +400,9 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
                                 }
                             }
 
-                            filter.forEach { ops ->
-                                CardsItem(ops, navController)
+
+                            filter.forEachIndexed { index, getRecentOpsItem ->
+                                CardsItems(getRecentOpsItem, navController, index)
                             }
 
                         }
@@ -470,93 +471,94 @@ fun RecentTransactions(navController: NavController, viewModel: HomeViewModel = 
 
 }
 
+
 @Composable
-private fun CardsItem(data: GetRecentOpsItem, navController: NavController) {
+private fun CardsItems(
+    data: GetRecentOpsItem,
+    navController: NavController,
+    index: Int
+) {
 
     var isCredit by remember { mutableStateOf(false) }
     isCredit = data.debit_credit_flag != "DR"
-
     val symbol = Utils.formatCurrency(data.currency_name)
 
-
-    Card(
-        modifier = Modifier
-            .padding(vertical = 4.sdp, horizontal = 8.sdp)
-            .fillMaxWidth()
-//            .clickable {
-//                recentDetail.value = data
-//                navController.navigate(recentToDetails)
-//            }
-        ,
-        elevation = 1.dp,
-//        backgroundColor = Color(0xFFF3F7FA),
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(corner = CornerSize(12.dp))
-    ) {
-
-        Row(
-            Modifier
+//    SwipeableActionsBox(endActions = listOf(mMessage)) {
+        Card(
+            modifier = Modifier
+                .padding(vertical = 4.sdp, horizontal = 8.sdp)
                 .fillMaxWidth()
-                .padding(horizontal = 15.sdp, vertical = 5.sdp),
-            verticalAlignment = Alignment.CenterVertically
         ) {
-
-            Box(
+            // Card content...
+            Row(
                 Modifier
                     .fillMaxWidth()
-                    .weight(0.7f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "${data.receiver_name}",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF203657),
-                        textAlign = TextAlign.Left,
-                    ),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(0.3f)
+                    .padding(horizontal = 15.sdp, vertical = 5.sdp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Text(
-                    if (isCredit) "-${data.amount} $symbol" else "${data.amount} $symbol",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                        fontWeight = FontWeight(600),
-                        color = if (isCredit) Color(0xFFFF4E57) else Color(0xFF203657),
-                        textAlign = TextAlign.Right,
-                    ),
-                    modifier = Modifier
-                        .padding(vertical = 5.sdp)
+                Box(
+                    Modifier
                         .fillMaxWidth()
-                )
+                        .weight(0.7f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "${data.receiver_name}",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF203657),
+                            textAlign = TextAlign.Left,
+                        ),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
-                Text(
-                    "${data.trn_time}",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        lineHeight = 16.1.sp,
-                        fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                        fontWeight = FontWeight(400),
-                        color = colorResource(R.color.grey_text),
-                        textAlign = TextAlign.Right
-                    ),
-                    modifier = Modifier
-                        .padding(vertical = 5.sdp)
+                Column(
+                    Modifier
                         .fillMaxWidth()
-                )
+                        .weight(0.3f)
+                ) {
+
+                    Text(
+                        if (isCredit) "-${data.amount} $symbol" else "${data.amount} $symbol",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(600),
+                            color = if (isCredit) Color(0xFFFF4E57) else Color(0xFF203657),
+                            textAlign = TextAlign.Right,
+                        ),
+                        modifier = Modifier
+                            .padding(vertical = 5.sdp)
+                            .fillMaxWidth()
+                    )
+
+                    Text(
+                        "${data.trn_time}",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            lineHeight = 16.1.sp,
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontWeight = FontWeight(400),
+                            color = colorResource(R.color.grey_text),
+                            textAlign = TextAlign.Right
+                        ),
+                        modifier = Modifier
+                            .padding(vertical = 5.sdp)
+                            .fillMaxWidth()
+                    )
+                }
             }
         }
-    }
+//    }
 }
+
+
+
+
+

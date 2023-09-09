@@ -6,6 +6,7 @@ data class GetRecentOpsItem(
     val account_no: String,
     val account_product: String,
     val amount: String,
+    val ibankRef:String,
     val currency_name: String,
     val debit_credit_flag: String,
     val descrption: String,

@@ -2,7 +2,6 @@ package com.app.transfer.transfers.transferdetails
 
 import android.content.Context
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -70,7 +69,6 @@ import com.app.uikit.bottomSheet.BankSignBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AuthType
 import com.app.uikit.models.SignInfo
-import com.app.uikit.utils.DownloadPDFAsyncTask
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
@@ -78,7 +76,6 @@ import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.logging.Handler
 
 
 @Composable
@@ -738,11 +735,16 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                                     Utils.downloadPDF(
                                                         fileDetails.fileBase64,
                                                         fileDetails.fileName
-                                                    ){
-                                                        android.os.Handler(Looper.getMainLooper()).post {
-                                                            Toast.makeText(context, it, Toast.LENGTH_SHORT)
-                                                                .show()
-                                                        }
+                                                    ) {
+                                                        android.os.Handler(Looper.getMainLooper())
+                                                            .post {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    it,
+                                                                    Toast.LENGTH_SHORT
+                                                                )
+                                                                    .show()
+                                                            }
                                                     }
 
 //                                                    CoroutineScope(Dispatchers.Default).launch {
@@ -796,7 +798,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                     Utils.downloadPDF(
                                         fileDetails.fileBase64,
                                         fileDetails.fileName
-                                    ){
+                                    ) {
                                         android.os.Handler(Looper.getMainLooper()).post {
                                             Toast.makeText(context, it, Toast.LENGTH_SHORT)
                                                 .show()
@@ -1002,11 +1004,15 @@ private fun PdfItem(
 
 @Composable
 private fun CardInfo5(navController: NavController) {
+    val context = LocalContext.current
 
     Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
     Button(
-        onClick = { navController.popBackStack() },
+        onClick = {
+//            navController.popBackStack()
+            (context as ComponentActivity).finish()
+                  },
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFFF3F7FA), // Change the background color here
