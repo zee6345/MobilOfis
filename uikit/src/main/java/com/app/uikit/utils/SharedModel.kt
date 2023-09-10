@@ -8,14 +8,8 @@ class SharedModel : ViewModel() {
 
     val loginType = mutableStateOf(0)
     val easyVerificationCode = mutableStateOf("")
+
     val signatureData = mutableStateOf<SignatureInfo?>(null)
-
-    //    val signInfo = mutableStateOf(SignInfo(false, AuthType.GOOGLE_AUTH))
-//    val isForSigning = mutableStateOf(false)
-
-//    val transferHeaders = mutableListOf<TransferCountSummaryResponseItem?>(null)
-
-    val isListEmpty = mutableStateOf(false)
 
 
     companion object {

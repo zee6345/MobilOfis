@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.requestModels.FileDetails
 import com.app.network.models.requestModels.GetPdfList
@@ -65,6 +66,9 @@ import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.transfer.signatureauth.Signing
+import com.app.transfer.signatureauth.auth.asanImzaSelectedIndex
+import com.app.transfer.signatureauth.auth.googleAuthSelectedIndex
+import com.app.transfer.signatureauth.auth.signAuthSelectedIndex
 import com.app.transfer.signatureauth.signingType
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
@@ -93,17 +97,23 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val detailsData by viewModel.getTransactionDetails.collectAsState()
     val pdfList by viewModel.getTransactionPdf.collectAsState()
     val detail = remember { mutableStateOf<GetTransactionDetails?>(null) }
-    val fileDetailList =
-        remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
+    val fileDetailList = remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
     val transferDetails = detail.value
 
     val context: Context = LocalContext.current
+    val coroutine = rememberCoroutineScope()
 
     //fetch item data
     val data = SharedModel.init().signatureData.value
     isSigned.value = data!!.isSignRequired
-    val ibankRef = data.transfer?.ibankRef ?: ""
-    val coroutine = rememberCoroutineScope()
+
+    val ibankRef = if (isSigned.value) {
+        data.transferList?.get(0)!!.ibankRef
+    } else {
+        data.transfer?.ibankRef.toString()
+    }
+
+    val loginType = viewModel.session.getInt(Keys.KEY_LOGIN_TYPE)
 
 
     LaunchedEffect(Unit) {
@@ -831,7 +841,45 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
             if (isSigned.value) {
                 CardInfo6(navController = navController) {
-                    signBottomSheet.value = true
+
+                    when (loginType) {
+                        0 -> {
+                            signingType.value = AuthType.SMS
+
+                            signAuthSelectedIndex.value = 1
+
+                            val intent = Intent(context, Signing::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(intent)
+                        }
+
+                        1 -> {
+                            signingType.value = AuthType.GOOGLE_AUTH
+                            googleAuthSelectedIndex.value = 1
+
+                            val intent = Intent(context, Signing::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(intent)
+                        }
+
+                        2 -> {
+                            signingType.value = AuthType.ASAN_IMZA
+                            asanImzaSelectedIndex.value = 1
+
+                            val intent = Intent(context, Signing::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(intent)
+                        }
+
+                        3 -> {
+                            //if user login with pin then show modal sheet for login again
+                            signBottomSheet.value = true
+                        }
+                    }
+
                 }
             } else {
                 CardInfo5(navController = navController)

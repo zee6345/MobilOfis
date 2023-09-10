@@ -2,6 +2,8 @@ package com.app.transfer.transfers.transferdetails
 
 
 import android.content.Context
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,13 +47,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.HISTORYDETAILS
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
+import com.app.transfer.signatureauth.Signing
+import com.app.transfer.signatureauth.auth.asanImzaSelectedIndex
+import com.app.transfer.signatureauth.auth.googleAuthSelectedIndex
+import com.app.transfer.signatureauth.auth.signAuthSelectedIndex
+import com.app.transfer.signatureauth.signingType
 import com.app.uikit.borders.dashedBorder
+import com.app.uikit.bottomSheet.BankSignBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.models.AuthType
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import ir.kaaveh.sdpcompose.sdp
@@ -66,6 +76,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     val history = remember { mutableListOf<HISTORYDETAILS>() }
     val details = remember { mutableStateOf<GetTransactionDetails?>(null) }
     val isSigned = remember { mutableStateOf(false) }
+    val signBottomSheet = remember { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
     val detailsData by viewModel.getTransactionDetails.collectAsState()
@@ -73,7 +84,14 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     //fetch item data
     val data = SharedModel.init().signatureData.value
     isSigned.value = data!!.isSignRequired
-    val ibankRef = data.transfer?.ibankRef?:""
+
+    val ibankRef = if (isSigned.value) {
+        data.transferList?.get(0)!!.ibankRef
+    } else {
+        data.transfer?.ibankRef.toString()
+    }
+
+    val loginType = viewModel.session.getInt(Keys.KEY_LOGIN_TYPE)
 
     val coroutine = rememberCoroutineScope()
 
@@ -85,7 +103,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
 
 
-    if(history.isNotEmpty()) {
+    if (history.isNotEmpty()) {
 
         LazyColumn {
 
@@ -206,20 +224,90 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
 
             item {
                 if (isSigned.value) {
-                    CardInfo6(navController = navController)
+                    CardInfo6(navController = navController) {
+                        when (loginType) {
+                            0 -> {
+                                signingType.value = AuthType.SMS
+                                signAuthSelectedIndex.value = 2
+
+                                val intent = Intent(context, Signing::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(intent)
+                            }
+
+                            1 -> {
+                                signingType.value = AuthType.GOOGLE_AUTH
+                                googleAuthSelectedIndex.value = 2
+
+                                val intent = Intent(context, Signing::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(intent)
+                            }
+
+                            2 -> {
+                                signingType.value = AuthType.ASAN_IMZA
+                                asanImzaSelectedIndex.value = 2
+
+                                val intent = Intent(context, Signing::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(intent)
+                            }
+
+                            3 -> {
+                                //if user login with pin then show modal sheet for login again
+                                signBottomSheet.value = true
+                            }
+                        }
+                    }
                 }
             }
 
 
         }
-    }
-    else {
+    } else {
         Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text(text = "No transaction history found!")
         }
+    }
+
+
+    BankSignBottomSheet(signBottomSheet) {
+        when (it) {
+            AuthType.SMS -> {
+
+                signingType.value = it
+
+                val intent = Intent(context, Signing::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }
+
+            AuthType.GOOGLE_AUTH -> {
+
+                signingType.value = it
+
+                val intent = Intent(context, Signing::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }
+
+            AuthType.ASAN_IMZA -> {
+
+                signingType.value = it
+
+                val intent = Intent(context, Signing::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }
+
+        }
+
     }
 
 
@@ -508,7 +596,9 @@ private fun CardInfo5(navController: NavController, historydetails: HISTORYDETAI
 }
 
 @Composable
-private fun CardInfo6(navController: NavController) {
+private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
+
+    val context = LocalContext.current
 
     Spacer(modifier = Modifier.size(height = 10.dp, width = 1.dp))
 
@@ -517,7 +607,9 @@ private fun CardInfo6(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = {
+                (context as ComponentActivity).finish()
+            },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFFF3F7FA),
@@ -544,7 +636,7 @@ private fun CardInfo6(navController: NavController) {
         }
 
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = { onClick() },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF203657),

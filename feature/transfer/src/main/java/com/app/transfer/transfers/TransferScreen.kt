@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -120,7 +121,6 @@ val fromMain = mutableStateOf(false)
 var startDateSelected = mutableStateOf("")
 var endDateSelected = mutableStateOf("")
 
-private val selectedItems = mutableListOf<TransferListResponseItem>()
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -132,7 +132,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-//    var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
+    val selectedItems = remember { mutableStateListOf<TransferListResponseItem>() }
 
     val coroutine = rememberCoroutineScope()
 
@@ -199,6 +199,16 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             else -> false
         }
     }
+
+    //on select callback
+    val onItemSelected: (TransferListResponseItem, Boolean) -> Unit = { selectedItem, isSelected ->
+        if (isSelected) {
+            selectedItems.add(selectedItem)
+        } else {
+            selectedItems.remove(selectedItem)
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -433,14 +443,9 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                 filter.forEach { item ->
                                     TransferListItem(
                                         transfer = item,
-                                        enableSigning = enableSigning
-                                    ) { selectedItem, isSelected ->
-                                        if (isSelected) {
-                                            selectedItems.add(selectedItem)
-                                        } else {
-                                            selectedItems.remove(selectedItem)
-                                        }
-                                    }
+                                        enableSigning = enableSigning,
+                                        onTransferSelected = onItemSelected
+                                    )
                                 }
                             }
                         }
@@ -456,7 +461,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 }
             }
 
-            if (enableSigning) {
+            if (enableSigning && transferListResponse.isNotEmpty()) {
 
                 Box(
                     Modifier.fillMaxSize(),
@@ -477,13 +482,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                 }
 
                             } else {
-                                SharedModel.init().signatureData.value =
-                                    SignatureInfo(true, null, selectedItems)
+                                SharedModel.init().signatureData.value = SignatureInfo(
+                                    isSignRequired = true,
+                                    transferList = selectedItems
+                                )
 //                                navController.navigate(transferToDetails)
                                 val intent = Intent(context, TransferDetails::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 context.startActivity(intent)
-
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -513,6 +519,8 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         }
 
     }
+
+
 
     DateBottomSheet(
         showDateBottomSheet,
@@ -773,13 +781,15 @@ private fun TransferListItem(
 
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .clickable {
                 if (enableSigning) {
                     isChecked = !isChecked
                     onTransferSelected(transfer, isChecked)
                 } else {
-                    SharedModel.init().signatureData.value = SignatureInfo(false, transfer)
+                    SharedModel.init().signatureData.value =
+                        SignatureInfo(isSignRequired = false, transfer = transfer)
 //                    navController.navigate(transferToDetails)
                     val intent = Intent(context, TransferDetails::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -792,13 +802,7 @@ private fun TransferListItem(
     ) {
 
         if (enableSigning) {
-            Box(
-//                modifier = Modifier.clickable {
-////                    isChecked = !isChecked
-////                    onTransferSelected(transfer, isChecked)
-//                }
-            ) {
-
+            Box {
                 val icon =
                     if (isChecked) painterResource(id = R.drawable.ic_checkbox_check) else painterResource(
                         id = R.drawable.ic_checkbox_uncheck
@@ -820,8 +824,7 @@ private fun TransferListItem(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 5.sdp)
-                ,
+                .padding(vertical = 5.sdp),
             backgroundColor = Color.White
         ) {
             Column(

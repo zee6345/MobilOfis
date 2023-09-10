@@ -15,7 +15,6 @@ val signingType = mutableStateOf(AuthType.SMS)
 fun SigningHome(navController: NavController) {
 
 
-
     when (signingType.value) {
         AuthType.SMS -> {
             navController.navigate(signatureAuth)

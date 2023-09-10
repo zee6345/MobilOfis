@@ -1,4 +1,4 @@
-package com.app.transfer.signatureauth
+package com.app.transfer.signatureauth.auth
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
@@ -60,25 +60,18 @@ import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.errorResponse.ErrorResponse
-import com.app.network.models.requestModels.FileDescriptor
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
-import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
-import com.app.network.models.responseModels.transferModels.TransferListResponseItem
 import com.app.network.utils.Message
 import com.app.network.viewmodel.HomeViewModel
 import com.app.network.viewmodel.LoginViewModel
 import com.app.transfer.R
 import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.uikit.borders.CurvedBottomBox
-import com.app.uikit.bottomSheet.ForgetPasswordModalBottomSheet
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
-import com.app.uikit.models.AuthType
-import com.app.uikit.models.SignInfo
-import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.BackHandler
 import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
@@ -86,20 +79,17 @@ import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
+var signAuthSelectedIndex = mutableStateOf(0)
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @SuppressLint("RememberReturnType")
 @Composable
-fun SignAuthGoogle(
-    navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel(),
-    homeModel: HomeViewModel = hiltViewModel()
-) {
+fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewModel(), homeModel: HomeViewModel = hiltViewModel()) {
 
-    var selected by remember { mutableStateOf(0) }
+//    var selected by remember { mutableStateOf(0) }
 
 //    val signInfo = SharedModel.init().signInfo
-
-    val transfer = remember { mutableStateOf<TransferListResponseItem?>(null) }
     val index0 = remember { mutableStateOf(true) }
     val index1 = remember { mutableStateOf(false) }
     val index2 = remember { mutableStateOf(false) }
@@ -107,17 +97,15 @@ fun SignAuthGoogle(
     val paswdState = remember { mutableStateOf("") }
     val showForgetPassBottomSheetSheet = rememberSaveable { mutableStateOf(false) }
     var isPswdVisible by remember { mutableStateOf(false) }
-    val otpCount = remember { mutableStateOf(6) }
+    val otpCount = remember { mutableStateOf(5) }
     val coroutine = rememberCoroutineScope()
-    val isLoading = remember { mutableStateOf(false) }
     val otpValue = remember { mutableStateOf("") }
     var otp by remember { mutableStateOf("") }
-
+    var usernameForOtp by remember { mutableStateOf("") }
     var userErrorCheck by remember { mutableStateOf(false) }
     var pswdErrorCheck by remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf(false) }
 
-
-    var usernameForOtp by remember { mutableStateOf("") }
     val context = LocalContext.current
     val passwordVisualTransformation =
         if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
@@ -127,22 +115,29 @@ fun SignAuthGoogle(
     val signOrApprove by homeModel.getSignOrApprove.collectAsState()
     val transactionStatus by homeModel.getTransactionStatus.collectAsState()
 
-//    val isForSigning = SharedModel.init().isForSigning.value
-
-
-    val data = SharedModel.init().signatureData.value
-    data?.let {
-        it.transfer?.let { obj ->
-            transfer.value = obj
-        }
-    }
-
     BackHandler(true) {
 
         (context as ComponentActivity).finish()
 
     }
 
+
+    when (signAuthSelectedIndex.value) {
+        0 -> {
+            index0.value = true
+        }
+
+        1 -> {
+            index0.value = true
+            index1.value = true
+        }
+
+        2 -> {
+            index0.value = true
+            index1.value = true
+            index2.value = true
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -185,7 +180,7 @@ fun SignAuthGoogle(
 
                     Text(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        text = "Access with Google Auth",
+                        text = "Access by SMS",
                         style = TextStyle(color = Color.White, fontSize = 26.sp)
                     )
                 }
@@ -256,11 +251,10 @@ fun SignAuthGoogle(
                 }
 
 
-                when (selected) {
+                when (signAuthSelectedIndex.value) {
                     0 -> {
 
                         //todo:: LOGIN
-
                         Column {
 
                             OutlinedTextField(
@@ -355,6 +349,8 @@ fun SignAuthGoogle(
 
                             Button(
                                 onClick = {
+                                    //                                index1.value = true
+                                    //                                selected = 1
 
                                     if (usernameState.value.isNotEmpty()) {
                                         userErrorCheck = false
@@ -366,7 +362,7 @@ fun SignAuthGoogle(
                                                 LoginRequest(
                                                     userName = usernameState.value,
                                                     password = paswdState.value,
-                                                    authType = "TOTP",
+                                                    authType = "OTP",
                                                     channel = "MOBILE"
                                                 )
                                             )
@@ -377,6 +373,7 @@ fun SignAuthGoogle(
                                     } else {
                                         userErrorCheck = !userErrorCheck
                                     }
+
 
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),// Optional: To override other button colors
@@ -455,11 +452,6 @@ fun SignAuthGoogle(
                                     androidx.compose.material.Button(
                                         onClick = {
 
-//                                            SharedModel.init().signInfo.value =
-//                                                SignInfo(false, AuthType.SMS)
-
-                                            (context as ComponentActivity).finish()
-
                                         },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = androidx.compose.material.ButtonDefaults.buttonColors(
@@ -497,6 +489,7 @@ fun SignAuthGoogle(
                                                                     channel = "INT",
                                                                 )
                                                             )
+
 
                                                             otp = otpValue.value
 
@@ -540,7 +533,7 @@ fun SignAuthGoogle(
                                             .weight(1f)
                                     ) {
                                         androidx.compose.material.Text(
-                                            "Continue",
+                                            "Next",
                                             modifier = Modifier.padding(vertical = 6.dp),
                                             style = TextStyle(
                                                 color = Color.White, fontSize = 17.sp, shadow = null
@@ -551,6 +544,7 @@ fun SignAuthGoogle(
                             }
 
                         }
+
                     }
 
                     2 -> {
@@ -648,7 +642,7 @@ fun SignAuthGoogle(
                                                         } else {
                                                             Message.showMessage(
                                                                 context,
-                                                                "OTP must be 6 digit.."
+                                                                "OTP must be 5 digit.."
                                                             )
                                                         }
 
@@ -663,7 +657,7 @@ fun SignAuthGoogle(
                                                 } else {
                                                     Message.showMessage(
                                                         context,
-                                                        "OTP must be 6 digit.."
+                                                        "OTP must be 5 digit.."
                                                     )
                                                 }
 
@@ -684,7 +678,7 @@ fun SignAuthGoogle(
                                             .weight(1f)
                                     ) {
                                         androidx.compose.material.Text(
-                                            "Confirm",
+                                            "Next",
                                             modifier = Modifier.padding(vertical = 6.dp),
                                             style = TextStyle(
                                                 color = Color.White, fontSize = 17.sp, shadow = null
@@ -706,7 +700,6 @@ fun SignAuthGoogle(
 
     }
 
-
     //show empty field toast
     if (userErrorCheck or pswdErrorCheck) {
         RoundedCornerToast("Please fill in all fields", Toast.LENGTH_SHORT, context)
@@ -719,10 +712,9 @@ fun SignAuthGoogle(
 
     }
 
-    ForgetPasswordModalBottomSheet(showForgetPassBottomSheetSheet)
 
     /**
-     * handle response data
+     * handle login response data
      */
 
     loginData?.let {
@@ -749,6 +741,7 @@ fun SignAuthGoogle(
                             Message.showMessage(context, "Wrong username or password!")
                         }
 
+
                     }
                 }
             }
@@ -765,7 +758,7 @@ fun SignAuthGoogle(
                     LaunchedEffect(Unit) {
                         //route to OTP
                         index1.value = true
-                        selected = 1
+                        signAuthSelectedIndex.value = 1
 
                     }
 
@@ -788,7 +781,6 @@ fun SignAuthGoogle(
             }
 
             is DataState.Error -> {
-                isLoading.value = false
 
                 //on error remove keys
                 viewModel.session.delete(Keys.KEY_TOKEN)
@@ -807,15 +799,13 @@ fun SignAuthGoogle(
                     val strJson = Converter.toJson(loginVerifyResponse)
                     viewModel.session.put(Keys.KEY_USER_DETAILS, strJson)
 
-                    //sign API
-//                    LaunchedEffect(Unit) {
-//                        homeModel.signOrApprove(
-//                            SignApproveRequest(
-//                                listOf(FileDescriptor("${transfer.value!!.ibankRef}")),
-//                                if (isForSigning) "SIGN" else "APPROVE"
-//                            )
-//                        )
-//                    }
+                    //route to OTP
+                    LaunchedEffect(Unit) {
+
+                        index2.value = true
+                        signAuthSelectedIndex.value = 2
+
+                    }
 
                 }
             }
@@ -843,7 +833,7 @@ fun SignAuthGoogle(
 
                 LaunchedEffect(Unit) {
                     index2.value = true
-                    selected = 2
+                    signAuthSelectedIndex.value = 2
 
                 }
 
@@ -869,14 +859,9 @@ fun SignAuthGoogle(
             is DataState.Success -> {
                 isLoading.value = false
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(Unit){
                     navController.navigate(signatureSuccess)
                 }
-
-//                LaunchedEffect(Unit) {
-//                    index2.value = true
-//                    selected = 2
-//                }
 
             }
         }
@@ -886,6 +871,6 @@ fun SignAuthGoogle(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSignAuthGoogle() {
-    SignAuthGoogle(navController = rememberNavController())
+fun PreviewSignAuth() {
+    SignAuth(navController = rememberNavController())
 }

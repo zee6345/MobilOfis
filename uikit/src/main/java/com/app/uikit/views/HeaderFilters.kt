@@ -47,13 +47,28 @@ fun HeaderFilters(
         Log.e("mmmTAG", "${userRole.value}")
     }
 
-    val sortedList = when (userRole.value) {
-        UserRoles.MAKER -> {
-            transferHeaderList.sortedBy { it.status }
+
+    val filteredList = when (userRole.value) {
+        UserRoles.APPROVER -> {
+            transferHeaderList.filter { it.status != "PENDING_SIGNER" }
         }
 
         UserRoles.SIGNER -> {
-            transferHeaderList.sortedBy { item ->
+            transferHeaderList.filter { it.status != "PENDING_APPROVER" }
+        }
+
+        else -> {
+            transferHeaderList
+        }
+    }
+
+    val sortedList = when (userRole.value) {
+        UserRoles.MAKER -> {
+            filteredList.sortedBy { it.status }
+        }
+
+        UserRoles.SIGNER -> {
+            filteredList.sortedBy { item ->
                 when (item.status) {
                     "PENDING_SIGNER" -> 0
                     else -> 1
@@ -62,7 +77,7 @@ fun HeaderFilters(
         }
 
         UserRoles.APPROVER -> {
-            transferHeaderList.sortedBy { item ->
+            filteredList.sortedBy { item ->
                 when (item.status) {
                     "PENDING_APPROVER" -> 0
                     else -> 1

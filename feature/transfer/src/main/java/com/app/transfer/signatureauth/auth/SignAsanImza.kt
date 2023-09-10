@@ -1,4 +1,4 @@
-package com.app.transfer.signatureauth
+package com.app.transfer.signatureauth.auth
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
@@ -87,6 +87,8 @@ import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+var asanImzaSelectedIndex = mutableStateOf(0)
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @SuppressLint("RememberReturnType")
 @Composable
@@ -96,7 +98,7 @@ fun SignAsanImza(
     homeModel: HomeViewModel = hiltViewModel()
 ) {
 
-    var selected by remember { mutableStateOf(0) }
+//    var selected by remember { mutableStateOf(0) }
 
 //    val signInfo = SharedModel.init().signInfo
     val index0 = remember { mutableStateOf(true) }
@@ -130,6 +132,23 @@ fun SignAsanImza(
 
         (context as ComponentActivity).finish()
 
+    }
+
+    when (asanImzaSelectedIndex.value) {
+        0 -> {
+            index0.value = true
+        }
+
+        1 -> {
+            index0.value = true
+            index1.value = true
+        }
+
+        2 -> {
+            index0.value = true
+            index1.value = true
+            index2.value = true
+        }
     }
 
     Column(
@@ -244,7 +263,7 @@ fun SignAsanImza(
                 }
 
 
-                if (selected == 0) {
+                if (asanImzaSelectedIndex.value == 0) {
 
                     //todo:: LOGIN
 
@@ -380,7 +399,7 @@ fun SignAsanImza(
 
                     }
 
-                } else if (selected == 1) {
+                } else if (asanImzaSelectedIndex.value == 1) {
                     //todo:: ASAN service
 
                     Column {
@@ -463,7 +482,7 @@ fun SignAsanImza(
 
                     }
 
-                } else if (selected == 2) {
+                } else if (asanImzaSelectedIndex.value == 2) {
                     LaunchedEffect(Unit){
                         homeModel.transactionStatus(easyCode.value.toInt())
                     }
@@ -601,7 +620,7 @@ fun SignAsanImza(
 
 
                     LaunchedEffect(Unit) {
-                        selected = 1
+                        asanImzaSelectedIndex.value = 1
                         index1.value = true
 
 
@@ -646,7 +665,7 @@ fun SignAsanImza(
 
                 LaunchedEffect(Unit) {
                     index2.value = true
-                    selected = 2
+                    asanImzaSelectedIndex.value = 2
 
                 }
 

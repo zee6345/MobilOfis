@@ -1,4 +1,4 @@
-package com.app.transfer.signatureauth
+package com.app.transfer.signatureauth.message
 
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
@@ -44,10 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.transfer.R
+import com.app.transfer.signatureauth.signingType
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.models.AuthType
-import com.app.uikit.models.SignInfo
-import com.app.uikit.utils.SharedModel
 import ir.kaaveh.sdpcompose.sdp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)

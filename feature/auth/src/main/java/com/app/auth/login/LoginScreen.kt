@@ -130,7 +130,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
 
     val context = LocalContext.current
     val enableLoginWithPin = viewModel.session.getBoolean(Keys.KEY_ENABLE_PIN_LOGIN)
-    val passwordVisualTransformation = if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordVisualTransformation =
+        if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     val loginData by viewModel.data.collectAsState()
     val asanLogin by viewModel.asanLogin.collectAsState()
@@ -553,6 +554,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                         ) {
                             Row(
                                 Modifier.clickable {
+
+                                    //store login type
+                                    viewModel.session.put(Keys.KEY_LOGIN_TYPE, 3)
+
                                     navController.navigate(welcomePinScreen) {
                                         popUpTo(navController.graph.id) {
                                             inclusive = true
@@ -583,9 +588,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     ForgetPasswordModalBottomSheet(showForgetPassBottomSheetSheet)
 
 
-
-
-
     /**
      * handle login response data
      */
@@ -603,10 +605,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
                 errorMessage?.let { error ->
                     if (error.code.equals("ERROR.FREE_TEXT", true)) {
-
-//                        LaunchedEffect(error.code) {
-//                            showMessage(context, "Wrong username or password!")
-//                        }
 
                         errorsMessage = "Wrong username or password!"
                         showError = true
@@ -652,10 +650,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
                 errorMessage?.let { error ->
                     if (error.code.equals("ERROR.FREE_TEXT", true)) {
-//                        LaunchedEffect(error.code) {
-//                            showMessage(context, "Wrong username or password!")
-//                        }
-
                         errorsMessage = "Wrong username or password!"
                         showError = true
                     }

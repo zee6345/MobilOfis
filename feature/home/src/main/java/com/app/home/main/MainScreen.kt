@@ -149,7 +149,7 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     customerName.value = userDetails.customerName
     viewModel.session.put("customer", customerName.value)
 
-    handleUserRoles(userDetails)
+    handleUserRoles(userDetails.role)
 
     //search params
     handleSearchParams()
@@ -944,7 +944,11 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                     customerName.value = this.customerName
                     viewModel.session.put("customer", this.customerName)
 
+
                     LaunchedEffect(Unit) {
+
+                        handleUserRoles(role)
+
 
                         //main
                         viewModel.getBalance(userDetails.customerNo)
@@ -1088,8 +1092,8 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
 }
 
-private fun handleUserRoles(userDetails: LoginVerifyResponse) {
-    when (userDetails.role) {
+private fun handleUserRoles(role:Int) {
+    when (role) {
         1 -> {
             userRole.value = UserRoles.MAKER
         }

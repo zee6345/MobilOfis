@@ -256,9 +256,12 @@ fun OtpScreen(
                                 .padding(5.dp)
                                 .clickable {
                                     if (!isTimerStarted.value) {
-                                        coroutine.launch {
-                                            Message.showMessage(context, "OTP send again!")
-                                        }
+
+                                        showError = true
+                                        errorMessage = "OTP send again!"
+//                                        coroutine.launch {
+//                                            Message.showMessage(context, "OTP send again!")
+//                                        }
                                     }
                                 },
                             text = stringResource(R.string.re_send_sms_code),
@@ -329,11 +332,15 @@ fun OtpScreen(
 
 
                                 } else {
-                                    Message.showMessage(context, "OTP must be 6 digit..")
+                                    showError = true
+                                    errorMessage = "OTP must be 6 digit.."
+//                                    Message.showMessage(context, "OTP must be 6 digit..")
                                 }
 
                             } else {
-                                Message.showMessage(context, "Please add your OTP..")
+                                showError = true
+                                errorMessage = "Please add your OTP.."
+//                                Message.showMessage(context, "Please add your OTP..")
                             }
                         },
                         shape = RoundedCornerShape(8.dp),
