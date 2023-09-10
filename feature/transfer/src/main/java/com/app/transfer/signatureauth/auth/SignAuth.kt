@@ -45,6 +45,7 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,8 +61,10 @@ import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.errorResponse.ErrorResponse
+import com.app.network.models.requestModels.FileDescriptor
 import com.app.network.models.requestModels.LoginRequest
 import com.app.network.models.requestModels.LoginVerificationRequest
+import com.app.network.models.requestModels.SignApproveRequest
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.utils.Message
@@ -72,9 +75,11 @@ import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
+import com.app.uikit.utils.SharedModel
 import com.app.uikit.views.BackHandler
 import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
+import com.app.uikit.views.TimerTextsView20S
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -115,6 +120,21 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
     val signOrApprove by homeModel.getSignOrApprove.collectAsState()
     val transactionStatus by homeModel.getTransactionStatus.collectAsState()
 
+    val isTimerStarted = remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    val isSigned = remember { mutableStateOf(false) }
+
+
+    val data = SharedModel.init().signatureData.value
+    isSigned.value = data!!.isSignRequired
+
+    val ibanList = remember { mutableListOf<FileDescriptor>() }
+    data.transferList?.forEachIndexed { index, transferListResponseItem ->
+        ibanList.add(FileDescriptor(transferListResponseItem.ibankRef))
+    }
+
     BackHandler(true) {
 
         (context as ComponentActivity).finish()
@@ -125,11 +145,14 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
     when (signAuthSelectedIndex.value) {
         0 -> {
             index0.value = true
+            index1.value = false
+            index2.value = false
         }
 
         1 -> {
             index0.value = true
             index1.value = true
+            index2.value = false
         }
 
         2 -> {
@@ -409,6 +432,7 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                         .padding(horizontal = 22.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
+
                                     Box(
                                         modifier = Modifier
                                             .clip(
@@ -419,7 +443,12 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                             )
                                     ) {
 
-                                        CountdownTimer(otpValue.value)
+//                            CountdownTimerSeconds(otpValue.value)
+                                        TimerTextsView20S(onTimerStart = {
+                                            isTimerStarted.value = true
+                                        }, onTimerStop = {
+                                            isTimerStarted.value = false
+                                        })
 
                                     }
 
@@ -427,13 +456,20 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                         modifier = Modifier
                                             .padding(5.dp)
                                             .clickable {
-                                                coroutine.launch {
-                                                    Message.showMessage(context, "OTP send again!")
+                                                if (!isTimerStarted.value) {
+
+                                                    showError = true
+                                                    errorMessage = "OTP send again!"
+
                                                 }
                                             },
-                                        text = "Re-send SMS code"
+                                        text = "Re-send SMS code",
+                                        style = TextStyle(
+                                            color = if (!isTimerStarted.value) Color(0xFF203657) else Color(
+                                                0xFF859DB5
+                                            )
+                                        )
                                     )
-
                                 }
                             }
 
@@ -451,7 +487,7 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                 ) {
                                     androidx.compose.material.Button(
                                         onClick = {
-
+                                            (context as ComponentActivity).finish()
                                         },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = androidx.compose.material.ButtonDefaults.buttonColors(
@@ -478,49 +514,26 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                                 if (otpValue.value.length == otpCount.value) {
 
 
-                                                    if (otpValue.value.isNotEmpty()) {
-                                                        if (otpValue.value.length == otpCount.value) {
-
-
-                                                            viewModel.loginAuthVerification(
-                                                                LoginVerificationRequest(
-                                                                    userName = usernameForOtp,
-                                                                    verfication = otpValue.value.toInt(),
-                                                                    channel = "INT",
-                                                                )
-                                                            )
-
-
-                                                            otp = otpValue.value
-
-
-                                                        } else {
-                                                            Message.showMessage(
-                                                                context,
-                                                                "OTP must be 6 digit.."
-                                                            )
-                                                        }
-
-                                                    } else {
-                                                        Message.showMessage(
-                                                            context,
-                                                            "Please add your OTP.."
+                                                    viewModel.loginAuthVerification(
+                                                        LoginVerificationRequest(
+                                                            userName = usernameForOtp,
+                                                            verfication = otpValue.value.toInt(),
+                                                            channel = "INT",
                                                         )
-                                                    }
+                                                    )
+
+
+                                                    otp = otpValue.value
 
 
                                                 } else {
-                                                    Message.showMessage(
-                                                        context,
-                                                        "OTP must be 6 digit.."
-                                                    )
+                                                    showError = true
+                                                    errorMessage = "OTP must be 5 digit.."
                                                 }
 
                                             } else {
-                                                Message.showMessage(
-                                                    context,
-                                                    "Please add your OTP.."
-                                                )
+                                                showError = true
+                                                errorMessage = "Please add your OTP.."
                                             }
                                         },
                                         shape = RoundedCornerShape(8.dp),
@@ -556,6 +569,41 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                     otpValue.value = it
                                 }
 
+//                                Row(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .padding(top = 5.dp, bottom = 17.dp)
+//                                        .padding(horizontal = 22.dp),
+//                                    horizontalArrangement = Arrangement.SpaceBetween,
+//                                ) {
+//                                    Box(
+//                                        modifier = Modifier
+//                                            .clip(
+//                                                shape = RoundedCornerShape(15.dp),
+//                                            )
+//                                            .background(
+//                                                color = Color(0xFFE7F0F9),
+//                                            )
+//                                    ) {
+//
+//                                        CountdownTimer(otpValue.value)
+//
+//                                    }
+//
+//                                    androidx.compose.material.Text(
+//                                        modifier = Modifier
+//                                            .padding(5.dp)
+//                                            .clickable {
+//                                                coroutine.launch {
+//                                                    Message.showMessage(context, "OTP send again!")
+//                                                }
+//                                            },
+//                                        text = "Re-send SMS code"
+//                                    )
+//
+//                                }
+
+
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -563,6 +611,7 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                         .padding(horizontal = 22.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
+
                                     Box(
                                         modifier = Modifier
                                             .clip(
@@ -573,7 +622,12 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                             )
                                     ) {
 
-                                        CountdownTimer(otpValue.value)
+//                            CountdownTimerSeconds(otpValue.value)
+                                        TimerTextsView20S(onTimerStart = {
+                                            isTimerStarted.value = true
+                                        }, onTimerStop = {
+                                            isTimerStarted.value = false
+                                        })
 
                                     }
 
@@ -581,13 +635,20 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                         modifier = Modifier
                                             .padding(5.dp)
                                             .clickable {
-                                                coroutine.launch {
-                                                    Message.showMessage(context, "OTP send again!")
+                                                if (!isTimerStarted.value) {
+
+                                                    showError = true
+                                                    errorMessage = "OTP send again!"
+
                                                 }
                                             },
-                                        text = "Re-send SMS code"
+                                        text = "Re-send SMS code",
+                                        style = TextStyle(
+                                            color = if (!isTimerStarted.value) Color(0xFF203657) else Color(
+                                                0xFF859DB5
+                                            )
+                                        )
                                     )
-
                                 }
                             }
 
@@ -605,7 +666,7 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                 ) {
                                     androidx.compose.material.Button(
                                         onClick = {
-
+                                            (context as ComponentActivity).finish()
                                         },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = androidx.compose.material.ButtonDefaults.buttonColors(
@@ -632,40 +693,25 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                                                 if (otpValue.value.length == otpCount.value) {
 
 
-                                                    if (otpValue.value.isNotEmpty()) {
-                                                        if (otpValue.value.length == otpCount.value) {
-
-
-                                                            homeModel.transactionStatus(otpValue.value.toInt())
-
-
-                                                        } else {
-                                                            Message.showMessage(
-                                                                context,
-                                                                "OTP must be 5 digit.."
-                                                            )
-                                                        }
-
-                                                    } else {
-                                                        Message.showMessage(
-                                                            context,
-                                                            "Please add your OTP.."
+                                                    homeModel.signOrApprove(
+                                                        SignApproveRequest(
+                                                            ibanList,
+                                                            if (isSigned.value) "SIGN" else "APPROVE"
                                                         )
-                                                    }
+                                                    )
+//                                                            homeModel.transactionStatus(otpValue.value.toInt())
 
 
                                                 } else {
-                                                    Message.showMessage(
-                                                        context,
-                                                        "OTP must be 5 digit.."
-                                                    )
+                                                    showError = true
+                                                    errorMessage = "OTP must be 5 digit.."
+
                                                 }
 
                                             } else {
-                                                Message.showMessage(
-                                                    context,
-                                                    "Please add your OTP.."
-                                                )
+                                                showError = true
+                                                errorMessage = "Please add your OTP.."
+
                                             }
                                         },
                                         shape = RoundedCornerShape(8.dp),
@@ -722,26 +768,17 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
             is DataState.Loading -> {
 
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
 
-                }
             }
 
             is DataState.Error -> {
                 isLoading.value = false
 
-                val errorMessage =
-                    Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
-                errorMessage?.let { error ->
+                val errorResponse = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                errorResponse?.let { error ->
                     if (error.code.equals("ERROR.FREE_TEXT", true)) {
-
-                        LaunchedEffect(error.code) {
-                            Message.showMessage(context, "Wrong username or password!")
-                        }
-
-
+                        showError = true
+                        errorMessage = "Wrong username or password!"
                     }
                 }
             }
@@ -755,7 +792,7 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
 
                     usernameForOtp = usernameState.value
 
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(it) {
                         //route to OTP
                         index1.value = true
                         signAuthSelectedIndex.value = 1
@@ -773,19 +810,28 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
-
-                }
             }
 
             is DataState.Error -> {
 
-                //on error remove keys
-                viewModel.session.delete(Keys.KEY_TOKEN)
+                val errorResponse = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                if (errorResponse.code.equals("ERROR.TOTP_2FA_VERIFICATION_NOT_MATCH", true)) {
+                    errorMessage = "Incorrect Google Authenticator Code"
+                    showError = true
+                } else if (errorResponse.code.equals("ERROR.INVALID_TOKEN", true)) {
+                    errorMessage = "Invalid token!"
+                    showError = true
 
-                Message.showMessage(context, "Failed to verify user!")
+                    LaunchedEffect(it) {
+
+                        signAuthSelectedIndex.value = 0
+
+                    }
+
+
+                } else {
+
+                }
 
             }
 
@@ -799,13 +845,24 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                     val strJson = Converter.toJson(loginVerifyResponse)
                     viewModel.session.put(Keys.KEY_USER_DETAILS, strJson)
 
-                    //route to OTP
-                    LaunchedEffect(Unit) {
+                    //sign API
+                    LaunchedEffect(it) {
+                        homeModel.signOrApprove(
+                            SignApproveRequest(
+                                ibanList,
+                                if (isSigned.value) "SIGN" else "APPROVE"
 
-                        index2.value = true
-                        signAuthSelectedIndex.value = 2
-
+                            )
+                        )
                     }
+
+//                    //route to OTP
+//                    LaunchedEffect(it) {
+//
+//                        index2.value = true
+//                        signAuthSelectedIndex.value = 2
+//
+//                    }
 
                 }
             }
@@ -816,11 +873,6 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
-
-                }
             }
 
             is DataState.Error -> {
@@ -831,10 +883,11 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
                 isLoading.value = false
 
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(it) {
                     index2.value = true
                     signAuthSelectedIndex.value = 2
 
+                    homeModel.transactionStatus(otpValue.value.toInt())
                 }
 
             }
@@ -845,11 +898,6 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
         when (it) {
             is DataState.Loading -> {
                 isLoading.value = true
-                if (isLoading.value) {
-                    ShowProgressDialog(isLoading)
-                } else {
-
-                }
             }
 
             is DataState.Error -> {
@@ -859,11 +907,24 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
             is DataState.Success -> {
                 isLoading.value = false
 
-                LaunchedEffect(Unit){
+                LaunchedEffect(it){
                     navController.navigate(signatureSuccess)
                 }
 
             }
+        }
+    }
+
+    if (isLoading.value) {
+        ShowProgressDialog(isLoading)
+    }
+
+    if (showError) {
+        RoundedCornerToast(errorMessage, Toast.LENGTH_SHORT, context)
+
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showError = false
         }
     }
 

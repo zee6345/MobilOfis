@@ -472,14 +472,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         onClick = {
                             if (sendToBank.value) {
 
-                                coroutine.launch {
+//                                coroutine.launch {
 //                                    viewModel.sendToBankAPI(
 //                                        SendToBankModel(
-//                                            listOf(FileDescriptor("${selectedItems!!.ibankRef}")),
+//                                            listOf(FileDescriptor("${selectedItems.}")),
 //                                            ""
 //                                        )
 //                                    )
-                                }
+//                                }
 
                             } else {
                                 SharedModel.init().signatureData.value = SignatureInfo(

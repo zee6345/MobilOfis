@@ -230,30 +230,21 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
                                 signingType.value = AuthType.SMS
                                 signAuthSelectedIndex.value = 2
 
-                                val intent = Intent(context, Signing::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                context.startActivity(intent)
+                                initSign(context = context)
                             }
 
                             1 -> {
                                 signingType.value = AuthType.GOOGLE_AUTH
                                 googleAuthSelectedIndex.value = 2
 
-                                val intent = Intent(context, Signing::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                context.startActivity(intent)
+                                initSign(context = context)
                             }
 
                             2 -> {
                                 signingType.value = AuthType.ASAN_IMZA
                                 asanImzaSelectedIndex.value = 2
 
-                                val intent = Intent(context, Signing::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                context.startActivity(intent)
+                                initSign(context = context)
                             }
 
                             3 -> {
@@ -280,30 +271,24 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     BankSignBottomSheet(signBottomSheet) {
         when (it) {
             AuthType.SMS -> {
-
                 signingType.value = it
+                signAuthSelectedIndex.value = 0
 
-                val intent = Intent(context, Signing::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                initSign(context)
             }
 
             AuthType.GOOGLE_AUTH -> {
-
                 signingType.value = it
+                googleAuthSelectedIndex.value = 0
 
-                val intent = Intent(context, Signing::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                initSign(context)
             }
 
             AuthType.ASAN_IMZA -> {
-
                 signingType.value = it
+                asanImzaSelectedIndex.value = 0
 
-                val intent = Intent(context, Signing::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                initSign(context)
             }
 
         }
@@ -667,3 +652,12 @@ private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
 
 }
 
+
+private fun initSign(context: Context){
+    val intent = Intent(context, Signing::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    context.startActivity(intent)
+
+    (context as ComponentActivity).finish()
+}

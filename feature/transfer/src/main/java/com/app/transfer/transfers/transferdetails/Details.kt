@@ -97,7 +97,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     val detailsData by viewModel.getTransactionDetails.collectAsState()
     val pdfList by viewModel.getTransactionPdf.collectAsState()
     val detail = remember { mutableStateOf<GetTransactionDetails?>(null) }
-    val fileDetailList = remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
+    val fileDetailList =
+        remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
     val transferDetails = detail.value
 
     val context: Context = LocalContext.current
@@ -754,30 +755,9 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                                                     context,
                                                                     it,
                                                                     Toast.LENGTH_SHORT
-                                                                )
-                                                                    .show()
+                                                                ).show()
                                                             }
                                                     }
-
-//                                                    CoroutineScope(Dispatchers.Default).launch {
-//
-//                                                        val message = if (check) {
-//                                                            "File saved to Downloads!"
-//                                                        } else {
-//                                                            "Failed to save file!"
-//                                                        }
-//
-//                                                        android.os.Handler(Looper.getMainLooper())
-//                                                            .post {
-//                                                                Toast.makeText(
-//                                                                    context,
-//                                                                    message,
-//                                                                    Toast.LENGTH_SHORT
-//                                                                ).show()
-//                                                            }
-//
-//                                                    }
-
                                                 }
                                             }
                                         }
@@ -803,9 +783,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     fileDetailList.forEachIndexed { index, fileDetails ->
                         item {
                             PdfItem(fileDetails) {
-//                                val task = DownloadPDFAsyncTask()
-//                                task.execute(fileDetails.fileBase64, fileDetails.fileName)
-
                                 CoroutineScope(Dispatchers.IO).launch {
                                     Utils.downloadPDF(
                                         fileDetails.fileBase64,
@@ -816,19 +793,6 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                                 .show()
                                         }
                                     }
-
-//                                    CoroutineScope(Dispatchers.Default).launch {
-//
-//                                        val message = if (check) {
-//                                            "File saved to Downloads!"
-//                                        } else {
-//                                            "Failed to save file!"
-//                                        }
-//
-//
-//
-//                                    }
-
                                 }
 
                             }
@@ -845,33 +809,23 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                     when (loginType) {
                         0 -> {
                             signingType.value = AuthType.SMS
+                            signAuthSelectedIndex.value = 2
 
-                            signAuthSelectedIndex.value = 1
-
-                            val intent = Intent(context, Signing::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(intent)
+                            initSign(context)
                         }
 
                         1 -> {
                             signingType.value = AuthType.GOOGLE_AUTH
-                            googleAuthSelectedIndex.value = 1
+                            googleAuthSelectedIndex.value = 2
 
-                            val intent = Intent(context, Signing::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(intent)
+                            initSign(context)
                         }
 
                         2 -> {
                             signingType.value = AuthType.ASAN_IMZA
-                            asanImzaSelectedIndex.value = 1
+                            asanImzaSelectedIndex.value = 2
 
-                            val intent = Intent(context, Signing::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(intent)
+                            initSign(context)
                         }
 
                         3 -> {
@@ -954,28 +908,25 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
             AuthType.SMS -> {
 
                 signingType.value = it
+                signAuthSelectedIndex.value = 0
 
-                val intent = Intent(context, Signing::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                initSign(context)
             }
 
             AuthType.GOOGLE_AUTH -> {
 
                 signingType.value = it
+                googleAuthSelectedIndex.value = 0
 
-                val intent = Intent(context, Signing::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                initSign(context)
             }
 
             AuthType.ASAN_IMZA -> {
 
                 signingType.value = it
+                asanImzaSelectedIndex.value = 0
 
-                val intent = Intent(context, Signing::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                initSign(context)
             }
 
         }
@@ -1046,21 +997,6 @@ private fun PdfItem(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
-
-//            Text(
-//                text =  fileDetails.fileName.split(".")[1] ?: "-",
-//                style = TextStyle(
-//                    fontSize = 12.sp,
-//                    lineHeight = 14.sp,
-//                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-//                    fontWeight = FontWeight(500),
-//                    color = Color(0xFFAEAFC9),
-//                    textAlign = TextAlign.Center
-//                ),
-//                modifier = Modifier.width(100.dp),
-//                overflow = TextOverflow.Ellipsis,
-//                maxLines = 1
-//            )
         }
 
     }
@@ -1175,6 +1111,14 @@ private fun CardInfo6(navController: NavController, onClick: () -> Unit) {
     }
 }
 
+private fun initSign(context: Context){
+    val intent = Intent(context, Signing::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    context.startActivity(intent)
+
+    (context as ComponentActivity).finish()
+}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

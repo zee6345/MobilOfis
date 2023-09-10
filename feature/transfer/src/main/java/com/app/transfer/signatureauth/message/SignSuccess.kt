@@ -127,7 +127,8 @@ fun SignSuccess(navController: NavController) {
 
                     Row(
                         Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
 
 

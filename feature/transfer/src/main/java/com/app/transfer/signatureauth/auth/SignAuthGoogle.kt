@@ -146,11 +146,14 @@ fun SignAuthGoogle(
     when (googleAuthSelectedIndex.value) {
         0 -> {
             index0.value = true
+            index1.value = false
+            index2.value = false
         }
 
         1 -> {
             index0.value = true
             index1.value = true
+            index2.value = false
         }
 
         2 -> {
@@ -458,12 +461,7 @@ fun SignAuthGoogle(
                                 ) {
                                     androidx.compose.material.Button(
                                         onClick = {
-
-//                                            SharedModel.init().signInfo.value =
-//                                                SignInfo(false, AuthType.SMS)
-
                                             (context as ComponentActivity).finish()
-
                                         },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = androidx.compose.material.ButtonDefaults.buttonColors(
@@ -486,11 +484,8 @@ fun SignAuthGoogle(
 
                                     androidx.compose.material.Button(
                                         onClick = {
-
-
                                             if (otpValue.value.isNotEmpty()) {
                                                 if (otpValue.value.length == otpCount.value) {
-
 
                                                     viewModel.loginAuthVerification(
                                                         LoginVerificationRequest(
@@ -502,25 +497,14 @@ fun SignAuthGoogle(
 
                                                     otp = otpValue.value
 
-
                                                 } else {
-
                                                     showError = true
                                                     errorsMessage = "OTP must be 6 digit.."
-//                                                            Message.showMessage(
-//                                                                context,
-//                                                                "OTP must be 6 digit.."
-//                                                            )
                                                 }
 
                                             } else {
-
                                                 showError = true
                                                 errorsMessage = "Please add your OTP.."
-//                                                        Message.showMessage(
-//                                                            context,
-//                                                            "Please add your OTP.."
-//                                                        )
                                             }
 
 
@@ -620,15 +604,17 @@ fun SignAuthGoogle(
                                             if (otpValue.value.isNotEmpty()) {
                                                 if (otpValue.value.length == otpCount.value) {
 
-
-                                                    homeModel.transactionStatus(otpValue.value.toInt())
-
+                                                    homeModel.signOrApprove(
+                                                        SignApproveRequest(
+                                                            ibanList,
+                                                            if (isSigned.value) "SIGN" else "APPROVE"
+                                                        )
+                                                    )
 
                                                 } else {
                                                     showError = true
                                                     errorsMessage = "OTP must be 6 digit.."
                                                 }
-
                                             } else {
                                                 showError = true
                                                 errorsMessage = "Please add your OTP.."
@@ -694,14 +680,11 @@ fun SignAuthGoogle(
             is DataState.Error -> {
                 isLoading.value = false
 
-                val errorMessage =
-                    Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                val errorMessage = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
                 errorMessage?.let { error ->
                     if (error.code.equals("ERROR.FREE_TEXT", true)) {
-
-                        LaunchedEffect(error.code) {
-                            Message.showMessage(context, "Wrong username or password!")
-                        }
+                        showError = true
+                        errorsMessage = "Wrong username or password!"
 
                     }
                 }
@@ -716,7 +699,7 @@ fun SignAuthGoogle(
 
                     usernameForOtp = usernameState.value
 
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(it) {
                         //route to OTP
                         index1.value = true
                         googleAuthSelectedIndex.value = 1
@@ -740,9 +723,26 @@ fun SignAuthGoogle(
                 isLoading.value = false
 
                 //on error remove keys
-                viewModel.session.delete(Keys.KEY_TOKEN)
+//                viewModel.session.delete(Keys.KEY_TOKEN)
 
-                Message.showMessage(context, "Failed to verify user!")
+                val errorResponse = Converter.fromJson(it.errorMessage, ErrorResponse::class.java)
+                if (errorResponse.code.equals("ERROR.TOTP_2FA_VERIFICATION_NOT_MATCH", true)) {
+                    errorsMessage = "Incorrect Google Authenticator Code"
+                    showError = true
+                } else if (errorResponse.code.equals("ERROR.INVALID_TOKEN", true)) {
+                    errorsMessage = "Invalid token!"
+                    showError = true
+
+                    LaunchedEffect(it) {
+
+                        googleAuthSelectedIndex.value = 0
+
+                    }
+
+
+                } else {
+
+                }
 
             }
 
@@ -757,10 +757,9 @@ fun SignAuthGoogle(
                     viewModel.session.put(Keys.KEY_USER_DETAILS, strJson)
 
                     //sign API
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(it) {
                         homeModel.signOrApprove(
                             SignApproveRequest(
-//                                listOf(FileDescriptor("${transfer.value!!.ibankRef}")),
                                 ibanList,
                                 if (isSigned.value) "SIGN" else "APPROVE"
 
@@ -787,10 +786,11 @@ fun SignAuthGoogle(
             is DataState.Success -> {
                 isLoading.value = false
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(it) {
                     index2.value = true
                     googleAuthSelectedIndex.value = 2
 
+                    homeModel.transactionStatus(otpValue.value.toInt())
                 }
 
             }
@@ -810,10 +810,9 @@ fun SignAuthGoogle(
             is DataState.Success -> {
                 isLoading.value = false
 
-//                LaunchedEffect(Unit) {
-//                    navController.navigate(signatureSuccess)
-//                }
-
+                LaunchedEffect(it) {
+                    navController.navigate(signatureSuccess)
+                }
 
             }
         }
