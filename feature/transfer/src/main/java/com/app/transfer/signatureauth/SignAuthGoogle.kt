@@ -3,6 +3,7 @@ package com.app.transfer.signatureauth
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -78,6 +79,7 @@ import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AuthType
 import com.app.uikit.models.SignInfo
 import com.app.uikit.utils.SharedModel
+import com.app.uikit.views.BackHandler
 import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
 import ir.kaaveh.sdpcompose.sdp
@@ -125,7 +127,7 @@ fun SignAuthGoogle(
     val signOrApprove by homeModel.getSignOrApprove.collectAsState()
     val transactionStatus by homeModel.getTransactionStatus.collectAsState()
 
-    val isForSigning = SharedModel.init().isForSigning.value
+//    val isForSigning = SharedModel.init().isForSigning.value
 
 
     val data = SharedModel.init().signatureData.value
@@ -133,6 +135,12 @@ fun SignAuthGoogle(
         it.transfer?.let { obj ->
             transfer.value = obj
         }
+    }
+
+    BackHandler(true) {
+
+        (context as ComponentActivity).finish()
+
     }
 
 
@@ -447,8 +455,10 @@ fun SignAuthGoogle(
                                     androidx.compose.material.Button(
                                         onClick = {
 
-                                            SharedModel.init().signInfo.value =
-                                                SignInfo(false, AuthType.SMS)
+//                                            SharedModel.init().signInfo.value =
+//                                                SignInfo(false, AuthType.SMS)
+
+                                            (context as ComponentActivity).finish()
 
                                         },
                                         shape = RoundedCornerShape(8.dp),
@@ -798,14 +808,14 @@ fun SignAuthGoogle(
                     viewModel.session.put(Keys.KEY_USER_DETAILS, strJson)
 
                     //sign API
-                    LaunchedEffect(Unit) {
-                        homeModel.signOrApprove(
-                            SignApproveRequest(
-                                listOf(FileDescriptor("${transfer.value!!.ibankRef}")),
-                                if (isForSigning) "SIGN" else "APPROVE"
-                            )
-                        )
-                    }
+//                    LaunchedEffect(Unit) {
+//                        homeModel.signOrApprove(
+//                            SignApproveRequest(
+//                                listOf(FileDescriptor("${transfer.value!!.ibankRef}")),
+//                                if (isForSigning) "SIGN" else "APPROVE"
+//                            )
+//                        )
+//                    }
 
                 }
             }

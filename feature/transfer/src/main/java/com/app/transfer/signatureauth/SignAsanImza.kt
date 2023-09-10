@@ -3,6 +3,7 @@ package com.app.transfer.signatureauth
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -80,6 +81,7 @@ import com.app.uikit.borders.dashedBorder
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
+import com.app.uikit.views.BackHandler
 import com.app.uikit.views.CountdownTimer
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
@@ -96,7 +98,7 @@ fun SignAsanImza(
 
     var selected by remember { mutableStateOf(0) }
 
-    val signInfo = SharedModel.init().signInfo
+//    val signInfo = SharedModel.init().signInfo
     val index0 = remember { mutableStateOf(true) }
     val index1 = remember { mutableStateOf(false) }
     val index2 = remember { mutableStateOf(false) }
@@ -122,6 +124,12 @@ fun SignAsanImza(
         it.transfer?.let { obj ->
             transfer.value = obj
         }
+    }
+
+    BackHandler(true) {
+
+        (context as ComponentActivity).finish()
+
     }
 
     Column(

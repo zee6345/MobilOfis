@@ -3,6 +3,7 @@ package com.app.transfer.signatureauth
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -72,6 +73,7 @@ import com.app.uikit.borders.CurvedBottomBox
 import com.app.uikit.dialogs.RoundedCornerToast
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.utils.SharedModel
+import com.app.uikit.views.BackHandler
 import com.app.uikit.views.CountdownTimer
 import com.app.uikit.views.OtpView
 import ir.kaaveh.sdpcompose.sdp
@@ -85,7 +87,7 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
 
     var selected by remember { mutableStateOf(0) }
 
-    val signInfo = SharedModel.init().signInfo
+//    val signInfo = SharedModel.init().signInfo
     val index0 = remember { mutableStateOf(true) }
     val index1 = remember { mutableStateOf(false) }
     val index2 = remember { mutableStateOf(false) }
@@ -110,6 +112,12 @@ fun SignAuth(navController: NavController, viewModel: LoginViewModel = hiltViewM
     val otpData by viewModel.otp.collectAsState()
     val signOrApprove by homeModel.getSignOrApprove.collectAsState()
     val transactionStatus by homeModel.getTransactionStatus.collectAsState()
+
+    BackHandler(true) {
+
+        (context as ComponentActivity).finish()
+
+    }
 
     Column(
         modifier = Modifier

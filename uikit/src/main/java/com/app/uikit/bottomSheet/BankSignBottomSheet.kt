@@ -2,6 +2,7 @@
 
 package com.app.uikit.bottomSheet
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -41,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.uikit.R
-import com.app.uikit.borders.dashedBorder
 import com.app.uikit.models.AuthType
 
 import ir.kaaveh.sdpcompose.sdp
@@ -72,16 +73,26 @@ fun BankSignSheet(navController: NavController) {
     }
 }
 
+private data class BankSign(
+    val title: String,
+    val type: AuthType
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BankSignBottomSheet(aboutBankState: MutableState<Boolean>, onItemClick: (AuthType) -> Unit) {
+    val context = LocalContext.current
 
-    val isSelected1 = remember { mutableStateOf(false) }
-    val isSelected2 = remember { mutableStateOf(false) }
-    val isSelected3 = remember { mutableStateOf(false) }
 
-    var authType: AuthType? = null
+    val signingList = remember {
+        mutableListOf(
+            BankSign("SMS", AuthType.SMS),
+            BankSign("Google Auth", AuthType.GOOGLE_AUTH),
+            BankSign("Asan Imza", AuthType.ASAN_IMZA)
+        )
+    }
 
+    val isSelected = remember { mutableStateOf<BankSign?>(null) }
 
     if (aboutBankState.value) ModalBottomSheet(
         containerColor = Color.White,
@@ -104,144 +115,192 @@ fun BankSignBottomSheet(aboutBankState: MutableState<Boolean>, onItemClick: (Aut
             )
             Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(
-                        3.dp, colorResource(R.color.border_grey)
-                    ),
-                horizontalArrangement = Arrangement.Start
-
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            isSelected1.value = true
-                            isSelected2.value = false
-                            isSelected3.value = false
-
-
-                            authType = AuthType.SMS
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-
-                    RadioButton(selected = isSelected1.value, onClick = {
-
-                    })
-                    androidx.compose.material.Text(
-                        text = "SMS",
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                    )
+            LazyColumn {
+                signingList.forEachIndexed { index, bankSign ->
+                    item {
+                        SigningItem(bankSign, isSelected.value) {
+                            isSelected.value = it
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .dashedBorder(
-                        2.dp, colorResource(R.color.border_grey)
-                    ),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .fillMaxWidth()
-                        .clickable {
-
-                            isSelected1.value = false
-                            isSelected2.value = true
-                            isSelected3.value = false
-
-
-                            authType = AuthType.GOOGLE_AUTH
-
-                        },
-
-                    verticalAlignment = Alignment.CenterVertically
-
-                ) {
-
-
-                    RadioButton(selected = isSelected2.value, onClick = {
-
-                    })
-
-                    androidx.compose.material.Text(
-                        text = "Google Auth",
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-//                        aboutBankState.value = false
-
-
-                        isSelected1.value = false
-                        isSelected2.value = false
-                        isSelected3.value = true
-
-                        authType = AuthType.ASAN_IMZA
-
-                    },
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    RadioButton(selected = isSelected3.value, onClick = {
-
-                    })
-
-                    androidx.compose.material.Text(
-                        text = stringResource(R.string.easy_signature),
-                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
-                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                    )
-                }
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .dashedBorder(
+//                        3.dp, colorResource(R.color.border_grey)
+//                    ),
+//                horizontalArrangement = Arrangement.Start
+//
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .padding(horizontal = 20.dp, vertical = 5.dp)
+//                        .fillMaxWidth()
+//                        .clickable {
+//                            isSelected1.value = true
+//                            isSelected2.value = false
+//                            isSelected3.value = false
+//
+//
+//                            authType = AuthType.SMS
+//                        },
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//
+//
+//                    RadioButton(selected = isSelected1.value, onClick = {
+//
+//                    })
+//                    androidx.compose.material.Text(
+//                        text = "SMS",
+//                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+//                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+//                    )
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .dashedBorder(
+//                        2.dp, colorResource(R.color.border_grey)
+//                    ),
+//                horizontalArrangement = Arrangement.Start
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .padding(horizontal = 20.dp, vertical = 5.dp)
+//                        .fillMaxWidth()
+//                        .clickable {
+//
+//                            isSelected1.value = false
+//                            isSelected2.value = true
+//                            isSelected3.value = false
+//
+//
+//                            authType = AuthType.GOOGLE_AUTH
+//
+//                        },
+//
+//                    verticalAlignment = Alignment.CenterVertically
+//
+//                ) {
+//
+//
+//                    RadioButton(selected = isSelected2.value, onClick = {
+//
+//                    })
+//
+//                    androidx.compose.material.Text(
+//                        text = "Google Auth",
+//                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+//                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+//                    )
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.size(width = 5.sdp, height = 1.dp))
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable {
+////                        aboutBankState.value = false
+//
+//
+//                        isSelected1.value = false
+//                        isSelected2.value = false
+//                        isSelected3.value = true
+//
+//                        authType = AuthType.ASAN_IMZA
+//
+//                    },
+//                horizontalArrangement = Arrangement.Start
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .padding(horizontal = 20.dp, vertical = 5.dp)
+//                        .fillMaxWidth(),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//
+//                    RadioButton(selected = isSelected3.value, onClick = {
+//
+//                    })
+//
+//                    androidx.compose.material.Text(
+//                        text = stringResource(R.string.easy_signature),
+//                        style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+//                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+//                    )
+//                }
+//            }
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 20.sdp)
-                    .clickable {
-
-                        onItemClick(authType!!)
-
-                        aboutBankState.value = false
-                    },
+                    .padding(end = 20.sdp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
                     text = "Apply",
                     style = TextStyle(
                         fontSize = 16.sp,
-                    )
+                    ),
+                    modifier = Modifier
+                        .clickable {
+                            if (isSelected.value == null) {
+                                Toast.makeText(context,"Please select signing type!",Toast.LENGTH_SHORT).show()
+                            } else {
+                                onItemClick(isSelected.value!!.type)
+                                aboutBankState.value = false
+                            }
+                        }
                 )
             }
 
         }
     }
 
+}
+
+@Composable
+private fun SigningItem(
+    bankSign: BankSign,
+    isSelected: BankSign?,
+    onItemClick: (BankSign) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onItemClick(bankSign)
+            },
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 5.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            RadioButton(selected = isSelected == bankSign, onClick = {
+
+            })
+
+            androidx.compose.material.Text(
+                text = bankSign.title,
+                style = TextStyle(color = Color(0xFF223142), fontSize = 14.sp),
+                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+            )
+        }
+    }
 }
 
 @Preview

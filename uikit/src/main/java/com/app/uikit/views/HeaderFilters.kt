@@ -102,6 +102,7 @@ fun HeaderFilters(
                         }
 
                         onFilterClick(filter)
+
                     }
 
                     Spacer(modifier = Modifier.size(width = 8.dp, height = 1.dp))
@@ -187,7 +188,8 @@ private fun TransferMenuItemView(
         modifier = Modifier
             .padding(vertical = 5.dp)
             .background(
-                if (isHeaderSelected.value == menu) Color(0xFFE7EEFC) else Color.White,
+//                if (isHeaderSelected.value == menu) Color(0xFFE7EEFC) else Color.White,
+                Color.White,
                 shape = RoundedCornerShape(8.dp)
             ),
     ) {
@@ -229,6 +231,7 @@ private fun TransferMenuItemView(
 
         }
     }
+
 }
 
 

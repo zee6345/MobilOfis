@@ -1,6 +1,7 @@
 package com.app.transfer.signatureauth
 
 import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -56,7 +57,7 @@ fun SignSuccess(navController: NavController) {
 
     var selected by remember { mutableStateOf(0) }
 
-    val signInfo = SharedModel.init().signInfo
+//    val signInfo = SharedModel.init().signInfo
     val index0 = remember { mutableStateOf(true) }
     val index1 = remember { mutableStateOf(false) }
     val index2 = remember { mutableStateOf(false) }
@@ -72,7 +73,7 @@ fun SignSuccess(navController: NavController) {
         if (isPswdVisible) VisualTransformation.None else PasswordVisualTransformation()
 
 
-    val authWith = when (signInfo.value.authType) {
+    val authWith = when (signingType.value) {
         AuthType.SMS -> {
             "Access by SMS"
         }
@@ -203,7 +204,7 @@ fun SignSuccess(navController: NavController) {
                 ) {
                     Button(
                         onClick = {
-                            SharedModel.init().signInfo.value = SignInfo(false, AuthType.SMS)
+                            (context as ComponentActivity).finish()
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                         modifier = Modifier

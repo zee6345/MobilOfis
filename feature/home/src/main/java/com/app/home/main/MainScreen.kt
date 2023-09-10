@@ -2,7 +2,6 @@ package com.app.home.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,9 +57,9 @@ import com.app.network.models.responseModels.transferModels.TransferCountSummary
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.transfers.endDateSelected
+import com.app.transfer.transfers.filterByStatus
 import com.app.transfer.transfers.fromMain
 import com.app.transfer.transfers.startDateSelected
-
 import com.app.uikit.bottomSheet.SelectCompanyBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.UserRoles
@@ -158,6 +157,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     //initial API calls
     LaunchedEffect(Unit) {
+
+        //add check
+        fromMain.value = false
+
+        //set status
+        filterByStatus.value = ""
+
         coroutine.launch {
 
             viewModel.getBusinessDate()
@@ -845,8 +851,13 @@ fun MenuScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                 if (transferHeaderList.isNotEmpty()) {
                     Box(Modifier.padding(horizontal = 10.dp)) {
                         HeaderFilters(transferHeaderList) {
-
+                            //add check
                             fromMain.value = true
+
+                            //set status
+                            filterByStatus.value = it
+
+                            //route to transfers
                             navController.navigate(BottomNavItem.Transfers.screen_route)
 
                         }

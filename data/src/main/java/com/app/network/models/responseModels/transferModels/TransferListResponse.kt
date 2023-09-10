@@ -19,7 +19,7 @@ data class TransferListResponseItem(
     val status: String,
     val statusDescription: Any,
     val trnDateTime: String,
-    val trnType: String,
+    val trnType: String
 )
 
 data class ActionButtons(

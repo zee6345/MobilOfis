@@ -33,18 +33,6 @@ import com.app.home.main.recents.recentTransactions
 import com.app.home.main.trust.DepositDetails
 import com.app.home.main.trust.homeToTrustDepositDetails
 import com.app.transfer.transfers.TransferScreen
-import com.app.transfer.signatureauth.SignAsanImza
-import com.app.transfer.signatureauth.SignAuth
-import com.app.transfer.signatureauth.SignAuthGoogle
-import com.app.transfer.signatureauth.SignFailed
-import com.app.transfer.signatureauth.SignSuccess
-import com.app.transfer.signatureauth.SigningHome
-import com.app.transfer.signatureauth.navigation.signatureAsanImza
-import com.app.transfer.signatureauth.navigation.signatureAuth
-import com.app.transfer.signatureauth.navigation.signatureAuthGoogle
-import com.app.transfer.signatureauth.navigation.signatureFailed
-import com.app.transfer.signatureauth.navigation.signatureHome
-import com.app.transfer.signatureauth.navigation.signatureSuccess
 import com.app.transfer.transfers.transferdetails.TransferDetailsInformation
 import com.app.transfer.transfers.transferdetails.transferToDetails
 
@@ -121,37 +109,6 @@ fun NavigationGraph(navController: NavHostController) {
             RecentTransactions(navController)
         }
 
-
-    }
-}
-
-@Composable
-fun NavigationGraphSign(navController: NavHostController) {
-    NavHost(navController, startDestination = signatureHome) {
-
-        composable(signatureHome) {
-            SigningHome(navController)
-        }
-
-        composable(signatureAuth) {
-            SignAuth(navController)
-        }
-
-        composable(signatureAuthGoogle) {
-            SignAuthGoogle(navController)
-        }
-
-        composable(signatureAsanImza) {
-            SignAsanImza(navController)
-        }
-
-        composable(signatureSuccess) {
-            SignSuccess(navController)
-        }
-
-        composable(signatureFailed) {
-            SignFailed(navController)
-        }
 
     }
 }

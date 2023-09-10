@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.home.navigation.NavigationGraph
-import com.app.home.navigation.NavigationGraphSign
+
 import com.app.network.models.DataState
 import com.app.network.models.errorResponse.ErrorState
 import com.app.network.viewmodel.LoginViewModel
@@ -40,19 +40,19 @@ fun MainScreenView(navController: NavController, viewModel: LoginViewModel = hil
     val navController = rememberNavController()
     val lastLogin by viewModel.lastLogin.collectAsState()
 
-    val signInfo = SharedModel.init().signInfo
+//    val signInfo = SharedModel.init().signInfo
 
-    if (signInfo.value.fromSign) {
-        Scaffold() {
-            NavigationGraphSign(navController = navController)
-        }
-    } else {
-        Scaffold(
-            bottomBar = { BottomNavigation(navController = navController) }
-        ) {
-            NavigationGraph(navController = navController)
-        }
+//    if (signInfo.value.fromSign) {
+//        Scaffold() {
+//            NavigationGraphSign(navController = navController)
+//        }
+//    } else {
+    Scaffold(
+        bottomBar = { BottomNavigation(navController = navController) }
+    ) {
+        NavigationGraph(navController = navController)
     }
+//    }
 
 
     LaunchedEffect(Unit) {

@@ -73,7 +73,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     //fetch item data
     val data = SharedModel.init().signatureData.value
     isSigned.value = data!!.isSignRequired
-    val ibankRef = data.transfer.ibankRef
+    val ibankRef = data.transfer?.ibankRef?:""
 
     val coroutine = rememberCoroutineScope()
 

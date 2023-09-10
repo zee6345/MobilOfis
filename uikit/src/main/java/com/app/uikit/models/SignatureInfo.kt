@@ -4,5 +4,6 @@ import com.app.network.models.responseModels.transferModels.TransferListResponse
 
 data class SignatureInfo(
     val isSignRequired:Boolean,
-    val transfer: TransferListResponseItem
+    val transfer: TransferListResponseItem?= null,
+    val transferList: MutableList<TransferListResponseItem>? = null,
 )

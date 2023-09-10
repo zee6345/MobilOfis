@@ -63,8 +63,6 @@ import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
-import com.app.network.models.requestModels.FileDescriptor
-import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
@@ -73,7 +71,6 @@ import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.transfer.transfers.transferdetails.TransferDetails
-
 import com.app.uikit.bottomSheet.AccountBottomSheet
 import com.app.uikit.bottomSheet.AmountBottomSheet
 import com.app.uikit.bottomSheet.CurrencyBottomSheet
@@ -102,8 +99,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-const val SESSION = "SESSION_EVENTS"
-
 private lateinit var showDateBottomSheet: MutableState<Boolean>
 private lateinit var showFromAccountBottomSheet: MutableState<Boolean>
 private lateinit var showStatusBottomSheet: MutableState<Boolean>
@@ -111,9 +106,7 @@ private lateinit var showTypeBottomSheet: MutableState<Boolean>
 private lateinit var showAmountBottomSheet: MutableState<Boolean>
 private lateinit var showCurrencyBottomSheet: MutableState<Boolean>
 
-var isListEmpty = mutableStateOf(false)
-
-private val filterByStatus = mutableStateOf("")
+val filterByStatus = mutableStateOf("")
 private val filterByType = mutableStateOf("")
 private val filterByAccount = mutableStateOf("")
 private val filterByAmount = mutableStateOf("")
@@ -127,7 +120,7 @@ val fromMain = mutableStateOf(false)
 var startDateSelected = mutableStateOf("")
 var endDateSelected = mutableStateOf("")
 
-
+private val selectedItems = mutableListOf<TransferListResponseItem>()
 
 @Composable
 fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -139,15 +132,13 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     showAmountBottomSheet = rememberSaveable { mutableStateOf(false) }
     showCurrencyBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
+//    var selectedTransfer by remember { mutableStateOf<TransferListResponseItem?>(null) }
 
     val coroutine = rememberCoroutineScope()
 
+    var enableSigning by remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
-    val isSigned = remember { mutableStateOf(false) }
     val sendToBank = remember { mutableStateOf(false) }
-    val showDateError = remember { mutableStateOf(false) }
-
     val closeSearch = remember { mutableStateOf(false) }
 
     val filterTypeList = remember { mutableListOf<String>() }
@@ -159,13 +150,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
     val transferListResponse = remember { mutableListOf<TransferListResponseItem>() }
 
     val context: Context = LocalContext.current
-    val businessDates by viewModel.businessDate.collectAsState()
 
-    val transferCountSummery by viewModel.getTransferCountSummary.collectAsState(initial = emptyList<TransferCountSummaryResponseItem>())
+    val businessDates by viewModel.businessDate.collectAsState()
+    val transferCountSummery by viewModel.getTransferCountSummary.collectAsState()
     val transferList by viewModel.transferList.collectAsState()
     val getSendToBank by viewModel.sendToBank.collectAsState()
 
     var showError by remember { mutableStateOf(false) }
+    var previousStatus by remember { mutableStateOf<String?>(null) }
 
     //fetch data
     val str = viewModel.session[Keys.KEY_USER_DETAILS]
@@ -196,6 +188,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 viewModel.getTransferCountSummary(startDate, endDate)
                 viewModel.getTransferList(startDate, endDate, 0)
             }
+        }
+    }
+
+    //if data from main screen
+    if (fromMain.value) {
+        //if filter clicked, enable signing
+        enableSigning = when (filterByStatus.value) {
+            "PENDING_SIGNER", "PENDING_APPROVER", "SEND_TO_BANK" -> true
+            else -> false
         }
     }
 
@@ -231,8 +232,13 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                                 .size(width = 32.dp, height = 25.dp)
                                 .align(Alignment.CenterVertically)
                                 .clickable {
+
+                                    filterByStatus.value = ""
                                     fromMain.value = false
+
+                                    //back stack
                                     navController.popBackStack()
+
                                 },
                             contentDescription = ""
                         )
@@ -339,27 +345,21 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                 if (transferListResponse.isNotEmpty()) {
 
+                    //set initial value
+                    if (!fromMain.value && headerList.isNotEmpty()) {
+                        val newStatus = headerList[0].status
+                        if (newStatus != previousStatus) {
+                            filterByStatus.value = newStatus
+                            previousStatus = newStatus
+                        }
+                    }
+
                     HeaderFilters(headerList) { filter ->
                         filterByStatus.value = filter
-
-                        //if filter clicked enable check
-                        if (filter.contains("PENDING_SIGNER", true)) {
-                            isSigned.value = true
-
-                            SharedModel.init().isForSigning.value = true
-
-                        } else if (filter.contains("PENDING_APPROVER", true)) {
-                            isSigned.value = true
-
-                            SharedModel.init().isForSigning.value = false
-
-                        } else if (filter.contains("SEND_TO_BANK", true)) {
-                            isSigned.value = true
-                            sendToBank.value = true
-                        } else {
-                            isSigned.value = false
+                        enableSigning = when (filterByStatus.value) {
+                            "PENDING_SIGNER", "PENDING_APPROVER", "SEND_TO_BANK" -> true
+                            else -> false
                         }
-
                     }
 
                     Spacer(modifier = Modifier.size(height = 5.sdp, width = 1.sdp))
@@ -383,7 +383,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
                         groupedItems.forEach { (date, items) ->
                             item {
-
 
                                 val filter =
                                     if (
@@ -432,17 +431,16 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
 
 
                                 filter.forEach { item ->
-
                                     TransferListItem(
-                                        item,
-                                        selectedTransfer,
-                                        navController,
-                                        isSigned,
-                                    ) {
-                                        selectedTransfer = it
+                                        transfer = item,
+                                        enableSigning = enableSigning
+                                    ) { selectedItem, isSelected ->
+                                        if (isSelected) {
+                                            selectedItems.add(selectedItem)
+                                        } else {
+                                            selectedItems.remove(selectedItem)
+                                        }
                                     }
-
-
                                 }
                             }
                         }
@@ -458,30 +456,29 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                 }
             }
 
-            if (isSigned.value) {
+            if (enableSigning) {
 
                 Box(
                     Modifier.fillMaxSize(),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Button(
-                        enabled = selectedTransfer != null,
+                        enabled = selectedItems.isNotEmpty(),
                         onClick = {
                             if (sendToBank.value) {
 
                                 coroutine.launch {
-
-                                    viewModel.sendToBankAPI(
-                                        SendToBankModel(
-                                            listOf(FileDescriptor("${selectedTransfer!!.ibankRef}")),
-                                            ""
-                                        )
-                                    )
+//                                    viewModel.sendToBankAPI(
+//                                        SendToBankModel(
+//                                            listOf(FileDescriptor("${selectedItems!!.ibankRef}")),
+//                                            ""
+//                                        )
+//                                    )
                                 }
 
                             } else {
                                 SharedModel.init().signatureData.value =
-                                    SignatureInfo(true, selectedTransfer!!)
+                                    SignatureInfo(true, null, selectedItems)
 //                                navController.navigate(transferToDetails)
                                 val intent = Intent(context, TransferDetails::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -494,7 +491,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                             .fillMaxWidth()
                             .padding(bottom = 50.sdp)
                             .background(
-                                if (selectedTransfer != null) Color(0xFF203657) else Color(
+                                if (selectedItems.isNotEmpty()) Color(0xFF203657) else Color(
                                     0xFF203657
                                 ).copy(
                                     0.8f
@@ -765,32 +762,45 @@ private fun DateHeader(inputDateTimeString: LocalDate) {
 @Composable
 private fun TransferListItem(
     transfer: TransferListResponseItem,
-    selectedTransfer: TransferListResponseItem?,
-    navController: NavController,
-    isSigned: MutableState<Boolean>,
-    onTransferSelected: (TransferListResponseItem) -> Unit
+    enableSigning: Boolean,
+    onTransferSelected: (TransferListResponseItem, Boolean) -> Unit
 ) {
 
     val context = LocalContext.current
     val formattedTime = Utils.formattedTime(transfer.trnDateTime)
     val symbol = Utils.formatCurrency(transfer.currency)
+    var isChecked by remember { mutableStateOf(false) }
 
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .clickable {
+                if (enableSigning) {
+                    isChecked = !isChecked
+                    onTransferSelected(transfer, isChecked)
+                } else {
+                    SharedModel.init().signatureData.value = SignatureInfo(false, transfer)
+//                    navController.navigate(transferToDetails)
+                    val intent = Intent(context, TransferDetails::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intent)
+                }
+
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        if (isSigned.value) {
+        if (enableSigning) {
             Box(
-                modifier = Modifier.clickable {
-                    onTransferSelected(transfer)
-                }
+//                modifier = Modifier.clickable {
+////                    isChecked = !isChecked
+////                    onTransferSelected(transfer, isChecked)
+//                }
             ) {
 
                 val icon =
-                    if (transfer == selectedTransfer) painterResource(id = R.drawable.ic_checkbox_check) else painterResource(
+                    if (isChecked) painterResource(id = R.drawable.ic_checkbox_check) else painterResource(
                         id = R.drawable.ic_checkbox_uncheck
                     )
                 Image(icon, contentDescription = "")
@@ -811,13 +821,7 @@ private fun TransferListItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.sdp)
-                .clickable {
-                    SharedModel.init().signatureData.value = SignatureInfo(false, transfer)
-//                    navController.navigate(transferToDetails)
-                    val intent = Intent(context, TransferDetails::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
-                },
+                ,
             backgroundColor = Color.White
         ) {
             Column(

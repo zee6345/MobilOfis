@@ -1,6 +1,7 @@
 package com.app.transfer.transfers.transferdetails
 
 import android.content.Context
+import android.content.Intent
 import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -63,12 +64,13 @@ import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
+import com.app.transfer.signatureauth.Signing
+import com.app.transfer.signatureauth.signingType
 import com.app.uikit.borders.dashedBorder
 import com.app.uikit.borders.rightVerticalDashedBorder
 import com.app.uikit.bottomSheet.BankSignBottomSheet
 import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AuthType
-import com.app.uikit.models.SignInfo
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
@@ -100,7 +102,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     //fetch item data
     val data = SharedModel.init().signatureData.value
     isSigned.value = data!!.isSignRequired
-    val ibankRef = data.transfer.ibankRef
+    val ibankRef = data.transfer?.ibankRef ?: ""
     val coroutine = rememberCoroutineScope()
 
 
@@ -902,15 +904,30 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     BankSignBottomSheet(signBottomSheet) {
         when (it) {
             AuthType.SMS -> {
-                SharedModel.init().signInfo.value = SignInfo(true, it)
+
+                signingType.value = it
+
+                val intent = Intent(context, Signing::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
             }
 
             AuthType.GOOGLE_AUTH -> {
-                SharedModel.init().signInfo.value = SignInfo(true, it)
+
+                signingType.value = it
+
+                val intent = Intent(context, Signing::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
             }
 
             AuthType.ASAN_IMZA -> {
-                SharedModel.init().signInfo.value = SignInfo(true, it)
+
+                signingType.value = it
+
+                val intent = Intent(context, Signing::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
             }
 
         }
@@ -1012,7 +1029,7 @@ private fun CardInfo5(navController: NavController) {
         onClick = {
 //            navController.popBackStack()
             (context as ComponentActivity).finish()
-                  },
+        },
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFFF3F7FA), // Change the background color here
