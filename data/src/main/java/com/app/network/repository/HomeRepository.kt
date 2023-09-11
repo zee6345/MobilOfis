@@ -19,6 +19,7 @@ import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserRoles
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.SignApproveResponse
+import com.app.network.models.responseModels.TransactionDetails
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.retrofitClient.APIService
@@ -131,7 +132,7 @@ class HomeRepository @Inject constructor(private val apiService: APIService) {
         return apiService.userRoles(token)
     }
 
-    fun getTransactionDetails(token: String, ibankRef: String): Call<GetTransactionDetails> {
+    fun getTransactionDetails(token: String, ibankRef: String): Call<TransactionDetails> {
         return apiService.transactionDetails(token, ibankRef)
     }
 

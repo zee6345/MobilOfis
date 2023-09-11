@@ -51,6 +51,7 @@ import com.app.network.helper.Keys
 import com.app.network.models.DataState
 import com.app.network.models.responseModels.GetTransactionDetails
 import com.app.network.models.responseModels.HISTORYDETAILS
+import com.app.network.models.responseModels.TransactionDetails
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.transfer.signatureauth.Signing
@@ -74,7 +75,7 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
     var expanded2 by remember { mutableStateOf(true) }
     val isLoading = remember { mutableStateOf(false) }
     val history = remember { mutableListOf<HISTORYDETAILS>() }
-    val details = remember { mutableStateOf<GetTransactionDetails?>(null) }
+    val details = remember { mutableStateOf<TransactionDetails?>(null) }
     val isSigned = remember { mutableStateOf(false) }
     val signBottomSheet = remember { mutableStateOf(false) }
 
@@ -309,8 +310,8 @@ fun HistoryNnotes(navController: NavController, viewModel: HomeViewModel = hiltV
             is DataState.Success -> {
                 isLoading.value = false
 
-                val data = it.data as GetTransactionDetails
-                data?.apply {
+                val data = it.data as TransactionDetails
+                data.apply {
 
                     details.value = this
 

@@ -63,6 +63,7 @@ import com.app.network.models.requestModels.FileDetails
 import com.app.network.models.requestModels.GetPdfList
 import com.app.network.models.responseModels.GetPdfResponse
 import com.app.network.models.responseModels.GetTransactionDetails
+import com.app.network.models.responseModels.TransactionDetails
 import com.app.network.viewmodel.HomeViewModel
 import com.app.transfer.R
 import com.app.transfer.signatureauth.Signing
@@ -96,9 +97,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
 
     val detailsData by viewModel.getTransactionDetails.collectAsState()
     val pdfList by viewModel.getTransactionPdf.collectAsState()
-    val detail = remember { mutableStateOf<GetTransactionDetails?>(null) }
-    val fileDetailList =
-        remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
+    val detail = remember { mutableStateOf<TransactionDetails?>(null) }
+    val fileDetailList = remember { mutableListOf<com.app.network.models.responseModels.FileDetails>() }
     val transferDetails = detail.value
 
     val context: Context = LocalContext.current
@@ -129,6 +129,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
     }
 
     if (transferDetails != null) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -732,7 +733,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                             Spacer(modifier = Modifier.size(height = 5.dp, width = 1.dp))
 
 
-                            if (transferDetails.PDF_LIST.isNotEmpty()) {
+                            if (transferDetails!!.PDF_LIST.isNotEmpty()) {
                                 LazyRow(
                                     contentPadding = PaddingValues(
                                         vertical = 5.dp,
@@ -745,18 +746,20 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                                         item {
                                             PdfItem(fileDetails) {
                                                 CoroutineScope(Dispatchers.IO).launch {
-                                                    Utils.downloadPDF(
-                                                        fileDetails.fileBase64,
-                                                        fileDetails.fileName
-                                                    ) {
-                                                        android.os.Handler(Looper.getMainLooper())
-                                                            .post {
-                                                                Toast.makeText(
-                                                                    context,
-                                                                    it,
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
-                                                            }
+                                                    if (fileDetails.fileBase64 != null) {
+                                                        Utils.downloadPDF(
+                                                            fileDetails.fileBase64,
+                                                            fileDetails.fileName
+                                                        ) {
+                                                            android.os.Handler(Looper.getMainLooper())
+                                                                .post {
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        it,
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -784,13 +787,15 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
                         item {
                             PdfItem(fileDetails) {
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Utils.downloadPDF(
-                                        fileDetails.fileBase64,
-                                        fileDetails.fileName
-                                    ) {
-                                        android.os.Handler(Looper.getMainLooper()).post {
-                                            Toast.makeText(context, it, Toast.LENGTH_SHORT)
-                                                .show()
+                                    if (fileDetails.fileBase64 != null) {
+                                        Utils.downloadPDF(
+                                            fileDetails.fileBase64,
+                                            fileDetails.fileName
+                                        ) {
+                                            android.os.Handler(Looper.getMainLooper()).post {
+                                                Toast.makeText(context, it, Toast.LENGTH_SHORT)
+                                                    .show()
+                                            }
                                         }
                                     }
                                 }
@@ -866,7 +871,7 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
             is DataState.Success -> {
                 isLoading.value = false
 
-                val response = it.data as GetTransactionDetails
+                val response = it.data as TransactionDetails
                 detail.value = response
 
             }
@@ -888,9 +893,8 @@ fun Details(navController: NavController, viewModel: HomeViewModel = hiltViewMod
             is DataState.Success -> {
                 isLoading.value = false
 
-
                 val data = it.data as GetPdfResponse
-                data?.let {
+                data.let {
                     fileDetailList.apply {
                         clear()
                         addAll(it.data.fileDetailsList)

@@ -35,6 +35,7 @@ import com.app.network.models.responseModels.LoginAsanResponse
 import com.app.network.models.responseModels.LoginResponse
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.SignApproveResponse
+import com.app.network.models.responseModels.TransactionDetails
 import com.app.network.models.responseModels.VerifyChangePasswordResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
@@ -231,7 +232,8 @@ interface APIService {
     fun transactionDetails(
         @Header("Auth_token") token: String,
         @Path("ibankRef") ibankRef: String
-    ): Call<GetTransactionDetails>
+//    ): Call<GetTransactionDetails>
+    ): Call<TransactionDetails>
 
     @POST("auth/rule-transaction-button")
     fun userRoles(

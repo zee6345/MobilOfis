@@ -22,6 +22,7 @@ import com.app.network.models.responseModels.GetTrusts
 import com.app.network.models.responseModels.GetUserRoles
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.SignApproveResponse
+import com.app.network.models.responseModels.TransactionDetails
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferListResponse
 import com.app.network.repository.HomeRepository
@@ -493,10 +494,10 @@ class HomeViewModel @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
             repository.getTransactionDetails(session[Keys.KEY_TOKEN]!!, ibankRef)
-                .enqueue(object : Callback<GetTransactionDetails> {
+                .enqueue(object : Callback<TransactionDetails> {
                     override fun onResponse(
-                        call: Call<GetTransactionDetails>,
-                        response: Response<GetTransactionDetails>
+                        call: Call<TransactionDetails>,
+                        response: Response<TransactionDetails>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
                             _getTransactionDetails.value =
@@ -508,7 +509,7 @@ class HomeViewModel @Inject constructor(
                         }
                     }
 
-                    override fun onFailure(call: Call<GetTransactionDetails>, t: Throwable) {
+                    override fun onFailure(call: Call<TransactionDetails>, t: Throwable) {
                         _getTransactionDetails.value = DataState.Error(handleException(t))
                     }
 

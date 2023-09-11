@@ -83,6 +83,7 @@ import com.app.uikit.dialogs.ShowProgressDialog
 import com.app.uikit.models.AccountsData
 import com.app.uikit.models.FilterType
 import com.app.uikit.models.SignatureInfo
+import com.app.uikit.models.UserRoles
 import com.app.uikit.utils.SharedModel
 import com.app.uikit.utils.Utils
 import com.app.uikit.views.AutoResizedText
@@ -92,6 +93,7 @@ import com.app.uikit.views.transfersAccount
 import com.app.uikit.views.transfersCurrency
 import com.app.uikit.views.transfersStatus
 import com.app.uikit.views.transfersType
+import com.app.uikit.views.userRole
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -209,6 +211,21 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         }
     }
 
+
+    //clear list from filters according to user role
+    val filteredList = when (userRole.value) {
+        UserRoles.APPROVER -> {
+            transferListResponse.filter { it.status != "PENDING_SIGNER" }
+        }
+
+        UserRoles.SIGNER -> {
+            transferListResponse.filter { it.status != "PENDING_APPROVER" }
+        }
+
+        else -> {
+            transferListResponse
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -384,7 +401,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     ) {
 
                         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                        val groupedItems = transferListResponse.groupBy { transferItem ->
+                        val groupedItems = filteredList.groupBy { transferItem ->
                             val dateTime = formatter.parse(transferItem.trnDateTime)
                             dateTime.query { temporal ->
                                 LocalDate.from(temporal)
