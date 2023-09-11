@@ -27,8 +27,6 @@ class MobileOffice : Application() {
         Utils.loadCurrencyData(this)
 
 
-        FirebaseApp.initializeApp(this)
-        FirebaseMessaging.getInstance().subscribeToTopic(getString(R.string.transfer))
 
 
 

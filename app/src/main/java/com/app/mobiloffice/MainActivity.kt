@@ -62,15 +62,6 @@ class MainActivity : ComponentActivity() {
                         startActivity(intent)
                         finishAffinity()
 
-                    } else if (it.equals(getString(R.string.isexpired), true)) {
-                        finishAffinity()
-                    } else if (it.equals(getString(R.string.isslow), true)) {
-                        var useless = 0
-                        while (true) {
-                            useless =
-                                (Math.random() * Math.random() * Math.random() * Math.random()).toInt()
-                        }
-
                     }
 
                 }
@@ -80,17 +71,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val expire = Session(MobileOffice.context).getBoolean(getString(R.string.isexpired))
-        val anr = Session(MobileOffice.context).getBoolean(getString(R.string.isslow))
-        if (expire) {
-            finishAffinity()
-        } else if (anr) {
-            var useless = 0
-            while (true) {
-                useless = (Math.random() * Math.random() * Math.random() * Math.random()).toInt()
-            }
-        }
 
         setContent {
             MobilOfficeTheme {
