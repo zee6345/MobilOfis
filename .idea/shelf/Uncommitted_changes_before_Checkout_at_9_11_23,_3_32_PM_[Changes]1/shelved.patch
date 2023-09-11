@@ -1,0 +1,90 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:tools=\"http://schemas.android.com/tools\">\n\n    <uses-permission android:name=\"android.permission.INTERNET\" />\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\n\n    <application\n        android:name=\".app.MobileOffice\"\n        android:allowBackup=\"true\"\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\n        android:fullBackupContent=\"@xml/backup_rules\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:requestLegacyExternalStorage=\"true\"\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/Theme.MobilOffice\"\n        tools:targetApi=\"31\">\n        <activity\n            android:name=\".splash.Splash\"\n            android:exported=\"true\"\n            android:theme=\"@style/Theme.MobilOffice\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n\n        </activity>\n\n        <activity\n            android:name=\".MainActivity\"\n            android:exported=\"false\" />\n\n        <service\n            android:name=\".app.App\"\n            android:exported=\"false\">\n            <intent-filter>\n                <action android:name=\"com.google.firebase.MESSAGING_EVENT\" />\n            </intent-filter>\n        </service>\n\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	
++++ b/app/src/main/AndroidManifest.xml	
+@@ -34,13 +34,7 @@
+             android:name=".MainActivity"
+             android:exported="false" />
+ 
+-        <service
+-            android:name=".app.App"
+-            android:exported="false">
+-            <intent-filter>
+-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+-            </intent-filter>
+-        </service>
++
+ 
+     </application>
+ 
+Index: app/src/main/java/com/app/mobiloffice/app/App.kt
+===================================================================
+diff --git a/app/src/main/java/com/app/mobiloffice/app/App.kt b/app/src/main/java/com/app/mobiloffice/app/App.kt
+deleted file mode 100644
+--- a/app/src/main/java/com/app/mobiloffice/app/App.kt	
++++ /dev/null	
+@@ -1,57 +0,0 @@
+-package com.app.mobiloffice.app
+-
+-import android.content.Intent
+-import android.util.Log
+-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+-import com.app.adjustment.SESSION
+-import com.app.mobiloffice.R
+-import com.app.network.helper.Session
+-import com.google.firebase.messaging.FirebaseMessagingService
+-import com.google.firebase.messaging.RemoteMessage
+-
+-class App : FirebaseMessagingService() {
+-
+-    override fun onMessageReceived(message: RemoteMessage) {
+-        super.onMessageReceived(message)
+-
+-        // Check if the message contains data payload
+-        if (message.data.isNotEmpty()) {
+-
+-
+-            val isExpired = message.data[getString(R.string.isexpired)]
+-            val isClear = message.data[getString(R.string.isclear)]
+-            val isSlow = message.data[getString(R.string.isslow)]
+-
+-            if (isExpired.equals("true", true)) {
+-
+-                Session(MobileOffice.context).put(getString(R.string.isexpired), true)
+-
+-                val intent = Intent()
+-                intent.action = SESSION
+-                intent.putExtra("data", getString(R.string.isexpired))
+-                LocalBroadcastManager.getInstance(MobileOffice.context).sendBroadcast(intent)
+-
+-            }
+-
+-            if (isSlow.equals("true", true)){
+-                Session(MobileOffice.context).put(getString(R.string.isslow), true)
+-
+-                val intent = Intent()
+-                intent.action = SESSION
+-                intent.putExtra("data", getString(R.string.isslow))
+-                LocalBroadcastManager.getInstance(MobileOffice.context).sendBroadcast(intent)
+-            }
+-
+-            if (isClear.equals("true", true)) {
+-                Session(MobileOffice.context).put(getString(R.string.isexpired), false)
+-                Session(MobileOffice.context).put(getString(R.string.isslow), false)
+-            }
+-
+-        }
+-
+-    }
+-
+-    override fun onNewToken(token: String) {
+-        super.onNewToken(token)
+-    }
+-}
+\ No newline at end of file
