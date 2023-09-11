@@ -116,6 +116,63 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
     }
 
 
+    //filter by card status
+    val filterList = oldCards.filter {
+        it.CardStat.contains(filterByStatus.value, true)
+    }.filter {
+        when (searchBy.value) {
+            SearchBy.ByIBAN -> {
+                it.Iban.contains(searchIban.value, true)
+            }
+
+            SearchBy.ByUser -> {
+                it.Name.contains(searchUser.value, true)
+            }
+
+            else -> {
+                true
+            }
+        }
+    }.toList()
+
+
+    //sort list by end date
+    val sortedList = if (sortByEndDate) {
+        filterList.sortedBy { it.ExpDate }
+    } else if (sortByBalance) {
+        filterList.sortedBy { it.Balance }
+    } else {
+        filterList
+    }
+
+
+
+    //filter by card status
+    val filterNewList = newCards.filter {
+        it.IBANStat.contains(filterByStatus.value, true)
+    }.filter {
+        when (searchBy.value) {
+            SearchBy.ByIBAN -> {
+                it.Iban.contains(searchIban.value, true)
+            }
+
+            SearchBy.ByUser -> {
+                it.Name.contains(searchUser.value, true)
+            }
+
+            else -> {
+                true
+            }
+        }
+    }.toList()
+
+    //sort list by end date
+    val sortedNewList = if (sortByEndDate) {
+        filterNewList.sortedBy { it.OpenDate }
+    } else {
+        filterNewList
+    }
+
     Column {
 
 
@@ -239,34 +296,6 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
 
                 if (oldCards.isNotEmpty()) {
 
-                    //filter by card status
-                    val filterList = oldCards.filter {
-                        it.CardStat.contains(filterByStatus.value, true)
-                    }.filter {
-                        when (searchBy.value) {
-                            SearchBy.ByIBAN -> {
-                                it.Iban.contains(searchIban.value, true)
-                            }
-
-                            SearchBy.ByUser -> {
-                                it.Name.contains(searchUser.value, true)
-                            }
-
-                            else -> {
-                                true
-                            }
-                        }
-                    }.toList()
-
-                    //sort list by end date
-                    val sortedList = if (sortByEndDate) {
-                        filterList.sortedBy { it.ExpDate }
-                    } else if (sortByBalance) {
-                        filterList.sortedBy { it.Balance }
-                    } else {
-                        filterList
-                    }
-
 
                     sortedList.forEachIndexed { index, mainCard ->
                         item {
@@ -298,41 +327,9 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
             } else if (selectedBoxIndex.value == 1) {
 
                 //new cards
-
                 if (newCards.isNotEmpty()) {
 
-                    //filter by card status
-                    val filterList = newCards.filter {
-                        it.IBANStat.contains(filterByStatus.value, true)
-                    }.filter {
-                        when (searchBy.value) {
-                            SearchBy.ByIBAN -> {
-                                it.Iban.contains(searchIban.value, true)
-                            }
-
-                            SearchBy.ByUser -> {
-                                it.Name.contains(searchUser.value, true)
-                            }
-
-                            else -> {
-                                true
-                            }
-                        }
-                    }.toList()
-
-                    //sort list by end date
-                    val sortedList = if (sortByEndDate) {
-                        filterList.sortedBy { it.OpenDate }
-                    }
-//                    else if (sortByBalance) {
-//                        filterList.sortedBy { it.Balance }
-//                    }
-                    else {
-                        filterList
-                    }
-
-
-                    sortedList.forEachIndexed { index, mainCardX ->
+                    sortedNewList.forEachIndexed { index, mainCardX ->
                         item {
                             NewCardsListItem(obj = mainCardX) {
                                 selectedNewCard.value = it
@@ -397,6 +394,7 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                     oldCards.addAll(cards.oldBusinessCards.MainCards)
 
 
+
                     //card status
                     if (cardStatusList.isNotEmpty()) {
                         cardStatusList.clear()
@@ -433,15 +431,17 @@ fun CardsList(navController: NavController, viewModel: HomeViewModel = hiltViewM
                         newCards.clear()
                     }
                     newCards.addAll(cards.newBusinessCards.MainCards)
-                }
 
-                //card status
-                if (cardStatusList.isNotEmpty()) {
-                    cardStatusList.clear()
-                }
 
-                cards.newBusinessCards.MainCards.forEach {
-                    cardStatusList.add(it.IBANStat)
+
+                    //card status
+                    if (cardStatusList.isNotEmpty()) {
+                        cardStatusList.clear()
+                    }
+
+                    cards.newBusinessCards.MainCards.forEach {
+                        cardStatusList.add(it.IBANStat)
+                    }
                 }
 
             }

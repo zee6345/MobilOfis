@@ -92,8 +92,9 @@ fun AccountList(navController: NavController, viewModel: HomeViewModel = hiltVie
             Spacer(modifier = Modifier.size(width = 1.dp, height = 10.dp))
         }
 
-        item {
-            cardsList.forEachIndexed { index, getAccountsItem ->
+
+        cardsList.forEachIndexed { index, getAccountsItem ->
+            item {
                 AccountListItem(obj = getAccountsItem, navController, viewModel)
             }
         }

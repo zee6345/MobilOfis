@@ -227,6 +227,16 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         }
     }
 
+
+    //group list
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    val groupedItems = filteredList.groupBy { transferItem ->
+        val dateTime = formatter.parse(transferItem.trnDateTime)
+        dateTime.query { temporal ->
+            LocalDate.from(temporal)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -400,13 +410,7 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         modifier = Modifier.padding(bottom = 50.sdp)
                     ) {
 
-                        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                        val groupedItems = filteredList.groupBy { transferItem ->
-                            val dateTime = formatter.parse(transferItem.trnDateTime)
-                            dateTime.query { temporal ->
-                                LocalDate.from(temporal)
-                            }
-                        }
+
 
                         groupedItems.forEach { (date, items) ->
                             item {
@@ -545,7 +549,15 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
             startDate = it.startDate
             endDate = it.endDate
 
-            if (startDate > endDate) {
+            val comparison = compareDates(startDate, endDate)
+
+            when {
+                comparison < 0 -> println("$startDate is before $endDate")
+                comparison > 0 -> println("$startDate is after $endDate")
+                else -> println("$startDate is equal to $endDate")
+            }
+
+            if (comparison > 0) {
                 showError = true
             } else {
                 showError = false
@@ -1044,6 +1056,16 @@ private fun FilterListMenu() {
 
     }
 }
+
+private fun compareDates(dateStr1: String, dateStr2: String): Int {
+    val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+    val date1 = dateFormat.parse(dateStr1)
+    val date2 = dateFormat.parse(dateStr2)
+
+    // Compare the two dates
+    return date1.compareTo(date2)
+}
+
 
 
 @Preview(device = Devices.PIXEL_4)
