@@ -64,6 +64,8 @@ import androidx.navigation.compose.rememberNavController
 import com.app.network.helper.Converter
 import com.app.network.helper.Keys
 import com.app.network.models.DataState
+import com.app.network.models.requestModels.FileDescriptor
+import com.app.network.models.requestModels.SendToBankModel
 import com.app.network.models.responseModels.LoginVerifyResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponse
 import com.app.network.models.responseModels.transferModels.TransferCountSummaryResponseItem
@@ -237,6 +239,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
         }
     }
 
+
+    val ibanList = remember { mutableListOf<FileDescriptor>() }
+    selectedItems.forEachIndexed { index, transferListResponseItem ->
+        ibanList.add(FileDescriptor(transferListResponseItem.ibankRef))
+    }
+
+
+    //main content
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -411,7 +421,6 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                     ) {
 
 
-
                         groupedItems.forEach { (date, items) ->
                             item {
 
@@ -493,14 +502,14 @@ fun TransferScreen(navController: NavController, viewModel: HomeViewModel = hilt
                         onClick = {
                             if (sendToBank.value) {
 
-//                                coroutine.launch {
-//                                    viewModel.sendToBankAPI(
-//                                        SendToBankModel(
-//                                            listOf(FileDescriptor("${selectedItems.}")),
-//                                            ""
-//                                        )
-//                                    )
-//                                }
+                                coroutine.launch {
+                                    viewModel.sendToBankAPI(
+                                        SendToBankModel(
+                                            ibanList,
+                                            "SEND_BANK"
+                                        )
+                                    )
+                                }
 
                             } else {
                                 SharedModel.init().signatureData.value = SignatureInfo(
@@ -1065,7 +1074,6 @@ private fun compareDates(dateStr1: String, dateStr2: String): Int {
     // Compare the two dates
     return date1.compareTo(date2)
 }
-
 
 
 @Preview(device = Devices.PIXEL_4)
