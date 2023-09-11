@@ -266,7 +266,7 @@ private fun MainContent(navController: NavController, data: MainCard) {
                     Modifier
                         .size(height = 28.dp, width = 28.dp)
                         .clickable {
-                            businessCardOptions.value = true
+//                            businessCardOptions.value = true
                         }
                 )
             }

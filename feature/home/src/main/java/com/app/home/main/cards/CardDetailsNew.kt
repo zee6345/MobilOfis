@@ -266,7 +266,7 @@ private fun MainContent(data: MainCardX) {
                         .size(height = 28.dp, width = 28.dp)
                         .padding(3.dp)
                         .clickable {
-                            businessCardOptions.value = true
+//                            businessCardOptions.value = true
                         }
                 )
             }
